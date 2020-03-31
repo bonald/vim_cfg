@@ -11,10 +11,7 @@ set cursorline
 highlight Cursorcolumn cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
 set laststatus=2
 
-map <silent> nt :NERDTreeMirror<CR>
-map <silent> nt :NERDTreeToggle<CR>
-
-"gtags 设置项
+"gtags
 set nocscopeverbose	"avoid Added cscope database /home/zhang.haiwen/cnos-code/test/CNOS-code-tsingma/GTAGS Press ENTER or type command to continue 
 set cscopetag		"use cscope as tags command
 set cscopeprg='gtags-cscope'	"use gtags-cscope replace cscope
@@ -54,8 +51,16 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 
 "taglist
-let Tlist_Ctags_Cmd="ctags"
-let Tlist_Use_Right_Window=1   "display window on the right
+"let Tlist_Ctags_Cmd="ctags"
+"let Tlist_Use_Right_Window=1   "display window on the right
 let Tlist_Show_One_file=1      "only display current file's tags
 let Tlist_Exit_OnlyWindow=1	   "exit vim when only have taglist
 map <silent> tl :Tlist<CR>
+
+"nerdtree
+map <silent> nt :NERDTreeMirror<CR>
+map <silent> nt :NERDTreeToggle<CR>
+let NERDTreeWinPos="right"
+let NERDTreeShowBookmarks=1
+"autocmd VimEnter * NERDTree
+
