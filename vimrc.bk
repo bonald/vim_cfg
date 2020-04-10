@@ -1,15 +1,38 @@
-set nu
+"start file type detect
+"filetype on
+"according file type load corresponding plugin
+"filetype plugin on
+
+set number
 set tabstop=4
+set expandtab
+syntax enable
 syntax on
 set term=xterm
-colorscheme darkblue
+"colorscheme darkblue
+"colorscheme desert
+colorscheme molokai
 set bg=dark
-set cuc
-set cul
-"highlight Cursorline   cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
 set cursorline
+"highlight Cursorline   cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
+set cursorcolumn
 highlight Cursorcolumn cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
 set laststatus=2
+"set search high light
+set hlsearch 
+"ignore casr sensitive
+set ignorecase
+set t_Co=256      "在windows中用xshell连接打开vim可以显示色彩
+
+
+"define Leader as ;
+let mapleader=";"
+
+"define shortcut key to quit, write/quit, no-save/quit
+nmap <Leader>q :q<CR>
+nmap <Leader>wq :w<CR>:q<CR>
+nmap <Leader>Q :q!<CR>
+
 
 "gtags
 set nocscopeverbose	"avoid Added cscope database /home/zhang.haiwen/cnos-code/test/CNOS-code-tsingma/GTAGS Press ENTER or type command to continue 
@@ -24,8 +47,7 @@ if !empty(gtags_file)
 endif
 
 "different vim copy/paste
-"let g:copy_file=$HOME . "/.vim_copybuffer"
-let g:copy_file="/home/rancho/.vim_copybuffer"
+let g:copy_file=$HOME . "/.vim_copybuffer"
 function Write_copy_file()
 call delete(g:copy_file)
 let lines=split(@", "\n")
@@ -41,15 +63,6 @@ endfunction
 map <silent> ;y :call Write_copy_file()<Enter>
 map <silent> ;p :call Read_copy_file()<Enter>         
 
-"omnifunc
-autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-autocmd FileType c set omnifunc=ccomplete#Complete
-
 "taglist
 "let Tlist_Ctags_Cmd="ctags"
 "let Tlist_Use_Right_Window=1   "display window on the right
@@ -57,10 +70,28 @@ let Tlist_Show_One_file=1      "only display current file's tags
 let Tlist_Exit_OnlyWindow=1	   "exit vim when only have taglist
 map <silent> tl :Tlist<CR>
 
-"nerdtree
+"nerdtree configuration
 map <silent> nt :NERDTreeMirror<CR>
 map <silent> nt :NERDTreeToggle<CR>
 let NERDTreeWinPos="right"
 let NERDTreeShowBookmarks=1
 "autocmd VimEnter * NERDTree
 
+"indentLine 代码缩进线标志线
+let g:indentLine_char = '¦' 
+let g:indentLine_enabled = 1  
+""映射到ctrl+i键 
+map <C-i> :IndentLinesToggle<CR> 
+
+let g:indentLine_first_char = '¦' "设置对齐线的首字符
+let g:indentLine_showFirstIndentLevel = 1   "显示对齐线首字符
+let g:indentLine_color_term = 239               "设置对齐线颜色
+
+"vim-plug management 
+call plug#begin('~/.vim/plugged')
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'tomasr/molokai'
+"support laststatus
+Plug 'liuchengxu/eleline.vim'
+Plug 'Yggdroot/indentLine'
+call plug#end()
