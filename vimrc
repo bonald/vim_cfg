@@ -4,8 +4,21 @@
 "filetype plugin on
 
 set number
+"自适应不同语言智能缩进
+filetype indent on
+"设置编辑时制表符占用空格数
 set tabstop=4
+"将制表符扩展为空格
 set expandtab
+"设置格式化时制表符占用空格数
+set shiftwidth=4
+"让vim把连续数量的空格视为一个制表符
+set softtabstop=4
+"设置缩进线
+"set list lcs=tab:\|\ "(here is a space)
+set foldmethod=syntax
+set nofoldenable
+
 syntax enable
 syntax on
 set term=xterm
@@ -16,7 +29,7 @@ set bg=dark
 set cursorline
 "highlight Cursorline   cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
 set cursorcolumn
-highlight Cursorcolumn cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
+"highlight Cursorcolumn cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
 set laststatus=2
 "set search high light
 set hlsearch 
@@ -24,6 +37,12 @@ set hlsearch
 set ignorecase
 set t_Co=256      "在windows中用xshell连接打开vim可以显示色彩
 
+"./tags;表示在文件的所在目录下查找名字为.tags的符号文件,后面一个分号代表查找不到的话向上递归到父目录，
+"而我们只要在项目根目录放一个.tags即可
+"set autochdir
+"set tags=tags; 这两句产生的作用相同
+"还需要做一个自动生成tags的插件
+set tags=./.tags;,.tags
 
 "define Leader as ;
 let mapleader=";"
@@ -63,13 +82,6 @@ endfunction
 map <silent> ;y :call Write_copy_file()<Enter>
 map <silent> ;p :call Read_copy_file()<Enter>         
 
-"taglist
-"let Tlist_Ctags_Cmd="ctags"
-"let Tlist_Use_Right_Window=1   "display window on the right
-let Tlist_Show_One_file=1      "only display current file's tags
-let Tlist_Exit_OnlyWindow=1	   "exit vim when only have taglist
-map <silent> tl :Tlist<CR>
-
 "nerdtree configuration
 map <silent> nt :NERDTreeMirror<CR>
 map <silent> nt :NERDTreeToggle<CR>
@@ -77,15 +89,15 @@ let NERDTreeWinPos="right"
 let NERDTreeShowBookmarks=1
 "autocmd VimEnter * NERDTree
 
-"indentLine 代码缩进线标志线
-let g:indentLine_char = '¦' 
-let g:indentLine_enabled = 1  
-""映射到ctrl+i键 
-map <C-i> :IndentLinesToggle<CR> 
+"tagbar
+nmap <silent> tb :TagbarToggle<CR>  
+let g:tagbar_left=1             "default on right
+let g:tagbar_width=30           "default width is 40
+let g:tagbar_autofocus=1        "cursor on tagbar when tagbar start
+let g:tagbar_sort=0             "default is sort
 
-let g:indentLine_first_char = '¦' "设置对齐线的首字符
-let g:indentLine_showFirstIndentLevel = 1   "显示对齐线首字符
-let g:indentLine_color_term = 239               "设置对齐线颜色
+"switch from c file and h file
+nmap <silent> <Leader>sw :FSHere<CR>
 
 "vim-plug management 
 call plug#begin('~/.vim/plugged')
@@ -93,5 +105,11 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tomasr/molokai'
 "support laststatus
 Plug 'liuchengxu/eleline.vim'
-Plug 'Yggdroot/indentLine'
+"switch from c file and h file
+Plug 'derekwyatt/vim-fswitch'
+Plug 'majutsushi/tagbar'
 call plug#end()
+
+
+
+"代码动态检查
