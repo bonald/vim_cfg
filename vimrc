@@ -44,6 +44,11 @@ set t_Co=256      "在windows中用xshell连接打开vim可以显示色彩
 "还需要做一个自动生成tags的插件
 set tags=./.tags;,.tags
 
+"光标回到上次退出文件时的位置
+if has("autocmd")
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
 "define Leader as ;
 let mapleader=";"
 
@@ -51,19 +56,6 @@ let mapleader=";"
 nmap <Leader>q :q<CR>
 nmap <Leader>wq :w<CR>:q<CR>
 nmap <Leader>Q :q!<CR>
-
-
-"gtags
-set nocscopeverbose	"avoid Added cscope database /home/zhang.haiwen/cnos-code/test/CNOS-code-tsingma/GTAGS Press ENTER or type command to continue 
-set cscopetag		"use cscope as tags command
-set cscopeprg='gtags-cscope'	"use gtags-cscope replace cscope
-let GtagsCscope_Auto_Load = 1
-let GtagsCscope_Auto_Map = 1
-let GtagsCscope_Quiet = 1
-let gtags_file=findfile("GTAGS", ";")		"find gtags file
-if !empty(gtags_file)
-	exe "cs add" gtags_file
-endif
 
 "different vim copy/paste
 let g:copy_file=$HOME . "/.vim_copybuffer"
@@ -89,7 +81,7 @@ let NERDTreeWinPos="right"
 let NERDTreeShowBookmarks=1
 "autocmd VimEnter * NERDTree
 
-"tagbar
+"tagbar, * 打开所有folds, = 折叠所有folds
 nmap <silent> tb :TagbarToggle<CR>  
 let g:tagbar_left=1             "default on right
 let g:tagbar_width=30           "default width is 40
@@ -98,6 +90,23 @@ let g:tagbar_sort=0             "default is sort
 
 "switch from c file and h file
 nmap <silent> <Leader>sw :FSHere<CR>
+
+"LeaderF configuration
+"let g:Lf_ShortcutF = '<c-p>'
+let g:Lf_ShortcutB = '<m-n>'
+noremap <c-n> :LeaderfMru<cr>
+noremap <c-p> :LeaderfFunction!<cr>
+noremap <m-n> :LeaderfBuffer<cr>
+noremap <m-m> :LeaderfTag<cr>
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'eleline'
+let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
 
 "vim-plug management 
 call plug#begin('~/.vim/plugged')
@@ -108,8 +117,7 @@ Plug 'liuchengxu/eleline.vim'
 "switch from c file and h file
 Plug 'derekwyatt/vim-fswitch'
 Plug 'majutsushi/tagbar'
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 call plug#end()
-
-
 
 "代码动态检查
