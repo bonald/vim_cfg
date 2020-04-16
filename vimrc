@@ -118,6 +118,8 @@ Plug 'liuchengxu/eleline.vim'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+"将asynctasks命令所在目录加入到PATH，然后alias task='asynctask -f'
+Plug 'skywind3000/asynctasks.vim'
 call plug#end()
 
 "代码动态检查
