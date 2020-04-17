@@ -9,15 +9,15 @@ filetype indent on
 "设置编辑时制表符占用空格数
 set tabstop=4
 "将制表符扩展为空格
-set expandtab
+"set expandtab
 "设置格式化时制表符占用空格数
-set shiftwidth=4
+"set shiftwidth=4
 "让vim把连续数量的空格视为一个制表符
-set softtabstop=4
+"set softtabstop=4
 "设置缩进线
 "set list lcs=tab:\|\ "(here is a space)
-set foldmethod=syntax
-set nofoldenable
+"set foldmethod=syntax
+"set nofoldenable
 
 syntax enable
 syntax on
@@ -117,11 +117,8 @@ Plug 'liuchengxu/eleline.vim'
 "switch from c file and h file
 Plug 'derekwyatt/vim-fswitch'
 Plug 'majutsushi/tagbar'
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-"将asynctasks命令所在目录加入到PATH，然后alias task='asynctask -f'
-"如果没有fzf，需要安装git clone --depth 1 https://github.com/junegunn/fzf.git
-"~/.fzf
-"~/.fzf/install && source ~/.bashrc
+"Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+"将asynctasks命令所在目录加入到PATH，然后在~/.bashrc alias task='asynctask -f'
 Plug 'skywind3000/asynctasks.vim'
 call plug#end()
 
