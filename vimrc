@@ -19,6 +19,8 @@ set tabstop=4
 "set foldmethod=syntax
 "set nofoldenable
 
+"<F5>按键绑定粘贴模式 :set paste
+set pastetoggle=<F12>
 syntax enable
 syntax on
 set term=xterm
@@ -36,6 +38,11 @@ set hlsearch
 "ignore casr sensitive
 set ignorecase
 set t_Co=256      "在windows中用xshell连接打开vim可以显示色彩
+
+"解决vim中文显示乱码问题
+set fileencoding=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8
 
 "./tags;表示在文件的所在目录下查找名字为.tags的符号文件,后面一个分号代表查找不到的话向上递归到父目录，
 "而我们只要在项目根目录放一个.tags即可
