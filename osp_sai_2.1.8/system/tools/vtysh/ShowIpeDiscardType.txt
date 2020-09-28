@@ -1,0 +1,64 @@
+[IpeFwdDiscardTypeStats.0]  User ID binding discard
+[IpeFwdDiscardTypeStats.1]  Loopback Header Adjust byte remove error discard
+[IpeFwdDiscardTypeStats.2]  Parser length error discard
+[IpeFwdDiscardTypeStats.3]  MAC Isolated Discard
+[IpeFwdDiscardTypeStats.4]  Exception 2 discard
+[IpeFwdDiscardTypeStats.5]  DsUserId.discard
+[IpeFwdDiscardTypeStats.6]  Port/DsVlan receive disable discard
+[IpeFwdDiscardTypeStats.7]  iTag check failure, or invalid bmac, or loop MacSa of PIP port type in PBB
+[IpeFwdDiscardTypeStats.8]  Portocol VLAN discard
+[IpeFwdDiscardTypeStats.9]  VlanTagCtl discard
+[IpeFwdDiscardTypeStats.10] Not allow mcast Mac SA discard
+[IpeFwdDiscardTypeStats.11] STP discard
+[IpeFwdDiscardTypeStats.12] Reserved
+[IpeFwdDiscardTypeStats.13] PBB OAM discard
+[IpeFwdDiscardTypeStats.14] ARP/DHCP discard
+[IpeFwdDiscardTypeStats.15] DsPhyPort.srcDiscard
+[IpeFwdDiscardTypeStats.16] Vlan status filtering discard
+[IpeFwdDiscardTypeStats.17] DsAclQoS.discardPacket
+[IpeFwdDiscardTypeStats.18] Routing multicast IP address check discard or PT discard
+[IpeFwdDiscardTypeStats.19] Bridging BPDU, STP, Port Match, Mcast MAC address discard
+[IpeFwdDiscardTypeStats.20] Storm Control discard
+[IpeFwdDiscardTypeStats.21] Learninig discard
+[IpeFwdDiscardTypeStats.22] Policing discard
+[IpeFwdDiscardTypeStats.23] No forwarding pointer discard
+[IpeFwdDiscardTypeStats.24] dsFwdPtr == 20'hf_ffff or dsFwdPtrValid discard
+[IpeFwdDiscardTypeStats.25] fatalException discard
+[IpeFwdDiscardTypeStats.26] APS discard
+[IpeFwdDiscardTypeStats.27] DsFwd.destIdDiscard
+[IpeFwdDiscardTypeStats.28] Reserved
+[IpeFwdDiscardTypeStats.29] Header Adjust small packet discard
+[IpeFwdDiscardTypeStats.30] Header Adjust pktErr
+[IpeFwdDiscardTypeStats.31] TRILL OAM packet discard, send to CPU
+[IpeFwdDiscardTypeStats.32] Loopback discard
+[IpeFwdDiscardTypeStats.33] EFM discard
+[IpeFwdDiscardTypeStats.34] CAPWAP form AC error discard, CAPWAP unexpectable discard
+[IpeFwdDiscardTypeStats.35] Stacking network header check error
+[IpeFwdDiscardTypeStats.36] TRILL filter error discard / TRILL UC non port mac, discard
+[IpeFwdDiscardTypeStats.37] CAPWAP control exception discard
+[IpeFwdDiscardTypeStats.38] L3 exception discard
+[IpeFwdDiscardTypeStats.39] L2 exception discard
+[IpeFwdDiscardTypeStats.40] TRILL Mcast address check error discard / TRILL version check error discard
+[IpeFwdDiscardTypeStats.41] TRILL version check error / inner VLAN ID check discard
+[IpeFwdDiscardTypeStats.42] PTP version check error discard
+[IpeFwdDiscardTypeStats.43] PTPT P2P transparent clock discard delay*
+[IpeFwdDiscardTypeStats.44] OAM not found discard
+[IpeFwdDiscardTypeStats.45] OAM STP/VLAN filter discard
+[IpeFwdDiscardTypeStats.46] BFD single hop OAM TTL check error discard
+[IpeFwdDiscardTypeStats.47] CAPWAP DTLS discard
+[IpeFwdDiscardTypeStats.48] No MEP/MIP discard
+[IpeFwdDiscardTypeStats.49] OAM disable discard
+[IpeFwdDiscardTypeStats.50] PBB decap discard
+[IpeFwdDiscardTypeStats.51] MPLS/T-MPLS OAM discard
+[IpeFwdDiscardTypeStats.52] MPLS-TP MCC/SCC discard
+[IpeFwdDiscardTypeStats.53] ICMP error message discard (should exception to cpu)
+[IpeFwdDiscardTypeStats.54] PTP ACL exception discard
+[IpeFwdDiscardTypeStats.55] Ethernet service OAM discard
+[IpeFwdDiscardTypeStats.56] Ethernet link OAM discard
+[IpeFwdDiscardTypeStats.57] Tunnel Decap outer header martian address discard
+[IpeFwdDiscardTypeStats.58] CAPWAP BSSID lookup failure discard / CAPWAP logic port check discard
+[IpeFwdDiscardTypeStats.59] UserId discard dsFwdPtr[15:0] == 16'hFFFF
+[IpeFwdDiscardTypeStats.60] CAPWAP Fragment discard
+[IpeFwdDiscardTypeStats.61] TRILL RPF check fail discard
+[IpeFwdDiscardTypeStats.62] Mux Port error discard
+[IpeFwdDiscardTypeStats.63] Reserved

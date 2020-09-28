@@ -1,0 +1,9 @@
+ACTION !="remove",GOTO="farsight"
+SUBSYSTEM!="block",GOTO="farsight"
+KERNEL=="sd[a-z][0-9]",RUN+="/etc/unmount.sh"
+KERNEL=="mmcblk[0-9]p[0-9]",RUN+="/etc/unmount.sh"
+LABEL="farsight"
+
+
+
+

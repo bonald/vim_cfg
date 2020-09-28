@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/lib/.deps
+END
+utimensat.Po
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/lib/.deps/utimensat.Po
+END
+strtonum.Po
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/lib/.deps/strtonum.Po
+END
+pidfile.Po
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/lib/.deps/pidfile.Po
+END
+strlcat.Po
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/lib/.deps/strlcat.Po
+END
+strlcpy.Po
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/lib/.deps/strlcpy.Po
+END

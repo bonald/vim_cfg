@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+RIPng
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show ipv6 ripng" help="Show RIPng routes">
+		<ACTION>
+			vtysh -c "show ipv6 ripng"
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="show debugging ripng" help="Ripng information">
+		<ACTION>
+			vtysh -c "show debugging ripng"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="debug ripng" help="Ripng information">
+	</COMMAND>
+
+	<COMMAND name="no debug ripng" help="Ripng information">
+	</COMMAND>
+
+	<COMMAND name="debug ripng events" help="Ripng events">
+		<ACTION>
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ripng events"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for rip event troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for rip event troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# debug rip event
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+	
+	<COMMAND name="no debug ripng event" help="Ripng events">
+		<ACTION>
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ripng events"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# no debug rip event
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	   
+	</COMMAND>
+
+	<COMMAND name="debug ripng packet" help="Ripng packet">
+		<ACTION>
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ripng packet"
+			fi
+	</ACTION>
+
+
+
+
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for rip packet troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for rip packet troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# debug rip packet
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no debug ripng packet" help="Ripng packet">
+		<ACTION>
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ripng packet"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# no debug rip packet
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug ripng zebra" help="Ripng and ZEBRA communication">
+		<ACTION>
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ripng zebra"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for rip zebra troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for rip zebra troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# debug rip zebra
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no debug ripng zebra" help="Ripng and ZEBRA communication">
+		<ACTION>
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ripng zebra"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# no debug rip zebra
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="router ripng" help="Start RIPng configuration" view="configure-ripng-view">
+	   	<ACTION>
+			ps -ef | grep ripngd | grep -v grep 1>/dev/null
+			if [ "$?" != "0" ]; then 
+				ripngd -d
+			fi
+
+			cdbctl create/cdb/l3/ripng/create_ripng
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ripng" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="no router ripng" help="Start RIPng configuration">
+	   	<ACTION>
+			cdbctl delete/cdb/l3/ripng/remove_ripng
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "no router ripng" -c "end"
+			fi
+
+			ps -ef | grep ripngd | grep -v grep | awk -F " " '{print $2}' | xargs kill -9 1>/dev/null
+		</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+
+	<COMMAND name="ipv6 ripng" help="Routing Information Protocol">
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ripng" help="Routing Information Protocol">
+	</COMMAND>
+
+	<COMMAND name="ipv6 ripng split-horizon" help="Perform split horizon">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ripng_split_horizon/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ripng split-horizon" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ripng split-horizon" help="Perform split horizon">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ripng_split_horizon/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ripng split-horizon" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ipv6 ripng split-horizon poisoned-reverse" help="With poisoned-reverse">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ripng_poisoned_reverse/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ripng split-horizon poisoned-reverse" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ripng split-horizon poisoned-reverse" help="With poisoned-reverse">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ripng_poisoned_reverse/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ripng split-horizon poisoned-reverse" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-ripng-view"
+	prompt="${SYSTEM_NAME}(config-router)# "
+	depth="1">
+
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from router rip configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from router rip configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+
+	<COMMAND name="network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="network prefix" ptype="IPV6_ADDR_MASK"/>
+		<ACTION>
+			cdbctl create/cdb/l3/ripng_network/${prefix}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ripng" -c "network ${prefix}" -c "end"			
+			fi
+		</ACTION>	
+	</COMMAND>  
+
+	<COMMAND name="no network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="network prefix" ptype="IPV6_ADDR_MASK"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/ripng_network/${prefix}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ripng" -c "no network ${prefix}" -c "end"			
+			fi
+		</ACTION>
+	</COMMAND> 
+
+	<COMMAND name="timers" help="Adjusting routing timers">
+	</COMMAND>	
+	
+	<COMMAND name="no timers" help="Adjusting routing timers">
+	</COMMAND>	
+	
+	<COMMAND name="timers basic" help="Basic routing protocol update timers">
+		<PARAM name="update" help="Routing table update time value.Default is 30." ptype="RIP_TIME"/>
+		<PARAM name="timeout" help="Routing information timeoutr time.Default is 180." ptype="RIP_TIME"/>
+		<PARAM name="garbage" help="Garbage timer.Default is 120." ptype="RIP_TIME"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/timers/${update}/${timeout}/${garbage}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "timers basic ${update} ${timeout} ${garbage}" -c "end"
+			fi
+		</ACTION>
+		
+	</COMMAND>
+
+	<COMMAND name="no timers basic" help="Timers set to default">
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/timers/30/180/120
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "no timers basic" -c "end"
+			fi
+		</ACTION>
+		
+	</COMMAND>
+
+	<COMMAND name="default-information" help="Control distribution of default information" >
+	</COMMAND>
+
+	<COMMAND name="no default-information" help="Control distribution of default information" >
+	</COMMAND>
+
+	<COMMAND name="default-information originate" help="Distribute a default route">
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/default_information/add
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ripng" -c "default-information originate" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no default-information originate" help="Distribute a default route">
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/default_information/del
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ripng" -c "no default-information originate" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="passive-interface" help="Suppress routing updates on an interface">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EV"/>
+		<ACTION>
+			cdbctl create/cdb/l3/ripng_passive_if/${iface_name}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "passive-interface ${iface_name}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>	
+
+	<COMMAND name="no passive-interface" help="Suppress routing updates on an interface">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EV"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/ripng_passive_if/${iface_name}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "no passive-interface ${iface_name}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>	
+	
+	<COMMAND name="redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ospf" help="Open Shortest Path First (OSPFv3)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="metric" help="Metric" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="met" help="Metric valut" ptype="RIP_METRIC"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${metric}" != "" ]; then
+				cdbctl update/cdb/l3/ripng/redistribute/add/${redist}/red_metric/${met}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ripng" -c "redistribute ${redist} metric ${met}" -c "end"
+				fi
+			else
+				cdbctl update/cdb/l3/ripng/redistribute/add/${redist}/
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ripng" -c "redistribute ${redist}" -c "end"
+				fi
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ospf" help="Open Shortest Path First (OSPFv3)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/redistribute/del/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ripng" -c "no redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="default-metric" help="Set a metric of redistribute routes">
+		<PARAM name="met" help="Default metric" ptype="RIP_METRIC_DEFAULT"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/default_metric/${met}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "default-metric ${met}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no default-metric" help="Set a metric of redistribute routes">
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/default_metric/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "no default-metric" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="allow-ecmp" help="Allow Equal Cost Multipath">
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/allow_ecmp/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "allow-ecmp" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no allow-ecmp" help="Allow Equal Cost Multipath">
+		<ACTION>
+			cdbctl update/cdb/l3/ripng/allow_ecmp/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router ripng" -c "no allow-ecmp" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

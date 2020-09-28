@@ -1,0 +1,8 @@
+all_targets += 
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+	
+.PHONY: FORCE
+FORCE:

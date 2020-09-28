@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+					 http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ecmp" help="Equal cost multi-path routing"/>
+	<COMMAND name="show ecmp information" optional="false" help="ECMP information">
+
+		<ACTION>
+			cdbctl show/cdb/sys/show_ecmp
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the running information of ecmp settings.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the running information of ecmp settings.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to show the running information:  
+    Switch# show ecmp information 
+    ECMP load balance enable mode: Static
+    ECMP hash-field-select:
+        ipsa ipda
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ecmp hash-field-select
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="ecmp" help="Equal cost multi-path routing"/>
+	<COMMAND name="no ecmp" help="Equal cost multi-path routing"/>
+
+	<COMMAND name="ecmp load-balance-mode" help="Load balancing mode algorithm">
+		<PARAM name="lb_mode" help="Set load balance mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Enable ECMP by dynamic load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="dlb_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="normal">
+					<PARAM name="tcp-only" help="Configure dlb work on tcp flow" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="round-robin" help="Round robin load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="ip" help="IP destination prefix (e.g. 10.0.0.0/8)" ptype="IP_ADDR_MASK"/>
+			</PARAM>
+			<PARAM name="static" help="Enable ECMP with static mode(default)" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="static_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="static">
+					<PARAM name="self-healing" help="Self-healing" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ "static" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/${static_mode}/dlb_mode_type/normal
+			elif [ "dynamic" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/${lb_mode}/dlb_mode_type/${dlb_mode}
+			else
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/${lb_mode}/rr_prefix/${ip}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set ecmp load-balance-mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set ecmp load-balance-mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Static
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set ecmp load-balance-mode:
+    Switch(config)# ecmp load-balance-mode static self-healing
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ecmp load-balance-mode" help="Load balancing mode algorithm">
+		<PARAM name="lb_mode" help="Set load balance mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Enable ECMP by dynamic load balance" ptype="SUBCOMMAND" mode="subcommand">
+			</PARAM>
+			<PARAM name="round-robin" help="Round robin load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="ip" help="IP destination prefix (e.g. 10.0.0.0/8), vrf private route isn't support RR" ptype="IP_ADDR_MASK"/>
+			</PARAM>
+			<PARAM name="static" help="Enable ECMP with static mode(default)" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="static_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch">
+					<PARAM name="self-healing" help="Self-healing" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ "static" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/static/dlb_mode_type/normal
+			elif [ "dynamic" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/static/dlb_mode_type/normal
+			else
+				cdbctl delete/cdb/sys/rr_prefix/rr_prefix/${ip}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset ecmp load-balance-mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset ecmp load-balance-mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Static
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset ecmp load-balance-mode
+    Switch(config)# no ecmp load-balance-mode static self-healing
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

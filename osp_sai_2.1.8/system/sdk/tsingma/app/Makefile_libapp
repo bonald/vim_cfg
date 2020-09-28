@@ -1,0 +1,48 @@
+ifeq ($(targetbase),linux)
+
+include $(MK_DIR)/sys.mk
+OBJ_DIR=$(OBJ_BASE_DIR)/app
+
+LIB = app
+SRCS = $(wildcard *.c)
+SRCS += $(wildcard config/*.c)
+SRCS += $(wildcard usr/*.c)
+SRCS += $(wildcard sample/*.c)
+
+ifeq ($(findstring greatbelt, $(CHIPNAME)),greatbelt)
+CPPFLAGS += -DGREATBELT
+endif
+
+ifeq ($(findstring goldengate, $(CHIPNAME)),goldengate)
+CPPFLAGS += -DGOLDENGATE
+endif
+
+ifeq ($(UNIT_TEST),TRUE)
+CPPFLAGS += -DSDK_UNIT_TEST
+endif
+
+CFLAGS += -Werror -Wall
+
+CPPFLAGS += -I$(SDK_DIR)/dal/include
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/core/api/include
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include)
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include/ctc)
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include/sys)
+ifeq ($(USW),yes)
+CPPFLAGS += -I$(SDK_DIR)/core/usw/include/ctc)
+CPPFLAGS += -I$(SDK_DIR)/core/usw/include/sys)
+CPPFLAGS += -I$(SDK_DIR)/ctccli/sdkcli/usw
+endif
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/libctccli/include
+CPPFLAGS += -I$(SDK_DIR)/ctccli/sdkcli
+CPPFLAGS += -I$(SDK_DIR)/app/config
+CPPFLAGS += -I$(SDK_DIR)/app/sample
+CPPFLAGS += -I$(SDK_DIR)/app/usr
+CPPFLAGS += -I$(SDK_DIR)/app
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/ctccli/sdkcli/$(n))
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+
+include $(MK_DIR)/lib.mk
+endif

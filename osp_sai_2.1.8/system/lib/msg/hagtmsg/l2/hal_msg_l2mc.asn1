@@ -1,0 +1,51 @@
+HAL-MSG-L2MC DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr,
+    HalMsgDefL2mcPortMemberBitmap
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+HalMsgL2mcEntryReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    mac         HalMsgDefL2MacAddr,
+    groupid     INTEGER
+}
+
+HalMsgL2mcNhReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    mac         HalMsgDefL2MacAddr,
+    gport       INTEGER,
+    nhid        INTEGER,
+    localMemberBmp  INTEGER,
+    maxGchipNum  INTEGER
+}
+
+HalMsgL2mcPortReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    mac         HalMsgDefL2MacAddr,
+    gport       INTEGER,
+    localMemberBmp  INTEGER,
+    maxGchipNum  INTEGER
+}
+
+HalMsgL2mcVlanReq ::= SEQUENCE
+{
+    fid         INTEGER
+}
+
+HalMsgL2mcDiscardUnknownReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    discard     INTEGER
+}
+
+HalMsgL2mcL3ifidReq ::= SEQUENCE
+{
+    l3ifid         INTEGER,
+    isEnable       INTEGER
+}
+END

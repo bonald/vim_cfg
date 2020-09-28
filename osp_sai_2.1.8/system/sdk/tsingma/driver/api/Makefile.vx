@@ -1,0 +1,33 @@
+include $(MK_DIR)/sys_vx.mk
+OBJ_DIR=$(OBJ_BASE_DIR)/driver/api/src
+
+CPPFLAGS += -I$(SDK_DIR)/sal/include/
+CPPFLAGS += -I$(SDK_DIR)/dal/include/
+CPPFLAGS += -I$(SDK_DIR)/driver/api/
+CPPFLAGS += -I$(SDK_DIR)/driver/
+ifeq ($(BOARD),ctc-sim)
+CPPFLAGS += -I$(SDK_DIR)/../cmodel/$(CHIPNAME)/mem_model/include
+endif
+
+SRC =  $(wildcard *.c)
+OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
+DEPS = $(patsubst %.c,%.d,$(wildcard *.c))
+
+all: $(OBJS)
+
+$(OBJS): %.o: %.c 
+	$(shell mkdir -p $(OBJ_DIR))
+	@echo "CC  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $(OBJ_DIR)/$@ $< 
+	
+$(OBJ_DIR)/$(DEPS): $(SRC) 
+	$(shell mkdir -p $(dir $@))
+	@echo "CX  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$(@:%.d=%.o))" && \
+	$(CC) $(CFLAGS) $(CPPFLAGS) -MM $<>$@
+
+#include $(OBJ_DIR)/$(DEPS)	
+
+.PHONY: clean
+clean:
+	rm -rf $(OBJ_DIR)/$(OBJS) $(OBJ_DIR)/$(DEPS)
+CFLAGS += -Werror -Wall

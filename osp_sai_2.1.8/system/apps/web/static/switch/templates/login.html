@@ -1,0 +1,39 @@
+<div class="container" >
+    <form class="form col-md-4 col-md-offset-2">
+        <h1>{{ 'Login' | translate }}</h1>
+
+        <div class="alert alert-danger" role="alert" ng-show="authErrorFlag">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {{ authErrorReason | translate }}
+        </div>
+
+        <div class="form-group">
+            <label for="username">{{ 'Username' | translate }}</label>
+            <input type="text" class="form-control" id="username" placeholder="{{ 'Enter username' | translate }}" ng-model="form.username">
+        </div>
+        <div class="form-group">
+            <label for="password">{{ 'Password' | translate }}</label>
+            <input type="password" class="form-control" id="password" placeholder="{{ 'Enter password' | translate }}" ng-model="form.password">
+        </div>
+
+        <!-- select language -->
+        <div class="btn-group" data-toggle="buttons" style="margin-bottom: 15px;">
+            <label class="btn btn-default" ng-click="changeLanguage('zh_CN')" ng-class="{'active': currentUseLanguage == 'zh_CN'}">
+                <input type="radio" name="options" id="option1" autocomplete="off">中文
+            </label>
+            <label class="btn btn-default" ng-click="changeLanguage('en_US')" ng-class="{'active': currentUseLanguage == 'en_US'}">
+                <input type="radio" name="options" id="option2" autocomplete="off">English
+            </label>
+            <!--
+            <label class="btn btn-default" ng-click="changeLanguage('ja_JP')" ng-class="{'active': currentUseLanguage == 'ja_JP'}">
+                <input type="radio" name="options" id="option3" autocomplete="off">日本語
+            </label>
+            -->
+        </div>
+        <!-- select language end -->
+
+        <br />
+        <button id = "submit" class="btn btn-primary" ng-click="submit()"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;{{ 'Login' | translate }}</button>
+    </form>
+</div>

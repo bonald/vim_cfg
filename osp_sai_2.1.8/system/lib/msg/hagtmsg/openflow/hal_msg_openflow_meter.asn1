@@ -1,0 +1,33 @@
+HAL-MSG-OPENFLOW-METER DEFINITIONS AUTOMATIC TAGS ::= BEGIN   -- Added by weizj for meter
+
+-------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow TUNNEL (BEGIN) {
+-------------------------------------
+HalMsgOpenFlowMeterBandKey ::= SEQUENCE
+{
+    type           INTEGER,
+    rate           INTEGER,
+    burst          INTEGER
+}
+
+-------------------------------------
+-- } DATA STRUCTURE definitions for OpenFlow TUNNEL (END)
+-------------------------------------
+
+-------------------------------------
+--  Message definitions for OpenFlow TUNNEL (BEGIN) {
+-------------------------------------
+HalMsgOpenFlowMeterEntryKey ::= SEQUENCE
+{
+    meterId        INTEGER,
+    statsEn        INTEGER,
+    ipgEn          INTEGER,
+    meterBand      HalMsgOpenFlowMeterBandKey
+}
+
+-------------------------------------
+--  } Message definitions for OpenFlow TUNNEL (END)
+-------------------------------------
+
+END
+

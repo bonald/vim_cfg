@@ -1,0 +1,563 @@
+################################################################################
+# Note:
+# 1. Table用于产生 tbl_xxx_define.h/tbl_xxx.h/tbl_xxx.c
+# 2. Table的顺序应该与note.txt里面顺序且一一对应，否则会报错
+# 3. "#" 注释
+# 4. Table之间以"-----"分隔
+# 5. 一个Table有 [TBL] [KEY] [DATA] [FLAGS] [MASTER] 5个选项
+# 6. [TBL]有4列
+#    1) table name
+#    2) tbl_xxx.h中的参数名  if -> p_if
+#    3) 表的数据结构有  GLOBAL, HASH, LIST, ARRAY, HASH+LIST (其中HASH+LIST, HASH 查找，LIST显示)
+#    4) 表示需要初始化该table的PM, 可选switch, routed, chsm, fea, all，其中all表示所有PMs, 如果有多个可以用','连接, e.g. "switch,routed"
+#        cds会初始化所有table，用于产生函数 cdb_tbl_pm_init()
+# 7. [KEY] 如果数据结构为GLOBAL, [KEY]为空, 否则需要
+#    1) key只支持1个field, 如果需要多个数据类型组成, 徐自己定义一个数据结构, 然后放在[KEY]中, e.g. TBL_FDB_KEY/fdb_key_t, TBL_ROUTE_NODE_KEY/route_node_key_t
+# 8. [DATA]有4列，如果有key的话，必须放在第一行
+#    1) data type, 所有的datatype必须在datatype.txt中定义
+#    2) data name, 可以带指针或者数组
+#    3) access property, READ/READ/SUB/FLAGS/INTERNAL, INTERNAL在dump时不可见，PM内部为方便而使用
+#       其中SUB表示是DS, 注意DS必须通过指针附着在TBL上
+#       FLAGS表示包含多个flag, 具体见[FLAGS]
+#    4) note, 这一列会copy到源代码中
+# 9. [FLAGS] 如果[DATA]中有FLAGS项, 需要有该选项, 有4列
+#    1) data name
+#    2) field name
+#    3) FLAG定义, 必须在proto.h里面定义好
+#    4) access property, READ/READ
+# 10.[MASTER]有2列, 存放TBL的数据结构的master指针, 也可存放一些内部使用的全局变量
+#    1) data type, 需要与[TBL]里面的第3列对应
+#    2) data name
+# 11. 其他注意事项
+#    1) 除了DS外, 尽量避免使用指针. 譬如interface.desc
+#    2) 除了FLAGS外, data name与field name是一一对应的
+#    3) REFERLIST_TBL用于挂接指向另一个TBL的指针
+#    4) REFERLIST_DS用于挂接指向另一个DS的指针
+################################################################################
+--------------------------------------------------------------------------------
+[TBL]
+STBL_SAI_GLB            sai_glb                 GLOBAL          fea
+[DATA]
+uint32                  nh_max_count            READ
+uint32                  nh_group_max_count      READ
+uint32                  vrf_max_count           READ
+uint32                  rif_max_count           READ
+uint32                  route_max_count         READ
+uint32                  stp_id_max_count        READ
+uint32                  nh_group_curr_count     READ
+uint32                  hostif_max_count        READ
+uint32                  hostif_group_max_count  READ
+uint32                  vrrp_max_count          READ
+uint32                  vlan_class_max_count    READ
+uint32                  hash_max_count          READ
+uint32                  lag_max_count           READ
+uint32                  qos_wred_max_count      READ
+uint32                  qos_map_max_count       READ
+uint32                  qos_scheduler_max_count READ
+uint32                  qos_policer_max_count   READ
+sai_object_id_t         default_stp_id          READ
+ctclib_hash_t           *hostif_fd_hash		READ
+ctclib_hash_t           *hostif_portif_hash	READ
+ctclib_hash_t           *hostif_vlanif_hash	READ
+ctclib_opb_t            l2mc_group_opb          READ
+ctclib_opb_t            isolation_id_opb        READ
+ctclib_opb_t            mirror_id_opb           READ
+ctclib_opb_t            nexthop_id_opb          READ
+ctclib_opb_t            nexthop_group_id_opb    READ
+ctclib_opb_t            stpid_opb               READ
+ctclib_opb_t            tap_group_opb           READ
+ctclib_opb_t            vlan_class_opb          READ
+ctclib_opb_t            vrf_id_opb              READ
+ctclib_opb_t            hash_opb                READ
+ctclib_opb_t            lag_opb                 READ
+ctclib_opb_t            qos_wred_opb            READ
+ctclib_opb_t            qos_map_opb             READ
+ctclib_opb_t            qos_scheduler_opb       READ
+ctclib_opb_t            qos_policer_opb         READ
+ctclib_opb_t            udf_opb                 READ
+ctclib_opb_t            copp_entry_opb          READ
+[MASTER]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_PORT_GLB           port_glb                GLOBAL          fea
+[DATA]
+ctclib_opb_t            group_id_igs_opb        READ
+ctclib_opb_t            group_id_egs_opb        READ
+ctclib_opb_t            ttp_group_id_igs_opb    READ
+ctclib_opb_t            port_class_id_opb       READ
+ctclib_opb_t            hostif_id_opb           READ
+ctclib_opb_t            hostif_group_id_opb     READ
+ctclib_opb_t            route_if_opb            READ
+[MASTER]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_PORT               port                    HASH            fea
+[KEY]
+sai_object_id_t         port_oid
+[DATA]
+STBL_PORT_KEY		key                     READ
+uint32                  flag                    READ
+uint32                  gport                   READ
+sai_object_id_t         lag_id                  READ
+int32                   timestamp_count         READ
+uint32                  timestamp_nexthopid     READ
+uint32                  group_id_igs            READ
+uint32                  group_id_egs            READ
+uint32                  ttp_group_id_igs        READ
+uint32                  port_class_id           READ
+vlan_bmp_t              vlan_bmp		READ
+uint32                  vlanclass_group_id      READ
+uint32                  vlanclass_default_action READ
+uint32                  vlanclass_active_type   READ		/* sai_port_vlanclass_active_type_t */
+sai_object_id_t         isolation_oid           READ
+uint32                  isolation_dir           READ		/* sai_port_isolation_direction_t */
+uint32                  isolation_type          READ		/* sai_port_isolation_type_t */
+uint32                  tag_ctrl                READ		/* ctc_vlantag_ctl_t */
+uint32                  dot1q_type              READ		/* ctc_dot1q_type_t */
+uint32                  transmit_en             READ
+uint32                  receive_en              READ
+uint32                  keep_vlan_tag           READ
+uint32                  ingress_vlan_filter     READ
+uint32                  egress_vlan_filter      READ
+uint32                  src_discard             READ
+uint32                  src_outer_is_svlan      READ
+uint32                  lag_bind_en             READ
+uint32                  flowctl_dir             READ
+uint32                  flowctl_en              READ
+uint32                  type_is_access          READ
+uint32                  metadata_en             READ
+uint32                  egress_acl_en           READ
+uint32                  reflective_bridge_en    READ
+uint32                  dhcprelay_exception     READ
+uint32                  mac_limit_num           READ
+uint32                  mac_limit_action        READ
+uint32                  port_state              READ		/* sai_port_oper_status_t */
+sdb_mac_rx_stats_ptr_t  rx_stats_ptr            READ            /* pointer to ctc_stats_mac_rec_t */
+sdb_mac_tx_stats_ptr_t  tx_stats_ptr            READ            /* pointer to ctc_stats_mac_snd_t */
+[MASTER]
+ctclib_hash_t           *port_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_HOSTIF             hif                     HASH+LIST      fea
+[KEY]
+sai_object_id_t         hif_oid
+[DATA]
+STBL_HOSTIF_KEY         key                     READ
+sai_object_id_t         port_oid                READ		/* for port interface */
+vid_t                   vid                     READ		/* for VLAN interface */
+int32                   fd                      READ		/* for VLAN interface */
+uint32                  nexthop_ptr             READ		/* for VLAN interface send packet */
+char                    ifname[GLB_IFNAME_SZ]   READ
+[MASTER]
+ctclib_hash_t           *hif_hash
+ctclib_slist_t          *if_list
+--------------------------------------------------------------------------------
+[TBL]
+STBL_LAG_MEMPORT        memport                 HASH            fea
+[KEY]
+uint32                  gport
+[DATA]
+STBL_LAG_MEMPORT_KEY    key                     READ
+sai_object_id_t         port_oid                READ
+uint32                  tid                     READ
+[MASTER]
+ctclib_hash_t           *memport_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_VR                 vr                      ARRAY             fea
+[KEY]
+uint32			vrf_id
+[DATA]
+STBL_VR_KEY             key                     READ
+sai_object_id_t         vr_oid			READ
+mac_addr_t              smac                    READ
+uint32                  v4_admin                READ
+uint32                  v6_admin                READ
+REFERLIST_STBL_RIF      rif_list                READ              /* list of STBL_RIF */
+[MASTER]
+stbl_vr_t               *array[GLB_MAX_VRFID]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_RIF                rif                    ARRAY             fea
+[KEY]
+uint32			rif_id
+[DATA]
+STBL_RIF_KEY            key                     READ
+uint32                  type                    READ		/* sai_router_interface_type_t */
+sai_object_id_t         port_oid                READ
+sai_object_id_t         vr_oid			READ
+vid_t                   vlan_id                 READ
+mac_addr_t              smac                    READ
+uint32                  nat_enable              READ
+uint32                  nat_category_id         READ
+[MASTER]
+stbl_rif_t              *array[GLB_MAX_L3IF_NUM]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_NEXTHOP            nexthop                 HASH       fea
+[KEY]
+sai_neighbor_entry_t
+[DATA]
+STBL_NEXTHOP_KEY        key                     READ
+sai_object_id_t         nh_oid                  READ
+uint32                  nh_type                 READ
+[MASTER]
+ctclib_hash_t           *nexthop_hash
+stbl_nexthop_t          *array[GLB_MAX_CTC_NEXTHOP_ID+1]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_NEXTHOP_GROUP      nh_group                ARRAY       fea
+[KEY]
+uint32			group_id
+[DATA]
+STBL_NEXTHOP_GROUP_KEY  key                     READ
+uint32                  type                    READ
+uint32                  ipmc_group_id           READ
+uint32                  ecmp_type               READ
+uint32                  failover_en             READ
+REFERLIST_STBL_NEXTHOP  nh_list                 READ              /* list of STBL_NEXTHOP */
+[MASTER]
+stbl_nexthop_group_t    *array[GLB_MAX_CTC_NEXTHOP_GROUP_ID+1]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_NEIGHBOR           neigh                   HASH+LIST              fea
+[KEY]
+sai_neighbor_entry_t
+[DATA]
+STBL_NEIGHBOR_KEY       key                     READ
+mac_addr_t              mac                     READ
+sai_object_id_t         port_oid                READ
+sai_object_id_t         nh_oid                  READ
+sai_packet_action_t     action                  READ		/* sai_packet_action_t */
+[MASTER]
+ctclib_hash_t           *neigh_hash
+ctclib_slist_t          *neigh_list
+--------------------------------------------------------------------------------
+[TBL]
+STBL_VLAN               vlan                    ARRAY             fea
+[KEY]
+vid_t                   vid
+[DATA]
+STBL_VLAN_KEY           key                     READ
+uint32                  learn_disable           READ
+sai_object_id_t         stp_oid                 READ             /* STP instance OID */
+uint32                     stats_id_l2_in          RW
+uint32                     stats_id_l2_out         RW
+uint32                     stats_id_l3_in           RW
+uint32                     stats_id_l3_out          RW
+[MASTER]
+stbl_vlan_t             *array[GLB_MAX_VLAN_ID]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_VLAN_CLASS         vclass                  ARRAY             fea
+[KEY]
+uint32                  rule_id
+[DATA]
+STBL_VLAN_CLASS_KEY     key                     READ
+sai_object_id_t         group_oid		READ
+sai_object_id_t         member_oid		READ
+uint32                  entry_type		READ		/* sai_vlanclass_entry_type_t */
+uint32                  proto_type		READ		/* sai_vlanclass_protocol_type_t */
+vid_t                   vlan_id			READ
+addr_t			ipaddr			READ
+mac_addr_t		mac			READ
+[MASTER]
+stbl_vlan_class_t        *array[GLB_VLANCLASS_RULE_ID_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_STP                stp                     ARRAY             fea
+[KEY]
+uint32                  stp_id
+[DATA]
+STBL_STP_KEY            key                     READ
+sai_object_id_t         stp_oid                 READ             /* STP instance OID */
+vlan_bmp_t              vlan_bmp		READ             /* VLAN bitmap of this instance */
+[MASTER]
+stbl_stp_t              *array[GLB_STP_INSTANCE_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_L2MC               l2mc                    HASH              fea
+[KEY]
+sai_l2mc_entry_t
+[DATA]
+STBL_L2MC_KEY           key                     READ
+uint32                  group_id                READ              /* L2 mcast group ID */
+[MASTER]
+ctclib_hash_t           *l2mc_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ROUTE              route                   HASH              fea
+[KEY]
+sai_unicast_route_entry_t
+[DATA]
+STBL_ROUTE_KEY          key                     READ
+sai_object_id_t         rif_oid                 READ
+sai_object_id_t         nh_oid                  READ
+uint32                  priority                READ
+uint32                  action                  READ             /* refer to sai_packet_action_t */
+uint32                  l3if_type               READ             /* refer to sai_router_interface_nat_type_t*/
+uint32                  category_id             READ             /* 1~254, bigger than 255 or equals to 0 is invalid*/
+[MASTER]
+ctclib_hash_t           *route_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_VRRP_VIP           vip                     HASH              fea
+[KEY]
+sai_ip_address_t
+[DATA]
+STBL_VRRP_VIP_KEY       key                     READ
+mac_addr_t              vmac                    READ
+mac_addr_t              if_mac                  READ
+[MASTER]
+ctclib_hash_t           *vip_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_COPP_TRAP          trap                    ARRAY             fea
+[KEY]
+uint32                  trap_id
+[DATA]
+STBL_COPP_TRAP_KEY      key                     READ
+sai_object_id_t         group_oid               READ
+uint32                  ctc_reason_id           READ
+uint32                  channel                 READ
+[MASTER]
+stbl_copp_trap_t        *array[GLB_COPP_TRAP_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_COPP_GROUP         group                    ARRAY             fea
+[KEY]
+uint32                  group_id
+[DATA]
+STBL_COPP_GROUP_KEY     key                     READ
+sai_object_id_t         police_oid              READ 
+sai_object_id_t         police_ssh_oid          READ 
+sai_object_id_t         police_telnet_oid       READ 
+sai_object_id_t         police_mlag_oid         READ
+uint32                  queue_id                READ
+uint32                  ctc_reason_id           READ
+uint32                  channel                 READ
+[MASTER]
+stbl_copp_group_t       *array[GLB_COPP_GROUP_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_COPP_REASON        reason                  ARRAY             fea
+[KEY]
+uint32                  reason_id
+[DATA]
+STBL_COPP_REASON_KEY    key                     READ
+uint32                  channel                 READ
+uint32                  trap_id                 READ
+[MASTER]
+stbl_copp_reason_t      *array[GLB_COPP_REASON_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_COPP_ENTRY         copp_entry              ARRAY             fea
+[KEY]
+uint32                  copp_entry_id
+[DATA]
+STBL_COPP_ENTRY_KEY     key                     READ
+sai_object_id_t         entry_oid               READ
+sai_object_id_t         counter_oid             READ
+sai_object_id_t         nh_oid                  READ
+uint8                   type                    READ
+uint8                   ip_type                 READ
+uint16                  protocol_num            READ
+uint16                  dst_port                READ
+[MASTER]
+stbl_copp_entry_t      *array[GLB_COPP_ENTRY_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ACL_GLB            acl_glb                 GLOBAL            fea
+[KEY]
+[DATA]
+uint32                  acl_tbl_max_count       READ
+uint32                  acl_entry_max_count     READ
+uint32                  sdk_acl_entry_max_count READ
+uint32                  tunnel_max_count        READ
+uint32                  erspan_service_opb_max_count        READ
+ctclib_opb_t            acl_tbl_opb             READ
+ctclib_opb_t            acl_entry_opb           READ
+ctclib_opb_t            sdk_acl_entry_opb       READ
+ctclib_opb_t            tunnel_opb              READ
+ctclib_opb_t            erspan_service_opb      READ
+[MASTER]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ACL_PORT           port                    LIST             fea
+[KEY]
+sai_object_id_t         port_oid
+[DATA]
+STBL_ACL_PORT_KEY       key                     READ
+uint32                  ingress_en_cnt          READ
+uint32                  egress_en_cnt           READ
+[MASTER]
+ctclib_slist_t          *port_list
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ACL_TBL            acl                     ARRAY             fea
+[KEY]
+uint32                  tbl_id
+[DATA]
+STBL_ACL_TBL_KEY        key                     READ
+uint32                  priority                READ
+uint32                  field_bitmap            READ
+uint32                  stage                   READ     /* sai_acl_stage_t */
+[MASTER]
+stbl_acl_tbl_t          *array[GLB_SAI_ACL_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ACL_ENTRY          ace                     ARRAY             fea
+[KEY]
+uint32                  entry_id
+[DATA]
+STBL_ACL_ENTRY_KEY      key                     READ
+sai_object_id_t         tbl_oid                 READ
+sai_object_id_t         mirror_oid              READ
+uint32                  priority                READ
+uint32                  dirction                READ
+uint32                  enable                  READ
+uint32                  apply_inner_lookup      READ
+sai_acl_field_data_t    in_port                 READ
+uint32                  ctc_entry_id_list[64]   READ
+uint32                  ctc_entry_id_count      READ
+uint64                  port_oid_list[64]       READ
+uint32                  port_oid_count          READ
+ctc_sai_acl_field_list_t  outer_fields          READ
+ctc_sai_acl_field_list_t  inner_fields          READ
+ctc_sai_acl_action_list_t action                READ
+ctc_sai_acl_action_attrlist_t action_attr       READ
+ctc_sai_acl_tap_t       tap                     READ
+[MASTER]
+stbl_acl_entry_t        *array[GLB_SAI_ACE_MAX]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ACL_TUNNEL         tunnel                  HASH             fea
+[KEY]
+ctc_sai_acl_tunnel_key_t
+[DATA]
+STBL_ACL_TUNNEL_KEY     key                     READ
+int32                   count                   READ
+uint32                  entry_id                READ
+uint32                  erspan_service_id       READ
+uint32                  erspan_service_group_id READ     /* base(10000) + erspan_service_id */
+uint32                  erspan_nexthop_id       READ
+[MASTER]
+ctclib_hash_t           *tunnel_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_ACL_UDF_ENTRY           acl_udf_entry               ARRAY           fea
+[KEY]
+uint32                       id
+[DATA]
+STBL_ACL_UDF_ENTRY_KEY       key                         READ
+uint8                        group_type                  READ             /* GENERIC: 0   HASH: 1 */
+uint8                        group_length                READ             /* Duet2: 4   GG: 1 */
+uint8                        offset_type                 READ             /* l2-udf: 0, l3-udf: 1, l4_udf: 2 */
+uint8                        offset_num                  READ
+uint8                        offset[GLB_ACL_UDF_FIELD_NUM_MAX]   READ
+uint8                        installed                   READ             /* installed to asic or not */
+uint32                       key_flags                   READ
+uint32                       ethtype[2]                  READ
+uint32                       vlannum[2]                  READ             /* maximum 3 */
+uint32                       ipproto[2]                  READ             /* tcp:6 udp:17 gre:47 pim:103.. */
+uint32                       l4_type[2]                  READ             /* no support ctc_parser_l4_type_t max 0xf */
+uint32                       srcport[2]                  READ
+uint32                       dstport[2]                  READ
+uint32                       mplsnum[2]                  READ
+[MASTER]
+stbl_acl_udf_entry_t        *array[GLB_ACL_UDF_ENTRY_NUM_MAX+1]
+--------------------------------------------------------------------------------
+[TBL]
+STBL_IPMC               ipmc                    HASH             fea
+[KEY]
+sai_ipmc_entry_t        
+[DATA]
+STBL_IPMC_KEY           key                     READ
+uint32                  group_id                READ             /* ipmc mcast group ID */
+uint32                  nexthop_id              READ
+uint32 					counter_id				RW				/*add by zhw for ipmc*/
+sai_object_id_t         nexthop_group_id        READ
+sai_object_id_t         rpf_router_interface    READ
+[MASTER]
+ctclib_hash_t          *ipmc_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_NAT_FORWARD        nat_forward             HASH             fea
+[KEY]
+sai_nat_forward_entry_t        
+[DATA]
+STBL_NAT_FORWARD_KEY    key                     READ
+uint32                  iif_oid                 READ
+uint32                  oif_oid                 READ
+uint32                  nhid                    READ
+uint32                  use_cnt                 RW
+[MASTER]
+ctclib_hash_t          *nat_forward_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_QOS_MPLS_DOMAIN    qos_mpls_domain          HASH           fea
+[KEY]
+uint32                 mpls_label        
+[DATA]
+STBL_QOS_MPLS_DOMAIN_KEY  key                              READ
+uint32                    exp_domain                       RW
+[MASTER]
+ctclib_hash_t             *qos_mpls_domain_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_QOS_MPLS_FLOW     qos_mpls_flow          HASH           fea
+[KEY]
+uint32                 mpls_label        
+[DATA]
+STBL_QOS_MPLS_FLOW_KEY  key                              READ
+uint32                  mpls_flow_en                     RW
+[MASTER]
+ctclib_hash_t           *qos_mpls_flow_hash
+--------------------------------------------------------------------------------
+[TBL]
+STBL_CFM_LMEP             lmep                 HASH+LIST       all
+[KEY]
+uint32                    index
+[DATA]
+STBL_CFM_LMEP_KEY         key                   READ
+uint32                    gport                 RW        
+uint16                    vlan_id               RW
+uint8                     md_level              RW
+uint8                     lmep_num              RW
+uint32                    mep_id                RW                    /* MEP ID */
+uint8                     maid[GLB_CFM_MAID_LENGTH_48BYTES]       RW          /* maid */
+uint8                     direction             RW                    /* Up or down */
+uint8                     d_unexp_mep           RW                    /* Incorrect MEP ID */
+uint8                     d_mismerge            RW                    /* Incorrect MAID */
+uint8                     d_meg_lvl             RW                    /* Low level */ 
+uint8                     cci_enabled           RW                    /* CCM enabled */
+uint8                     cci_interval          RW                    /* CC interval */
+uint8                     rdi                   RW                    /* Remote Defect Indication */
+uint8                     ccm_vlan_cos          RW                    /* Vlan priority of CCM packets */
+uint32                    ifindex               RW                    /* Interface index */
+uint8                     mode                  RW                    /* 802.1ag or Y.1731 mode */      
+[MASTER]
+ctclib_hash_t           *cfm_lmep_hash
+ctclib_slist_t          *cfm_lmep_list
+--------------------------------------------------------------------------------
+[TBL]
+STBL_CFM_RMEP             rmep                  HASH+LIST       all
+[KEY]
+uint32                    index
+[DATA]
+STBL_CFM_RMEP_KEY         key                   READ
+uint16                    gport                 RW        
+uint16                    vlan_id               RW
+uint8                     md_level              RW
+uint32                    rmep_id               RW       /* MEP ID */
+mac_addr_t                rmep_mac              READ
+uint32                    ifindex               RW
+uint8                     first_pkt_rx          RW       /* Receive first correct packet */ 
+uint8                     d_loc                 RW       /* Don't receive ccm packets in 3.5 */ 
+uint8                     d_unexp_period        RW       /* Incorrect ccm period */ 
+uint8                     ma_sa_mismatch        RW       /* Incorrect source mac address for RMEP */ 
+uint8                     rmep_last_rdi         RW       /* Remote last rdi */
+[MASTER]
+ctclib_hash_t           *cfm_rmep_hash
+ctclib_slist_t          *cfm_rmep_list
+--------------------------------------------------------------------------------

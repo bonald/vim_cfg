@@ -1,0 +1,128 @@
+
+<div class="row">
+	<div id="interface-line" ng-class="{true: 'col-md-7', false: 'col-md-12'}[setif==true]">
+		<table class="table" style="border-top: hidden;">
+			<thead>
+				<tr>
+					<th><input class="checkbox" type="checkbox" ng-model="chk" ng-change="chooseAll()"/></th>
+					<th >{{'Port' | translate}}</th>
+					<th >{{'Unicast Mode' | translate}}</th>
+					<th >{{'Unicast Value' | translate}}</th>
+					<th >{{'Broadcast Mode' | translate}}</th>
+					<th >{{'Broadcast Value' | translate}}</th>
+					<th >{{'Multicast Mode'| translate}}</th>
+					<th >{{'Multicast Value' | translate}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="x in if">
+					<td><input class="checkbox" type="checkbox" ng-model="x.box" ng-change="choose()"/></td>
+					<td>{{x.full_name | switchPort }}</td>
+					<td>{{x.storm_control.ucast_mode=='1' ? 'pps' : x.storm_control.ucast_mode=='2' ? 'level' : 'disable'}}</td>
+					<td>{{x.storm_control.ucast_rate ? x.storm_control.ucast_rate : '-'}}</td>
+					<td>{{x.storm_control.bcast_mode=='1' ? 'pps' : x.storm_control.bcast_mode=='2' ? 'level' : 'disable'}}</td>
+          <td>{{x.storm_control.bcast_rate ? x.storm_control.bcast_rate : '-'}}</td>
+					<td>{{x.storm_control.mcast_mode=='1' ? 'pps' : x.storm_control.mcast_mode=='2' ? 'level' : 'disable'}}</td>
+          <td>{{x.storm_control.mcast_rate ? x.storm_control.mcast_rate : '-'}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div ng-class="{true: 'col-md-4', false: 'col-md-1'}[setif]" style="margin: 10px" ng-if="setif==true" 
+   ng-init=" newIf.ucast_mode = '0'; newIf.ucast_rate = '0'; newIf.bcast_mode = '0'; newIf.bcast_rate = '0'; newIf.mcast_mode='0'; newIf.mcast_rate = '0' ">
+
+    <table class="table-responsive" ng-class="{'ifFixed': setif}" style="border-top: hidden;">
+      
+      <tr>
+        <td>
+          <label>{{'Unicast Mode' | translate}}: </label>
+        </td>
+        <td>
+          <label><input type="radio"  ng-model="newIf.ucast_mode" ng-checked="newIf.ucast_mode == '0'" ng-click="un_mode_disabled()"> {{'Disabled' | translate}} </label>
+          <label><input type="radio"  ng-model="newIf.ucast_mode" ng-checked="newIf.ucast_mode == '1'" ng-click="un_mode_pps()"> pps </label>
+          <label><input type="radio"  ng-model="newIf.ucast_mode" ng-checked="newIf.ucast_mode == '2'" ng-click="un_mode_level()"> {{'Level' | translate}} </label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="UnicastValue">{{'Unicast Value' | translate}}:</label>
+        </td>
+        <td>
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[ucastRateCheck()]">
+              <input type="text" class="form-control" id="UnicastValue" min="0" max="1000000000" ng-model="newIf.ucast_rate">
+              <span> Level: 0.00-99.99, PPS: 0-1000000000 multiples of 1000.</span>
+            </div>
+        </td>
+      
+      </tr>
+      <tr>
+        <td>
+        </td>
+        <td>
+					<button type="submit" class="btn btn-default" ng-click="modifyUcastAll()" ng-disabled="ucastRateCheck()==false">{{'Submit'|translate}}</button>
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          <label>{{'Broadcast Mode' | translate}}: </label>
+        </td>
+        <td>
+          <label><input type="radio"  ng-model="newIf.bcast_mode" ng-checked="newIf.bcast_mode == '0'" ng-click="bc_mode_disabled()"> {{'Disabled' | translate}} </label>
+          <label><input type="radio"  ng-model="newIf.bcast_mode" ng-checked="newIf.bcast_mode == '1'" ng-click="bc_mode_pps()"> pps </label>
+          <label><input type="radio"  ng-model="newIf.bcast_mode" ng-checked="newIf.bcast_mode == '2'" ng-click="bc_mode_level()"> {{'Level' | translate}} </label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="BroadcastValue">{{'Broadcast Value' | translate}}:</label>
+        </td>
+        <td>
+          <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[bcastRateCheck()]">
+            <input type="text" class="form-control" id="BroadcastValue" min="0" max="1000000000" ng-model="newIf.bcast_rate">
+            <span> Level: 0.00-99.99, PPS: 0-1000000000 multiples of 1000.</span>
+          </div>
+        </td>
+      </tr>      
+
+      <tr>
+        <td>
+        </td>
+        <td>
+					<button type="submit" class="btn btn-default" ng-click="modifyBcastAll()" ng-disabled="bcastRateCheck()==false">{{'Submit'|translate}}</button>
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          <label>{{'Multicast Mode' | translate}}: </label>
+        </td>
+        <td>
+          <label><input type="radio" name="selectedIf.key" ng-model="newIf.mcast_mode" ng-checked="newIf.mcast_mode == '0'" ng-click="mc_mode_disabled()"> {{'Disabled' | translate}} </label>
+          <label><input type="radio" name="selectedIf.key" ng-model="newIf.mcast_mode" ng-checked="newIf.mcast_mode == '1'" ng-click="mc_mode_pps()"> pps </label>
+          <label><input type="radio" name="selectedIf.key" ng-model="newIf.mcast_mode" ng-checked="newIf.mcast_mode == '2'" ng-click="mc_mode_level()"> {{'Level' | translate}} </label>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="MulticastValue">{{'Multicast Value' | translate}}:</label>
+        </td>
+        <td>
+          <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[mcastRateCheck()]">        
+            <input type="text" class="form-control" id="MulticastValue" min="0" max="1000000000" ng-model="newIf.mcast_rate">
+            <span> Level: 0.00-99.99, PPS: 0-1000000000 multiples of 1000.</span>
+          </div>
+        </td>
+      </tr>
+    
+      <tr>
+        <td>
+        </td>
+        <td>
+					<button type="submit" class="btn btn-default" ng-click="modifyMcastAll()" ng-disabled="mcastRateCheck()==false">{{'Submit'|translate}}</button>
+        </td>
+      </tr>
+    </table>
+	</div>
+</div>

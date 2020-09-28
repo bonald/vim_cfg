@@ -1,0 +1,588 @@
+################################################################################
+# Note:
+# 1. Node定义CDB各个元素之间的层次关系，CDB包含5中元素
+#    1) DIR, 目录元素, 根目录必须是cdb
+#    2) TBL, Table元素, 必须有一个父DIR
+#    3) DS, DataStruct元素, 必须有一个父TBL/DS, 目前唯一一个3级的是 TBL_ROUTE_NODE -> DS_RIB -> DS_NEXTHOP
+#    4) ACT, Action元素, 必须有一个父DIR, 没有数据结构
+#    5) BAT, 批处理元素, 必须有一个父DIR, CDB client将其转换为TBL列表处理
+# 2. 包含DIR, TBL, DS, ACT, BAT 5项
+# 3. 项目之间以/* */分隔
+# 4. 其他注意事项
+#    1) 这里面TBL/DS的顺序必须与table.txt/ds.txt中的TBL/DS一致
+#    2) TBL/ACT需要指定Destination PM，用于cds做数据分发
+################################################################################
+/* DIR                          Parent                  Product */
+   DIR_CDB                      NULL                    ALL
+   DIR_L2                       DIR_CDB                 L2PLUS
+   DIR_L3                       DIR_CDB                 L2PLUS
+   DIR_ACL                      DIR_CDB                 ALL
+   DIR_QOS                      DIR_CDB                 L2PLUS
+   DIR_DC                       DIR_CDB                 L2PLUS
+   DIR_MPLS                     DIR_CDB                 L2PLUS
+   DIR_SYS                      DIR_CDB                 ALL
+   DIR_DEVICE                   DIR_CDB                 ALL
+   DIR_APP                      DIR_CDB                 ALL
+   DIR_DEBUG                    DIR_CDB                 ALL
+   DIR_OPENFLOW                 DIR_CDB                 ALL
+   DIR_DHCP                     DIR_CDB                 ALL
+   DIR_ACTION                   DIR_CDB                 ALL
+   DIR_PTP                      DIR_CDB                 ALL
+   DIR_TAP                      DIR_CDB                 ALL
+   DIR_SSM                      DIR_CDB                 ALL
+   DIR_OPM                      DIR_CDB                 ALL
+
+/* TBL                          Parent                  Destination PM          Product */
+   TBL_INTERFACE                DIR_CDB                 switch                  ALL
+   TBL_ROUTE_IF                 DIR_L3                  routed                  ALL
+   TBL_KERNEL_IF                DIR_L3                  routed                  ALL
+   TBL_FEA_PORT_IF              DIR_SYS                 fea                     ALL
+   TBL_VLAN                     DIR_L2                  switch                  L2PLUS
+   TBL_PVLAN                    DIR_L2                  switch                  L2PLUS
+   TBL_FDB                      DIR_L2                  switch                  L2PLUS
+   TBL_MCFDB                    DIR_L2                  switch                  L2PLUS
+   TBL_MACFILTER                DIR_L2                  switch                  L2PLUS
+   TBL_PSFDB                    DIR_L2                  switch                  L2PLUS
+   TBL_IPSG_S_IP                DIR_L2                  switch                  L2PLUS
+   TBL_IPSG_S_MAC               DIR_L2                  switch                  L2PLUS
+   TBL_IPSG_FIB                 DIR_L2                  switch                  L2PLUS
+   TBL_BRG_GLOBAL               DIR_L2                  switch                  L2PLUS
+   TBL_MSTP_PORT                DIR_L2                  switch                  L2PLUS
+   TBL_MSTI_PORT                DIR_L2                  switch                  L2PLUS
+   TBL_MSTP_INSTANCE            DIR_L2                  switch                  L2PLUS
+   TBL_MSTP_GLOBAL              DIR_L2                  switch                  L2PLUS
+   TBL_LLDP_GLOBAL              DIR_L2                  switch                  L2PLUS
+   TBL_LLDP_IF                  DIR_L2                  switch                  L2PLUS
+   TBL_MLAG                     DIR_L2                  switch                  L2PLUS
+   TBL_MLAG_PEER                DIR_L2                  switch                  L2PLUS
+   TBL_MLAG_PORT                DIR_L2                  switch                  L2PLUS
+   TBL_ISOLATION                DIR_L2                  switch                  L2PLUS
+   TBL_ROUTE_GLOBAL             DIR_L3                  routed                  L2PLUS
+   TBL_BGP		             	DIR_L3                  routed                  L2PLUS
+   TBL_BGP_NETWORK              DIR_L3                  routed                  L2PLUS
+   TBL_BGP_NEIGHBOR             DIR_L3                  routed                  L2PLUS
+   TBL_OSPF             	DIR_L3                  routed                  L2PLUS
+   TBL_OSPF6             	DIR_L3                  routed                  L2PLUS
+   TBL_OSPF6_INTERFACE             	DIR_L3                  routed                  L2PLUS
+   TBL_OSPF_NETWORK             DIR_L3                  routed                  L2PLUS
+   TBL_OSPF_AREA_AUTH           DIR_L3                  routed                  L2PLUS
+   TBL_OSPF_AREA_RANGE          DIR_L3                  routed                  L2PLUS
+   TBL_OSPF6_AREA_RANGE          DIR_L3                  routed                  L2PLUS
+   TBL_IPROUTE_NODE             DIR_L3                  routed                  L2PLUS
+   TBL_IPROUTE_NODE_ADD_FAIL             DIR_L3                  routed                  L2PLUS
+   TBL_IPROUTE_NODE_ADD_FAIL_COUNT             DIR_L3                  routed                  L2PLUS
+   TBL_STATIC_ROUTE_CFG         DIR_L3                  routed                  L2PLUS
+   TBL_STATIC_RT_CNT            DIR_L3                  routed                  L2PLUS
+   TBL_ARP_FIB                  DIR_L3                  routed                  L2PLUS
+   TBL_ARP                      DIR_L3                  routed                  L2PLUS
+   TBL_NEXTHOP                  DIR_L3                  routed                  L2PLUS
+   TBL_NEXTHOP_GROUP            DIR_L3                  routed                  L2PLUS   
+   TBL_NEXTHOP_GROUP_ROUTED            DIR_L3                  routed                  L2PLUS   
+   TBL_FEA_NEXTHOP              DIR_SYS                 fea                     L2PLUS
+   TBL_MRT                      DIR_L3                  routed                  ALL
+   TBL_IPMC_GLOBAL              DIR_L3                  routed                  ALL
+   TBL_IPMC_INTF                DIR_L3                  routed                  ALL
+   TBL_PIM_STATIC_RP            DIR_L3                  routed                  ALL
+   TBL_SYS_GLOBAL               DIR_SYS                 switch                  ALL
+   TBL_LAG_GLOBAL               DIR_SYS                 switch                  ALL
+   TBL_ECMP_GLOBAL              DIR_SYS                 routed                  ALL
+   TBL_RR_PREFIX                DIR_SYS                 routed                  ALL
+   TBL_MEM_SUMMARY              DIR_SYS                 appcfg                  ALL
+   TBL_CPU_MEM_HISTORY          DIR_SYS                 appcfg                  ALL
+   TBL_CHSM_DEBUG               DIR_DEBUG               chsm                    ALL
+   TBL_SWITCH_DEBUG             DIR_DEBUG               switch                  ALL
+   TBL_ROUTE_DEBUG              DIR_DEBUG               routed                  ALL
+   TBL_SSM_DEBUG                DIR_DEBUG               ssm                     ALL
+   TBL_PTP_DEBUG                DIR_DEBUG               ptp                     ALL
+   TBL_QUAGGA_DEBUG             DIR_DEBUG               routed                  ALL
+   TBL_LSRV_DEBUG               DIR_DEBUG               fea                     ALL
+   TBL_HSRV_DEBUG               DIR_DEBUG               fea                     ALL
+   TBL_APP_DEBUG                DIR_DEBUG               appcfg                  ALL
+   TBL_OPENFLOW_DEBUG	  DIR_DEBUG               openflow            ALL
+   TBL_RIF                      DIR_SYS                 fea                     ALL
+   TBL_FEA_LAG                  DIR_SYS                 fea                     ALL
+   TBL_FEA_GLOBAL               DIR_SYS                 fea                     ALL
+   TBL_FEA_ACL_TABLE            DIR_L2                  fea                     ALL
+   TBL_FEA_ACL                  DIR_L2                  fea                     ALL
+   TBL_FEA_FDB                  DIR_L2                  fea                     L2PLUS
+   TBL_FEA_BRG_IF               DIR_L2                  fea                     L2PLUS
+   TBL_ACL_WORM_FILTER          DIR_L2                  switch                  ALL
+   TBL_ACL_CONFIG               DIR_L2                  switch                  ALL
+   TBL_ACE_CONFIG               DIR_L2                  switch                  ALL
+   TBL_ACL_ENTRY                DIR_L2                  switch                  ALL
+   TBL_ACL_ENTRY_ACTION         DIR_L2                  switch                  ALL
+   TBL_ACL_NEXTHOP_GROUP        DIR_L2                  switch                  ALL
+   TBL_ACL_NEXTHOP              DIR_L2                  switch                  ALL
+   TBL_TIME_RANGE               DIR_ACL                 switch                  ALL
+   TBL_SSH_CFG                  DIR_APP                 appcfg                  ALL
+   TBL_SNMP_CFG                 DIR_APP                 appcfg                  ALL
+   TBL_SNMP_VIEW                DIR_APP                 appcfg                  ALL
+   TBL_SNMP_COMMUNITY           DIR_APP                 appcfg                  ALL
+   TBL_SNMP_CONTEXT             DIR_APP                 appcfg                  ALL
+   TBL_SNMP_USM_USER            DIR_APP                 appcfg                  ALL
+   TBL_SNMP_GROUP_USM           DIR_APP                 appcfg                  ALL
+   TBL_SNMP_ACCESS_USM          DIR_APP                 appcfg                  ALL
+   TBL_SNMP_NOTIFY              DIR_APP                 appcfg                  ALL
+   TBL_SNMP_TARGET_ADDR         DIR_APP                 appcfg                  ALL
+   TBL_SNMP_TARGET_PARAMS       DIR_APP                 appcfg                  ALL
+   TBL_SNMP_TRAP                DIR_APP                 appcfg                  ALL
+   TBL_SNMP_INFORM              DIR_APP                 appcfg                  ALL
+   TBL_SNMP_TRAP_MSG            DIR_APP                 appcfg                  ALL
+   TBL_RMON_EVENT               DIR_APP                 appcfg                  ALL
+   TBL_RMON_ALARM               DIR_APP                 appcfg                  ALL
+   TBL_RMON_ETHER_STATS         DIR_APP                 appcfg                  ALL
+   TBL_RMON_HISTORY             DIR_APP                 appcfg                  ALL
+   TBL_RMON_STATS_HISTORY       DIR_APP                 appcfg                  ALL   
+   TBL_SYSLOG_CFG               DIR_APP                 appcfg                  ALL
+   TBL_NTP_SERVER               DIR_APP                 appcfg                  ALL
+   TBL_NTP_ACE                  DIR_APP                 appcfg                  ALL
+   TBL_NTP_KEY                  DIR_APP                 appcfg                  ALL
+   TBL_NTP_CFG                  DIR_APP                 appcfg                  ALL
+   TBL_NTP_IF                   DIR_APP                 appcfg                  ALL
+   TBL_NTP_SYNCSTATUS           DIR_APP                 appcfg                  ALL
+   TBL_STATIC_DNS               DIR_APP                 appcfg                  ALL
+   TBL_DYNAMIC_DNS_DOMAIN       DIR_APP                 appcfg                  ALL
+   TBL_DYNAMIC_DNS_SERVER       DIR_APP                 appcfg                  ALL
+   TBL_QOS_DOMAIN               DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_MPLS_DOMAIN          DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_POLICER_RES          DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_POLICER_ACTION_PROFILE  DIR_QOS              switch                  L2PLUS
+   TBL_QOS_POLICER_PROFILE      DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_DROP_PROFILE         DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_QUEUE_SHAPE_PROFILE  DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_PORT_SHAPE_PROFILE   DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_QUEUE_SMART_BUFFER   DIR_QOS                 switch                  L2PLUS
+   TBL_QOS_GLOBAL               DIR_QOS                 switch                  L2PLUS
+   TBL_MIRROR                   DIR_SYS                 switch                  L2PLUS
+   TBL_MIRROR_MAC_ESCAPE        DIR_SYS                 switch                  L2PLUS
+   TBL_TAP_GROUP_INGRESS        DIR_TAP                 switch                  TAP
+   TBL_TAP_GROUP_INGRESS_FLOW   DIR_TAP                 switch                  TAP
+   TBL_TAP_GROUP_EGRESS         DIR_TAP                 switch                  TAP
+   TBL_TAP_GROUP                DIR_TAP                 switch                  TAP
+   TBL_TAP_FIVE_TUPLE           DIR_TAP                 fea                     TAP
+   TBL_TAP_DPI_GLOBAL           DIR_TAP                 fea                     TAP
+   TBL_USER                     DIR_APP                 appcfg                  ALL
+   TBL_LOGIN_RECORD          	DIR_APP                 appcfg                  ALL
+   TBL_LOGIN_SECURITY_GLB           DIR_APP                 appcfg                  ALL
+   TBL_VTY                      DIR_APP                 appcfg                  ALL
+   TBL_CONSOLE                  DIR_APP                 appcfg                  ALL
+   TBL_AUTHEN                   DIR_APP                 appcfg                  ALL
+   TBL_LOGIN                    DIR_APP                 appcfg                  ALL
+   TBL_RSA                      DIR_APP                 appcfg                  ALL
+   TBL_OPENFLOW                 DIR_OPENFLOW            openflow                ALL
+   TBL_CPU_TRAFFIC              DIR_QOS                 switch                  ALL
+   TBL_CPU_TRAFFIC_GROUP        DIR_QOS                 switch                  ALL
+   TBL_CPU_UTILIZATION          DIR_APP                 appcfg                  ALL
+   TBL_CPU_LIMIT                DIR_APP                 appcfg                  ALL
+   TBL_DHCRELAY                 DIR_DHCP                dhcrelay                ALL
+   TBL_DHCSRVGRP                DIR_DHCP                dhcrelay                ALL
+   TBL_DHCP_DEBUG               DIR_DEBUG               dhcrelay                ALL
+   TBL_DHCLIENT                 DIR_DHCP                dhclient                ALL  
+   TBL_DHCSNOOPING              DIR_DHCP                dhcsnooping             ALL
+   TBL_DHCBINDING               DIR_DHCP                dhcsnooping             ALL
+   TBL_IPTABLES_PREVENT         DIR_SYS                 switch                  ALL
+   TBL_ERRDISABLE               DIR_SYS                 switch                  ALL
+   TBL_NS_PORT_FORWARDING       DIR_SYS                 switch                  ALL
+   TBL_LOG_GLOBAL               DIR_SYS                 switch                  ALL
+   TBL_LOG                      DIR_SYS                 cds                     ALL
+   TBL_SYS_LOAD                 DIR_SYS                 switch                  ALL
+   TBL_CEM                      DIR_APP                 appcfg                  ALL
+   TBL_CLOCK                    DIR_APP                 appcfg                  ALL
+   TBL_TAG_SUMMER_CLOCK         DIR_APP                 appcfg                  ALL
+   TBL_PORT_STATS               DIR_SYS                 fea                     ALL
+   TBL_VLAN_STATS               DIR_SYS                 fea                     ALL
+   TBL_PORT_STATS_RATE          DIR_SYS                 switch                  ALL
+   TBL_ACLQOS_IF                DIR_CDB                 switch                  ALL
+   TBL_L2_ACTION                DIR_ACTION              switch                  L2PLUS
+   TBL_FEA_QOS_DROP_PROFILE     DIR_SYS                 fea                     ALL
+   TBL_FEA_QOS_DOMAIN           DIR_SYS                 fea                     ALL
+   TBL_FEA_G8032_RING			DIR_L2					fea						ALL
+    TBL_FEA_G8032_RING_MC_GROUP			DIR_L2					fea						ALL
+   TBL_FEA_QOS_QUEUE_SHAPE_PROFILE  DIR_SYS             fea                     ALL
+   TBL_FEA_QOS_PORT_SHAPE_PROFILE   DIR_SYS             fea                     ALL
+   TBL_FEA_PORT_POLICER_APPLY   DIR_SYS                 fea                     ALL
+   TBL_ACLQOS_IF_STATS          DIR_SYS                 fea                     ALL
+   TBL_VERSION                  DIR_SYS                 chsm                    ALL
+   TBL_MANAGE_IF                DIR_SYS                 chsm                    ALL
+   TBL_BOOTIMAGE                DIR_SYS                 chsm                    ALL
+   TBL_CHASSIS                  DIR_SYS                 chsm                    ALL
+   TBL_IFNAME_INFO              DIR_SYS                 chsm                    ALL
+   TBL_CARD                     DIR_SYS                 chsm                    ALL
+   TBL_PORT                     DIR_SYS                 chsm                    ALL
+   TBL_FIBER                    DIR_SYS                 chsm                    ALL
+   TBL_SYS_SPEC                 DIR_SYS                 chsm                    ALL
+   TBL_FAN                      DIR_SYS                 chsm                    ALL
+   TBL_PSU                      DIR_SYS                 chsm                    ALL
+   TBL_LED                      DIR_SYS                 chsm                    ALL
+   TBL_SENSOR                   DIR_SYS                 chsm                    ALL
+   TBL_VCM                   DIR_SYS                 chsm                    ALL
+   TBL_POE                   DIR_SYS                 chsm                    ALL
+   TBL_REBOOT_INFO              DIR_SYS                 chsm                    ALL
+   TBL_ERRDISABLE_FLAP          DIR_SYS                 switch                  ALL
+   TBL_OPM_GLOBAL               DIR_L2                  opm                     ALL
+   TBL_ERPS_RING                DIR_L2                  opm                     L2PLUS
+   TBL_ERPS_DOMAIN              DIR_L2                  opm                     L2PLUS
+   TBL_OPM_DEBUG                DIR_DEBUG               opm                     ALL
+   TBL_POLICY_MAP_CONFIG        DIR_L2                  switch                  ALL
+   TBL_CLASS_MAP_CONFIG         DIR_L2                  switch                  ALL
+   TBL_CLASS_IN_POLICY_CONFIG   DIR_L2                  switch                  ALL
+   TBL_ACL_IN_CLASS_CONFIG      DIR_L2                  switch                  ALL
+   TBL_CLASS_MAP_ACTION_CONFIG  DIR_L2                  switch                  ALL
+   TBL_FEA_ACL_POLICY_ACTION    DIR_L2                  fea                     ALL
+   TBL_IGSP_GLOBAL              DIR_L2                  switch                  L2PLUS
+   TBL_IGSP_INTF                DIR_L2                  switch                  L2PLUS
+   TBL_IGSP_GROUP               DIR_L2                  switch                  L2PLUS
+   TBL_AUTH_CFG                 DIR_APP                 authd                   ALL
+   TBL_AUTH_SERVER              DIR_APP                 authd                   ALL
+   TBL_AUTH_SESSION             DIR_APP                 authd                   ALL
+   TBL_AUTHD_DEBUG              DIR_DEBUG               authd                   ALL
+   TBL_DOT1X_GLOBAL             DIR_L2                  authd                   ALL
+   TBL_DOT1X_PORT               DIR_L2                  authd                   ALL
+   TBL_DOT1X_RADIUS             DIR_L2                  authd                   ALL
+   TBL_DOT1X_MAC                DIR_L2                  authd                   ALL
+   TBL_ENABLE                   DIR_SYS                 appcfg                  ALL
+   TBL_CHIP                     DIR_SYS                 chsm                    ALL
+   TBL_CLEAR_ACL_POLICY         DIR_L2                  switch                  ALL
+   TBL_AUTHOR                   DIR_APP                 appcfg                  ALL
+   TBL_ACCOUNT                  DIR_APP                 appcfg                  ALL
+   TBL_ACCOUNTCMD               DIR_APP                 appcfg                  ALL
+   TBL_VLANCLASS_RULE           DIR_L2                  switch                  ALL
+   TBL_VLANCLASS_GROUP          DIR_L2                  switch                  ALL
+   TBL_ACL_L4_PORT_RANGE        DIR_ACL                 switch                  ALL
+   TBL_ACL_UDF_GROUP            DIR_ACL                 switch                  ALL
+   TBL_ACL_UDF_ENTRY            DIR_ACL                 switch                  ALL
+   TBL_FEA_PCAP                 DIR_DEBUG               fea                     ALL
+   TBL_CONTROLLER               DIR_SYS                 fea                     ALL
+   TBL_CPU_PACKETS              DIR_SYS                 fea                     ALL
+   TBL_NS_ROUTE                 DIR_SYS                 switch                  ALL
+   TBL_NS_ROUTE_IP              DIR_SYS                 switch                  ALL
+   TBL_OPENFLOW_INTERFACE       DIR_CDB                 switch                  ALL
+   TBL_OPENFLOW_MANAGER         DIR_OPENFLOW            openflow                ALL
+   TBL_PTP_GLOBAL               DIR_PTP                 ptp                     ALL
+   TBL_PTP_PORT                 DIR_PTP                 ptp                     ALL
+   TBL_PTP_FOREIGN              DIR_PTP                 ptp                     ALL
+   TBL_PTP_RESIDENCE_TIME_CACHE              DIR_PTP                 ptp                     ALL
+   TBL_FEA_PTP_GLOBAL              DIR_PTP                 fea                     ALL
+   TBL_FEA_PTP_TS              DIR_PTP                 fea                     ALL
+   TBL_FEA_TIME                 DIR_PTP                 fea                     ALL
+   TBL_BHM_GLOBAL               DIR_SYS                 bhm                     ALL
+   TBL_BHM_MODULE               DIR_SYS                 bhm                     ALL
+   TBL_OPENFLOW_TUNNEL_INTERFACE       DIR_CDB                 switch                  ALL
+   TBL_OPENFLOW_TUNNEL_LOCAL_IP_CNT       DIR_CDB                 switch                  ALL
+   TBL_INBAND_SNAT              DIR_SYS                 switch                  ALL
+   TBL_ARPINSP             	    DIR_L3                  routed                  L2PLUS
+   TBL_ARPACL_CONFIG 			DIR_L3                  routed                  L2PLUS
+   TBL_ARPACE_CONFIG 			DIR_L3                  routed                  L2PLUS
+   TBL_COPP_CFG                 DIR_SYS                 switch                  ALL
+   TBL_FEA_COPP_TRAP_GROUP      DIR_SYS                 fea                     ALL
+   TBL_SFLOW_GLOBAL             DIR_L2                  switch                  ALL
+   TBL_SFLOW_COLLECTOR          DIR_L2                  switch                  ALL
+   TBL_SFLOW_COUNTER_PORT       DIR_L2                  switch                  ALL
+   TBL_VRRP_GLOBAL              DIR_L3                  routed                  ALL
+   TBL_VRRP_VMAC                DIR_L3                  routed                  ALL
+   TBL_VRRP_VIP                 DIR_L3                  routed                  ALL
+   TBL_VRRP_SESSION             DIR_L3                  routed                  ALL
+   TBL_SSM_GLOBAL				DIR_SSM					ssm						ALL
+   TBL_SSM_PORT					DIR_SSM					ssm						ALL
+   TBL_IPSLA_GLOBAL             DIR_L3                  routed                  ALL
+   TBL_IPSLA_ENTRY              DIR_L3                  routed                  ALL
+   TBL_IPSLA_PACKET_STATS       DIR_L3                  routed                  ALL
+   TBL_IPSLA_TEST_STATS         DIR_L3                  routed                  ALL
+   TBL_TRACK_GLOBAL             DIR_L3                  routed                  ALL
+   TBL_TRACK_OBJECT             DIR_L3                  routed                  ALL
+   TBL_CONTROLLER_ATTR          DIR_OPENFLOW            openflow                ALL
+   TBL_OAM_SESSION                 DIR_OPENFLOW            openflow                ALL
+   TBL_OAM_SESSION_UPLOAD                 DIR_OPM            opm                ALL
+   TBL_LSP_APS_GROUP              DIR_OPENFLOW            openflow                ALL
+   TBL_PW_APS_GROUP              DIR_OPENFLOW            openflow                ALL
+   TBL_LSP_PE                           DIR_OPENFLOW            openflow                ALL
+   TBL_LSP_P                             DIR_OPENFLOW            openflow                ALL
+   TBL_PW_TPE                          DIR_OPENFLOW            openflow                ALL
+   TBL_SECTION_OAM                 DIR_OPENFLOW            openflow                ALL
+   TBL_OAM_FLOW_INFO             DIR_OPENFLOW            openflow                ALL
+   TBL_TPOAM_GLOBAL             DIR_OPM				 opm					ALL
+   TBL_TPOAM_EXEC_GLOBAL        DIR_OPM				 opm					ALL
+   TBL_APS_GROUP_INFO           DIR_OPM				 opm					ALL
+   TBL_OAM_INLABEL_INFO        DIR_OPENFLOW            openflow                  ALL
+   TBL_OAM_MPLS_APS_CHECK    DIR_OPENFLOW        openflow                  ALL
+   TBL_VLAN_MAPPING_TABLE      DIR_L2                  switch                   ALL
+   TBL_VLAN_MAPPING_ENTRY      DIR_L2                  switch                   ALL
+   TBL_EGRESS_MAPPING_ENTRY    DIR_L2                  switch                   ALL
+   TBL_VLAN_GROUP              DIR_L2                  switch                   ALL
+   TBL_EVC_ENTRY               DIR_L2                  switch                   ALL   
+   TBL_MAPPED_VLAN_INFO        DIR_L2                  switch                   ALL   
+   TBL_L2_PROTOCOL      	   DIR_L2                  switch                   ALL  
+   TBL_ND_FIB                     DIR_L3                  routed                  L2PLUS
+   TBL_ND_STATS                 DIR_L3                  routed                  L2PLUS
+   TBL_CPU_MIRROR_GLOBAL        DIR_L2                  fea                     ALL
+   TBL_TAP_SERVER               DIR_TAP                 fea                     ALL
+   TBL_DHCPV6_DEBUG               DIR_DEBUG               dhclient6                ALL
+   TBL_L2EDIT                            DIR_OPENFLOW                  openflow                  L2PLUS
+   TBL_HASH_FIELD_PROFILE       DIR_L2                  switch                  L2PLUS
+   TBL_HASH_VALUE_PROFILE       DIR_L2                  switch					L2PLUS
+   TBL_HASH_VALUE_GLOBAL        DIR_L2                  switch                  L2PLUS
+   TBL_NAT_GLOBAL               DIR_L3                 routed                   ALL
+   TBL_NAT_POOL                 DIR_L3                 routed                   ALL
+   TBL_NAT_RULE                 DIR_L3                 routed                   ALL
+   TBL_NAT_SESSION              DIR_L3                 routed                   ALL
+   TBL_NAT_SESSION_LIMIT        DIR_L3                 routed                   ALL
+   TBL_NAT_PROXY_ARP            DIR_L3                 routed                   ALL
+   TBL_NAT_RTIF_INSIDE          DIR_L3                 routed                   ALL
+   TBL_NAT_RTIF_OUTSIDE         DIR_L3                 routed                   ALL
+   TBL_G8032_RING               DIR_L2                  opm                     L2PLUS
+   TBL_CFM_GLOBAL               DIR_L2                  opm                     ALL
+   TBL_CFM_MD                      DIR_L2                  opm                     ALL
+   TBL_CFM_MA                      DIR_L2                  opm                     ALL
+   TBL_CFM_MAID                   DIR_L2                  opm                     ALL
+   TBL_CFM_LMEP                   DIR_L2                  opm                     ALL
+   TBL_CFM_RMEP                   DIR_L2                  opm                     ALL
+   TBL_PIM_SM                   DIR_L3                  routed                  L2PLUS
+   TBL_PIM_SM_BSR               DIR_L3                  routed                  L2PLUS
+   TBL_PIM_SM_RP                DIR_L3                  routed                  L2PLUS
+   TBL_PIM_SM_RP_GP             DIR_L3                  routed                  L2PLUS
+   TBL_PIM_DM                   DIR_L3                  routed                  L2PLUS
+   TBL_IGMP_INTF                DIR_L3                  routed                  L2PLUS	
+   TBL_RIP             			DIR_L3                  routed                  L2PLUS
+   TBL_RIPNG             		DIR_L3                  routed                  L2PLUS
+   TBL_RIP_NETWORK            	DIR_L3                  routed                  L2PLUS 
+   TBL_RIPNG_NETWORK            DIR_L3                  routed                  L2PLUS 
+   TBL_RIP_NEIGHBOR          	DIR_L3                  routed                  L2PLUS 
+   TBL_RIP_PASSIVE_IF			DIR_L3                  routed                  L2PLUS
+   TBL_RIPNG_PASSIVE_IF			DIR_L3                  routed                  L2PLUS
+   TBL_OSPF_AREA_STUB           DIR_L3                  routed                  L2PLUS
+   TBL_OSPF6_AREA_STUB          DIR_L3                  routed                  L2PLUS
+   TBL_OSPF_AREA_NSSA           DIR_L3                  routed                  L2PLUS
+   TBL_OSPF_AREA_VLINK          DIR_L3                  routed                  L2PLUS
+
+   
+/* DS                           Parent                  Product */
+   DS_BRGIF                     TBL_INTERFACE           L2PLUS
+   DS_ACLQOS_IF                 TBL_INTERFACE           L2PLUS
+   DS_LAG                       TBL_INTERFACE           ALL
+   DS_LACP                      TBL_INTERFACE           ALL
+   DS_CONNECTED                 TBL_ROUTE_IF            L2PLUS
+   DS_CONNECTED_V6                 TBL_ROUTE_IF            L2PLUS
+   DS_STATIC_ROUTE_DUP_IPV4_NH   TBL_ARP         ALL
+   DS_OSPF_AUTH              	TBL_ROUTE_IF            L2PLUS
+   DS_STORM_CONTROL             TBL_INTERFACE           L2PLUS
+   DS_OPENFLOW_IF               TBL_INTERFACE           OPENFLOW
+   DS_DHCLIENT_IF               TBL_INTERFACE           ALL
+   DS_PVLAN_COMMUNITY           TBL_PVLAN               L2PLUS
+   DS_CIRCUIT_ID                TBL_INTERFACE           ALL
+   DS_FLUSH_FDB                 TBL_L2_ACTION           ALL
+   DS_LLDP_NEIGHBOUR            TBL_LLDP_IF             L2PLUS
+   DS_MROUTER_PORT              TBL_IGSP_INTF           L2PLUS
+   DS_QUERY                     TBL_IGSP_INTF           L2PLUS
+   DS_L2PROTOCOL                TBL_INTERFACE           L2PLUS
+   DS_ND_PREFIX                  TBL_ROUTE_IF             L2PLUS
+   DS_JOIN_GROUP                TBL_IGSP_INTF           ALL
+   DS_CFM_ERROR                 TBL_CFM_MD              ALL
+
+/* ACT                          Parent                  Destination PM          Product */
+   ACT_SHOW_COMMON              DIR_SYS                 all                     ALL
+   ACT_SET_SOCKET               DIR_SYS                 all                     ALL
+   ACT_COPY_FILE                DIR_SYS                 ctl                     ALL
+   ACT_FLUSH_FDB                DIR_L2                  switch                  ALL
+   ACT_SHOW_VLAN                DIR_L2                  switch                  ALL
+   ACT_SHOW_FDB                 DIR_L2                  fea                     L2PLUS
+   ACT_SHOW_HARDWARE_FDB        DIR_L2                  fea                     L2PLUS
+   ACT_FLUSH_MACFILTER          DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_ACL                 DIR_L2                  switch                  ALL
+   ACT_SHOW_ACL_UDF             DIR_L2                  switch                  ALL
+   ACT_SHOW_TAP                 DIR_TAP                 switch                  TAP
+   ACT_SHOW_TAP_TUPLE5          DIR_TAP                 fea                     TAP
+   ACT_CLEAR_TAP_TUPLE5         DIR_TAP                 fea                     TAP
+   ACT_CLEAR_TAP_DPI_STATS      DIR_TAP                 fea                     TAP
+   ACT_SHOW_TIMERANGE_INFO      DIR_L2                  switch                  ALL
+   ACT_SHOW_ACL_COUNTER         DIR_L2                  fea                     ALL
+   ACT_CLEAR_ACL_COUNTER        DIR_L2                  fea                     ALL
+   ACT_SHOW_FEA_COPP_TRAP_GROUP_COUNTER     DIR_SYS     fea                     ALL
+   ACT_CLEAR_FEA_COPP_TRAP_GROUP_COUNTER    DIR_SYS     fea                     ALL
+   ACT_SHOW_COPP_CLASS_COUNTER     DIR_SYS              fea                     ALL
+   ACT_CLEAR_COPP_CLASS_COUNTER    DIR_SYS              fea                     ALL
+   ACT_SHOW_ACL_WORM_FILTER_COUNTER     DIR_L2          fea                     ALL
+   ACT_CLEAR_ACL_WORM_FILTER_COUNTER    DIR_L2          fea                     ALL
+   ACT_SHOW_TAP_FLOW_COUNTER    DIR_TAP                 fea                     TAP
+   ACT_CLEAR_TAP_FLOW_COUNTER   DIR_TAP                 fea                     TAP
+   ACT_SHOW_TAP_COUNTER         DIR_TAP                 fea                     TAP
+   ACT_SHOW_STM                 DIR_SYS                 fea                     ALL
+   ACT_FLUSH_PSFDB              DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_PSFDB               DIR_L2                  fea                     L2PLUS
+   ACT_CLEAR_LACP_COUNTERS      DIR_L2                  switch                  ALL
+   ACT_CLEAR_STP                DIR_L2                  switch                  ALL
+   ACT_SHOW_MLAG                DIR_L2                  switch                  L2PLUS
+   ACT_CLEAR_MLAG_COUNTERS      DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_ECMP                DIR_SYS                 routed                  ALL
+   ACT_FLUSH_ARP                DIR_L3                  routed                  L2PLUS
+   ACT_IF_ADDR_CFG_CHECK        DIR_L3                  routed                  L2PLUS
+   ACT_RT_STATIC_MAX_CHECK      DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_ARP                 DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_IP_ROUTE         DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_IPSG                DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_IP_IF_BRIEF         DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_IPV6_IF_BRIEF         DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_IPV6_ROUTE         DIR_L3                  routed                  L2PLUS
+   ACT_CLEAR_IPV6_ROUTE_STATIC         DIR_L3                  routed                  L2PLUS
+   ACT_PING_IPV6         DIR_L3                  routed                  L2PLUS
+   ACT_PING_MGMT_IPV6          DIR_L3                  routed                  L2PLUS
+   ACT_TRACEROUTE  DIR_L3                  routed                  L2PLUS
+   ACT_TRACEROUTE_IPV6 DIR_L3                  routed                  L2PLUS
+   ACT_TRACEROUTE_MGMT_IPV6 DIR_L3                  routed                  L2PLUS
+   ACT_TFTP_CHECK         DIR_L3                  routed                  L2PLUS
+   ACT_FTP_CHECK         DIR_L3                  routed                  L2PLUS
+   ACT_SSH_CHECK         DIR_L3                  routed                  L2PLUS
+   ACT_TELNET_CHECK         DIR_L3                  routed                  L2PLUS
+   ACT_FLUSH_ARP_STATISTICS     DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_ADD_FAILED_FIB      DIR_L3                  fea                     L2PLUS
+   ACT_SHOW_HSRV                DIR_DEBUG               fea                     ALL
+   ACT_CLEAR_HSRV               DIR_DEBUG               fea                     ALL
+   ACT_DUMP_CDB                 DIR_DEBUG               all                     ALL
+   ACT_DUMP_CCS_SUBSCRIBER      DIR_DEBUG               ccs                     ALL
+   ACT_DUMP_CDS_SUBSCRIBER      DIR_DEBUG               cds                     ALL
+   ACT_UPDATE_IF_STATS          DIR_SYS                 fea                     ALL
+   ACT_CLEAR_IF_STATS_RATE      DIR_SYS                 switch                  ALL
+   ACT_SHOW_BANDWIDTH_USAGE     DIR_SYS                 switch                  ALL
+   ACT_TERMINAL_MONITOR         DIR_SYS                 appcfg                  L2PLUS
+   ACT_CLEAR_QOS_STATS          DIR_SYS                 fea                     L2PLUS
+   ACT_GET_QOS_QUEUEMAP         DIR_SYS                 switch                  L2PLUS
+   ACT_SHOW_RESOURCE            DIR_SYS                 all                     ALL
+   ACT_CLEAR_OPENFLOW           DIR_OPENFLOW            openflow                ALL
+   ACT_SHOW_OPENFLOW            DIR_OPENFLOW            openflow                ALL
+   ACT_SYNC_OPENFLOW_DB         DIR_OPENFLOW            openflow                ALL
+   ACT_OPENFLOW_SET_CONTROLLER  DIR_SYS                 switch                  ALL
+   ACT_CLOCK                    DIR_SYS                 all                     ALL
+   ACT_UPDATE_EPLD              DIR_SYS                 chsm                    ALL
+   ACT_UPDATE_BOOTROM           DIR_SYS                 chsm                    ALL
+   ACT_GENERATE_OEM_FILE        DIR_SYS                 chsm                    ALL
+   ACT_UPDATE_OEM_FILE          DIR_SYS                 chsm                    ALL
+   ACT_BOOTUPDIAG        DIR_SYS                 chsm                    ALL
+   ACT_UPDATE_PHY_FIRMWARE	DIR_SYS                 chsm                    ALL
+   ACT_DHCSNOOPING_DB           DIR_DHCP                dhcsnooping             ALL
+   ACT_ERRDISABLE_SHOW          DIR_SYS                 switch                  L2PLUS
+   ACT_WEB_LOGIN                DIR_SYS                 appcfg                  ALL
+   ACT_SHOW_LOGIN_SECURITY      DIR_SYS                 appcfg                  ALL
+   ACT_REBOOT                   DIR_SYS                 bhm                     ALL
+   ACT_SHOW_SCHEDULE_REBOOT     DIR_SYS                 chsm                    ALL
+   ACT_SEND_TRAP                DIR_SYS                 appcfg                  ALL
+   ACT_UPDATE_PORT_CONNECTION   DIR_SYS                 chsm                    ALL
+   ACT_UPDATE_OEM_INFO          DIR_SYS                 fea                     ALL
+   ACT_DUMP_CDB_DS              DIR_DEBUG               ccs                     ALL
+   ACT_SHOW_MIRROR              DIR_SYS                 switch                  ALL
+   ACT_SHOW_MIRROR_MAC_ESCAPE   DIR_SYS                 switch                  ALL
+   ACT_SHOW_ENVIRONMENT         DIR_SYS                 chsm                    ALL
+   ACT_SHOW_PSU_PMBUS_INFO      DIR_SYS                 chsm                    ALL
+   ACT_SHOW_VCM                   DIR_SYS                 chsm                    ALL
+   ACT_SHOW_INTERFACE           DIR_L2                  switch                  ALL
+   ACT_SHOW_POE           DIR_SYS                  chsm                  ALL
+   ACT_SHOW_ISOLATION           DIR_L2                  switch                  ALL
+   ACT_SHOW_PVLAN               DIR_L2                  switch                  ALL
+   ACT_SHOW_PFC                 DIR_L2                  switch                  ALL
+   ACT_PTF_SAI                  DIR_SYS                 fea                     ALL
+   ACT_SHOW_LLDP_LOCAL          DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_LLDP_NEIGHBOR       DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_LLDP_STATISTICS     DIR_L2                  switch                  L2PLUS
+   ACT_CLEAR_LLDP_STATISTICS    DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_ERPS_LIST           DIR_L2                  opm                     L2PLUS
+   ACT_SHOW_ERPS                DIR_L2                  opm                     L2PLUS
+   ACT_CLEAR_ERPS_COUNTERS      DIR_L2                  opm                     L2PLUS
+   ACT_SHOW_ACL_POLICY_COUNTERS DIR_L2                  switch                  ALL
+   ACT_SHOW_IGSP                DIR_L2                  switch                  L2PLUS
+   ACT_CLEAR_IGSP               DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_RADIUS_SERVER       DIR_L2                  authd                   ALL
+   ACT_SHOW_DOT1X               DIR_L2                  authd                   ALL
+   ACT_CLEAR_DOT1X              DIR_L2                  authd                   ALL
+   ACT_SHOW_MACFILTER           DIR_L2                  fea                     L2PLUS
+   ACT_CHANGE_USERNAME          DIR_SYS                 appcfg                  ALL
+   ACT_CHECK_L3IF_EXIST         DIR_L3                  routed                  ALL
+   ACT_CHECK_L3IF_ADDR          DIR_L3                  routed                  ALL
+   ACT_SHOW_VLANCLASS_RULE      DIR_L2                  switch                  ALL
+   ACT_SHOW_VLANCLASS_GROUP     DIR_L2                  switch                  ALL
+   ACT_SHOW_VLANCLASS_IF        DIR_L2                  switch                  ALL
+   ACT_SHOW_MSTP                DIR_L2                  switch                  L2PLUS
+   ACT_SHOW_INST_STATE          DIR_L2                  fea                     ALL
+   ACT_SHOW_HYBRID_STP          DIR_L2                  fea                     ALL
+   ACT_SYNC_SYSTIME             DIR_PTP                 fea                     ALL
+   ACT_SHOW_PROTECTED_VLAN      DIR_OPENFLOW            openflow                ALL
+   ACT_SHOW_MEMORY_THRESHOLD    DIR_SYS                 switch                  ALL
+   ACT_SHOW_CPU_MEM_HISTORY     DIR_SYS                 appcfg                  ALL
+   ACT_SHOW_OPENFLOW_RESOURCE   DIR_OPENFLOW            openflow                ALL
+   ACT_BUILD_CONFIG             DIR_CDB                 ccs                     ALL
+   ACT_SHOW_ARPINSP             DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_ARPACL              DIR_L3                  routed                  L2PLUS
+   ACT_CLEAR_ARPINSP            DIR_L3                  routed                  L2PLUS
+   ACT_SHOW_PTP              DIR_PTP                 ptp                     ALL
+   ACT_SHOW_FEA_PTP              DIR_PTP                 ptp                     ALL
+   ACT_CLEAR_PTP              DIR_PTP                 ptp                     ALL
+   ACT_SHOW_LIC                 DIR_SYS                 ccs                     ALL
+   ACT_SHOW_MIB_STATS           DIR_SYS                 switch                  ALL
+   ACT_SHOW_SFLOW               DIR_L2                  switch                  ALL
+   ACT_CHECK_MGMT_IF_IP         DIR_L3                  routed                  ALL
+   ACT_SHOW_COPP_REASON         DIR_SYS                 switch                  ALL
+   ACT_SHOW_DHCLIENT            DIR_DHCP                dhclient                ALL
+   ACT_SHOW_COMBO               DIR_SYS                 fea                     ALL
+   ACT_CARRIER_BLINK_DOWN       DIR_SYS                 fea                     ALL
+   ACT_SHOW_MONITOR             DIR_L2                  switch                   L2PLUS
+   ACT_SHOW_POLICY_MAP          DIR_L2                  switch                  ALL
+   ACT_SHOW_CLASS_MAP           DIR_L2                  switch                  ALL
+   ACT_SHOW_MANAGEMENT_IF    DIR_SYS                 chsm                    ALL
+   ACT_ACL_IOTIME               DIR_L2                  fea                     ALL
+   ACT_FACTORY_CONFIG         DIR_SYS                 chsm                    ALL
+   ACT_SHOW_VRRP                DIR_L3                  routed                  ALL
+   ACT_L3IF_PRE_DOWN            DIR_L3                  routed                  ALL
+   ACT_SHOW_SSM            		DIR_SSM                 ssm                  	ALL
+   ACT_SHOW_IPSLA               DIR_L3                  routed                  ALL
+   ACT_CLEAR_IPSLA_STATS        DIR_L3                  routed                  ALL
+   ACT_SHOW_TRACK               DIR_L3                  routed                  ALL
+   ACT_SHOW_FIBER               DIR_SYS                 chsm                    ALL
+   ACT_WARMBOOT                 DIR_SYS                 fea                     ALL
+   ACT_SHOW_TPOAM                 DIR_OPM                 opm                     ALL
+   ACT_CLEAR_TPOAM                 DIR_OPM                 opm                     ALL
+   ACT_EXEC_TPOAM                 DIR_OPM                 opm                     ALL
+   ACT_GET_AUTH                 DIR_APP                 appcfg                  ALL
+   ACT_SHOW_RMON_EVENT          DIR_APP                 appcfg                  ALL
+   ACT_SHOW_RMON_ALARM          DIR_APP                 appcfg                  ALL
+   ACT_SHOW_RMON_ETHER_STATS    DIR_APP                 appcfg                  ALL
+   ACT_SHOW_RMON_HISTORY        DIR_APP                 appcfg                  ALL
+   ACT_LINE_ACL_CHECK        DIR_APP                 appcfg                  ALL
+   ACT_SHOW_G8131               DIR_OPM                 opm                  ALL
+   ACT_SHOW_OAM_PACKET_IN_STATS      DIR_OPENFLOW            openflow                ALL
+   ACT_CLEAR_OAM_PACKET_IN_STATS      DIR_OPENFLOW            openflow                ALL
+   ACT_SHOW_OPENFLOW_FLOW_MATCH_INFO    DIR_OPENFLOW            openflow                ALL
+   ACT_SHOW_VLAN_MAPPING_TABLE  DIR_L2                  switch                  ALL
+   ACT_SHOW_EVC_ENTRY           DIR_L2                  switch                  ALL
+   ACT_SHOW_l2_PROTOCOL         DIR_L2                  switch                  ALL
+   ACT_SHOW_DOT1Q_ETHERTYPE     DIR_L2                  switch                  ALL
+   ACT_SHOW_ND                       DIR_L3                  routed                   ALL
+   ACT_CLEAR_ND                       DIR_L3                  routed                   ALL
+   ACT_CHECK_OPENFLOW           DIR_OPENFLOW            ccs                     ALL
+   ACT_CPU_MIRROR               DIR_L2                  fea                     ALL
+   ACT_SHOW_HSRV_TUNNEL                DIR_DEBUG               fea                     ALL
+   ACT_SHOW_TACACS_SERVER       DIR_L2                  authd                   ALL
+   ACT_SHOW_DHCLIENT6            DIR_DHCP                dhclient6                ALL
+   ACT_DHCP_L3IF_PRE_DELETE       DIR_DHCP            dhclient                  ALL
+   ACT_DHCPV6_L3IF_PRE_DELETE   DIR_DHCP            dhclient6                  ALL
+   ACT_DHCP_L3IF_PRE_SHUTDOWN       DIR_DHCP            dhclient                  ALL
+   ACT_DHCPV6_L3IF_PRE_SHUTDOWN   DIR_DHCP            dhclient6                  ALL
+   ACT_SHOW_HASH_FIELD          DIR_L2              switch                  ALL
+   ACT_SHOW_HASH_VALUE          DIR_L2              switch                  ALL
+   ACT_CLEAR_RPCAPI_COUNTER     DIR_SYS               switch                    ALL
+   ACT_SHOW_NAT_SESSION           DIR_L3                routed                   ALL
+   ACT_CLEAR_NAT_SESSION          DIR_L3                routed                   ALL
+   ACT_SHOW_G8032               DIR_L2                 opm                  ALL
+   ACT_UPDATE_SW_VERSION        DIR_SYS                 fea                     ALL
+   ACT_SHOW_CFM_DOMAIN            DIR_L2                  opm                   ALL
+   ACT_SHOW_CFM_CC_CONFIG       DIR_L2                  opm                   ALL
+   ACT_SHOW_CFM_ERRORS            DIR_L2                  opm                   ALL
+   ACT_CLEAR_CFM_ERRORS            DIR_L2                  opm                   ALL
+   ACT_SHOW_CFM_MEP                  DIR_L2                  opm                   ALL
+   ACT_SHOW_CFM                          DIR_L2                  opm                   ALL
+   ACT_SHOW_QUEUE_DROP           DIR_QOS                  switch                   ALL
+   ACT_SHOW_IP_MROUTE           DIR_L3                  routed                  L2PLUS
+    
+   
+/* BAT                          Parent                  Product */
+   BAT_VLANRANGE                DIR_L2                  L2PLUS
+   BAT_INTERFACERANGE           DIR_SYS                 ALL
+   BAT_QOS_DOMAIN_RANGE         DIR_QOS                 L2PLUS
+   BAT_DUMP_CDB_RANGE           DIR_DEBUG               ALL
+   BAT_PURE_OPENFLOW            DIR_OPENFLOW            ALL

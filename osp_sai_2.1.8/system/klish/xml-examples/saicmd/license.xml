@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+LICENSE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show license" help="License">
+		<ACTION>
+		cdbctl read/cdb/sys/show_lic
+		</ACTION>
+	</COMMAND>		
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,191 @@
+HAL-MSG-L2-VLAN DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgPortList,
+    HalMsgIntList
+    FROM HAL-MSG-TYPES  
+
+    HalMsgMirrorCfgSrcItem
+    FROM HAL-MSG-MIRROR
+    
+    HalMsgDefL2BrgName,
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+    
+HalMsgL2VlanAddReq ::= SEQUENCE
+{
+    vid         INTEGER,
+    fid         INTEGER,
+    groupId     INTEGER,
+    bridgeEn    INTEGER,
+    hardwareLearningEn    INTEGER,
+    learningEn  INTEGER
+}
+
+HalMsgL2VlanAddPortReq ::= SEQUENCE
+{
+    port        INTEGER
+}
+
+HalMsgL2VlanUpdateReq ::= SEQUENCE
+{
+    vid         INTEGER,
+    fid         INTEGER,
+    groupId     INTEGER,
+    maxGchipNum INTEGER, 
+    bridgeEn    INTEGER,
+    hardwareLearningEn    INTEGER,
+    vlanAddPortList  SEQUENCE OF HalMsgL2VlanAddPortReq,
+    learningEn  INTEGER,
+    vlanAddAggList  SEQUENCE OF HalMsgL2VlanAddPortReq
+}
+
+HalMsgL2VlanDelReq ::= SEQUENCE
+{
+    vid         INTEGER,
+    fid         INTEGER
+}
+
+HalMsgBrgVlanSetStpidReq ::= SEQUENCE
+{
+    vid         INTEGER,
+    stpId       INTEGER
+}
+
+HalMsgL2VlanSetStateReq ::= SEQUENCE
+{
+    vid         INTEGER,
+    state       INTEGER
+}
+
+HalMsgL2VlanSetFlagsReq ::= SEQUENCE
+{
+    vid         INTEGER,
+    flag        INTEGER
+}
+
+
+HalMsgL2VlanAddVidToPortReq ::= SEQUENCE
+{
+    port              INTEGER,
+    vid               INTEGER,
+    setDefEntry       INTEGER,
+    fid               INTEGER,
+    maxGchipNum       INTEGER, 
+    setVlanStatus     INTEGER, 
+    localMemberBmp    INTEGER
+}
+
+HalMsgL2VlanDeleteVidFromPortReq ::= SEQUENCE
+{
+    port              INTEGER,
+    vid               INTEGER,
+    setDefEntry       INTEGER,
+    fid               INTEGER,
+    maxGchipNum       INTEGER,
+    setVlanStatus     INTEGER, 
+    localMemberBmp    INTEGER
+}
+
+HalMsgL2VlanSetReplaceDscpReq ::= SEQUENCE
+{
+    vid          INTEGER,
+    enable       INTEGER
+}
+
+HalMsgL2VlanSetDhcpExcpTypeReq ::= SEQUENCE
+{
+    vid          INTEGER,
+    type         INTEGER
+}
+
+HalMsgL2VlanSetArpExcpTypeReq ::= SEQUENCE
+{
+    vid          INTEGER,
+    type         INTEGER
+}
+
+HalMsgL2VlanSetLearningEnableReq ::= SEQUENCE
+{
+    vid          INTEGER,
+    enable       INTEGER
+}
+
+HalMsgL2VlanSetBridgeEnableReq ::= SEQUENCE
+{
+    vid          INTEGER,
+    enable       INTEGER
+}
+
+HalMsgPortState ::= SEQUENCE
+{
+    port              INTEGER,
+    setDefEntry       INTEGER,
+    maxGchipNum       INTEGER, 
+    setVlanStatus     INTEGER, 
+    localMemberBmp    INTEGER
+}
+
+HalMsgL2VlanPortSyncReq ::= SEQUENCE
+{
+    vid          INTEGER,
+    fid          INTEGER,
+    port         SEQUENCE OF HalMsgPortState
+}
+
+HalMsgL2VlanProperty ::= SEQUENCE
+{
+    vid          INTEGER,
+    fid          INTEGER,
+    groupId      INTEGER,
+    stpId        INTEGER,
+    flag         INTEGER,
+    dhcpExcpType INTEGER,
+    arpExcpType  INTEGER
+}
+
+HalMsgL2VlanPropertySyncReq ::= SEQUENCE
+{
+    vlanProperty         SEQUENCE OF HalMsgL2VlanProperty
+}
+
+HalMsgL2VlanSetRsvReq ::= SEQUENCE
+{
+    count         INTEGER
+}
+
+HalMsgL2VlanAddPortFailReq ::= SEQUENCE
+{
+    port        INTEGER,
+    fid         INTEGER
+}
+
+HalMsgL2VlanAddPortFailListReq ::= SEQUENCE            
+{        
+    session         INTEGER,                                                      
+    vlanAddPortFailList  SEQUENCE OF HalMsgL2VlanAddPortFailReq  
+}   
+
+HalMsgL2VoiceVlanEnableReq ::= SEQUENCE
+{
+    enable        INTEGER
+}
+
+HalMsgL2VoiceVlanIfEnableReq ::= SEQUENCE
+{
+    port        INTEGER,
+    enable      INTEGER
+}
+
+HalMsgL2VoiceVlanEntrySetReq ::= SEQUENCE
+{
+    entryId     INTEGER,
+    vid         INTEGER,
+    mac         HalMsgDefL2MacAddr,
+    mask        HalMsgDefL2MacAddr,
+    cos         INTEGER
+}
+
+END

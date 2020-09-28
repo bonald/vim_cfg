@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+FDB
+</CTCMODULENAME>	
+
+<VIEW name="Exec">
+
+<!-- Show commands -->
+
+
+    <COMMAND name="show mac-address-table ageing-time" help="Ageing time">
+        <ACTION>
+            cdbctl show/cdb/l2/brg_global/oper_fdb_aging_time
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the show mac-address-table ageing-time privileged EXEC command to display the aging time of all address table instances on all VLANs. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show mac-address-table ageing-time command:  
+    Switch# show mac-address-table ageing-time 
+    MAC address table ageing time is 300 seconds 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table ageing-time
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="show mac-address-table" help="MAC address table">
+        <PARAM name="type" help="Type" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="static" help="Static MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="dynamic" help="Dynamic MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="multicast" help="Multicast MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+        </PARAM>
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+            </PARAM>
+            <PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+            </PARAM>
+            <PARAM name="address" help="MAC" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="mac_addr" help="MAC address" ptype="MAC_ADDR"/>
+            </PARAM>
+        </PARAM>
+		
+        <ACTION>
+            if [ ${part} == "all" ]; then
+                cdbctl show/cdb/l2/show_fdb/${type}
+            elif [ ${part} == "interface" ]; then
+                cdbctl show/cdb/l2/show_fdb/${type}/${part}/${if_id}
+            elif [ ${part} == "vlan" ]; then
+                cdbctl show/cdb/l2/show_fdb/${type}/${part}/${vlan_id}
+            elif [ ${part} == "address" ]; then
+                cdbctl show/cdb/l2/show_fdb/${type}/${part}/${mac_addr}
+			fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the show mac address-table privileged EXEC command to display a specific MAC address table static, dynamic and multicast entry or the MAC address table static, dynamic or multicast entries on a specific interface or VLAN.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+    This is an example of output from the show mac address-table command:  
+    Switch# show mac-address-table   
+                  Mac Address Table
+    ----------------------------------------------
+    (*)  - Security Entry     (M)  - MLAG Entry
+    (MO) - MLAG Output Entry  (MI) - MLAG Input Entry
+    VLAN ID MAC Address      Type         Port    
+    -------+----------------+------------+--------
+    1       0000.0011.1168   static       eth-0-49/1   
+    1       0000.0011.112d   dynamic      eth-0-49/1  
+
+    This is an example of output from the show mac address-table static command: 
+    Switch# show mac-address-table static
+                  Mac Address Table
+    ----------------------------------------------
+    (*)  - Security Entry     (M)  - MLAG Entry
+    (MO) - MLAG Output Entry  (MI) - MLAG Input Entry
+    VLAN ID MAC Address      Type         Port    
+    -------+----------------+------------+--------
+    1       0000.0011.1168   static       eth-0-49/1   
+    
+    This is an example of output from the show mac address-table dynamic command: 
+    Switch# show mac-address-table dynamic
+                  Mac Address Table
+    ----------------------------------------------
+    (*)  - Security Entry     (M)  - MLAG Entry
+    (MO) - MLAG Output Entry  (MI) - MLAG Input Entry
+    VLAN ID MAC Address      Type         Port    
+    -------+----------------+------------+--------
+    1       0000.0011.112d   dynamic      eth-0-49/1 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show mac-address-table count" help="Count of FDB in software">
+        <ACTION>
+            cdbctl show/cdb/l2/show_fdb/count
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the show mac-address-table count privileged EXEC command to display the all static and dynamic entry numbers. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show mac address-table ageing-time command:  
+    Switch# show mac address-table counts 
+    MAC Address Count:
+	(Include MAC security entry)
+	-------------------------------------------
+	Dynamic Address Count  :     1    (Security: 0)
+	Static  Address Count  :     0    (Security: 0)
+	Multicast Address Count:     0    (Security: 0)
+	Total Mac Addresses    :     1    (Security: 0) 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="show mac-address-table add-fdb-fail" help="FDB add in hardware fail">
+        <ACTION>
+            cdbctl show/cdb/l2/show_fdb/add-fdb-fail
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the show mac-address-table add-fdb-fail privileged EXEC command to display the fdb which add in hardware fail. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When fdb add in hardware fail, system will print a log and users can use the show command to display the information of failed fdb.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show mac address-table add-fdb-fail command:  
+    Switch# show mac-address-table add-fdb-fail  
+                      Mac Address Table
+	----------------------------------------------
+	(*)  - Security Entry     (M)  - MLAG Entry
+	(MO) - MLAG Output Entry  (MI) - MLAG Input Entry
+	VLAN ID MAC Address      Type         Port    
+	-------+----------------+------------+--------
+    1       0000.0011.1168   static      eth-0-49/1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="show macfilter" help="Macfilter"/>
+	<COMMAND name="show macfilter address-table" help="Information of macfilter">
+        <ACTION>
+            cdbctl show/cdb/l2/show_macfilter
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the show macfilter address-table privileged EXEC command to display the information of macfilter address table.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The information of macfilter address table include current count, max count, left count of macfilter, and the all mac address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show show macfilter address-table command:  
+    Switch# show macfilter address-table  
+		MAC Filter Address Table     
+	----------------------------------
+	Current count       : 3
+	Max count           : 128
+	Left count          : 125
+	----------------------------------
+	Mac Address:
+	0000.0000.0001  
+	0000.0000.0002  
+	0000.0000.0003   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="clear mac-address-table" help="MAC address table">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="static" help="Static MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="dynamic" help="Dynamic MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+        </PARAM>
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+            </PARAM>
+            <PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+            </PARAM>
+			<PARAM name="address" help="MAC" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="mac" help="MAC address" ptype="MAC_ADDR"/>
+            </PARAM>
+        </PARAM>
+		
+        <ACTION>
+            if [ ${part} == "all" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/fdb/${type}
+            elif [ ${part} == "interface" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/fdb/${type}/${part}/${if_id}
+            elif [ ${part} == "vlan" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/fdb/${type}/${part}/${vlan_id}
+			elif [ ${part} == "address" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/fdb/${type}/${part}/${mac}
+			fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use the clear mac address-table privileged EXEC command on the switch to delete all dynamic(or static) addresses, or all dynamic(or static) addresses on a particular interface, or all dynamic(or static) addresses on a particular VLAN from the MAC address table.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove MAC address of vlan 1 from the dynamic address table:  
+    Switch# clear mac-address-table dynamic vlan 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac-address-table
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="clear macfilter" help="Macfilter"/>
+	<COMMAND name="clear macfilter address-table" help="Macfilter MAC address">
+        <ACTION>
+		cdbctl update/cdb/action/l2_action/flush_fdb/macfilter
+        </ACTION>
+	    
+		<CTCDESCRIPTION>
+Use the clear macfilter address-table to delete the all macfilter address. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete the macfilter address:
+    Switch# clear macfilter address-table  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show macfilter address-table
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="mac-address-table" help="MAC address table">
+        <PARAM name="mac" help="MAC address" ptype="MAC_ADDR"/>
+        <PARAM name="action" help="Action" ptype="SUBCOMMAND" mode="switch">
+        	 <PARAM name="discard" help="Discard datagrams from/to this address" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="forward" help="Forward" ptype="SUBCOMMAND" mode="subcommand" > 
+				<PARAM name="if_id" help="Inteface name" ptype="IF_NAME_EA"/> 
+				<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+				</PARAM>
+			</PARAM>
+        </PARAM>		
+        <ACTION>
+            if [ ${action} == "discard" ]; then
+                cdbctl create/cdb/l2/macfilter/${mac}
+            else
+                cdbctl create/cdb/l2/fdb/${mac}#${vlan_id}/interface/${if_id} 
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use the mac-address-table forward global configuration command on the switch to add static addresses to the MAC address table, or use the mac-address-table disacard global configuration command on the switch to add the blackhole addresses.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The static address entries or the blackhole entries which are added by this command are not aged.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    1.This example shows how to add the static address c2f3.220a.12f4 to the MAC address table. 
+	When a packet is received in VLAN 4 with this MAC address as its destination, the packet 
+	is forwarded to the specified interface:  
+    Switch(config)# mac-address-table c2f3.220a.12f4 forward eth-0-1 vlan 4 
+	2.This example shows how to add the blackhole address 0.0.1 to the macfilter address table.
+	Switch(config)# mac-address-table 0.0.1 discard
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no mac-address-table
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no mac-address-table" help="Delete MAC address table">
+        <PARAM name="mac" help="MAC address" ptype="MAC_ADDR"/>
+        <PARAM name="action" help="Action" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="forward" help="Forward" ptype="SUBCOMMAND" mode="subcommand" >
+				 <PARAM name="if_id" help="Inteface name" ptype="IF_NAME_EA"/> 
+						<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand">
+							<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+						</PARAM>	
+			</PARAM>
+			<PARAM name="discard" help="Discard" ptype="SUBCOMMAND" mode="subcommand" /> 
+        </PARAM>
+       
+        <ACTION>
+            if [ ${action} == "discard" ]; then
+                cdbctl delete/cdb/l2/macfilter/${mac}
+            else
+                cdbctl delete/cdb/l2/fdb/${mac}#${vlan_id}/interface/${if_id} 
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use of this command to remove static addresses entries or the blackhole entries from the MAC address table. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The static address entries or the blackhole entries which are added by this command are not aged.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    1.This example shows how to remove the static address c2f3.220a.12f4 from the MAC address table:      
+    Switch(config)# no mac-address-table c2f3.220a.12f4 forward eth-0-1 vlan 4 
+	2.This example shows how to remove the blackhole address 0.0.1 from the macfilter address table:      
+    Switch(config)# no mac-address-table 0.0.1 disacard 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="mac-address-table ageing-time" help="Ageing time">
+		<PARAM name="ageing_time" help="Ageing time in seconds, default is 300" ptype="AGING_TIME"/>
+		
+        <ACTION>
+            cdbctl update/cdb/l2/brg_global/fdb_aging_time/${ageing_time}
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use the mac-address-table aging-time global configuration command on the switch to set the length of time that a dynamic entry remains in the MAC address table after the entry is updated. The aging time applies to all VLANs.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If packets are not received continuously, user can increase the aging time to make the system recording the dynamic entries for a longer time. Increasing the time can reduce the possibility of flooding when the hosts send again.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is 300 seconds, range is 10 to 1000000.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the aging time to 200 seconds for all VLANs.  
+    Switch(config)# mac-address-table ageing-time 200 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no mac-address-table ageing-time
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="mac-address-table ageing-time 0" help="MAC ageing function does not work">
+	    <ACTION>
+            cdbctl update/cdb/l2/brg_global/fdb_aging_time/0
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command mac-address-table ageing-time 0 to make the mac aging function does not work.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the aging time function does not work.
+    Switch(config)# mac-address-table ageing-time 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no mac-address-table ageing-time
+		</CTCRCMD>
+	</COMMAND>
+	
+    <COMMAND name="no mac-address-table ageing-time" help="Ageing time">
+        <ACTION>
+            cdbctl update/cdb/l2/brg_global/fdb_aging_time/300
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to return to the default setting of mac-address-table aging-time. The aging time applies to all VLANs.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is 300 seconds 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the aging time to default value for all VLANs.  
+    Switch(config)# no mac-address-table ageing-time   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mac-address-table ageing-time
+		</CTCRCMD>
+    </COMMAND>
+	
+</VIEW>
+</CLISH_MODULE>

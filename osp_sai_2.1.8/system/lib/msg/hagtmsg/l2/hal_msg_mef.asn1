@@ -1,0 +1,38 @@
+HAL-MSG-L2-MEF DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS    
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+
+HalMsgMefVlanTpIdReq ::= SEQUENCE
+{
+    typeId          INTEGER,
+    vlanType        INTEGER
+}
+
+
+HalMsgMefPduProcReq ::= SEQUENCE
+{
+		glPort          INTEGER,
+		tunnelVid       INTEGER,
+		pduType         INTEGER,
+		pduAction       INTEGER
+}
+
+HalMsgMefPduProcListReq ::= SEQUENCE
+{
+    procList  SEQUENCE OF HalMsgMefPduProcReq
+}
+
+HalMsgMefBpduTunnelDmacReq ::= SEQUENCE
+{
+		mac             HalMsgDefL2MacAddr
+}
+
+HalMsgMefpduTunnelEnableReq ::= SEQUENCE
+{
+		enable          INTEGER
+}
+
+END

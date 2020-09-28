@@ -1,0 +1,64 @@
+/*
+ * Copyright 2017 NXP
+ *
+ */
+
+
+/dts-v1/;
+
+/ {
+	description = "arm64 kernel, ramdisk and FDT blob";
+	#address-cells = <1>;
+
+	images {
+		kernel {
+			description = "ARM64 Kernel";
+			data = /incbin/("../../../out.e550/kbuild.ls1023a.d/arch/arm64/boot/Image.gz");
+			type = "kernel";
+			arch = "arm64";
+			os = "linux";
+			compression = "gzip";
+			load = <0x80080000>;
+			entry = <0x80080000>;
+			hash@1 {
+				algo = "crc32";
+			};
+		};
+
+		initrd-installer {
+			description = "initrd for installer";
+			data = /incbin/("../../../out.e550/kbuild.ls1023a.d/mini_initramfs.lzma");
+			type = "ramdisk";
+			arch = "arm64";
+			os = "linux";
+			compression = "lzma";
+			load = <0x00000000>;
+			entry = <0x00000000>;
+			hash@1 {
+				algo = "crc32";
+			};
+		};
+
+		fsl-ls1023a-ctc {
+			description = "fsl-ls1023a-ctc";
+			data = /incbin/("../../../out.e550/kbuild.ls1023a.d/arch/arm64/boot/dts/freescale/fsl-ls1023a-ctc.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			os = "linux";
+			compression = "none";
+			load = <0x90000000>;
+			hash@1 {
+				algo = "crc32";
+			};
+		};
+	};
+
+	configurations {
+		ctc_ls1023a {
+			description = "config for ls1023a-ctc";
+			kernel = "kernel";
+			ramdisk = "initrd-installer";
+			fdt = "fsl-ls1023a-ctc";
+		};
+	};
+};

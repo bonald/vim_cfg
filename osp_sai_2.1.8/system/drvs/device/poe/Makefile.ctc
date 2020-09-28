@@ -1,0 +1,11 @@
+include $(MK_DIR)/sys.mk
+LIB = poe
+
+SRCS += $(wildcard *.c)
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/poe
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

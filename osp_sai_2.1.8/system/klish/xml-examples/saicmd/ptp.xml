@@ -1,0 +1,1821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+PTP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show ptp" help="Precision Time Protocol (IEEE1588)" >
+	    <ACTION>
+		cdbctl show/cdb/ptp/show_ptp/all
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the global information of PTP.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command displays the global information of PTP.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+    The following example shows the global state of PTP:
+    Switch#  show ptp 
+    --------------------------  Global Configure  --------------------------
+    PTP State              : disable
+    Port Number            : 0
+    Domain                 : 0
+    Slave Only             : false
+    Clock Type             : ordinary clock
+    Clock Step             : two-step
+    Priority1              : 128
+    Priority2              : 128
+    Clock Accuracy         : 0xfe
+    Clock Class            : 248
+    Time Source            : internal-oscillator(160)
+    UTC Offset             : 0
+    Leap59                 : false
+    Leap61                 : false
+    Local Clock Identity   : 82:10:71:FF:FE:98:DA:00
+    Set systime via PTP    : false
+
+    ---------------------------  BMC Properties  ---------------------------
+    Receive Member         : N/A
+    Parent Clock Identity  : N/A
+    Parent Port Number     : 0
+    Mean Path Delay        : 0
+    Offset From Master     : 0
+    Step Removed           : 0
+    GM Clock Identity      : N/A
+    GM Priority1           : 0
+    GM Priority2           : 0
+    GM Clock Accuracy      : 0xfe
+    GM Clock Class         : 248
+    GM Time Source         : internal-oscillator(160)
+    GM UTC Offset          : 0
+    GM UTC Offset Valid    : false
+    GM Time Scale          : ARB
+    GM Time Traceable      : false
+    GM Leap59              : false
+    GM Leap61              : false
+    GM Frequency Traceable : false
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp global-enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ptp brief" help="The brief precision time protocol information" >
+	    <ACTION>
+            cdbctl show/cdb/ptp/show_ptp/brief
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the global brief information of PTP.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command displays the global brief information of PTP.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+    The following example shows the brief global state of PTP:
+    Switch#  show ptp brief 
+    --------------------------  Global Configure  --------------------------
+    PTP State              : disable
+    Port Number            : 0
+    Domain                 : 0
+    Slave Only             : false
+    Clock Type             : ordinary clock
+    Priority1              : 128
+    Priority2              : 128
+    Clock Accuracy         : 0xfe
+    Clock Class            : 248
+    Time Source            : internal-oscillator(160)
+    UTC Offset             : 34
+    Leap59                 : false
+    Leap61                 : false
+    Local Clock Identity   : 82:10:71:FF:FE:98:DA:00
+    Set systime via PTP:   : false
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp global-enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ptp foreign-master" help="The foreign master information" >
+	    <ACTION>
+		cdbctl show/cdb/ptp/show_ptp/foreign-master
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the foreign-master information of PTP.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command displays the foreign-master information of PTP.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+    The following example shows the foreign-master information of PTP:
+    Switch# show ptp foreign-master
+      Foreign_master_port_identity    Qualification Interface
+    ---------------------------------+--------------+-----------------------
+     *82:10:71:FF:FE:98:DA:00@9       true          eth-0-9
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp global-enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ptp interface" help="Interface information" >
+	    <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     		<PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+	    </PARAM>
+	    <PARAM name="part1" help="Part1" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     		<PARAM name="brief" help="The brief precision time protocol information" ptype="SUBCOMMAND" mode="subcommand"/>
+	    </PARAM>
+	    <ACTION>
+		cdbctl show/cdb/ptp/show_ptp/interface/${if_name}/is_brief/${part1}
+        </ACTION>
+		<CTCDESCRIPTION>
+This command can display the ptp configuration and statistics on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The interface only can be agg port and physical port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+    This example display how to show the interface eth-0-9 ptp brief information:
+    Switch# show ptp interface eth-0-9 brief 
+    Name            State           Delay-mechanism Enable          Step
+    ---------------+---------------+---------------+---------------+--------
+    eth-0-9         slave           normal          enable          two
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp enable
+		</CTCRCMD>
+	</COMMAND>
+	
+<!-- new   -->
+    <COMMAND name="show ptp statistics" help="Packet statistics information" >
+	    <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+                <PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_EA">
+                    <PARAM name="pkt_type" help="pkt_type" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+                        <PARAM name="receive" help="Packet receive" ptype="SUBCOMMAND" mode="subcommand"/>
+                        <PARAM name="send" help="Packet send" ptype="SUBCOMMAND" mode="subcommand"/>
+                        <PARAM name="discard" help="Packet discard" ptype="SUBCOMMAND" mode="subcommand"/>
+        	      </PARAM>
+    	         </PARAM>
+	    </PARAM>
+	    <ACTION>
+	        if [ ${part} == "all" ]; then
+		    cdbctl show/cdb/ptp/show_ptp/statistics
+		else
+		    if [ ${pkt_type} == "all" ]; then
+		        cdbctl show/cdb/ptp/show_ptp/statistics/${if_name}
+		    else
+		        cdbctl show/cdb/ptp/show_ptp/statistics/${if_name}/${pkt_type}
+		    fi
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+This command can display the ptp statistics on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The interface only can agg port and physical port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+    This example display how to show the interface eth-0-9 ptp statistics:
+    Switch# show ptp statistics eth-0-9 
+    ------------------------------------------------------------------------
+    Interface                  : eth-0-9
+    ---------------------------  Port Statistic  ---------------------------
+    Recv Packet Statistics
+    ------------------------------------------------------------------------
+    Announce          : 172            Sync                  : 333         
+    Delay_Req         : 0              Pdelay_Req            : 0           
+    Delay_Resp        : 227            Pdelay_Resp           : 0           
+    Follow_Up         : 333            Pdelay_Resp_Follow_Up : 0           
+    Unknown           : 0           
+    Send Packet Statistics
+    ------------------------------------------------------------------------
+    Announce          : 0              Sync                  : 1           
+    Delay_Req         : 227            Pdelay_Req            : 0           
+    Delay_Resp        : 0              Pdelay_Resp           : 0           
+    Follow_Up         : 1              Pdelay_Resp_Follow_Up : 0           
+    Unknown           : 0           
+    Discard Packet Statistics
+    ------------------------------------------------------------------------
+    Announce          : 0              Sync                  : 10          
+    Delay_Req         : 0              Pdelay_Req            : 0           
+    Delay_Resp        : 0              Pdelay_Resp           : 0           
+    Follow_Up         : 10             Pdelay_Resp_Follow_Up : 0           
+    Unknown           : 0           
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear ptp statistics
+		</CTCRCMD>
+	</COMMAND>
+	
+<!-- new   -->
+	<COMMAND name="show ptp second" help="Second" hidden="false">
+	    <ACTION>
+            cdbctl show/cdb/ptp/show_ptp/second
+        </ACTION>
+		<CTCDESCRIPTION>
+This command can display the ptp time information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+    This example display how to show ptp time information:
+    Switch# show ptp second
+    PTP SECOND: 1479824238
+    UTC DATE :Tue Nov 22 14:16:44 2016
+    TOW: 1924, SOW : 224219
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp global-enable
+		</CTCRCMD>
+	</COMMAND>
+	
+<!-- new   -->
+	<COMMAND name="show ptp enable-info" help="Enable-time" hidden="true">
+	    <ACTION>
+            cdbctl show/cdb/ptp/show_ptp/enable-info
+        </ACTION>
+	</COMMAND>
+
+    <COMMAND name="clear ptp" help="Precision Time Protocol (IEEE1588)"/>
+    <COMMAND name="clear ptp statistics" help="Clear statistics" >
+	    <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     		<PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+	    </PARAM>
+	    <ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl update/cdb/ptp/clear_ptp/statistics
+		else
+			cdbctl update/cdb/ptp/clear_ptp/statistics/${if_name}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use clear ptp statistics command to delete all statistics of PTP.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+    This example display how to delete all statistics of ptp:
+    Switch# clear ptp statistics
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ptp interface
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug ptp" 
+        help="Precision Time Protocol (IEEE1588)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="communication" help="PTP communication" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="bmc" help="PTP bmc" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="PTP timer" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="synchronization" help="PTP synchronization" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="PTP packet" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="pkt" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true" default="all">
+                    <PARAM name="rx" help="PTP receive packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="tx" help="PTP send packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="discard" help="PTP discard packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM> 
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_communication_debug/1
+                cdbctl update/cdb/debug/ptp_debug/ptp_bmc_debug/1
+                cdbctl update/cdb/debug/ptp_debug/ptp_timer_debug/1
+                cdbctl update/cdb/debug/ptp_debug/ptp_synchronization_debug/1
+                cdbctl update/cdb/debug/ptp_debug/ptp_packet_rx_debug/1
+                cdbctl update/cdb/debug/ptp_debug/ptp_packet_tx_debug/1
+                cdbctl update/cdb/debug/ptp_debug/ptp_packet_discard_debug/1
+            elif [ "communication" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_communication_debug/1
+            elif [ "bmc" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_bmc_debug/1
+            elif [ "timer" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_timer_debug/1
+            elif [ "synchronization" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_synchronization_debug/1
+            else
+                if [ "all" == ${pkt} ]; then
+                    cdbctl update/cdb/debug/ptp_debug/ptp_packet_rx_debug/1
+                    cdbctl update/cdb/debug/ptp_debug/ptp_packet_tx_debug/1
+                    cdbctl update/cdb/debug/ptp_debug/ptp_packet_discard_debug/1
+                else 
+                    cdbctl update/cdb/debug/ptp_debug/ptp_${type}_${pkt}_debug/1
+                fi
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging ptp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging ptp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    In the following example shows how to enable debugging ptp all:  
+    Switch# debug ptp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug ptp" 
+        help="Precision Time Protocol (IEEE1588)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="communication" help="PTP communication" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="bmc" help="PTP bmc" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="PTP timer" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="synchronization" help="PTP synchronization" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="PTP packet" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="pkt" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true" default="all">
+                    <PARAM name="rx" help="PTP receive packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="tx" help="PTP send packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="discard" help="PTP discard packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM> 
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_communication_debug/0
+                cdbctl update/cdb/debug/ptp_debug/ptp_bmc_debug/0
+                cdbctl update/cdb/debug/ptp_debug/ptp_timer_debug/0
+                cdbctl update/cdb/debug/ptp_debug/ptp_synchronization_debug/0
+                cdbctl update/cdb/debug/ptp_debug/ptp_packet_rx_debug/0
+                cdbctl update/cdb/debug/ptp_debug/ptp_packet_tx_debug/0
+                cdbctl update/cdb/debug/ptp_debug/ptp_packet_discard_debug/0
+            elif [ "communication" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_communication_debug/0
+            elif [ "bmc" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_bmc_debug/0
+            elif [ "timer" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_timer_debug/0
+            elif [ "synchronization" == ${type} ]; then
+                cdbctl update/cdb/debug/ptp_debug/ptp_synchronization_debug/0
+            else
+                if [ "all" == ${pkt} ]; then
+                    cdbctl update/cdb/debug/ptp_debug/ptp_packet_rx_debug/0
+                    cdbctl update/cdb/debug/ptp_debug/ptp_packet_tx_debug/0
+                    cdbctl update/cdb/debug/ptp_debug/ptp_packet_discard_debug/0
+                else 
+                    cdbctl update/cdb/debug/ptp_debug/ptp_${type}_${pkt}_debug/0
+                fi
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging ptp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging ptp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    In the following example shows how to disable debugging ptp all:  
+    Switch# no debug ptp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show debugging ptp" help="Precision Time Protocol (IEEE1588)">
+        <PARAM name="detail" help="Detail of debug module" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+        <ACTION>
+            cdbctl show/cdb/debug/ptp_debug/${type}/${detail}
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the debugging status, use the show debugging command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the debugging status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following is sample output from the show debugging command:   
+    DUT1# show debugging stp 
+	Module       SubModule        Type                 Status
+	------------+----------------+--------------------+------
+	switch       stp              event                on    
+				 stp              packet tx            on    
+				 stp              packet rx            on    
+				 stp              proto cist           on    
+				 stp              proto msti           on    
+				 stp              timer                on  
+    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+    <COMMAND name="ptp" help="Precision Time Protocol (IEEE1588)"/>
+	<COMMAND name="ptp clock-step" help="The step mode of the clock">
+	    <PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+                <PARAM name="one-step" help="Change to one-step clock" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="two-step" help="Change to two-step clock (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/two_step_flag/${part1}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock-step mode to one-step or two-step.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the clock mode is two-step.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+two-step.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock mode to one-step:  
+    Switch(config)# ptp clock-step one-step     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp clock-step
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="no ptp" help="Precision Time Protocol (IEEE1588)"/>
+	<COMMAND name="no ptp clock-step" help="The step mode of the clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/two_step_flag/two-step
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock-step mode to default.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the clock mode is two-step.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+two-step.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock-step mode to default:  
+    Switch(config)# no ptp clock-step 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp clock-step
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp device-type" help="The type of the clock">
+	    <PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+                <PARAM name="bc" help="Boundary Clock" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="oc" help="Ordinary Clock (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="e2etc" help="End-to-End Transparent Clock" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="p2ptc" help="Peer-to-Peer Transparent Clock" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		cdbctl update/cdb/ptp/ptp_global/device_type/${part1}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock type.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the device type is ordinary clock.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+oc.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock type to boundary clock:  
+    Switch(config)# ptp device-type bc     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp device-type
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="no ptp device-type" help="The type of the clock">
+		<ACTION>
+		cdbctl update/cdb/ptp/ptp_global/device_type/oc
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command can set the clock type to default.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the device type is ordinary clock.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+oc.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock type to default:  
+    Switch(config)# no ptp device-type
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp device-type
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="ptp global-enable" help="Enable ptp globally">
+	<ACTION>
+	    cdbctl update/cdb/ptp/ptp_global/global_enable/1
+	</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock enable globally.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, PTP is disabled on device.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock enable PTP:  
+    Switch(config)# ptp global-enable     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp global-enable
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="no ptp global-enable" help="Enable ptp globally">
+	<ACTION>
+	    cdbctl update/cdb/ptp/ptp_global/global_enable/0
+	</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock disable globally.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, PTP is disabled on device.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock disable PTP:  
+    Switch(config)# no ptp global-enable     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp global-enable
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp domain" help="The domain attribute of the local clock">
+		<PARAM name="domain_id"   help="The value of domain, default is 0" ptype="PTP_DOMAIN"/>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/domain_number/${domain_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the domain of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the domain is 0. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the domain to 1:  
+    Switch(config)# ptp domain 1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp domain
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp domain" help="The domain attribute of the local clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/domain_number/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the domain of the ordinary clock or boundary clock to default. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the domain is 0. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the domain to default:  
+    Switch(config)# no ptp domain
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp domain
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="ptp slave-only" help="Slave-only clock can never enter the MASTER state">
+              <ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/slave_only/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the ordinary clock to slave-only.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command can only be used on OC mode. By default, the clock is not slave-only.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock slave-only:  
+    Switch(config)# ptp slave-only
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp slave-only
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp slave-only" help="Slave-only clock can never enter the MASTER state">
+              <ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/slave_only/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the ordinary clock to not slave-only.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command can only be used on OC mode. By default, the clock is not slave-only.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock not slave-only:  
+    Switch(config)# no ptp slave-only 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp slave-only
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp utc-offset" help="The offset between TAI and UTC">
+		<PARAM name="utc_offset"   help="The value of utc-offset, default is 0s" ptype="PTP_UTC_OFFSET"/>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/current_utc_offset/${utc_offset}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set utc-offset. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+N/A.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the utc-offset to 20:  
+    Switch(config)# ptp utc-offset 20
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp utc-offset
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp utc-offset" help="The offset between TAI and UTC">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/current_utc_offset/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set utc-offset to default. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+N/A.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the utc-offset to default:  
+    Switch(config)# no ptp utc-offset
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp utc-offset
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp set-systime" help="Set system time via PTP">
+	    <ACTION>
+	        cdbctl update/cdb/ptp/ptp_global/set_system_time/1
+	    </ACTION>
+		<CTCDESCRIPTION>
+Use this command to enale system set time from PTP. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+N/A.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+disable. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set system time via PTP:  
+    Switch(config)# ptp set-systime
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp set-systime
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp set-systime" help="Set system time via PTP">
+	    <ACTION>
+	        cdbctl update/cdb/ptp/ptp_global/set_system_time/0
+	    </ACTION>
+		<CTCDESCRIPTION>
+Use this command to disale system set time from PTP. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+N/A.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+disable. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set system time not via PTP:
+    Switch(config)# no ptp set-systime
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp set-systime
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp leap59" help="The last minute of the current UTC day contains 59 seconds">
+	        <ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/leap59/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the leap59 of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, leap59 is not configured. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the leap59:  
+    Switch(config)# ptp leap59
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp leap59
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp leap59" help="The last minute of the current UTC day contains 59 seconds">
+	        <ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/leap59/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the leap59 of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, leap59 is not configured. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example unset the leap59:  
+    Switch(config)# no ptp leap59
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp leap59
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp leap61" help="The last minute of the current UTC day contains 61 seconds">
+	        <ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/leap61/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the leap61 of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, leap61 is not configured. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the leap61:  
+    Switch(config)# ptp leap61
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp leap61
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp leap61" help="The last minute of the current UTC day contains 61 seconds">
+	        <ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/leap61/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the leap61 of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, leap61 is not configured. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Disabled. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example unset the leap61:  
+    Switch(config)# no ptp leap61
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp leap61
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp tc-primary-domain" help="The primary syntonization domain">
+		<PARAM name="domain_id"   help="The value of tc-primary-domain, default is 0" ptype="PTP_DOMAIN"/>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/primary_domain/${domain_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the primary domain of the transparent clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the primary domain is 0. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the tc-primary-domain to 1:  
+    Switch(config)# ptp tc-primary-domain 1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp tc-primary-domain
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp tc-primary-domain" help="The primary syntonization domain">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/primary_domain/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the primary domain of the transparent clock to default. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the primary domain is 0. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the tc-primary-domain to default:
+    Switch(config)# no ptp tc-primary-domain
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp tc-primary-domain
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp priority1" help="The priority1 attribute of the local clock">
+		<PARAM name="priority_id"   help="The value of priority1, default is 128" ptype="PTP_PRIORITY"/>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/priority1/${priority_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority1 of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the priority1 is 128. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+128. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the priority1 to 0:  
+    Switch(config)# ptp priority1 0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp priority1
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp priority1" help="The priority1 attribute of the local clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/priority1/128
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority1 of the ordinary clock or boundary clock to default. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the priority1 is 128. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+128. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the priority1 to default:  
+    Switch(config)# no ptp priority1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp priority1
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp priority2" help="The priority2 attribute of the local clock">
+		<PARAM name="priority_id"   help="The value of priority2, default is 128" ptype="PTP_PRIORITY"/>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/priority2/${priority_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority2 of the ordinary clock or boundary clock. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the priority2 is 128. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+128. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the priority2 to 0:  
+    Switch(config)# ptp priority2 0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp priority2
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp priority2" help="The priority2 attribute of the local clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/priority2/128
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority2 of the ordinary clock or boundary clock to default. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the priority2 is 128. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+128. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the priority2 to default:
+    Switch(config)# no ptp priority2
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp priority2
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="ptp time-source" help="The source of time used by the local clock">
+	    <PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+                <PARAM name="atomic-clock" help="Device based on atomic resonance" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="gps" help="Device synchronized to a satellite system" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="terrestrial-radio" help="Device synchronized via radio distribution systems" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="ptp" help="Device synchronized to a PTP-based source" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="ntp" help="Device synchronized via NTP or SNTP to servers" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="hand-set" help="Device time has been set by human" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="other" help="Other source of time and/or frequency" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="internal-oscillator" help="Device time based on a free-running oscillator(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+	    </PARAM>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/time_source/${part1}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the time-source of the ordinary clock or boundary clock.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the time-source is internal-oscillator.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+internal-oscillator.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the time-source to gps:  
+    Switch(config)# ptp time-source gps     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp time-source
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp time-source" help="The source of time used by the local clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_time_prop_intern/time_source/internal-oscillator
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the time-source of the ordinary clock or boundary clock to default.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the time-source is internal-oscillator.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+internal-oscillator.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the time-source to default:  
+    Switch(config)# no ptp time-source
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp time-source
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp clock-accuracy" help="The clock accuracy of the clock">
+	    <PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+                <PARAM name="0x20" help="The time is accurate to within 25 ns" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x21" help="The time is accurate to within 100 ns" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x22" help="The time is accurate to within 250 ns" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x23" help="The time is accurate to within 1 us" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x24" help="The time is accurate to within 2.5 us" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x25" help="The time is accurate to within 10 us" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x26" help="The time is accurate to within 25 us" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x27" help="The time is accurate to within 100 us" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x28" help="The time is accurate to within 250 us" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x29" help="The time is accurate to within 1 ms" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x2a" help="The time is accurate to within 2.5 ms" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x2b" help="The time is accurate to within 10 ms" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x2c" help="The time is accurate to within 25 ms" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x2d" help="The time is accurate to within 100 ms" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x2e" help="The time is accurate to within 250 ms" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x2f"  help="The time is accurate to within 1 s" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0x30" help="The time is accurate to within 10 s" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="0x31" help="The time is accurate to > 10 s" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="0xfe" help="The time is accurate to unknown (default)" ptype="SUBCOMMAND" mode="subcommand"/> 
+		</PARAM>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/clk_accuracy/${part1}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock-accuracy of the ordinary clock or boundary clock.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the clock-accuracy is 0xfe.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0xfe.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock-accuracy to 0x21:  
+    Switch(config)# ptp clock-accuracy 0x21     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp clock-accuracy
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="no ptp clock-accuracy" help="The clock accuracy of the clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/clk_accuracy/0xfe
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock-accuracy of the ordinary clock or boundary clock to default.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the clock-accuracy is 0xfe.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+0xfe.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock-accuracy to default:
+    Switch(config)# no ptp clock-accuracy
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp clock-accuracy
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp clock-class" help="The clock class attribute of an ordinary or boundary clock">
+	    <PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+                <PARAM name="6" help="Synchronized to a primary reference time source" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="7" help="Previous designated as 6 but lost ability to synchronize to time source" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="13" help="Synchronized to an application-specific source of time" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="14" help="Previous designated as 13 but lost ability to synchronize to time source" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="52" help="Degradation alternative A for a clock of 7" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="58" help="Degradation alternative A for a clock of 14" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="187" help="Degradation alternative B for a clock of 7" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="193" help="Degradation alternative B for a clock of 14" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="248" help="None of the other clock class definitions apply (default)" ptype="SUBCOMMAND" mode="subcommand"/> 
+		</PARAM>
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/clk_class/${part1}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock-class of the ordinary clock or boundary clock.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the clock class is 248.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+248.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock class to 6:  
+    Switch(config)# ptp clock-class 6     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ptp clock-class
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp clock-class" help="The clock class attribute of an ordinary or boundary clock">
+		<ACTION>
+		    cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/clk_class/248
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock-class of the ordinary clock or boundary clock to default.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+By default, the value of the clock class is 248.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+248.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set the clock class to default:
+    Switch(config)# no ptp clock-class     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ptp clock-class
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="ptp clock-id" help="Set ptp clock id">
+		<PARAM name="clock_id" help="Clock id address, format is XXXX.XXXX.XXXX.XXXX" ptype="CLOCK_ID_ADDR"/>
+		<ACTION>
+		cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/clock_identity/${clock_id}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device clock id globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The clock id can label unique sequence number of the device. All "0" or all "F" are invalid.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default clock id is route-mac + FFFE.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The follow example shows how to set device clock id:
+    Switch(config)# ptp clock-id 0000.0000.0000.0001
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp clock-id
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp clock-id" help="Set ptp clock id">
+		<ACTION>
+		cdbctl update/cdb/ptp/ptp_global/ptp_struct_set_default_ds/clock_identity
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device clock id to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The clock id can label unique sequence number of the device. All "0" or all "F" are invalid.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default clock id is route-mac + FFFE.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The follow example shows how to set device clock id to default:
+    Switch(config)# no ptp clock-id
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp clock-id
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ptp" help="Precision Time Protocol (IEEE1588)"/>
+	<COMMAND name="no ptp" help="Precision Time Protocol (IEEE1588)"/>
+	
+	<COMMAND name="ptp announce-interval" help="The mean announce interval">
+	    <PARAM name="interval" help="The logarithm to the base 2 of the interval, default is 1" ptype="PTP_INTERVAL_0_10" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_announce_interval/${interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the announce interval of the interface on ordinary clock or boundary clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of announce interval is 1, that is, 2 seconds. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the announce interval of the interface to 10:
+    Switch(config-if-eth-0-1)# ptp announce-interval 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp announce-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp announce-interval" help="The mean announce interval">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_announce_interval/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the announce interval of the interface on ordinary clock or boundary clock to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of announce interval is 1, that is, 2 seconds. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the announce interval of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp announce-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp announce-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp sync-interval" help="The mean sync interval for messages">
+	    <PARAM name="interval" help="The logarithm to the base 2 of the interval, default is 0" ptype="PTP_INTERVAL_-1_10" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_sync_interval/${interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the sync interval of the interface on ordinary clock or boundary clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of sync interval is 0, that is, 1 second. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the sync interval of the interface to 10:
+    Switch(config-if-eth-0-1)# ptp sync-interval 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp sync-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp sync-interval" help="The mean sync interval for messages">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_sync_interval/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the sync interval of the interface on ordinary clock or boundary clock to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of sync interval is 0, that is, 1 second. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the sync interval of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp sync-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp sync-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp min-delayreq-interval" help="The minimum delay request interval for messages">
+	    <PARAM name="interval" help="The logarithm to the base 2 of the interval, default is 0" ptype="PTP_INTERVAL_-1_10" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_min_delay_req_interval/${interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the min-delayreq interval of the interface on ordinary clock or boundary clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of min-delayreq interval is 0, that is, 1 second. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the min-delayreq interval of the interface to 10:
+    Switch(config-if-eth-0-1)# ptp min-delayreq-interval 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp min-delayreq-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp min-delayreq-interval" help="The minimum delay request interval for messages">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_min_delay_req_interval/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the min-delayreq interval of the interface on ordinary clock or boundary clock to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of min-delayreq interval is 0, that is, 1 second. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the min-delayreq interval of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp min-delayreq-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp min-delayreq-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp min-pdelayreq-interval" help="The minimum peer delay request interval for messages">
+	    <PARAM name="interval" help="The logarithm to the base 2 of the interval, default is 0" ptype="PTP_INTERVAL_-1_10" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_min_pdelay_req_interval/${interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the min- pdelayreq interval of the interface on clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of pdelayreq interval is 0, that is, 1 second. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the min-pdelayreq interval of the interface to 10:
+    Switch(config-if-eth-0-1)# ptp min-pdelayreq-interval 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp min-pdelayreq-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp min-pdelayreq-interval" help="The minimum peer delay request interval for messages">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/log_min_pdelay_req_interval/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the min- pdelayreq interval of the interface on clock to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of pdelayreq interval is 0, that is, 1 second. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the min-pdelayreq interval of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp min-pdelayreq-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp min-pdelayreq-interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp announce-receipt-timeout" help="The announce receipt timeout">
+	    <PARAM name="timeout" help="The value of announce-receipt-timeout, default is 3" ptype="PTP_ANNOUNCE_RECEIPT_TIMEOUT" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/announce_receipt_timeout/${timeout}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the announce-receipt-timeout times of the interface on ordinary clock or boundary clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of announce-receipt-timeout is 3. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the announce-receipt-timeout times of the interface to 3:
+    Switch(config-if-eth-0-1)# ptp announce-receipt-timeout 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp announce-receipt-timeout
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp announce-receipt-timeout" help="The announce receipt timeout">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/announce_receipt_timeout/3
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the announce-receipt-timeout times of the interface on ordinary clock or boundary clock to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of announce-receipt-timeout is 3. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the announce-receipt-timeout times of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp announce-receipt-timeout
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp announce-receipt-timeout
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp asymmetry-correction" help="The asymmetry correction of the path">
+	    <PARAM name="asymmetry-correction" help="The value of asymmetry correction, default is 0ns" ptype="PTP_ASYMMETRY_CORRECTION" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/asymmetry_correction/${asymmetry-correction}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the asymmetry-correction of the interface on clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of asymmetry correction is 0 nanosecond. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the asymmetry correction of the interface to 200:
+    Switch(config-if-eth-0-1)# ptp asymmetry-correction 200
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp asymmetry-correction
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp asymmetry-correction" help="The asymmetry correction of the path">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/asymmetry_correction/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the asymmetry-correction of the interface on clock to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of asymmetry correction is 0 nanosecond. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the asymmetry correction of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp asymmetry-correction
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp asymmetry-correction
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp ingress-latency" help="Ingress latency">
+	    <PARAM name="latency" help=" The value of ingress latency, default is 0ns" ptype="PTP_GRESS_LATENCY" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ingress_latency/${latency}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the ingress-latency.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of latency is 0 nanosecond. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the ingress-latency of the interface to 200:
+    Switch(config-if-eth-0-1)# ptp ingress-latency 200
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp ingress-latency
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp ingress-latency" help="Ingress latency">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/ingress_latency/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the ingress-latency to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of latency is 0 nanosecond. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the ingress-latency of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp ingress-latency
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp ingress-latency
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp egress-latency" help="Egress latency">
+	    <PARAM name="latency" help="The value of egress latency, default is 0ns" ptype="PTP_GRESS_LATENCY" />
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/egress_latency/${latency}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the egress-latency.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of latency is 0 nanosecond. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the egress-latency of the interface to 200:
+    Switch(config-if-eth-0-1)# ptp egress-latency 200
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp egress-latency
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp egress-latency" help="Egress latency">
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/egress_latency/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the egress-latency to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of latency is 0 nanosecond. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the egress-latency of the interface to default:
+    Switch(config-if-eth-0-1)# no ptp egress-latency
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp egress-latency
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp delay-mechanism" help="The propagation delay measuring option">
+		<PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+                <PARAM name="disable" help="Do not implement the delay mechanism" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="normal" help="Use the delay request-response mechanism (default)" ptype="SUBCOMMAND" mode="subcommand"/> 
+                <PARAM name="peer" help="Use the peer delay mechanism" ptype="SUBCOMMAND" mode="subcommand"/> 
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/delay_mechanism/${part1}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the delay mechanism of the interface on clock.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of delay mechanism is normal.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+normal.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the delay mechanism of the interface on clock to peer:
+    Switch(config-if-eth-0-1)# ptp delay-mechanism peer
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp delay-mechanism
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp delay-mechanism" help="The propagation delay measuring option">
+		<ACTION>
+			cdbctl update/cdb/ptp/ptp_port/${iface}/ptp_struct_set_port_ds/delay_mechanism/normal
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the delay mechanism of the interface on clock to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of delay mechanism is normal.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+normal.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the delay mechanism of the interface on clock to default:
+    Switch(config-if-eth-0-1)# no ptp delay-mechanism
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp delay-mechanism
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ptp enable" help="Enable ptp on interface">
+		<ACTION>
+			cdbctl update/cdb/ptp/ptp_port/${iface}/enable/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set PTP enable on the interface of clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, PTP is disabled on interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the interface enable PTP.
+    Switch(config-if-eth-0-1)# ptp enable	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ptp enable" help="Enable ptp on interface">
+		<ACTION>
+			cdbctl update/cdb/ptp/ptp_port/${iface}/enable/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set PTP disable on the interface of clock.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, PTP is disabled on interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the interface disable PTP.
+    Switch(config-if-eth-0-1)# no ptp enable	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp enable
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="ptp tagging" help="Insert vlan tag in PTP messages"/>
+	 <COMMAND name="ptp tagging vlan" help="VLAN">
+		<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" />
+		<!--<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">-->
+		    <PARAM name="cos" optional="true" help="Class of Services" ptype="SUBCOMMAND" mode="subcommand">
+		     		<PARAM name="cos_value" help="The value of Class of Services" ptype="PTP_COS"/>
+			</PARAM>
+		<!--</PARAM>-->
+		<ACTION>
+		   cdbctl update/cdb/ptp/ptp_port/${iface}/vlan_info/${vlan_id}/cos/${cos_value}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the vlan of interface on clock.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, there is no vlan tag in PTP message.If configure vlan tag without cos, the cos value will be 0.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+no vlan tag.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the interface use vlan 2 and priority 3.
+    Switch(config-if-eth-0-1)# ptp tagging vlan 2 cos 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp tagging
+		</CTCRCMD>
+	</COMMAND>
+
+        <COMMAND name="no ptp tagging" help="Insert vlan tag in PTP messages">
+		<PARAM name="part" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default = "all">
+		    <PARAM name="cos" optional="true" help="Class of Services" ptype="SUBCOMMAND" mode="subcommand"/>
+		    <PARAM name="vlan" optional="true" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+                if [ ${part} == "vlan" ]; then
+                    cdbctl update/cdb/ptp/ptp_port/${iface}/vlan_info/4096
+                else
+                    cdbctl update/cdb/ptp/ptp_port/${iface}/vlan_info/0/cos/8
+                fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the vlan of interface on clock.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, there is no vlan tag in PTP message.If configure vlan tag without cos, the cos value will be 0.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+no vlan tag.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the interface not use vlan tag.
+    Switch(config-if-eth-0-1)# no ptp tagging vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp tagging vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	 <COMMAND name="ptp protocol" help="The protocol that PTP message transport over">
+		<PARAM name="part" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default = "all">
+		    <PARAM name="mac" optional="true" help="Transport PTP messages directly over Ethernet frames (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+		    <PARAM name="udp" optional="true" help="Transport PTP messages over the UDP, and IPv4" ptype="SUBCOMMAND" mode="subcommand">
+		        <PARAM name="source-ip" optional="false" help="Source IPv4 address" ptype="SUBCOMMAND" mode="subcommand">
+		     		<PARAM name="udp_source_ip" help="IPv4 address" ptype="IP_ADDR"/>
+		     		    <PARAM name="part1" help="Part1" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     		        <PARAM name="unicast" optional="true" help="Unicast" ptype="SUBCOMMAND" mode="subcommand">
+		     		            <PARAM name="dest-ip" optional="false" help="Dest Ipv4 address" ptype="SUBCOMMAND" mode="subcommand">
+		     		                <PARAM name="unicast_dest_ip" help="Ipv4 address" ptype="IP_ADDR"/>
+								</PARAM>
+							</PARAM>
+						</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		     		            
+		<ACTION>
+		    if [ ${part} == "mac" ]; then
+		        cdbctl update/cdb/ptp/ptp_port/${iface}/port_addr/protocol/${part}
+		    elif [ ${part} == "udp" ]; then
+		        if [ ${part1} == "all" ]; then
+		            cdbctl update/cdb/ptp/ptp_port/${iface}/port_addr/protocol/${part}/udp_source_ip/${udp_source_ip}
+		        else
+		            cdbctl update/cdb/ptp/ptp_port/${iface}/port_addr/protocol/${part}/udp_source_ip/${udp_source_ip}/unicast_dest_ip/${unicast_dest_ip}
+		        fi    
+		    fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the protocol type of interface on clock.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, each interface is over ethernet protocol with multicast MAC address specified by IEEE Std 1588-2008.
+Only set udp source-ip A.B.C.D the ptp packet use l3 multicast.
+If set unicast dest-ip, the ptp packet use l3 unicast.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Mac.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the interface use UDP protocol with source-ip 1.10.10.10.
+    Switch(config-if-eth-0-1)# ptp protocol udp source-ip 1.10.10.10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ptp protocol
+		</CTCRCMD>
+	</COMMAND>
+
+        <COMMAND name="no ptp protocol" help="The protocol that PTP message transport over">
+            <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+                <PARAM name="unicast" optional="true" help="Unicast" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <ACTION>
+		    if [ ${part} == "all" ]; then
+		        cdbctl update/cdb/ptp/ptp_port/${iface}/port_addr/protocol/mac
+		    else
+		        cdbctl update/cdb/ptp/ptp_port/${iface}/port_addr/protocol/udp/unicast_dest_ip/0
+		    fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the protocol type of interface on clock to default.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, each interface is over ethernet protocol with multicast MAC address specified by IEEE Std 1588-2008.
+Only set udp source-ip A.B.C.D the ptp packet use l3 multicast.
+If set unicast dest-ip, the ptp packet use l3 unicast.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Mac.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example set the interface use default encap mode.
+    Switch(config-if-eth-0-1)# no ptp protocol
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ptp protocol
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+</CLISH_MODULE>

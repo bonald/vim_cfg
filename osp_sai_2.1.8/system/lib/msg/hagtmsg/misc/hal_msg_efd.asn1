@@ -1,0 +1,61 @@
+HAL-MSG-EFD DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES  
+    ;
+	
+HalMsgEfdGlobalControlSetReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgEfdGlobalConfigSetReq ::= SEQUENCE
+{
+    flag         INTEGER,
+    granu        INTEGER,
+    speed        INTEGER,
+    timeInterval INTEGER
+}
+
+HalMsgVmawareEnableReq ::= SEQUENCE
+{
+    gportid      INTEGER,
+	enable       INTEGER
+}
+
+HalMsgEfdPortSetReq ::= SEQUENCE
+{
+    gportid      INTEGER,
+	enable       INTEGER
+}
+
+HalMsgFlowColorSetReq ::= SEQUENCE
+{
+    color      INTEGER,
+	enable         INTEGER
+}
+
+HalMsgFlowTrafficClassSetReq ::= SEQUENCE
+{
+    trafficclass      INTEGER,
+	enable         INTEGER
+}
+
+HalMsgFlowHashModeSetReq ::= SEQUENCE
+{
+   flowhashoutertype INTEGER,
+   flowhashinnertype INTEGER
+}
+
+HalMsgTunnelParserMergerSetReq ::= SEQUENCE
+{
+    tunnelvxlan   INTEGER,
+    tunnelnvgre   INTEGER
+}
+
+HalMsgEfdAgingNotify ::= SEQUENCE
+{
+	flowIdList    SEQUENCE OF INTEGER
+}
+END

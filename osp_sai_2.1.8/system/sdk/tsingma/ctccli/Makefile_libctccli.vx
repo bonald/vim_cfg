@@ -1,0 +1,21 @@
+
+include $(MK_DIR)/sys_vx.mk
+OBJ_DIR=$(OBJ_BASE_DIR)/ctccli
+
+LIB = ctccli
+OBJS = $(wildcard $(OBJ_DIR)/*.o) $(foreach n, $(CHIPNAME), $(wildcard $(OBJ_DIR)/sdkcli/$(n)/*.o)) $(wildcard $(OBJ_DIR)/sdkcli/*.o) $(foreach n, $(CHIPNAME), $(wildcard $(OBJ_DIR)/diagcli/$(n)/*.o))
+DEPS = $(wildcard $(OBJ_DIR)/*.d) $(foreach n, $(CHIPNAME), $(wildcard $(OBJ_DIR)/sdkcli/$(n)/*.d)) $(wildcard $(OBJ_DIR)/sdkcli/*.d) $(foreach n, $(CHIPNAME), $(wildcard $(OBJ_DIR)/diagcli/$(n)/*.d))
+
+
+$(LIB_DIR)/lib$(LIB).a: $(OBJS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/lib$(LIB).a
+
+

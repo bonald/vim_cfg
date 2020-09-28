@@ -1,0 +1,969 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+QOS QUEUE
+</CTCMODULENAME>
+
+
+<!-- show related CLIs -->
+<VIEW name="Exec">
+
+    <COMMAND name="show qos scheduler-profile" help="Scheduler profile">
+        <PARAM name="name" optional="true" help="Specify a scheduler profile name" ptype="NAME_STRING"/>
+		
+        <ACTION>cdbctl show/cdb/qos/qos_queue_shape_profile/${name}</ACTION>
+ 
+ 		<CTCDESCRIPTION>
+Use this command to display the information of QoS scheduler-profile.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of scheduler-profile p1.  
+    Switch# show qos scheduler-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos scheduler-profile
+		</CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="show qos drop-profile" help="Drop profile">
+            <PARAM name="name" optional="true" help="Specify a drop profile name" ptype="NAME_STRING"/>
+    
+        <ACTION>
+                cdbctl show/cdb/qos/qos_drop_profile/${name}
+        </ACTION>
+
+ 		<CTCDESCRIPTION>
+Use this command to display the information of QoS drop-profile.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of drop-profile p1.  
+    Switch# show qos drop-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos drop-profile
+		</CTCRCMD>
+
+    </COMMAND>
+    
+
+    <COMMAND name="show qos port-shape-profile" help="Port shape profile">
+        <PARAM name="name" optional="true" help="Specify a port shape profile name" ptype="NAME_STRING"/>
+    
+        <ACTION>cdbctl show/cdb/qos/qos_port_shape_profile/${name}</ACTION>
+     
+ 		<CTCDESCRIPTION>
+Use this command to display the information of QoS port-shape-profile.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of port-shape-profile p1.  
+    Switch# show qos port-shape-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos port-shape-profile
+		</CTCRCMD>
+
+    </COMMAND>
+
+    <!--display qos interface configuration, such as port-policer, port-shaper, domain, replace -->
+    <COMMAND name="show qos interface" help="Select an interface">
+        <PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_E"/>
+        <PARAM name="sub" optional="false" test='${iface_name} != ""' help="Sub" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="queue" help="Queue information" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="type" optional="true" help="Queue information" ptype="SUBCOMMAND" mode="switch">
+                    <PARAM name="drop" help="Drop information" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="schedule" help="Shape information" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="statistics" help="Statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            <PARAM name="policer" help="Port policer" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="statistics" help="Statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="dir" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                    <PARAM name="input" help="Input direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                    <PARAM name="output" help="Output direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                </PARAM>
+            </PARAM>
+            <PARAM name="port-shape" help="Port shape" ptype="SUBCOMMAND" mode="subcommand"></PARAM>
+            <PARAM name="classify-remark" help="Qos classification and remark" ptype="SUBCOMMAND" mode="subcommand"></PARAM>
+        </PARAM>
+    
+            <ACTION>
+            if [ "${sub}" == "queue" ]; then
+                if [ "${type}" == "drop" ]; then
+					cdbctl show/cdb/qos/show_queue_drop/${iface_name}
+                elif [ "${type}" == "schedule" ]; then
+                    cdbctl show/cdb/aclqos_if/queue_shape_profile/${iface_name}
+                elif [ "${type}" == "statistics" ]; then
+                    cdbctl update/cdb/sys/aclqos_if_stats/flags_get_queue_stats/${iface_name}
+                    if [ "$?" == "0" ]; then
+                    	usleep 100000
+                    	cdbctl show/cdb/sys/aclqos_if_stats/flags_get_queue_stats/${iface_name}
+                    fi
+                else
+                    cdbctl show/cdb/qos/show_queue_drop/${iface_name}
+                    if [ "$?" == "0" ]; then
+	                    cdbctl show/cdb/aclqos_if/queue_shape_profile/${iface_name}
+	                    cdbctl update/cdb/sys/aclqos_if_stats/flags_get_queue_stats/${iface_name}
+	                    if [ "$?" == "0" ]; then
+	                    	usleep 100000
+	                    	cdbctl show/cdb/sys/aclqos_if_stats/flags_get_queue_stats/${iface_name}
+	                    fi
+	             fi
+                fi
+            elif [ "${sub}" == "policer" ]; then
+                if [ "${dir}" == "input" ]; then
+                    cdbctl update/cdb/sys/aclqos_if_stats/flags_port_get_input_policer_stats/${iface_name}
+                    if [ "$?" == "0" ]; then
+	                    usleep 100000
+	                    cdbctl show/cdb/sys/aclqos_if_stats/flags_port_get_input_policer_stats/${iface_name}
+                    fi
+                else
+                    cdbctl update/cdb/sys/aclqos_if_stats/flags_port_get_output_policer_stats/${iface_name}
+                    if [ "$?" == "0" ]; then
+                        usleep 100000
+                        cdbctl show/cdb/sys/aclqos_if_stats/flags_port_get_output_policer_stats/${iface_name}
+                    fi
+                fi
+            elif [ "${sub}" == "port-shape" ]; then
+            	   cdbctl show/cdb/aclqos_if/port_shape_profile/${iface_name}
+            elif [ "${sub}" == "classify-remark" ]; then
+            	   cdbctl show/cdb/aclqos_if/classification_remark/${iface_name}
+            else
+                cdbctl show/cdb/interface/aclqos_if/${iface_name}
+            fi
+        </ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to show QoS stats for an interface, include policer, shaping and drop. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the stats of the eth-0-1 input policer.  
+    Switch# show qos interface eth-0-1 policer statistics input  
+		  Confirm packets 0, bytes 0  
+		  Exceed packets 0, bytes 0  
+		  Violate packets 0, bytes 0  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear qos interface
+		</CTCRCMD>
+
+    </COMMAND>
+
+    <COMMAND name="clear qos" help="Quality of Service">
+    </COMMAND>
+    
+    <COMMAND name="clear qos interface" help="Select an interface">
+        <PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_E"/>
+        <PARAM name="statistics" help="Statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="sub" test='${iface_name} != ""' help="Sub" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="queue" help="Queue information" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="id" optional="true" help="Queue Id" ptype="QUEUE_ID" default = "-1"/>
+            </PARAM>
+            <PARAM name="policer" help="Port policer" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="dir" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                    <PARAM name="input" help="Input direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                    <PARAM name="output" help="Output direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                </PARAM>
+            </PARAM>
+        </PARAM>
+    
+        <ACTION>
+            if [ "${sub}" == "queue" ]; then
+                cdbctl update/cdb/sys/aclqos_if_stats/flags_clear_queue_stats/${iface_name}/queue_id/${id}/
+            else
+                if [ "${dir}" == "input" ]; then
+                cdbctl update/cdb/sys/aclqos_if_stats/flags_port_clear_input_policer_stats/${iface_name}
+                else
+                cdbctl update/cdb/sys/aclqos_if_stats/flags_port_clear_output_policer_stats/${iface_name}
+                fi
+            fi
+        </ACTION>
+    
+ 		<CTCDESCRIPTION>
+Use this command to clear QoS stats for an interface, include policer, shaping and drop. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear the stats of the eth-0-1 input policer.  
+    Switch# clear qos interface eth-0-1 statistics policer input  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+    </COMMAND>
+
+</VIEW>
+
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+    <!-- qos classify configuration related CLIs -->
+    
+    <COMMAND name="qos drop-profile" help="Configure drop profile" view="Configure-qos-drop-view" viewid="name=${name}">
+            <PARAM name="name" help="Specify a drop profile name" ptype="NAME_STRING"/>
+  
+            <ACTION>cdbctl create/cdb/qos/qos_drop_profile/${name}</ACTION>
+    
+ 		<CTCDESCRIPTION>
+Use this command to creat a qos drop-profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to creat drop-profile p1.  
+    Switch(config)# qos drop-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no qos drop-profile
+		</CTCRCMD>
+
+	</COMMAND>
+        
+    <COMMAND name="no qos drop-profile" help="Remove drop profile" >
+            <PARAM name="name" help="Specify a drop profile name" ptype="NAME_STRING"/>
+ 
+            <ACTION>cdbctl delete/cdb/qos/qos_drop_profile/${name}</ACTION>
+         
+ 		<CTCDESCRIPTION>
+Use this command to delete a qos drop-profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete drop-profile p1.       
+    Switch(config)# qos drop-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos drop-profile
+		</CTCRCMD>
+
+	</COMMAND>
+        
+	<COMMAND name="qos queue" help="Configure qos queue" >
+        <PARAM name="queue_num" help="Queue Number" ptype="QUEUE_0_6_ID"/>
+		<PARAM name="smart-buffer" help="Smart Buffer" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+ 
+        <ACTION>
+		cdbctl update/cdb/qos/qos_queue_smart_buffer/${queue_num}/1
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no qos queue" help="Configure qos queue" >
+        <PARAM name="queue_num" help="Queue Number" ptype="QUEUE_0_6_ID"/>
+		<PARAM name="smart-buffer" help="Smart Buffer" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+ 
+        <ACTION>
+		cdbctl update/cdb/qos/qos_queue_smart_buffer/${queue_num}/0
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="qos queue range" help="Configure qos queue list" >
+        <PARAM name="queue_list" help="List range 0-6, example: 0-1,3-5,6" ptype="QUEUE_0_6_LIST"/>
+		<PARAM name="smart-buffer" help="Smart Buffer" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+ 
+        <ACTION>
+		cdbctl update/cdb/qos/qos_queue_smart_buffer/${queue_list}/1
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no qos queue range" help="Configure qos queue list" >
+        <PARAM name="queue_list" help="List range 0-6, example: 0-1,3-5,6" ptype="QUEUE_0_6_LIST"/>
+		<PARAM name="smart-buffer" help="Smart Buffer" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+ 
+        <ACTION>
+		cdbctl update/cdb/qos/qos_queue_smart_buffer/${queue_list}/0
+		</ACTION>
+	</COMMAND>
+	
+    <COMMAND name="qos scheduler-profile" help="Configure scheduler profile" view="Configure-qos-scheduler-view" viewid="name=${name}">
+            <PARAM name="name" help="Specify a qos schdeuler shape profile name" ptype="NAME_STRING"/>
+  
+            <ACTION>cdbctl create/cdb/qos/qos_queue_shape_profile/${name}</ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to creat a qos scheduler-profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to creat scheduler-profile p1.  
+    Switch(config)# qos scheduler-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no qos scheduler-profile
+		</CTCRCMD>
+
+	</COMMAND>
+        
+    <COMMAND name="no qos scheduler-profile" help="Remove scheduler profile">
+            <PARAM name="name" help="Specify a queue shape profile name" ptype="NAME_STRING"/>
+  
+            <ACTION>cdbctl delete/cdb/qos/qos_queue_shape_profile/${name}</ACTION>
+    
+ 		<CTCDESCRIPTION>
+Use this command to delete a qos scheduler-profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete scheduler-profile p1.  
+    Switch(config)# qos scheduler-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos scheduler-profile
+		</CTCRCMD>
+
+	</COMMAND>
+
+    <COMMAND name="qos port-shape-profile" help="Configure port shape profile" view="Configure-qos-port-shape-view" viewid="name=${name}">
+            <PARAM name="name" help="Specify a qos port shape profile name" ptype="NAME_STRING"/>
+  
+            <ACTION>cdbctl create/cdb/qos/qos_port_shape_profile/${name}</ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to creat a qos port-shape-profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to creat port-shape-profile p1.  
+    Switch(config)# qos port-shape-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no qos port-shape-profile
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no qos port-shape-profile" help="Remove port shape profile">
+            <PARAM name="name" help="Specify a port shape profile name" ptype="NAME_STRING"/>
+  
+            <ACTION>cdbctl delete/cdb/qos/qos_port_shape_profile/${name}</ACTION>
+    
+ 		<CTCDESCRIPTION>
+Use this command to delete a qos port-shape-profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete port-shape-profile p1.  
+    Switch(config)# qos port-shape-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos port-shape-profile
+		</CTCRCMD>
+
+	</COMMAND>
+        
+</VIEW>
+    
+
+
+<VIEW name="Configure-qos-port-shape-view"
+	prompt="${SYSTEM_NAME}(config-qos-port-shape-${name})# "
+	depth="1">
+	
+      <NAMESPACE ref="Configure" help="false" completion="false"/>
+
+        <COMMAND name="exit" help="Exit from qos shape configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+        <COMMAND name="quit" help="Exit from qos shape configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+	
+       <COMMAND name="pir" help="Configure PIR shape rate">
+            <PARAM name="pir_value" help="Shape rate for peak information rate, kbps, default is 100000000" ptype="SHAPE_RATE"/>
+
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_port_shape_profile/${name}/pir/${pir_value}/
+            </ACTION>
+          
+ 		<CTCDESCRIPTION>
+Use this command to configure shaping pir in port shape profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+the shaping is disbale, the value is 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set pir 10000kbps in port-shape profile p1.  
+    Switch(config)# qos port-shape-profile p1  
+    Switch(config-qos-port-shape-p1)# pir 10000  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+        </COMMAND>
+ </VIEW>
+
+ 
+<VIEW name="Configure-qos-scheduler-view"
+	prompt="${SYSTEM_NAME}(config-qos-scheduler-${name})# "
+	depth="1">
+
+<!-- Inheritance -->
+
+	<NAMESPACE ref="Configure" help="false" completion="false"/>
+
+        <COMMAND name="exit" help="Exit from qos scheduler configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+        <COMMAND name="quit" help="Exit from qos scheduler configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        
+        <COMMAND name="pir" help="Configure PIR shape rate">
+            <PARAM name="pir_value" help="Shape rate for peak information rate, kbps, default is 100000000" ptype="SHAPE_RATE"/>
+
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_queue_shape_profile/${name}/pir/${pir_value}/
+            </ACTION>
+          
+ 		<CTCDESCRIPTION>
+Use this command to configure shaping pir in scheduler profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+the shaping is disbale, the value is 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set pir 10000kbps in scheduler profile p1.  
+    Switch(config)# qos scheduler-profile p1  
+    Switch(config-qos-scheduler-p1)# pir 10000  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+        </COMMAND>
+
+	  <COMMAND  name="mode" help="scheduler mode">
+	          <PARAM name="mode_value" help="scheduler mode value" ptype="SUBCOMMAND" mode="switch" >
+	              <PARAM name="sp" help="Strict priority(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+	              <PARAM name="dwrr" help="Dificit weighted round robin" ptype="SUBCOMMAND" mode="subcommand"/>
+	          </PARAM>
+	   
+	          <ACTION>cdbctl update/cdb/qos/qos_queue_shape_profile/${name}/mode/${mode_value}/</ACTION>
+                        
+ 		<CTCDESCRIPTION>
+Use this command to configure scheduling mode in scheduler profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default mode is sp
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set dwrr mode in scheduler profile p1.  
+    Switch(config)# qos scheduler-profile p1  
+    Switch(config-qos-scheduler-p1)# mode dwrr  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+
+	  </COMMAND>
+
+	  <COMMAND name="weight" help="Weight of DWRR">
+            <PARAM name="value" help="weight range, default is 1" ptype="QUEUE_WEIGHT"/>
+            
+            <ACTION> cdbctl update/cdb/qos/qos_queue_shape_profile/${name}/queue_weight/${value}/</ACTION>
+	                        
+ 		<CTCDESCRIPTION>
+Use this command to configure dwrr weight in scheduler profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set dwrr weight in scheduler profile p1.  
+    Switch(config)# qos scheduler-profile p1  
+    Switch(config-qos-scheduler-p1)# weight 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+
+        </COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure-qos-drop-view"
+	prompt="${SYSTEM_NAME}(config-qos-drop-profile-${name})# "
+	depth="1">
+
+<!-- Inheritance -->
+
+	<NAMESPACE ref="Configure"	help="false" completion="false"/>
+
+        <COMMAND name="exit" help="Exit from drop configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+        <COMMAND name="quit" help="Exit from drop configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        
+        <COMMAND name="green" help="Green">
+            <PARAM name="maximum" help="Maximum threshold" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="max" help="Maxinum threshold for green packet, uint is cell, default is 600" ptype="D2_DROP_THRD"/>
+            </PARAM>
+            <PARAM name="minimun" help="Minimun threshold" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="min" help="Minimun threshold for green packet(for wred drop), should less than maxinum threshold, uint is cell, default is 75" ptype="D2_DROP_THRD"/>
+            </PARAM>
+            <PARAM name="probability" optional="true" help="Drop probability config" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="prob" help="Random-detect drop probability for green packet, default is 61" ptype="DROP_PROB"/>
+            </PARAM>
+            
+            <ACTION>
+                if [ ${max} -le ${min} ];then
+                    echo "% Drop minimun threshold must less than maxinum threshold."
+                    exit 1
+                fi
+                cdbctl update/cdb/qos/qos_drop_profile/${name}/green_probability/${prob}/
+                if [ $? -eq 0 ]
+                then
+                    cdbctl update/cdb/qos/qos_drop_profile/${name}/green_max_threashold/${max}/
+                    cdbctl update/cdb/qos/qos_drop_profile/${name}/green_min_threashold/${min}/
+                fi
+            </ACTION>
+                      
+ 		<CTCDESCRIPTION>
+Use this command to configure green max threshold and probability in drop profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+All default value is 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set green max threshold and probability in drop profile p1.  
+    Switch(config)# qos drop-profile p1  
+    Switch(config-qos-drop-profile-p1)# green maximum 300 probability 20  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="yellow" help="Yellow">
+            <PARAM name="maximum" help="Maximum threshold" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="max" help="Maxinum threshold for yellow packet, uint is cell, default is 600" ptype="D2_DROP_THRD"/>
+            </PARAM>
+            <PARAM name="minimun" help="Minimun threshold" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="min" help="Minimun threshold for yellow packet(for wred drop), should less than maxinum threshold, uint is cell, default is 75" ptype="D2_DROP_THRD"/>
+            </PARAM>
+            <PARAM name="probability" optional="true" help="Drop probability config" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="prob" help="Random-detect drop probability for yellow packet, default is 61" ptype="DROP_PROB"/>
+            </PARAM>
+            
+            <ACTION>
+	          if [ ${max} -le ${min} ];then
+                    echo "% Drop minimun threshold must less than maxinum threshold."
+                    exit 1
+                fi
+                cdbctl update/cdb/qos/qos_drop_profile/${name}/yellow_probability/${prob}/
+                if [ $? -eq 0 ]
+                then
+                    cdbctl update/cdb/qos/qos_drop_profile/${name}/yellow_max_threashold/${max}/
+                    cdbctl update/cdb/qos/qos_drop_profile/${name}/yellow_min_threashold/${min}/
+                fi
+            </ACTION>
+                
+ 		<CTCDESCRIPTION>
+Use this command to configure yellow max threshold and probability in drop profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+All default value is 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set yellow max threshold and probability in drop profile p1.  
+    Switch(config)# qos drop-profile p1  
+    Switch(config-qos-drop-profile-p1)# yellow maximum 250 probability 15  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="red" help="Red">
+            <PARAM name="maximum" help="Maximum threshold" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="max" help="Maxinum threshold for red packet, uint is cell, default is 600" ptype="D2_DROP_THRD"/>
+            </PARAM>
+            <PARAM name="minimun" help="Minimun threshold" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="min" help="Minimun threshold for red packet(for wred drop), should less than maxinum threshold, uint is cell, default is 75" ptype="D2_DROP_THRD"/>
+            </PARAM>
+            <PARAM name="probability" optional="true" help="Drop probability config" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="prob" help="Random-detect drop probability for red packet, default is 61" ptype="DROP_PROB"/>
+            </PARAM>
+            
+            <ACTION>
+		    if [ ${max} -le ${min} ];then
+                    echo "% Drop minimun threshold must less than maxinum threshold."
+                    exit 1
+                fi
+                cdbctl update/cdb/qos/qos_drop_profile/${name}/red_probability/${prob}/
+                if [ $? -eq 0 ]
+                then
+                    cdbctl update/cdb/qos/qos_drop_profile/${name}/red_max_threashold/${max}/
+                    cdbctl update/cdb/qos/qos_drop_profile/${name}/red_min_threashold/${min}/
+                fi
+            </ACTION>
+	                        
+ 		<CTCDESCRIPTION>
+Use this command to configure red max threshold and min threshold and probability in drop profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+All default value is 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set red max threshold and min threshold and probability in drop profile p1.  
+    Switch(config)# qos drop-profile p1  
+    Switch(config-qos-drop-profile-p1)# red maximum 200 probability 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+
+        </COMMAND>
+            
+</VIEW>
+
+
+
+<VIEW name="Configure">
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+    <COMMAND name="qos port-shape-profile" help="Configure port shape profile">
+            <PARAM name="name" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="value" help="Specify port shape profile name" ptype="NAME_STRING"/>
+            </PARAM>
+			
+            <ACTION>
+                cdbctl update/cdb/aclqos_if/port_shape_profile/${iface}/scheduler_value/${value}/
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to apply a port-shape-profile profile on the interface. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-shape-profile p1 on interface eth-0-1.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# qos port-shape-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+    </COMMAND>
+
+	
+    <COMMAND name="no qos port-shape-profile" help="Configure port shape profile">
+	
+            <ACTION>
+                cdbctl update/cdb/aclqos_if/port_shape_profile/${iface}/scheduler_value//
+            </ACTION>
+					
+   		<CTCDESCRIPTION>
+Use this command to unapply a port-shape-profile on the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset port-shape-profile p1 on interface eth-0-1.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no qos port-shape-profile  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+    </COMMAND>
+
+   
+    <COMMAND name="qos queue" help="Queue config" view="configure-if-queue-view" viewid="qid=${id}">
+            <PARAM name="id" help="Queue Id" ptype="QUEUE_ID"/>
+			
+            <ACTION>
+            		    <!-- % Can't get into queue view from interface range view -->
+            		    domain=` echo ${ifacelist} | awk -F '-' '{print NF}' `
+            		    if [ $domain -eq 4 ]; then
+            		    	echo "% Can't get into queue view from interface range view!"	
+            		    	exit 1
+            		    fi
+			    cdbctl update/cdb/interface/${iface}/aclqos_if/
+			</ACTION>
+			
+    </COMMAND>
+</VIEW>
+
+<VIEW name="configure-if-queue-view" prompt="${SYSTEM_NAME}(config-if-${iface}-queue-${qid})# " depth="2">
+	<NAMESPACE ref="configure-if-view" help="false" completion="false"/>
+        <COMMAND name="no" help="Negate a command or set its defaults"/>
+        <COMMAND name="exit" help="End current mode and down to previous mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        <COMMAND name="quit" help="End current mode and down to previous mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        
+        <COMMAND name="drop-profile" help="Configure queue drop profile">
+            <PARAM name="name" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="value" help="Specify drop profile name" ptype="NAME_STRING"/>
+            </PARAM>
+			
+            <ACTION>
+                cdbctl update/cdb/aclqos_if/queue_drop_profile/${iface}/queue_id/${qid}/${value}/
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to apply a drop-policer profile on the port queue.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set drop-policer profile p1 on interface eth-0-1 queue 2.  
+    Switch(config-if-eth-0-1)# qos queue 2  
+    Switch(config-if-eth-0-1-queue-2)# drop-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no drop-profile" help="Configure queue drop profile">
+		
+            <ACTION>
+                    cdbctl update/cdb/aclqos_if/queue_drop_profile/${iface}/queue_id/${qid}//
+            </ACTION>
+					
+   		<CTCDESCRIPTION>
+Use this command to unapply a drop-policer profile on the port queue. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset drop-policer profile p1 on interface eth-0-1 queue 2.  
+    Switch(config-if-eth-0-1)# qos queue 2  
+    Switch(config-if-eth-0-1-queue-2)# no drop-profile  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+        </COMMAND>
+
+        <COMMAND name="scheduler-profile" help="Configure queue scheduler profile">
+            <PARAM name="name" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="value" help="Specify scheduler profile name" ptype="NAME_STRING"/>
+            </PARAM>
+			
+            <ACTION>
+                cdbctl update/cdb/aclqos_if/queue_shape_profile/${iface}/queue_id/${qid}/${value}/
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to apply a scheduler-policer profile on the port queue.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set scheduler-policer profile p1 on interface eth-0-1 queue 2.  
+    Switch(config-if-eth-0-1)# qos queue 2  
+    Switch(config-if-eth-0-1-queue-2)# scheduler-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no scheduler-profile" help="Configure queue scheduler profile">
+
+            <ACTION>
+                    cdbctl update/cdb/aclqos_if/queue_shape_profile/${iface}/queue_id/${qid}//
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to unapply a scheduler-policer profile on the port queue.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset scheduler-policer profile p1 on interface eth-0-1 queue 2.  
+    Switch(config-if-eth-0-1)# qos queue 2  
+    Switch(config-if-eth-0-1-queue-2)# no scheduler-profile  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+        </COMMAND>
+
+        
+
+    <COMMAND name="random-detect" optional="true" help="Random detect mode enable">
+            <PARAM name="enable" help="Enable wred" ptype="SUBCOMMAND" mode="subcommand"/>
+			
+            <ACTION>
+                cdbctl update/cdb/aclqos_if/queue_drop_mode/${iface}/queue_id/${qid}/1
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to set drop mode on port queue. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mode is WTD
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set WRED drop mode on interface eth-0-1 queue 2.  
+    Switch(config-if-eth-0-1)# qos queue 2  
+    Switch(config-if-eth-0-1-queue-2)# random-detect enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+        </COMMAND>
+
+        <COMMAND name="no random-detect" optional="true" help="Random detect mode enable">
+            <PARAM name="enable" help="Enable wred" ptype="SUBCOMMAND" mode="subcommand"/>
+			
+            <ACTION>
+                cdbctl update/cdb/aclqos_if/queue_drop_mode/${iface}/queue_id/${qid}/0
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to set drop mode on port queue. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mode is WTD
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set WTD drop mode on interface eth-0-1 queue 2.  
+    Switch(config-if-eth-0-1)# qos queue 2  
+    Switch(config-if-eth-0-1-queue-2)# no random-detect enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+    </COMMAND>    
+</VIEW>
+
+</CLISH_MODULE>
+

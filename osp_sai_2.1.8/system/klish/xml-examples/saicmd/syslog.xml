@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+SYSLOG
+</CTCMODULENAME>
+	
+	
+<VIEW name="Exec">
+
+<COMMAND name="show logging" help="Logging">
+<ACTION>cdbctl show/cdb/app/syslog_cfg</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show configration of logging.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following is sample output from the show logging command:     
+    Switch# show logging                                              
+    Current logging configuration:                                    
+    ============================================================      
+    logging buffer 500                                                
+    logging timestamp bsd                                             
+    logging file enable                                               
+    logging level file warning                                        
+    logging level module debug                                        
+    logging server disable                                            
+    logging server severity warning                                   
+    logging server facility local4                                    
+    logging merge disable                                             
+    logging merge fifo-size 1024                                      
+    logging merge timeout 10                                          
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="show logging buffer" help="Show logging buffer">
+    <PARAM name="lines" help="Specify the number of message(s) (-1000..+1000)" ptype="SYSLOGLINES" optional="true" default="20"/>
+	
+    <ACTION>
+cdbctl show/cdb/app/syslog_cfg/buffer/${lines}
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+ Use this command to show logging buffer messages.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show logging buffer command:   
+	Switch# show logging buffer     
+    Sep 14 08:59:16 Switch init-6: starting pid 27391, tty \'/dev/ttyS0\': \'/usr/sbin/klish\'    
+    Sep 14 08:59:16 Switch init-6: process \'/usr/sbin/klish\' (pid 27327) exited. Scheduling for restart.    
+    Sep 14 08:49:40 Switch APP-1: logout, vty 1, location 169.254.1.2, by telnet    
+    Sep 14 08:49:16 Switch init-6: starting pid 27327, tty \'/dev/ttyS0\': \'/usr/sbin/klish\'     
+    Sep 14 08:49:16 Switch init-6: process \'/usr/sbin/klish\' (pid 27259) exited. Scheduling for restart.    
+    Sep 14 08:39:15 Switch init-6: starting pid 27259, tty \'/dev/ttyS0\': \'/usr/sbin/klish\'    
+    Sep 14 08:39:15 Switch init-6: process \'/usr/sbin/klish\' (pid 27167) exited. Scheduling for restart.   
+    Sep 14 08:37:48 Switch APP-6: ready to service      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show logging buffer statistics" help="Show logging buffer statistics">
+    <ACTION>
+cdbctl show/cdb/app/syslog_cfg/statistics
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+Use this command to show the statistics of logging buffer.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following is sample output from the show logging buffer statistics command:  
+    Switch# show logging buffer statistics    
+    Logging buffer statistics:  
+    ============================================================    
+    Total processed 1059 entries   
+    Total dropped 0 entries      
+    Current have 500 entries           
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show logging levels" help="Severity level information">
+    <ACTION>
+echo "Severity  Name         Note"
+echo "============================================================"
+echo "0         emergency    system is unusable"
+echo "1         alert        action must be taken immediately"
+echo "2         critical     critical conditions"
+echo "3         error        error conditions"
+echo "4         warning      warning conditions"
+echo "5         notice       normal but significant condition"
+echo "6         information  informational"
+echo "7         debug        debug-level messages"
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+Use this command to show the severity level information of logging.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following is sample output from the show logging levels command:   
+    Switch# show logging levels   
+    Severity  Name         Note    
+    ============================================================    
+    0         emergency    system is unusable    
+    1         alert        action must be taken immediately   
+    2         critical     critical conditions   
+    3         error        error conditions   
+    4         warning      warning conditions   
+    5         notice       normal but significant condition    
+    6         information  informational    
+    7         debug        debug-level messages    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show logging facilities" help="Facility information">
+    <ACTION>
+echo "Logging facility information:"
+echo "Facility  Name        Note"
+echo "============================================================"
+echo "0         kern        kernel messages"
+echo "1         user        random user-level messages"
+echo "2         mail        mail system"
+echo "3         daemon      system daemons"
+echo "4         auth        security/authorization messages"
+echo "5         syslog      messages generated internally by syslogd"
+echo "6         lpr         line printer subsystem"
+echo "7         news        network news subsystem"
+echo "8         uucp        UUCP subsystem"
+echo "9         cron        clock daemon"
+echo "10        authpriv    security/authorization messages (private)"
+echo "11        ftp         ftp daemon"
+echo "16        local0      reserved for local use 0"
+echo "17        local1      reserved for local use 1"
+echo "18        local2      reserved for local use 2"
+echo "19        local3      reserved for local use 3"
+echo "20        local4      reserved for local use 4"
+echo "21        local5      reserved for local use 5"
+echo "22        local6      reserved for local use 6"
+echo "23        local7      reserved for local use 7"
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+Use this command to show the facility information of logging.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show logging facilities command:  
+	Switch# show logging facilities   
+    Logging facility information:    
+    Facility  Name        Note    
+    ============================================================    
+    0         kern        kernel messages    
+    1         user        random user-level messages    
+    2         mail        mail system     
+    3         daemon      system daemons     
+    4         auth        security/authorization messages     
+    5         syslog      messages generated internally by syslogd    
+    6         lpr         line printer subsystem    
+    7         news        network news subsystem    
+    8         uucp        UUCP subsystem     
+    9         cron        clock daemon    
+    10        authpriv    security/authorization messages (private)    
+    11        ftp         ftp daemon     
+    16        local0      reserved for local use 0    
+    17        local1      reserved for local use 1    
+    18        local2      reserved for local use 2    
+    19        local3      reserved for local use 3    
+    20        local4      reserved for local use 4    
+    21        local5      reserved for local use 5    
+    22        local6      reserved for local use 6    
+    23        local7      reserved for local use 7    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear logging" help="Logging"/>
+<COMMAND name="clear logging buffer" help="Clear logging buffer">
+<ACTION>cdbctl delete/cdb/app/syslog_cfg/clearbuf</ACTION>
+		
+		<CTCDESCRIPTION>
+To clear messages from the logging buffer, use the clear logging buffer command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Clear log messages in logging buffer
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to clear logging buffer:    
+    Switch# clear logging buffer    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging" help="Specify logging parameter"/>
+<COMMAND name="logging sync" help="Specify sync parameter" access="2">
+<ACTION>
+kill -1 `cat /var/run/syslog-ng.pid`
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to specify sync logging parameter.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following shows how to sync logging buffer:   
+    Switch# logging sync  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+<COMMAND name="no logging" help="Specify logging parameter" access="4"/>
+<COMMAND name="no logging server" help="Specify remote syslog server parameter"/>
+<COMMAND name="logging" help="Logging" access="4"/>
+
+<COMMAND name="logging buffer" help="Specify logging buffer line number">
+<PARAM name="lines" help="Line number value" ptype="CFGLOGLINES" default="500"/>
+
+<ACTION>cdbctl update/cdb/app/syslog_cfg/logging_lines/${lines}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to specify logging buffer line number. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+default is 500, range is 10 to 1000.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following shows how to set logging buffer line number to 10:   
+    Switch# logging buffer 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging buffer" help="Specify logging buffer line number">
+<ACTION>cdbctl update/cdb/app/syslog_cfg/logging_lines/500</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set logging buffer line number to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to set logging buffer line number to default value:     
+    Switch# no logging buffer    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="logging file"
+        help="Specify file parameter">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable write log to local file (default)" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="disable" help="Disable write log to local file" ptype="SUBCOMMAND" mode="subcommand" />  
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" == "enable" ]; then
+    cdbctl update/cdb/app/syslog_cfg/enable_to_file/1
+else
+    cdbctl update/cdb/app/syslog_cfg/enable_to_file/0
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To enable writing logs into files, use the logging file command in Global Configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If logging file will enabled, the log will be saved to flash:/syslog every 10 minutes.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging file is enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to enable logging file function:   
+    Switch(config)# logging file enable    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging operate" help="Specify operate parameter">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable this option" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="disable" help="Disable this option (default)" ptype="SUBCOMMAND" mode="subcommand" />  
+    </PARAM>
+    <ACTION>
+if [ "${opt}" == "enable" ]; then
+    cdbctl update/cdb/app/syslog_cfg/enable_operate/1
+else
+    cdbctl update/cdb/app/syslog_cfg/enable_operate/0
+fi
+    </ACTION>
+</COMMAND>
+
+<COMMAND name="logging level" help="Specify severity level"/>
+<COMMAND name="no logging level" help="Specify severity level"/>
+<COMMAND name="logging level file"  help="Severity level for file">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="severity" help="Severity level" ptype="LOGSEVERITY"/> 
+        <PARAM name="emergency" help="Severity level emergency   (severity=0)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="alert"     help="Severity level alert       (severity=1)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="critical"  help="Severity level critical    (severity=2)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="error"     help="Severity level error       (severity=3)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="warning"   help="Severity level warning     (severity=4)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="notice"    help="Severity level notice      (severity=5)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="information" help="Severity level information (severity=6, default)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="debug"     help="Severity level debug       (severity=7)" ptype="SUBCOMMAND" mode="subcommand" />
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" != "severity" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/${opt}
+elif [ "${severity}" == "0" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/emergency
+elif [ "${severity}" == "1" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/alert
+elif [ "${severity}" == "2" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/critical
+elif [ "${severity}" == "3" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/error
+elif [ "${severity}" == "4" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/warning
+elif [ "${severity}" == "5" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/notice
+elif [ "${severity}" == "6" ]; then
+    cdbctl update/cdb/app/syslog_cfg/file_severity/information
+else
+    cdbctl update/cdb/app/syslog_cfg/file_severity/debug
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To set severity level while writing logs into files, use the logging level file command in Global Configuration mode. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Specifying a severity-level causes messages only at that level and numerically lower levels to files.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging file level is warning.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the user specifies that only messages of the levels error, critical, alerts, and emergency be logged to files:   
+    Switch(config)# logging level file error   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging level file"
+        help="Severity level for file">
+    <ACTION>
+cdbctl update/cdb/app/syslog_cfg/file_severity/information
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To return the logging to the default level, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Logging file level is warning.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging file level is warning.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the user specifies messages of logging levels to default be logged to files:   
+    Switch(config)# no logging level file     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging level module" help="Severity level for modules">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="severity" help="Severity level" ptype="LOGSEVERITY"/> 
+        <PARAM name="emergency" help="Severity level emergency   (severity=0)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="alert"     help="Severity level alert       (severity=1)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="critical"  help="Severity level critical    (severity=2)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="error"     help="Severity level error       (severity=3)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="warning"   help="Severity level warning     (severity=4)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="notice"    help="Severity level notice      (severity=5)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="information" help="Severity level information (severity=6)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="debug"     help="Severity level debug       (severity=7, default)" ptype="SUBCOMMAND" mode="subcommand" />
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" != "severity" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/${opt}
+elif [ "${severity}" == "0" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/emergency
+elif [ "${severity}" == "1" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/alert
+elif [ "${severity}" == "2" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/critical
+elif [ "${severity}" == "3" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/error
+elif [ "${severity}" == "4" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/warning
+elif [ "${severity}" == "5" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/notice
+elif [ "${severity}" == "6" ]; then
+    cdbctl update/cdb/app/syslog_cfg/module_severity/information
+else
+    cdbctl update/cdb/app/syslog_cfg/module_severity/debug
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To set severity level, use the logging level module command in Global Configuration mode. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Specifying a severity-level causes messages only at that level and numerically lower levels of the modules.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default logging level module is debug.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the user specifies that only messages of the levels error, critical, alerts, and emergency be logged:  
+    Switch(config)# logging level module error  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging level module" help="Severity level for modules">
+    <ACTION>
+cdbctl update/cdb/app/syslog_cfg/module_severity/debug
+vtysh -c "configure terminal" -c "log syslog warning" -c "end"
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To return the logging to the default level, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Specifying a severity-level causes messages only at that level and numerically lower levels of the modules.    
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default logging level module is debug.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example shows set the logging level module to default value:  
+    Switch(config)# no logging level module    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging timestamp" help="Specify timestamp format">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="date" help="Date command style" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="bsd" help="BSD style (RFC 3164)" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="iso" help="ISO style (RFC 3339)" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="none" help="No timestamp" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="rfc3164" help="RFC 3164 style (bsd)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="rfc3339" help="RFC 3339 style (iso)" ptype="SUBCOMMAND" mode="subcommand" /> 
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" == "rfc3164" ]; then
+    cdbctl update/cdb/app/syslog_cfg/timestamp/bsd
+elif [ "${opt}" == "rfc3339" ]; then
+    cdbctl update/cdb/app/syslog_cfg/timestamp/iso      
+else
+    cdbctl update/cdb/app/syslog_cfg/timestamp/${opt}
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To configure the system to apply a time-stamp to debugging messages or system logging messages, use the logging timestamps command in Global Configuration mode. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to specify the timestamp in logger message.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default timestamp format is BSD.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to set the logging timestamp to iso:   
+    Switch(config)# logging timestamp iso   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging timestamp" help="Specify timestamp format">
+    <ACTION>
+cdbctl update/cdb/app/syslog_cfg/timestamp/bsd
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To reset the default timestamp format, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to specify the timestamp in logger message.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default timestamp format is BSD.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to set the logging timestamp to default value:   
+    Switch(config)# no logging timestamp    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging server" help="Specify remote syslog server parameter">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable remote syslog server" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="disable" help="Disable remote syslog server" ptype="SUBCOMMAND" mode="subcommand" />  
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" == "enable" ]; then
+    cdbctl update/cdb/app/syslog_cfg/enable_to_server/1
+else
+    cdbctl update/cdb/app/syslog_cfg/enable_to_server/0
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To enable the logging to the remote logging servers, use the logging server command in Global Configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to send logger to a remote server.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging operations is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to use logging server command:    
+    Switch(config)# logging server enable    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging server severity" help="Specify severity level">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="severity" help="Severity level" ptype="LOGSEVERITY"/> 
+        <PARAM name="emergency" help="Severity level emergency   (severity=0)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="alert"     help="Severity level alert       (severity=1)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="critical"  help="Severity level critical    (severity=2)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="error"     help="Severity level error       (severity=3)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="warning"   help="Severity level warning     (severity=4, default)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="notice"    help="Severity level notice      (severity=5)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="information" help="Severity level information (severity=6)" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="debug"     help="Severity level debug       (severity=7)" ptype="SUBCOMMAND" mode="subcommand" />
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" != "severity" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/${opt}
+elif [ "${severity}" == "0" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/emergency
+elif [ "${severity}" == "1" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/alert
+elif [ "${severity}" == "2" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/critical
+elif [ "${severity}" == "3" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/error
+elif [ "${severity}" == "4" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/warning
+elif [ "${severity}" == "5" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/notice
+elif [ "${severity}" == "6" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_severity/information
+else
+    cdbctl update/cdb/app/syslog_cfg/server_severity/debug
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To set severity level while writing logs into servers, use the logging server severity command in Global Configuration mode. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set severity level while writing logs into servers.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging server default level is warning.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the user specifies that only messages of the levels error, critical, alerts, and emergency be logged to server:    
+    Switch(config)# logging server severity error    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging server severity" help="Specify severity level">
+    <ACTION>
+cdbctl update/cdb/app/syslog_cfg/server_severity/warning
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To revert to the default severity level while writing logs into servers, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set severity level while writing logs into servers.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging server default level is warning.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, set the logging server severity to default level:    
+    Switch(config)# no logging server severity      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="logging server facility" help="Specify facility">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="fac" help="Facility value" ptype="LOGFAC"/> 
+        <PARAM name="fac2" help="Facility value" ptype="LOGFAC2"/> 
+        <PARAM name="auth" help="Facility auth" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="authpriv" help="Facility authpriv" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="cron" help="Facility cron" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="daemon" help="Facility daemon" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="ftp" help="Facility ftp" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="kern" help="Facility kern" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local0" help="Facility local0" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local1" help="Facility local1" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local2" help="Facility local2" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local3" help="Facility local3" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local4" help="Facility local4" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local5" help="Facility local5" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local6" help="Facility local6" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="local7" help="Facility local7" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="lpr" help="Facility lpr" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="mail" help="Facility mail" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="news" help="Facility news" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="syslog" help="Facility syslog" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="user" help="Facility user" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="uucp" help="Facility uucp" ptype="SUBCOMMAND" mode="subcommand" />
+    </PARAM>
+	
+    <ACTION>
+if [ "${opt}" == "fac" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_facility/${fac}
+elif [ "${opt}" == "fac2" ]; then
+    cdbctl update/cdb/app/syslog_cfg/server_facility/${fac2}
+else
+    cdbctl update/cdb/app/syslog_cfg/server_facility/${opt}
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To configure the syslog facility in which error messages are sent, use the logging server facility command in Global Configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is local4.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to set logging  server facility command:    
+    Switch(config)# logging server facility local3    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging server facility" help="Specify facility">
+    <ACTION>
+cdbctl update/cdb/app/syslog_cfg/server_facility/local4
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To revert to the default of local4, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+ Default is local4.
+        </CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to set logging server facility to default command:    
+    Switch(config)# no logging server facility        
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging server address" help="Specify IP address parameter">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="ipaddr" help="Remote server IP address" ptype="IP_ADDR">
+            <PARAM name="source-ip" help="Bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+                <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+            </PARAM>
+        </PARAM>
+        <PARAM name="ipv6addr" help="Remote server IPV6 address" ptype="IPV6_ADDR" />
+    </PARAM>
+    <ACTION>
+if [ ${host} == "ipaddr" ]; then	
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+        cdbctl update/cdb/l3/check_mgmt_if_ip/${ipaddr}
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    else
+        NS_BAND=inband
+    fi
+    
+    if [ -n "${source-ip}" ]; then
+        cdbctl create/cdb/sys/inband_snat/1#514#${ipaddr}/type/4/ip/${bind_addr}/
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+    
+    cdbctl create/cdb/sys/ns_route/1#514#${ipaddr}/4/$NS_BAND/
+    if [ $? -eq 0 ]; then
+        if [ -n "${mgmt-if}" ]; then
+            cdbctl update/cdb/app/syslog_cfg/server_addr/64/${ipaddr} # mgmt
+        else
+            cdbctl update/cdb/app/syslog_cfg/server_addr/0/${ipaddr} # default
+        fi
+    
+        if [ $? -ne 0 ]; then # add logging server failed, delete ns_route entry
+            cdbctl delete/cdb/sys/ns_route/1#514#${ipaddr}/$NS_BAND/
+            if [ -n "${source-ip}" ]; then
+                cdbctl delete/cdb/sys/inband_snat/1#514#${ipaddr}
+            fi
+        fi
+    else
+        if [ -n "${source-ip}" ]; then
+            cdbctl delete/cdb/sys/inband_snat/1#514#${ipaddr}
+        fi
+    fi
+else
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+        cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6addr}
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    else
+        NS_BAND=inband
+    fi
+
+    cdbctl create/cdb/sys/ns_route/1#514#${ipv6addr}/4/$NS_BAND/
+    if [ $? -eq 0 ]; then
+        if [ -n "${mgmt-if}" ]; then
+            cdbctl update/cdb/app/syslog_cfg/server_addr/64/${ipv6addr} # mgmt
+        else
+            cdbctl update/cdb/app/syslog_cfg/server_addr/0/${ipv6addr} # default
+        fi
+    
+        if [ $? -ne 0 ]; then # add logging server failed, delete ns_route entry
+            cdbctl delete/cdb/sys/ns_route/1#514#${ipv6addr}/$NS_BAND/
+        fi
+    fi
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To log system messages and debug output to a remote server, use the logging server address command in Global Configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The logging server address command identifies a remote server (usually a device serving as a syslog server) to receive logging messages. By issuing this command more than once, you can build a list of servers that receive logging messages.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+System logging messages are not sent to any remote server.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, messages are logged to a server at 10.10.38.236:             
+    Switch(config)# logging server address 10.10.38.236         
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging server address" help="Specify IP address parameter">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="ipaddr" help="Remote server IP address" ptype="IP_ADDR"/>
+    <PARAM name="ipv6addr" help="Remote server IPV6 address" ptype="IPV6_ADDR" />
+    </PARAM>
+    <ACTION>
+if [ ${host} == "ipaddr" ]; then
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+        cdbctl delete/cdb/app/syslog_cfg/server_addr/64/${ipaddr}  
+    else
+        NS_BAND=inband
+        cdbctl delete/cdb/app/syslog_cfg/server_addr/0/${ipaddr}   
+    fi
+    
+    if [ $? -eq 0 ]; then
+        cdbctl delete/cdb/sys/ns_route/1#514#${ipaddr}/$NS_BAND/
+        cdbctl delete/cdb/sys/inband_snat/1#514#${ipaddr}
+    fi
+else
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+        cdbctl delete/cdb/app/syslog_cfg/server_addr/64/${ipv6addr} 
+    else
+        NS_BAND=inband
+        cdbctl delete/cdb/app/syslog_cfg/server_addr/0/${ipv6addr}      
+    fi
+    
+    if [ $? -eq 0 ]; then
+        cdbctl delete/cdb/sys/ns_route/1#514#${ipv6addr}/$NS_BAND/
+    fi
+fi
+    </ACTION>
+			
+		<CTCDESCRIPTION>
+To remove a specified logging server from the configuration, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The logging server address command identifies a remote server (usually a device serving as a syslog server) to receive logging messages. By issuing this command more than once, you can build a list of servers that receive logging messages.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+System logging messages are not sent to any remote server.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example shows how to remove a specified logging server from the configuration:
+    Switch(config)# no logging server address 10.10.38.236
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="logging merge" help="Specify merge parameter">
+<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">   
+    <PARAM name="enable" help="Enable this option (default)" ptype="SUBCOMMAND" mode="subcommand" /> 
+    <PARAM name="disable" help="Disable this option" ptype="SUBCOMMAND" mode="subcommand" />  
+    <PARAM name="timeout" help="Specify timeout parameter" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="tov" help="Merge timeout range by second (default is 10s)" ptype="MERGETIMEOUT"/> 
+    </PARAM>
+    <PARAM name="fifo-size" help="Specify fifo-size parameter" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="fsv" help="Merge buffer size (default is 1024)" ptype="MERGEFSIZE"/> 
+    </PARAM>
+</PARAM>
+
+<ACTION>
+if [ "${opt}" == "enable" ]; then
+    cdbctl update/cdb/app/syslog_cfg/enable_merge/1
+elif [ "${opt}" == "disable" ]; then
+    cdbctl update/cdb/app/syslog_cfg/enable_merge/0
+elif [ "${opt}" == "timeout" ]; then
+    cdbctl update/cdb/app/syslog_cfg/merge_timeout/${tov}
+else
+    cdbctl update/cdb/app/syslog_cfg/merge_fifosize/${fsv}
+fi
+</ACTION>
+		
+		<CTCDESCRIPTION>
+To enable the logging mergence, use the logging merge command in Global Configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The logging merge command merges all the same logs into one during a specified time range. During this time, the switch buffered these same logs. You can use the timeout keyword to set the time range, and use the fifo-size to set the buffer size.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging mergence is enabled. Default timeout is 10, range is 1 to 300, default fifo-size is 1024, range is 100 to 10240.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to enable logging merge function:        
+    Switch(config)# logging merge enable    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no logging merge" help="Specify merge parameter">
+<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">        
+    <PARAM name="timeout" help="Specify timeout parameter" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="fifo-size" help="Specify fifo-size parameter" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION>
+if [ "${opt}" == "timeout" ]; then
+    cdbctl update/cdb/app/syslog_cfg/merge_timeout/10
+else
+    cdbctl update/cdb/app/syslog_cfg/merge_fifosize/1024
+fi
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set logging merge timeout or fifo-size to default value, use the no form of this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The logging merge command merges all the same logs into one during a specified time range. During this time, the switch buffered these same logs. You can use the timeout keyword to set the time range, and use the fifo-size to set the buffer size.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Logging mergence is enabled. Default timeout is 10, range is 1 to 300, default fifo-size is 1024, range is 100 to 10240.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following shows how to set logging merge timeout to default value:        
+    Switch(config)# no logging merge timeout  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+</CLISH_MODULE>

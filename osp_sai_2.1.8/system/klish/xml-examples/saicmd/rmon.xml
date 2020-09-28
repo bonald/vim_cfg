@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+	<COMMAND name="show rmon" help="Remote Monitoring Protocol (RMON)"/>
+	<COMMAND name="show rmon event" help="Event">
+		<PARAM name="index" help="Event index" optional="true" ptype="RMON_INDEX"/>
+
+		<ACTION>
+			cdbctl show/cdb/app/show_rmon_event/${index}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of rmon events.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of rmon events.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of rmon events:    
+	Centec# show rmon event   
+	Event Index = 1   
+		Description         RMON_SNMP  
+		Type                Log Trap  
+		Community name      centec  
+		Last Time Sent      not sent yet  
+		Owner               yu  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon event
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show rmon alarm" help="Alarm">
+		<PARAM name="index" help="Alarm index" optional="true" ptype="RMON_INDEX"/>
+
+		<ACTION>
+			cdbctl show/cdb/app/show_rmon_alarm/${index}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of rmon alarms.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of rmon alarms.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of rmon alarms:    
+	Centec# show rmon alarm   
+	Alarm Index = 1   
+	  Status              VALID  
+	  Variable            1.3.6.1.2.1.16.1.1.1.3.1  
+	  Interval            100s  
+	  Type                Delta  
+	  Value               0  
+	  Rising Threshold    10000  
+	  Rising Event        1  
+	  Falling Threshold   100  
+	  Falling Event       1  
+	  Owner               yu  
+  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon alarm
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show rmon history" help="History">
+		<PARAM name="index" help="History index" optional="true" ptype="RMON_INDEX"/>
+
+		<ACTION>
+			cdbctl show/cdb/app/show_rmon_history/${index}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of rmon alarms.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of rmon historys.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of rmon historys:    
+	Centec# show rmon history   
+	History index = 1  
+	  Data source ifindex = 1  
+	  Buckets requested = 3  
+	  Buckets granted = 3  
+	  Interval = 30s  
+	  Owner: RMON_SNMP  
+	    Sample # 1 Begin at 0days 3h:44m:18s  
+	     Received 0 octets, 0 packets  
+	     0 broadcast and 0 multicast packets  
+	     0 undersized and 0 oversized packets  
+	     0 dropped packet events and 0 fragments  
+	     0 CRC alignment errors and 0 collisions.  
+	     Network utilization is estimated at 0  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon collection history
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show rmon statistics" help="Statistics">
+		<PARAM name="index" help="Statistics index" optional="true" ptype="RMON_INDEX"/>
+
+		<ACTION>
+			cdbctl show/cdb/app/show_rmon_ether_stats/${index}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of rmon statistics.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of rmon statistics.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of rmon statistics:    
+	Centec# show rmon statistics   
+	Rmon collection index 1   
+	  Statistics ifindex = 1, Owner: RMON_SNMP   
+	  Input packets 0, octets 0, dropped 0  
+	  Broadcast packets 0, multicast packets 0  
+	  CRC alignment errors 0, collisions 0  
+	  Undersized packets 0, oversized packets 0, fragments 0  
+	  Packets received of length (in octets):  
+	    64: 0,  65-127: 0, 128-255: 0  
+	    256-511: 0,  512-1023: 0, 1024-max: 0  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon collection stats
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="rmon" help="Remote Monitoring Protocol (RMON)"/>
+	<COMMAND name="no rmon" help="Remote Monitoring Protocol (RMON)"/>
+
+	<COMMAND name="rmon event" help="Event command">
+		<PARAM name="index" help="Event Index" ptype="RMON_INDEX"/>
+		<PARAM name="log_mode" help="Mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="none">
+			<PARAM name="log" optional="true" help="Log the event" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="trap" optional="true" help="Send trap for the event" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="cname" help="Event community, starting with alphanumeric and can only include [0-9a-zA-Z.-_], max length is 127" ptype="SNMPNAME"/>
+		</PARAM>
+		<PARAM name="description" optional="true" help="Event description" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="desc" help="Description string, starting with alphanumeric and can only include [0-9a-zA-Z.-_], max length is 127" ptype="SNMPNAME"/>
+		</PARAM>
+		<PARAM name="owner" optional="true" help="Owner identity" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="own" help="Owner name, starting with alphanumeric and can only include [0-9a-zA-Z.-_], max length is 15" ptype="SNMPNAME"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl create/cdb/app/rmon_event/${index}/log/${log_mode}/trap/${cname}/description/${desc}/owner/${own}/end
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a rmon event.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a rmon event.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a rmon event:  
+	DUT1(config)# rmon event 1 log trap centec  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no rmon event
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no rmon event" help="Event command">
+		<PARAM name="index" help="Event Index" ptype="RMON_INDEX"/>
+
+		<ACTION>
+			cdbctl delete/cdb/app/rmon_event/${index}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a rmon event.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a rmon event.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a rmon event:  
+	DUT1(config)# no rmon event 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon event
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="rmon alarm" help="Alarm command">
+		<PARAM name="index" help="Alarm Index" ptype="RMON_INDEX"/>
+		<PARAM name="var" help="Variable for setting alarm(etherStatsEntry.m.n, 1.3.6.1.2.1.16.1.1.1.m.n(m should in range [3, 19]) or etherStats*.x)" ptype="RMON_VARIABLE"/>
+		<PARAM name="interval" help="Alarm interval" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="inter" help="Seconds" ptype="RMON_ALARM_INTERVAL"/>
+		</PARAM>
+		<PARAM name="sample_type" help="SampleType" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="delta" help="Delta" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="absolute" help="Absolute" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="rising-threshold" help="Alarm rising threshold" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="rising" help="Rising threshold value" ptype="RMON_ALARM_THRESHOLD"/>
+			<PARAM name="rising-event" help="Event for rising alarm" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="r_event_index" help="Event index" ptype="RMON_INDEX"/>
+			</PARAM>
+		</PARAM>
+		<PARAM name="falling-threshold" help="Alarm falling threshold" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="falling" help="Falling threshold value" ptype="RMON_ALARM_THRESHOLD"/>
+			<PARAM name="falling-event" help="Event for falling alarm" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="f_event_index" help="Event index" ptype="RMON_INDEX"/>
+			</PARAM>
+		</PARAM>
+		<PARAM name="owner" optional="true" help="Owner identity" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="own" help="Owner name, starting with alphanumeric and can only include [0-9a-zA-Z.-_], max length is 15" ptype="SNMPNAME"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl create/cdb/app/rmon_alarm/${index}/variable/${var}/interval/${inter}/sampletype/${sample_type}/rising/${rising}/${r_event_index}/falling/${falling}/${f_event_index}/owner/${own}/end
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a rmon alarm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a rmon alarm.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a rmon alarm:  
+	DUT1(config)# rmon alarm 1 1.3.6.1.2.1.16.1.1.1.3.1 interval 100 delta rising-threshold 10000 rising-event 1 falling-threshold 100 falling-event 1 owner yu    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no rmon alarm
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no rmon alarm" help="Alarm command">
+		<PARAM name="index" help="Alarm Index" ptype="RMON_INDEX"/>
+
+		<ACTION>
+			cdbctl delete/cdb/app/rmon_alarm/${index}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a rmon alarm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a rmon alarm.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a rmon alarm:  
+	DUT1(config)# no rmon alarm 1 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon alarm
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="rmon collection" help="Collection"/>
+	<COMMAND name="no rmon collection" help="Collection"/>
+
+	<COMMAND name="rmon collection stats" help="Ethernet Statistics">
+		<PARAM name="index" help="Stat Index" ptype="RMON_INDEX"/>
+		<PARAM name="owner" optional="true" help="Owner identity" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="own" help="Owner name, starting with alphanumeric and can only include [0-9a-zA-Z.-_], max length is 15" ptype="SNMPNAME"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl create/cdb/app/rmon_ether_stats/${index}/if/${iface}/owner/${own}/end
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a rmon statistics.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a rmon statistics.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a rmon statistics:  
+	DUT1(config)# rmon collection stats 1 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no rmon collection stats
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no rmon collection stats" help="Ethernet Statistics">
+
+		<ACTION>
+			cdbctl delete/cdb/app/rmon_ether_stats/0/if/${iface}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a rmon statistics.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a rmon statistics.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a rmon statistics:  
+	DUT1(config)# no rmon collection stats 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon collection stats
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="rmon collection history" help="History commands">
+		<PARAM name="index" help="History Index" ptype="RMON_INDEX"/>
+		<PARAM name="buckets" optional="true" help="Buckets (default 5)" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="bucket" help="Buckets number (default 5)" ptype="RMON_BUCKET"/>
+		</PARAM>
+		<PARAM name="interval" optional="true" help="Polling Interval (default 1800s)" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="inter" help="Seconds (default 1800s)" ptype="RMON_INTERVAL"/>
+		</PARAM>
+		<PARAM name="owner" optional="true" help="Owner identity" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="own" help="Owner name, starting with alphanumeric and can only include [0-9a-zA-Z.-_], max length is 15" ptype="SNMPNAME"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl create/cdb/app/rmon_history/${index}/if/${iface}/bucket/${bucket}/interval/${inter}/owner/${own}/end
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a rmon history.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a rmon history.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a rmon history:  
+	DUT1(config)# rmon collection history 1 buckets 3 interval 30  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no rmon collection history
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no rmon collection history" help="Ethernet Statistics">
+
+		<ACTION>
+			cdbctl delete/cdb/app/rmon_history/0/if/${iface}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a rmon history.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a rmon history.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a rmon history:  
+	DUT1(config)# no rmon history 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmon collection history
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+</CLISH_MODULE>

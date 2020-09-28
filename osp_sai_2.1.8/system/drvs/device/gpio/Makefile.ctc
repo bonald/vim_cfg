@@ -1,0 +1,12 @@
+include $(MK_DIR)/sys.mk
+LIB = gpio
+SRCS  = gpio_api.c
+SRCS  += gpio_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/gpio
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+
+include $(MK_DIR)/lib.mk

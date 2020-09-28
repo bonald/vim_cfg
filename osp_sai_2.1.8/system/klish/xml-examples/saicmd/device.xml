@@ -1,0 +1,1661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+DEVICE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+    <COMMAND name="md5sum" help="Calculate MD5sum">
+		<PARAM name="GFILENAME" help="Directory name or file direction" ptype="STRING"/>
+		<ACTION>
+			udisk="udisk:"
+            cmd="md5sum "
+            
+            showname="${GFILENAME}"
+            cmdname="${GFILENAME}"
+            accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+            if [ "$?" != "0" ] ; then
+                echo "% Invalid file name"
+                exit 1
+            fi
+            
+            if ! [ -f $accessname ]; then
+                echo "% Please specify regular file"
+                exit
+            fi
+			
+			cmd=$cmd" $accessname"
+            
+            if [[ $cmdname == $udisk* ]]
+            then
+                result=`$cmd | sed -e 's/\/mnt\/udisk\//udisk:\//'`
+            else
+                result=`$cmd | sed -e 's/\/mnt\/flash\//flash:\//'`
+            fi
+		# added by tongzb for bug 54393,2019-11-15
+		echo 3 > /proc/sys/vm/drop_caches
+            echo $result
+		</ACTION>
+		<CTCDESCRIPTION>
+To calculate file MD5sum, use the show version command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command can calculate file MD5sum.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to calculate file MD5sum.    
+    Centec# md5 flash:/syslog
+    ecd62b2ab1703e77e398ab18e347735d flash:/syslog  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>        
+	</COMMAND>
+
+	<COMMAND name="sha512sum" help="Calculate sha512sum">
+		<PARAM name="GFILENAME" help="Directory name or file direction" ptype="STRING"/>
+		<ACTION>
+			udisk="udisk:"
+            cmd="sha512sum "
+            
+            showname="${GFILENAME}"
+            cmdname="${GFILENAME}"
+            accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+            if [ "$?" != "0" ] ; then
+                echo "% Invalid file name"
+                exit 1
+            fi
+            
+            if ! [ -f $accessname ]; then
+                echo "% Please specify regular file"
+                exit
+            fi
+			
+			cmd=$cmd" $accessname"
+            
+            if [[ $cmdname == $udisk* ]]; then
+                result=`$cmd | sed -e 's/\/mnt\/udisk\//udisk:\//'`
+            else
+                result=`$cmd | sed -e 's/\/mnt\/flash\//flash:\//'`
+            fi
+            
+            if test -z "$result"; then
+            	usleep 1
+            else
+            	echo "$result" | awk '{split($0, str, "[ ]"); print str[1]}'
+            fi
+		</ACTION>
+		<CTCDESCRIPTION>
+To calculate file sha512sum, use the show version command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command can calculate file sha512sum.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to calculate file sha512sum.    
+    Centec# sha512sum flash:/syslog
+    ecd62b2ab1703e77e398ab18e347735decd62b2ab1703e77e398ab18e347735decd62b2ab1703e77e398ab18e347735d
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>        
+	</COMMAND>
+    
+	<COMMAND name="show version"
+		help="System version information">
+		<ACTION>cdbctl show/cdb/sys/version</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="show chc-version" hidden="true" 
+		help="System real version information">
+		<ACTION>cdbctl show/cdb/sys/version/force</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show environment"
+		help="Display environment">
+		<ACTION>cdbctl show/cdb/sys/show_environment</ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show the hardware environment information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the hardware environment information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display hardware environment information.  
+    Switch# show environment   
+    Fan tray status:  
+    Index     Status      
+    1         PRESENT  
+    FanIndex Status SpeedRate Mode   
+    --------+------+---------+-----  
+    1-1      OK      40%      Auto   
+    1-2      OK      40%      Auto   
+    1-3      OK      40%      Auto   
+    1-4      OK      40%      Auto   
+    ---------------------------------------------------------  
+    Power status:  
+    Index Status    Power   Type    Alert     
+    -----+---------+-------+-------+-------  
+    1     PRESENT   OK      AC      NO          
+    2     PRESENT   FAIL    -       ALERT     
+    ---------------------------------------------------------  
+    Sensor status (Degree Centigrade):    
+    Index Temperature Lower_alarm Upper_alarm Critical_limit Position   
+    -----+-----------+-----------+-----------+--------------+----------   
+    1     38          5           65          80             AROUND_CHIP   
+    2     40          5           65          80             AROUND_CHIP   
+    3     31          5           65          80             AROUND_FAN   
+    4     35          5           65          80             AROUND_CPU    
+    5     60          -10         100         110            SWITCH_CHIP    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+temperature
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show psu-pmbus-info" hidden="true" help="Display psu pmbus information">
+		<ACTION>cdbctl show/cdb/sys/show_psu_pmbus_info</ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show the psu pmbus information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the psu pmbus information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display psu pmbus information.  
+    Switch# show psu-pmbus-info
+    Psu 0:
+            status_byte: 0x00
+            status_word: 0x0000
+            status_vout: 0x00
+            status_iout: 0x00
+            status_input: 0x00
+            status_temperature: 0x00
+            status_cml: 0x02
+            status_other: 0x55
+            status_mfr_specific: 0x00
+            status_fans_1_2: 0x00
+            status_fans_3_4: 0xb1
+    Psu 1:
+            status_byte: 0x08
+            status_word: 0x0008
+            status_vout: 0x00
+            status_iout: 0x00
+            status_input: 0x08
+            status_temperature: 0x00
+            status_cml: 0x02
+            status_other: 0x00
+            status_mfr_specific: 0x00
+            status_fans_1_2: 0x00
+            status_fans_3_4: 0xb3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show vcm-info"
+		help="Display voltage/current monitor information">
+		<ACTION>cdbctl show/cdb/sys/show_vcm</ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show the vcm information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the vcm information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display vcm information.  
+    Switch# show vcm-info
+Module_no  Pin_name             value       Lower_alarm Upper_alarm Units
+1-1       BMR464_OUT_VOLT       0.8700      0.7650      0.9350      V
+1-2       BMR464_IN_VOLT        11.7812     10.8000     13.2000     V
+1-3       BMR464_OUT_CURR       11.7188     1.0000      1000.0000   A
+1-4       BMR464_TMPR           42.9375     -20.0000    92.0000     C
+
+2-1       BMR464_OUT_VOLT       0.8700      0.7650      0.9350      V
+2-2       BMR464_IN_VOLT        11.7656     10.8000     13.2000     V
+2-3       BMR464_OUT_CURR       11.9688     1.0000      1000.0000   A
+2-4       BMR464_TMPR           40.6875     -20.0000    92.0000     C
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+        
+    <COMMAND name="show clock"
+		help="Display the system clock">
+                <ACTION>cdbctl show/cdb/sys/clock</ACTION>
+								
+		<CTCDESCRIPTION>
+Use this command to show the clock information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The show clock command can get the clock information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display clock information.  
+    Switch# show clock    
+    14:19:53 UTC Wed Sep 16 2015     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock set datetime
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show combo-port" help="Combo port">
+		<ACTION>
+			cdbctl read/cdb/sys/show_combo
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show transceiver" help="Display transceiver information">
+		<PARAM name="iface_name" help="Ethernet interface name" optional="true" ptype="IF_NAME_E" default="all"/>	
+		<PARAM name="detail" help="Detail information" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>	
+		
+		<ACTION>cdbctl show/cdb/sys/show_fiber/${iface_name}/${detail}</ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show the transceiver information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show the interface transceiver information,or the transceiver detail information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display transceiver information.  
+    Switch# show transceiver detail    
+         
+    Port eth-0-49/1 transceiver info:   
+    Transceiver Type: 40GBASE_CR4   
+     Transceiver Vendor Name : ATOP              
+     Transceiver PN          : APCP04-QSC030-28    
+     Transceiver S/N         : CP04Q50100010     
+    Transceiver Output Wavelength: N/A    
+    Supported Link Type and Length:    
+          Link Length for copper: 3 m   
+    Digital diagnostic is not implemented.  
+         
+    Port eth-0-49/2 transceiver info:    
+    Transceiver Type: 40GBASE_CR4    
+     Transceiver Vendor Name : ATOP              
+     Transceiver PN          : APCP04-QSC030-28   
+     Transceiver S/N         : CP04Q50100010    
+    Transceiver Output Wavelength: N/A    
+    Supported Link Type and Length:    
+          Link Length for copper: 3 m   
+    Digital diagnostic is not implemented.    
+         
+    Port eth-0-49/3 transceiver info:    
+    Transceiver Type: 40GBASE_CR4    
+     Transceiver Vendor Name : ATOP              
+     Transceiver PN          : APCP04-QSC030-28   
+     Transceiver S/N         : CP04Q50100010     
+    Transceiver Output Wavelength: N/A    
+    Supported Link Type and Length:     
+          Link Length for copper: 3 m    
+    Digital diagnostic is not implemented.   
+        
+    Port eth-0-49/4 transceiver info:    
+    Transceiver Type: 40GBASE_CR4   
+     Transceiver Vendor Name : ATOP              
+     Transceiver PN          : APCP04-QSC030-28   
+     Transceiver S/N         : CP04Q50100010     
+    Transceiver Output Wavelength: N/A   
+    Supported Link Type and Length:    
+          Link Length for copper: 3 m   
+    Digital diagnostic is not implemented.   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+   
+    <COMMAND name="show system" help="System"/>
+
+    <COMMAND name="show system summary" help="Summary of system information">
+        <ACTION>
+        echo "########## Version Table ##########"
+            cdbctl show/cdb/sys/version
+        echo "########## Management IP Table ##########"
+            cdbctl show/cdb/sys/manage_if/ipv4
+            cdbctl show/cdb/sys/manage_if/ipv6
+        echo "########## Route Mac Table ##########"    
+            cdbctl show/cdb/sys/sys_global/routemac
+        echo "########## Users Table ##########"    
+        	cdbctl show/cdb/app/login
+        echo "########## Memory Summary Table ##########"	
+            cdbctl show/cdb/sys/mem_summary 
+        </ACTION>  
+				
+		<CTCDESCRIPTION>
+Use this command to show the summary of system information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command to show the summary of system information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the summary of system information.  
+    Switch# show system summary 
+    ########## Version Table ##########
+    CNOS Software, E580, Version 0.0.0.15.it
+    Copyright (C) 2004-2015 Centec Networks Inc. All rights reserved.
+    The current running image is: flash:/boot/sai-v580-v1.0.0.3.it.d.bin
+        
+    Switch uptime is 0 days, 5 hours, 0 minutes    
+    Hardware Type        : 48X6Q    
+    SDRAM size           : 1024M    
+    Flash size           : 2048M    
+    Hardware Version     : 2.0    
+    EPLD Version         : 2.2    
+    BootRom Version      : ONIE-master-201505061800    
+    System serial number : E140GD15800C    
+    ########## Management IP Table ##########    
+    Management IP address:  10.10.33.225/24    
+    Gateway:  10.10.33.254    
+    ########## Route Mac Table ##########
+      Route MAC is: 001e.080a.ace5    
+    ########## Users Table ##########
+     Line           User       Host(s)              Idle       Location      
+     130 vty  0                idle                 00:32:19   10.10.22.235    
+    *131 vty  1                idle                 00:00:03   10.10.25.29    
+    ########## Memory Summary Table ##########
+    Total memory      : 1005816 KB    
+    Used memory       : 292156 KB    
+    Freed memory      : 713660 KB    
+    Buffer memory     : 0 KB    
+    Cached memory     : 146628 KB    
+    Memory utilization: 29.05%    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+    </COMMAND>
+
+	<COMMAND name="show reboot-info"
+		help="Show reboot information">
+		<ACTION>cdbctl show/cdb/sys/reboot_info </ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show reboot information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show reboot information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display reboot information:    
+    Switch# show reboot-info   
+    Times      Reboot Type     Reboot Time         
+    1          MANUAL          2015-09-14 17:32:14      
+    2          MANUAL          2015-09-14 19:35:20      
+    3          MANUAL          2015-09-14 19:41:03      
+    4          MANUAL          2015-09-14 20:18:36      
+    5          MANUAL          2015-09-14 21:35:11      
+    6          MANUAL          2015-09-14 21:44:30      
+    7          MANUAL          2015-09-15 11:19:15      
+    8          MANUAL          2015-09-15 19:30:40      
+    9          MANUAL          2015-09-15 20:40:39      
+    10         MANUAL          2015-09-16 09:23:39    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear reboot-info
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear reboot-info"
+		help="Clear reboot information">
+		<ACTION>cdbctl update/cdb/sys/chassis/reset_reboot_info </ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to clear reboot information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The clear reboot-info command can clear reboot information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to clear reboot information:   
+    Switch# clear reboot-info    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show reboot-info
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="set" help="Set device attribute"/>
+	<COMMAND name="set device" help="Set device"/>
+	<COMMAND name="set device id-led" help="Set device indicate led">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">		
+            <PARAM name="on" help="Force on" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="off" help="Force off" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>   
+		
+ 		<ACTION>cdbctl update/cdb/sys/chassis/location_led/${type} </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to set device indicate led force on or force off.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command can set device indicate led force on or force off.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set device indicate led force on:   
+	Switch# set device id-led on   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show device id-led
+		</CTCRCMD>		
+	</COMMAND>	
+	
+    <COMMAND name="show device" help="Show device"/>   
+	<COMMAND name="show device id-led"
+		help="Show device indicate led">
+		<ACTION>cdbctl show/cdb/sys/chassis </ACTION>		
+						
+		<CTCDESCRIPTION>
+Use this command to show device indicate led information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show device indicate led information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows the device indicate led information:   
+	Switch# show device id-led   
+    Indicate led is forced on    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+set device id-led
+		</CTCRCMD>
+	</COMMAND>	
+
+    <COMMAND name="show diagnostic" hidden="true" help="show diagnostic" />   
+    <COMMAND name="show diagnostic bootup" help="show diagnostic bootup" />   
+
+    <COMMAND name="show diagnostic bootup level" help="show diagnostic bootup level" >   
+		<ACTION>cdbctl show/cdb/sys/bootupdiag </ACTION>		
+						
+		<CTCDESCRIPTION>
+Use this command to show diagnostic bootup level.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show diagnostic bootup level.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to show diagnostic bootup level:
+	Switch# show diagnostic bootup level
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>	
+
+    <COMMAND name="show diagnostic bootup result" help="show diagnostic bootup result" >   
+		<ACTION>
+if [ ! -e /tmp/.bootup_diag_log ]; then
+    echo "% The board didn't do bootup diag!"
+else
+    cat /tmp/.bootup_diag_log
+fi
+		</ACTION>		
+						
+		<CTCDESCRIPTION>
+Use this command to show diagnostic bootup result.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show diagnostic bootup result.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to show diagnostic bootup result:
+	Switch# show diagnostic bootup result
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>	
+
+	<COMMAND name="show schedule" help="Schedule parameters"/>
+	<COMMAND name="show schedule reboot" help="Specify auto reboot parameters">
+		<ACTION>
+			cdbctl show/cdb/sys/show_schedule_reboot
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show schedule reboot information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show schedule reboot information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows schedule reboot information:   
+	Switch# show schedule reboot 
+	Current time is : 2016-06-02 01:22:42
+	Will reboot at  : 2016-06-02 02:42:42
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+schedule reboot at 
+		</CTCRCMD>
+
+	</COMMAND>	
+
+	<COMMAND name="show poe" help="poe layer"/>
+	<COMMAND name="show poe summary" help="all pse device info">
+		<ACTION>cdbctl show/cdb/sys/show_poe/sum/all</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the poe summary information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the poe summary information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display poe summary information.  
+    Switch# show poe summary
+DUT1# show poe summary
+-------------------------------------------------
+Power Source Equipment NO: 1
+Power Limit: 1612 W
+Power Available: 1609 W
+Power Actual Consump: 3 W
+Operation status: enable
+Channel Num for power: 24
+-------------------------------------------------
+Power Source Equipment NO: 2
+Power Limit: 1612 W
+Power Available: 1609 W
+Power Actual Consump: 3 W
+Operation status: enable
+Channel Num for power: 24
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+	</COMMAND>	
+
+	<COMMAND name="show poe status" help="poe status"/>
+	<COMMAND name="show poe status all" help="poe status">
+		<ACTION>cdbctl show/cdb/sys/show_poe/status/all</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the poe status information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the poe status information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display poe status information.  
+DUT1# show poe status all
+Codes : CH - channel    IF - interface  ST - enable status
+        MD - mode       CL - class      PR - priority
+        V - voltage(V)          mA - current(mA)        TP - temperature('C)
+        LM - power limit(W)     CS - consumption(W)     AP - available power(W)
+        DIS - disable   EN - enable
+        CR - critical   HI - high       LO - low
+------+----------+----+----+----+---+---+------+------+---+------+------+------
+CH    IF         ST   OP   MD   CL  PR  V      mA     TP  LM     CS     AP
+1-1   eth-0-25   EN   OFF  AT   --  LO  0.0    0      75  36.0   0.0    35.1
+1-2   eth-0-26   EN   OFF  AT   --  LO  0.0    0      75  36.0   0.0    35.8
+1-3   eth-0-27   EN   OFF  AT   --  LO  0.0    0      75  36.0   0.0    35.8
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="show poe status interface" help="poe status by interface">
+		<PARAM name="iface_name" help="Ethernet interface name" test='"${null}"=""' ptype="IF_NAME_E"/>	
+		<ACTION>cdbctl show/cdb/sys/show_poe/status/interface/${iface_name}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the poe status information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the poe status information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display poe status information.  
+DUT1# show poe status interface eth-0-29
+-------------------------------------------------
+Power Source Equipment NO: 1
+Power Limit: 1612 W
+Power Available: 1609 W
+Power Actual Consump: 3 W
+Operation status: enable
+Channel Num for power: 24
+-------------------------------------------------
+Power Channel: 5
+Interface Name: eth-0-29
+Status: enable
+Power Operation: ON
+Power Mode: AT
+Power Class: 0
+Power Priority: low
+Voltage: 56.0 V
+Current: 45 mA
+Temperature: 71 C
+Power limit: 36.0 W
+Power Consump: 2.4 W
+Power available: 33.6 W
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>			
+	</COMMAND>	
+	
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="temperature"
+		help="Temperature threshold configuration" access="4">
+		<PARAM name="low" help="Low alarm temperature degree celsius" ptype="TEMP_LOW"/> 
+		<PARAM name="high" help="High alarm temperature degree celsius" ptype="TEMP_HIGH"/> 		
+		<PARAM name="crit" help="Critical temperature degree celsius" ptype="TEMP_CRIT"/> 		
+		
+		<ACTION>cdbctl update/cdb/sys/card/tmpr_low/${low}/tmpr_high/${high}/tmpr_crit/${crit}</ACTION> 
+			
+			<CTCDESCRIPTION>
+To specify the system temperature monitor threshold.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The unit for temperature is centigrade.
+The critical temperature must higher than high temperature 5 Celsius degrees.
+The high temperature must higher than low temperature 5 Celsius degrees.   
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default threshold is low temperature 5, high temperature 65, and critical temperature 80.      
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to specify the temperature thresholds:  
+    Switch# configure terminal   
+    Switch(config)# temperature 5 70 80   
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show environment
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no temperature"
+		help="Temperature threshold configuration" access="4">	
+		<ACTION>cdbctl update/cdb/sys/card/tmpr_low/5/tmpr_high/65/tmpr_crit/80</ACTION> 
+		
+			<CTCDESCRIPTION>
+To specify the system temperature monitor threshold to default value.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The unit for temperature is centigrade.
+The critical temperature must higher than high temperature 5 Celsius degrees.
+The high temperature must higher than low temperature 5 Celsius degrees. 
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default threshold is low temperature 5, high temperature 65, and critical temperature 80.
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to specify the temperature thresholds to default value:  
+    Switch# configure terminal    
+    Switch(config)# no temperature                   
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show environment
+		    </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="cpu-threshold" help="Set CPU usage threshold">
+         <PARAM name="low_threshold" help="CPU usage low threshold" ptype="CPU_USAGE_LOW_THRESHOLD"/>
+         <PARAM name="high_threshold" help="CPU usage high threshold" ptype="CPU_USAGE_HIGH_THRESHOLD"/> 
+        <ACTION>cdbctl update/cdb/sys/mem_summary/cpu_low_threshold/${low_threshold}/cpu_high_threshold/${high_threshold}</ACTION>
+    </COMMAND>
+
+    <COMMAND name="no cpu-threshold" help="Reset cpu usage threshold">  
+        <ACTION>cdbctl update/cdb/sys/mem_summary/cpu_low_threshold/50/cpu_high_threshold/90</ACTION>
+    </COMMAND>
+
+	<COMMAND name="fan"
+		help="Fan speed configuration" access="4">
+		<PARAM name="bottom" help="Bottom speed rate of fan" ptype="FAN_SPEED"/> 				
+		<PARAM name="low" help="Low speed rate of fan" ptype="FAN_SPEED"/> 
+		<PARAM name="high" help="High speed rate of fan" ptype="FAN_SPEED"/> 		
+		<PARAM name="full" help="Full speed rate of fan" ptype="FAN_SPEED"/> 
+		
+		<ACTION>cdbctl update/cdb/sys/card/fan_speed_bottom/${bottom}/fan_speed_low/${low}/fan_speed_high/${high}/fan_speed_full/${full}</ACTION> 
+			
+			<CTCDESCRIPTION>
+To specify the system fan speed.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The unit for speed is percentage.
+The full speed must no less than high speed.
+The high speed must no less than low speed. 
+The low speed must no less than bottom speed.
+The speed must step with 10.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default speed is bottom 40%  low 60%, high  80%, and full 100%.      
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to specify the fan speed:  
+    Switch# configure terminal   
+    Switch(config)# fan 30 60 90 100   
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show environment
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no fan"
+		help="Set default fan speed rate configuration" access="4">
+		<PARAM name="speed-rate" help="fan speed rate" ptype="SUBCOMMAND" mode="subcommand" /> 
+		<ACTION>cdbctl update/cdb/sys/card/fan_speed_bottom/40/fan_speed_low/60/fan_speed_high/80/fan_speed_full/100</ACTION> 
+		
+			<CTCDESCRIPTION>
+To specify the system fan speed to default value.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The unit for speed is percentage.
+The full speed must no less than high speed.
+The high speed must no less than low speed.
+The low speed must no less than bottom speed.
+The speed must step with 10.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default speed is bottom 40%  low 60%, high  80%, and full 100%.      
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to specify the fan speed:  
+    Switch# configure terminal    
+    Switch(config)# no fan speed-rate                   
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show environment
+		    </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="diagnostic" hidden="true"
+		help="Diagnostic config" access="4">
+		<PARAM name="bootup" help="Diagnostic config bootup" ptype="SUBCOMMAND" mode="subcommand" /> 
+		<PARAM name="level" help="Diagnostic config bootup level" ptype="SUBCOMMAND" mode="subcommand"/> 		
+		<PARAM name="diaglevel" help="Diag level" ptype="SUBCOMMAND" mode="switch">
+              	<PARAM name="minimal" help="Minimal bootup level test" ptype="SUBCOMMAND" mode="subcommand" /> 
+              	<PARAM name="complete" help="Complete bootup level test" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>		
+		
+		<ACTION>cdbctl update/cdb/sys/bootupdiag/${diaglevel}</ACTION> 
+			
+			<CTCDESCRIPTION>
+To specify the system bootup diag level.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+		    </CTCUSAGE>
+		    <CTCDEFAULT>     
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to specify the system bootup diag level.
+    Switch# configure terminal   
+    Switch(config)# diagnostic bootup level minimal
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show diagnostic bootup level
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no diagnostic" hidden="true"
+		help="Diagnostic config" access="4">	
+		<PARAM name="bootup" help="Diagnostic config bootup" ptype="SUBCOMMAND" mode="subcommand" /> 
+		<PARAM name="level" help="Diagnostic config bootup level" ptype="SUBCOMMAND" mode="subcommand" /> 
+		
+		<ACTION>cdbctl update/cdb/sys/bootupdiag/no</ACTION> 
+		
+			<CTCDESCRIPTION>
+To specify the system bootup diag level to default.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+		    </CTCUSAGE>
+		    <CTCDEFAULT>     
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to specify the system bootup diag level to default.
+    Switch# configure terminal   
+    Switch(config)# no diagnostic bootup level
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show diagnostic bootup level
+		    </CTCRCMD>
+	</COMMAND>
+
+
+        <COMMAND name="clock" help="Manage the system clock" access="4"> </COMMAND>
+        <COMMAND name="clock set" help="Set the time and date" access="4"> </COMMAND>
+        <COMMAND name="no clock" help="Manage the system clock" access="4"> </COMMAND>
+        <COMMAND name="no clock set" help="Set the time and date" access="4"> </COMMAND>
+        <COMMAND name="clock set datetime" help="Datetime set" access="4">
+            <PARAM name="time" help="Current time" ptype="ABS_TIME"/> 
+            <PARAM name="month" help="Month of the year" ptype="CLOCK_MONTH"/> 
+            <PARAM name="day" help="Day of the month" ptype="ABS_DAY"/> 
+            <PARAM name="year" help="Year" ptype="ABS_YEAR"/> 
+			
+            <ACTION>
+                cdbctl update/cdb/sys/clock/${time}/${day}/${month}/${year}
+                cdbctl update/cdb/sys/clock/switch
+            </ACTION>
+			
+			<CTCDESCRIPTION>
+Use this command to set system current date and time on the Switch.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+If no other source of time is available, you can manually configure the time and date after the system is restarted. The time remains accurate until the next system restart. We recommend that you use manual configuration only as a last resort. If you have an outside source to which the switch can synchronize, you do not need to manually set the system clock.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default time is based from UTC.          
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to manually set the system clock to 1:32 p.m. on September 23, 2015:   
+    Switch(config)# clock set 13:32:00 23 9 2015      
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show clock
+		    </CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="clock set summer-time" help="Configure summer (daylight savings) time" access="4">
+			<PARAM name="name" help="summer-time name, must be less than 32 characters(A-Za-z).Its length range is [3,31]" ptype="ZONE_NAME"/>
+			<PARAM name="date_or_rec" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="recurring" help="Configure recurring summer time" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="start_whichday" help="select a week in the month as the start week" ptype="SUBCOMMAND" mode="switch"> 
+							<PARAM name="first" help="The first week to start in the month" ptype="SUBCOMMAND" mode="subcommand">
+								<PARAM name="start_weekday" help="select one day in the week as the start day" ptype="SUBCOMMAND" mode="switch"> 
+									<PARAM name="monday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="tuesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="wednesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="thursday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="friday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="saturday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="sunday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"/> 
+								<PARAM name="start_time" help="the string of start time" ptype="ABS_TIME"/>
+								<PARAM name="end_whichday" help="select a week in the month as the end week" ptype="SUBCOMMAND" mode="switch">
+									<PARAM name="first" help="The first week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="second" help="The second week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="third" help="The third week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="fourth" help="The fourth week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="last" help="The last week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_weekday" help="select one day in the week as the end day" ptype="SUBCOMMAND" mode="switch"> 
+										<PARAM name="monday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="tuesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="wednesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="thursday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="friday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="saturday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="sunday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+								<PARAM name="end_time" help="the string of end time" ptype="ABS_TIME"/>
+								<PARAM name="offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+							</PARAM>
+							<PARAM name="second" help="The second week to start in the month" ptype="SUBCOMMAND" mode="subcommand">
+								<PARAM name="start_weekday" help="select one day in the week as the start day" ptype="SUBCOMMAND" mode="switch"> 
+									<PARAM name="monday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="tuesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="wednesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="thursday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="friday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="saturday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="sunday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"/> 
+								<PARAM name="start_time" help="the string of start time" ptype="ABS_TIME"/>
+								<PARAM name="end_whichday" help="select a week in the month as the end week" ptype="SUBCOMMAND" mode="switch">
+									<PARAM name="first" help="The first week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="second" help="The second week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="third" help="The third week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="fourth" help="The fourth week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="last" help="The last week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_weekday" help="select one day in the week as the end day" ptype="SUBCOMMAND" mode="switch"> 
+										<PARAM name="monday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="tuesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="wednesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="thursday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="friday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="saturday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="sunday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+								<PARAM name="end_time" help="the string of end time" ptype="ABS_TIME"/>
+								<PARAM name="offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+							</PARAM>
+							<PARAM name="third" help="The third week to start in the month" ptype="SUBCOMMAND" mode="subcommand">
+								<PARAM name="start_weekday" help="select one day in the week as the start day" ptype="SUBCOMMAND" mode="switch"> 
+									<PARAM name="monday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="tuesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="wednesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="thursday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="friday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="saturday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="sunday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"/> 
+								<PARAM name="start_time" help="the string of start time" ptype="ABS_TIME"/>
+								<PARAM name="end_whichday" help="select a week in the month as the end week" ptype="SUBCOMMAND" mode="switch">
+									<PARAM name="first" help="The first week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="second" help="The second week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="third" help="The third week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="fourth" help="The fourth week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="last" help="The last week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_weekday" help="select one day in the week as the end day" ptype="SUBCOMMAND" mode="switch"> 
+										<PARAM name="monday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="tuesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="wednesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="thursday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="friday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="saturday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="sunday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+								<PARAM name="end_time" help="the string of end time" ptype="ABS_TIME"/>
+								<PARAM name="offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+							</PARAM>
+							<PARAM name="fourth" help="The fourth week to start in the month" ptype="SUBCOMMAND" mode="subcommand">
+								<PARAM name="start_weekday" help="select one day in the week as the start day" ptype="SUBCOMMAND" mode="switch"> 
+									<PARAM name="monday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="tuesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="wednesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="thursday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="friday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="saturday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="sunday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"/> 
+								<PARAM name="start_time" help="the string of start time" ptype="ABS_TIME"/>
+								<PARAM name="end_whichday" help="select a week in the month as the end week" ptype="SUBCOMMAND" mode="switch">
+									<PARAM name="first" help="The first week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="second" help="The second week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="third" help="The third week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="fourth" help="The fourth week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="last" help="The last week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_weekday" help="select one day in the week as the end day" ptype="SUBCOMMAND" mode="switch"> 
+										<PARAM name="monday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="tuesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="wednesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="thursday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="friday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="saturday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="sunday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+								<PARAM name="end_time" help="the string of end time" ptype="ABS_TIME"/>
+								<PARAM name="offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+							</PARAM>
+							<PARAM name="last" help="The last week to start in the month" ptype="SUBCOMMAND" mode="subcommand" >
+								<PARAM name="start_weekday" help="select one day in the week as the start day" ptype="SUBCOMMAND" mode="switch"> 
+									<PARAM name="monday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="tuesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="wednesday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="thursday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="friday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="saturday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="sunday" help="start weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"/> 
+								<PARAM name="start_time" help="the string of start time" ptype="ABS_TIME"/>
+								<PARAM name="end_whichday" help="select a week in the month as the end week" ptype="SUBCOMMAND" mode="switch">
+									<PARAM name="first" help="The first week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="second" help="The second week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="third" help="The third week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="fourth" help="The fourth week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+									<PARAM name="last" help="The last week to end in the month" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_weekday" help="select one day in the week as the end day" ptype="SUBCOMMAND" mode="switch"> 
+										<PARAM name="monday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="tuesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="wednesday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="thursday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="friday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="saturday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+										<PARAM name="sunday" help="end weekday" ptype="SUBCOMMAND" mode="subcommand"/>
+								</PARAM>
+					            <PARAM name="end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+								<PARAM name="end_time" help="the string of end time" ptype="ABS_TIME"/>
+								<PARAM name="offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+							</PARAM>
+							<PARAM name="start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"> 
+					            <PARAM name="start_day" help="select one day in the month as the start day" ptype="ABS_DAY"/> 
+								<PARAM name="start_time" help="the string of start time" ptype="ABS_TIME"/>
+					            <PARAM name="end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+					            <PARAM name="end_day" help="select one day in the month as the end day" ptype="ABS_DAY"/> 
+								<PARAM name="end_time" help="the string of end time" ptype="ABS_TIME"/>
+								<PARAM name="offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+							</PARAM>
+						</PARAM>
+			    </PARAM>
+				<PARAM name="date" help="Configure absolute summer time" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="date_start_month" help="select a month in the year as the start month" ptype="ABS_MONTH"/> 
+		            <PARAM name="date_start_day" help="select one day in the month as the start day" ptype="ABS_DAY"/> 
+		            <PARAM name="date_start_year" help="select a year as the start year" ptype="CLOCK_YEAR"/> 
+					<PARAM name="date_start_time" help="set the string of time as start time" ptype="ABS_TIME"/>
+					<PARAM name="date_end_month" help="select a month in the year as the end month" ptype="ABS_MONTH"/> 
+		            <PARAM name="date_end_day" help="select one day in the month as the end day" ptype="ABS_DAY"/> 
+		            <PARAM name="date_end_year" help="select a year as the end year" ptype="CLOCK_YEAR"/> 
+					<PARAM name="date_end_time" help="set the string of time as end time" ptype="ABS_TIME"/>
+					<PARAM name="date_offset_time" help="offset minutes" ptype="OFFSET_MIN"/>
+				</PARAM>
+			</PARAM>
+			<ACTION>
+		if [ ${date_or_rec} == "recurring" ]; then
+			 if [ ${start_whichday} == "start_month" ]; then
+			 	cdbctl update/cdb/app/tag_summer_clock/${name}/recurring/rec_date/${start_month}/${start_day}/${start_time}/${end_month}/${end_day}/${end_time}/${offset_time}
+			 else
+			    cdbctl update/cdb/app/tag_summer_clock/${name}/recurring/rec_which/${start_whichday}/${start_weekday}/${start_month}/${start_time}/${end_whichday}/${end_weekday}/${end_month}/${end_time}/${offset_time}
+             fi
+	    else
+			cdbctl update/cdb/app/tag_summer_clock/${name}/date/${date_start_month}/${date_start_day}/${date_start_year}/${date_start_time}/${date_end_month}/${date_end_day}/${date_end_year}/${date_end_time}/${date_offset_time}
+			 	 
+	    fi
+			 
+			</ACTION>
+				
+        </COMMAND>
+
+        <COMMAND name="no clock set summer-time" help="Configure summer-time" access="4">
+			<ACTION>
+                    cdbctl delete/cdb/app/tag_summer_clock
+			</ACTION>
+        </COMMAND>
+
+        <COMMAND name="clock set timezone" help="Configure time zone" access="4">
+			<PARAM name="name" help="Zone name, must be less than 32 characters(A-Za-z)" ptype="ZONE_NAME"/>
+			<PARAM name="direction" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="add" help="Positive time zone offset from UTC" ptype="SUBCOMMAND" mode="subcommand" /> 
+				<PARAM name="minus" help="Negative time zone offset from UTC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+			<PARAM name="hours" help="Hours offset from UTC, must be range 0~23" ptype="TIMEZONE_HOURS"/>
+			<PARAM name="minutes" help="Minutes offset from UTC, must be range 0~59" ptype="TIMEZONE_MINUTES" optional="true" default="none"/>
+			<PARAM name="seconds" help="Seconds offset from UTC, must be range 0~59" ptype="TIMEZONE_SECONDS" optional="true" default="none" test='"${minutes}"!="none"'/>
+			<ACTION>
+				cdbctl create/cdb/app/clock/timezone/${name}/${direction}/${hours}/${minutes}/${seconds}
+			</ACTION>
+        </COMMAND>
+
+        <COMMAND name="no clock set timezone" help="Configure time zone" access="4">
+			<ACTION>
+				cdbctl delete/cdb/app/clock/timezone
+			</ACTION>
+        </COMMAND>
+
+	<COMMAND name="install" help="Install filesystem" hidden="true" access="4">
+		<PARAM name="debian" help="Install debian filesystem" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="GFILENAME" help="Source file direction" ptype="STRING"/>
+		
+	 	<ACTION>
+		showname="${GFILENAME}"
+		accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+		if [ "$?" != "0" ] ; then
+		    echo "% Invalid file name"
+		    exit 1
+		fi
+
+		if ! [ -f $accessname ]; then
+		    echo "% Please specify regular file"
+		    exit
+		fi
+
+		chmod +x $accessname
+		$accessname
+		
+		if ! [ -f /tmp/glb_install_debian_done ]; then
+		    echo "Install debian filesystem failed, please restart system and try again."
+		else
+		    echo "Debian system has been installed, but cannot take effect until the next reload with debian image."
+		fi
+		</ACTION>
+		
+			<CTCDESCRIPTION>
+Use this command to install debian filesystem.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+            
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+            None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to install debian filesystem:
+    Switch(config)# install debian flash:/debian-installer
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="update" help="Update system" access="4"/>
+
+	<COMMAND name="update epld" help="Rewrite epld" hidden="true" access="4">
+		<PARAM name="GFILENAME" help="Source file direction" ptype="STRING"/>
+		
+	 	<ACTION>
+		showname="${GFILENAME}"
+		accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+		if [ "$?" != "0" ] ; then
+		    echo "% Invalid file name"
+		    exit 1
+		fi
+
+		if ! [ -f $accessname ]; then
+		    echo "% Please specify regular file"
+		    exit
+		fi
+
+		cdbctl update/cdb/sys/bhm_global/hw_watchdog_enable/0
+		cdbctl update/cdb/sys/update_epld/${GFILENAME}
+
+		UPDATE_EPLD_MAX_TIME_SEC=80
+		CNT=0
+		while [ $CNT -lt $UPDATE_EPLD_MAX_TIME_SEC ]; do
+		    if [ -f /tmp/glb_update_epld_done ] ; then
+		        break;
+		    else
+		    	CNT=`expr $CNT + 1`
+		    fi
+		    sleep 1;
+		done
+
+		if [ $CNT -eq $UPDATE_EPLD_MAX_TIME_SEC ] ; then
+			echo "Update EPLD failed"
+		else
+			cdbctl update/cdb/sys/bhm_global/hw_watchdog_enable/1
+			echo "Please power off and then power on the switch right now!"
+		fi		
+		</ACTION>
+		
+			<CTCDESCRIPTION>
+Use this command to upgrade system EPLD image.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+            
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+            None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to update EPLD image:
+    Switch(config)# update epld flash:/boot/vme_v1.0
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="update bootrom" help="Rewrite bootrom" access="4">
+		<PARAM name="direction" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="GFILENAME" help="Source file direction" ptype="STRING"/>
+		</PARAM>
+	 	<ACTION>
+		showname="${GFILENAME}"
+		accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+		if [ "$?" != "0" ] ; then
+		    echo "% Invalid file name"
+		    exit 1
+		fi
+
+		if ! [ -f $accessname ]; then
+		    echo "% Please specify regular file"
+		    exit
+		fi
+
+		cdbctl update/cdb/sys/update_bootrom/${GFILENAME}
+
+		UPDATE_UBOOT_MAX_TIME_SEC=20
+		CNT=0
+		while [ $CNT -lt $UPDATE_UBOOT_MAX_TIME_SEC ]; do
+		    if [ -f /tmp/glb_update_bootrom_done ] ; then
+		        break;
+		    else
+		    	CNT=`expr $CNT + 1`
+		    fi
+		    sleep 1;
+		done
+
+		if [ $CNT -eq $UPDATE_UBOOT_MAX_TIME_SEC ] ; then
+			echo "Update bootrom failed"
+		else
+			echo "Update bootrom successfully, new bootrom will take effect after reboot."
+		fi		
+		</ACTION>
+		
+		    <CTCDESCRIPTION>
+Use this command to upgrade bootrom image.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+            
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+            
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to update bootrom image:
+    Switch(config)# update bootrom flash:/boot/bootrom.bin
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>	
+
+	<COMMAND name="update oem" hidden="true" help="OEM">
+		<PARAM name="file" help="File" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="GFILENAME" help="Binary file" ptype="STRING"/>
+		<ACTION>
+			cdbctl update/cdb/sys/update_oem_file/${GFILENAME}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="load-phy" help="Load phy" hidden="true" access="4">
+		<PARAM name="firmware" help="Load phy-firmware" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="GPORTID" help="Phy port idx" ptype="STRING">
+			<PARAM name="GFILENAME" help="check for check version, others for firmware name" ptype="STRING"/>
+		</PARAM>
+		
+	 	<ACTION>
+		if [ ${GFILENAME} == "check" ]; then
+			cdbctl update/cdb/sys/update_phy_firmware/${GPORTID}/check_version
+		else
+			if [ ! -f ${GFILENAME} ]; then
+				echo "Update PHY firmware failed: no such file!"
+				exit
+			else
+				cdbctl update/cdb/sys/update_phy_firmware/${GPORTID}/${GFILENAME}
+			fi
+		fi
+
+		UPDATE_EPLD_MAX_TIME_SEC=400
+		CNT=0
+		while [ $CNT -lt $UPDATE_EPLD_MAX_TIME_SEC ]; do
+		    if [ -f /tmp/glb_load_phy_firmware_done ] ; then
+		        break;
+		    else
+		    	CNT=`expr $CNT + 1`
+		    fi
+		    sleep 1;
+		done
+
+		if [ $CNT -eq $UPDATE_EPLD_MAX_TIME_SEC ] ; then
+			echo "Update PHY firmware failed"
+		else
+			echo "Done!"
+		fi		
+		</ACTION>
+		
+			<CTCDESCRIPTION>
+Use this command to upgrade system phy firmware image.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+            
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+            None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to update phy firmware:
+    Switch(config)# load phy-firmware 1 /etc/AQR-G2_v3.2.5_ID19866_VER537.cld
+    This example shows how to check phy firmware:
+    Switch(config)# load phy-firmware 1 check
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="split"
+		help="Split interface" access="4">
+		<PARAM name="interface" help="Select an interface to split" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_E"/>
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="10giga" help="10 Gigabit" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="25giga" help="25 Gigabit" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="50giga" help="50 Gigabit" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/sys/port/${ifname}/split_type/${type}</ACTION>
+		
+		    <CTCDESCRIPTION>
+Use the command to split physic port to 10G port or 40G port.     
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Need save configuration and reboot to make command take effect.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+
+None			
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to split interface to four 10G port:   
+    Switch(config)# split interface eth-0-1 10giga  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no split"
+		help="Split interface" access="4">
+		<PARAM name="interface" help="Select an interface to split" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_E"/>
+		
+		<ACTION>cdbctl update/cdb/sys/port/${ifname}/split_type/none</ACTION>
+		
+		    <CTCDESCRIPTION>
+Use this command to set the interface to un-split the physic port.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Need save configuration and reboot to make command take effect.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None   
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set the split interface to un-split the physic port:   
+    Switch(config)# no split interface eth-0-1  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="bypass" help="Set bypass interface" access="4"/>
+	<COMMAND name="bypass interface" help="Set bypass interface" access="4">
+			<PARAM name="ifname1" help="Interface name" ptype="IF_NAME_E"/>
+			<PARAM name="ifname2" help="Interface name" ptype="IF_NAME_E"/>
+			<PARAM name="slot" help="Select Bypass slot" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+				<PARAM name="slotno" help="Bypass slot no" ptype="BYPASS_NUM" default = "-1" />
+			</PARAM>
+			
+			<ACTION>
+			if [ "-1" == ${slotno} ]; then
+				cdbctl update/cdb/sys/port/${ifname1}/bypass/${ifname2}/slot/0
+			else
+				cdbctl update/cdb/sys/port/${ifname1}/bypass/${ifname2}/slot/${slotno}
+			fi			
+			</ACTION>
+			
+		    <CTCDESCRIPTION>
+Use the command to set bypass for two port.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+None		    
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None			
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set bypass interfaces:   
+    Switch(config)# bypass interface eth-0-1 eth-0-2 
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no bypass"
+			help="Set bypass interface" access="4">
+			<ACTION>cdbctl update/cdb/sys/port/none/bypass/none/slot/0</ACTION>
+	</COMMAND>
+			
+	<COMMAND name="no bypass slot"
+			help="Set bypass interface" access="4">
+			<PARAM name="slotno" help="Bypass slot no" ptype="BYPASS_NUM"/>			
+			
+			<ACTION>cdbctl update/cdb/sys/port/none/bypass/none/slot/${slotno}</ACTION>
+			
+		    <CTCDESCRIPTION>
+Use the command to set bypass for two port.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+None		    
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None			
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set bypass interfaces:   
+    Switch(config)# bypass interface eth-0-1 eth-0-2 
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="switch"
+		help="Switch interface" access="4">
+		<PARAM name="interface" help="Select an interface to split" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_E"/>
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="sfp" help="SFP+ type" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="qsfp" help="QSFP+ type" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/sys/port/${ifname}/port_media_type/${type}</ACTION>
+		
+		    <CTCDESCRIPTION>
+Use this command to set an interface to split type.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Need save configuration and reboot to make command take effect.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None  
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set the split interface type:   
+    Switch(config)# switch interface eth-0-1 sfp  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switch"
+		help="Switch interface" access="4">
+		<PARAM name="interface" help="Select an interface to split" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_E"/>
+		
+		<ACTION>cdbctl update/cdb/sys/port/${ifname}/port_media_type/none</ACTION>
+		
+		    <CTCDESCRIPTION>
+Use this command to set an interface to un-split type.         
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Need save configuration and reboot to make command take effect.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to unset the split interface type:   
+    Switch(config)# no switch interface eth-0-1  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="schedule" help="Schedule parameters" access="4"/>
+	<COMMAND name="schedule reboot" help="Specify auto reboot parameters"/>
+
+	<COMMAND name="schedule reboot at" help="At the special time">
+		<PARAM name="time" help="Specify the hour and minute" ptype="HOUR_MIN"/>
+		<PARAM name="ymd" help="Specify the date for current year, year range is [2000, 2037]" ptype="YEAR_MON_DAY" optional="true"/>
+		<ACTION>
+			cdbctl update/cdb/sys/chassis/schedule_reboot_timer/at/${time}/${ymd}
+		</ACTION>
+
+			<CTCDESCRIPTION>
+Use this command to set schedule reboot at a time.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The reboot time could select time with format HH:MM, and optional date with format YYYY/MM/DD or MM/DD/YYYY or MM/DD.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set schedule reboot at a time:   
+    Switch(config)# schedule reboot at 10:20 2016/6/2
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+schedule reboot delay
+no schedule reboot
+		    </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="schedule reboot delay" help="Reboot after delay some time">
+		<PARAM name="time" help="Specify hour:minute or with minute" ptype="DELAY_TIME"/>
+		<ACTION>
+			cdbctl update/cdb/sys/chassis/schedule_reboot_timer/delay/${time}
+		</ACTION>
+
+			<CTCDESCRIPTION>
+Use this command to set schedule reboot after a time.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The reboot delay time could select be format HH:MM, or minutes in range of [1,720].
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set schedule reboot after a time:   
+    Switch(config)# schedule reboot delay 100
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+schedule reboot at
+no schedule reboot
+		    </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no schedule" help="Schedule parameters" access="4"/>
+	<COMMAND name="no schedule reboot" help="Cancel the auto reboot schedule">
+		<ACTION>
+			cdbctl update/cdb/sys/chassis/schedule_reboot_timer/disable
+		</ACTION>
+
+			<CTCDESCRIPTION>
+Use this command to set schedule reboot after a time.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The reboot delay time could select be format HH:MM, or minutes in range of [1,720].
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    The following example shows how to set schedule reboot after a time:   
+    Switch(config)# schedule reboot delay 100
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+schedule reboot at
+no schedule reboot
+		    </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="poe" help="poe layer"/>
+	<COMMAND name="poe global" help="poe layer"/>
+	<COMMAND name="no poe" help="poe layer"/>
+	<COMMAND name="no poe global" help="poe layer"/>
+
+	<COMMAND name="poe global disable" help="Disable poe">
+		<ACTION>cdbctl update/cdb/sys/card/glb_poe_enable/0</ACTION>
+	</COMMAND>	
+
+	<COMMAND name="poe global enable" help="Enable poe">
+		<ACTION>cdbctl update/cdb/sys/card/glb_poe_enable/1</ACTION>
+	</COMMAND>	
+
+	<COMMAND name="poe global max-power" help="Configure max-power of poe">
+		<PARAM name="value" help="power value(W), default is 320W" ptype="PSU_POWER"/>
+		<ACTION>cdbctl update/cdb/sys/card/glb_poe_power_max/${value}</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no poe global max-power" help="Configure max-power of poe">
+		<ACTION>cdbctl update/cdb/sys/card/glb_poe_power_max/0</ACTION>
+	</COMMAND>
+
+	<COMMAND name="set" help="Set software version" hidden="true" access="4">
+	    <PARAM name="sw-ver" help="Set software version" ptype="SUBCOMMAND" mode="subcommand">
+		    <PARAM name="VERSION" help="Software version,can only include [0-9a-zA-Z.-_] and length range is [1, 29]" ptype="SW_VERSION"/>
+	    </PARAM>
+		<ACTION>
+			cdbctl update/cdb/sys/update_sw_version/${VERSION}
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no sw-ver" help="Cancel the Setting of software version" hidden="true" access="4">
+		<ACTION>
+			cdbctl update/cdb/sys/update_sw_version/
+		</ACTION>
+
+	</COMMAND>
+
+
+</VIEW>
+
+</CLISH_MODULE>

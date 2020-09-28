@@ -1,0 +1,9 @@
+if ARCH_ROCKCHIP || COMPILE_TEST
+
+#
+# Rockchip Soc drivers
+#
+config ARCH_CTC5236
+        help
+        
+endif

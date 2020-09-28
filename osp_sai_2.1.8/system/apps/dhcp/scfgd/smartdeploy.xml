@@ -1,0 +1,37 @@
+<SmartDeploy>
+
+<ftype>init</ftype>
+<hostprefix>Bruce</hostprefix>
+
+<defItem>
+    <option>enable</option>
+    <image>alex.bin</image>
+    <config>alex.cfg</config>
+</defItem>
+
+<groups>
+
+<Item>
+    <type>mac</type>
+    <value>001e.0808.58b0</value>
+    <image>centecOS-oct-ms-v3.0.6.it.r.bin</image>
+    <config>cfg.abc</config>
+</Item>
+
+<Item>
+    <type>product</type>
+    <value>E330-48T</value>
+    <image>centecOS-oct-ms-v3.0.9.it.r.bin</image>
+    <config>cfg.def</config>
+</Item>
+
+<Item>
+    <type>sn</type>
+    <value>201106070809</value>
+    <image>centecOS-oct-ms-v3.0.a.it.r.bin</image>
+    <config>cfg.gha</config>
+</Item>
+
+</groups>
+
+</SmartDeploy>

@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+MSTP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show spanning-tree mst" help="Display MST information">
+		<ACTION>
+			cdbctl show/cdb/l2/show_mstp/mst
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree MST infomation.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree MST infomation.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display spanning-tree MST infomation:
+            Switch# show spanning-tree mst
+            -----[Spanning-tree Enabled][Mode MSTP]-----
+            ##### MST0   : 1
+            Root Id              - 8000-22a9.e58f.b800
+            Reg Root Id          - 8000-22a9.e58f.b800
+            Bridge Id            - 8000-22a9.e58f.b800
+            Bridge Times         - HelloTime 2, MaxAge 20, ForwardDelay 15, MaxHops 10
+            Root Info            - Path Cost 0, Port 0, Bridge Priority 32768
+            Root Path Cost       - External 0, Internal 0
+            Path Cost Standard   - dot1t
+            Tx Hold Count        - 6
+            Max Hops             - 10
+            Port Default Action  - BPDU-Filter Disabled, BPDU-Guard Disabled
+            Last TopoChange Time - Tue Dec 13 07:37:07 2016
+            
+            Instance  Vlans mapped
+            ---------+--------------------------------------------------------------
+            0         1
+            2         2-10
+            ---------+--------------------------------------------------------------
+            
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			show spanning-tree mst config
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show spanning-tree mst brief" help="Brief information">
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='"${instance}"="none1"' default="none">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<PARAM name="instance" help="Instance" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='"${interface}"="none"' default="none1">
+			<PARAM name="instance_id" help="Instance ID" ptype="INSTANCE_ID"/>
+		</PARAM>
+		<ACTION>	
+			if [ "none" != ${interface} ]; then
+			    cdbctl show/cdb/l2/show_mstp/mst_brief/interface/${if_id}
+			elif [ "none1" != ${instance} ]; then
+			    cdbctl show/cdb/l2/show_mstp/mst_brief/instance/${instance_id}
+			else
+			    cdbctl show/cdb/l2/show_mstp/mst_brief
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree MST brief infomation.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree MST brief infomation.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display spanning-tree MST brief infomation:
+            Switch# show spanning-tree mst brief
+            -----[Spanning-tree Enabled][Mode MSTP]-----
+            ##### MST0   : 1
+            Root ID     Priority    32768 (0x8000)
+                        Address     22a9.e58f.b800
+                        Hello Time 2  sec  Max Age 20 sec  Forward Delay 15 sec
+            
+            Reg Root ID Priority    32768 (0x8000)
+                        Address     22a9.e58f.b800
+            
+            Bridge ID   Priority    32768 (0x8000)
+                        Address     22a9.e58f.b800
+                        Hello Time 2  sec  Max Age 20 sec  Forward Delay 15 sec
+                        Aging Time 300 sec
+            
+            Interface    Role         State             Cost        Priority.Number   Type  
+            ------------+------------+-----------------+--------------------+--------+------
+            eth-0-1      Designated   Forwarding        20000            128.1        P2p   
+            
+            ##### MST2   : 2-10
+            Root ID     Priority    32770 (0x8002)
+                        Address     22a9.e58f.b800
+            Bridge ID   Priority    32770 (0x8002)
+                        Address     22a9.e58f.b800
+            Interface    Role         State             Cost        Priority.Number   Type  
+            ------------+------------+-----------------+--------------------+--------+------
+            eth-0-1      Designated   Forwarding        20000            128.1        P2p   
+            
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			show spanning-tree mst detail
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show spanning-tree mst detail" help="Detailed information">
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true" default="none">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<ACTION>	
+			if [ "none" == ${interface} ]; then
+			    cdbctl show/cdb/l2/show_mstp/mst_detail
+			else
+			    cdbctl show/cdb/l2/show_mstp/mst_detail/interface/${if_id}
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree MST detail infomation.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree MST detail infomation.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display spanning-tree MST detail infomation:
+            Switch# show spanning-tree mst detail
+            -----[Spanning-tree Enabled][Mode MSTP]-----
+            ##### MST0   : 1
+            Root Id              - 8000-22a9.e58f.b800
+            Reg Root Id          - 8000-22a9.e58f.b800
+            Bridge Id            - 8000-22a9.e58f.b800
+            Bridge Times         - HelloTime 2, MaxAge 20, ForwardDelay 15, MaxHops 10
+            Root Info            - Path Cost 0, Port 0, Bridge Priority 32768
+            Root Path Cost       - External 0, Internal 0
+            Path Cost Standard   - dot1t
+            Tx Hold Count        - 6
+            Max Hops             - 10
+            Port Default Action  - BPDU-Filter Disabled, BPDU-Guard Disabled
+            Last TopoChange Time - Thu Dec 15 09:09:05 2016
+            
+            -----[Interface eth-0-1][Role Designated][State Forwarding]-----
+             eth-0-1: Port          - Index 1, Priority 128, Id 8001
+             eth-0-1: Port PathCost - admin None, oper 20000 
+             eth-0-1: Port Time     - HelloTime 2, MaxAge 20, ForwardDelay 15, MessageAge 0
+             eth-0-1: Port Timer    - Hello 1, ForwardDelay 0, MessageAge 0, TopoChange 0
+             eth-0-1: Root          - CIST 32768-22a9.e58f.b800, Regional 
+             eth-0-1: Designated    - Bridge 32768-22a9.e58f.b800
+             eth-0-1: Designated    - Port Id 8001, Priority 128
+             eth-0-1: Path Cost     - External 0, Internal 0
+             eth-0-1: Refer count   - 2
+             eth-0-1: BPDU Count    - Send 254, Received 0
+             eth-0-1: BPDU Version  - MSTP, Send MSTP, Received None
+             eth-0-1: Edgeport      - admin Disabled, oper Off
+             eth-0-1: BPDU Filter   - admin Default, oper Off
+             eth-0-1: BPDU Guard    - admin Default, oper Off
+             eth-0-1: Root Guard    - admin Disabled, oper Off
+             eth-0-1: Loop Guard    - admin Disabled, oper Off
+             eth-0-1: Link Type     - admin Auto, oper P2p
+             eth-0-1: Forward-transitions 0
+            
+            
+            ##### MST2   : 2-10
+            MSTI Root Id         - 8002-22a9.e58f.b800
+            MSTI Bridge Id       - 8002-22a9.e58f.b800
+            MSTI Bridge Priority - 32768
+            MSTI Root Path Cost  - 0
+            MSTI Root Port       - 0
+            
+            -----[Interface eth-0-1][Role Designated][State Forwarding]-----
+             eth-0-1: Port          - Index 1, Priority 128, Id 8001
+             eth-0-1: Designated    - Root 32770-22a9.e58f.b800, Bridge 32770-22a9.e58f.b800
+             eth-0-1: Port PathCost - admin None, oper 20000 
+             eth-0-1: Path Cost     - CST External 0, MSTI Internal 0
+             eth-0-1: Priority      - CST 128, MSTI 128
+             eth-0-1: Port Time     - HelloTime 2, MaxAge 20, ForwardDelay 15, MessageAge 0
+             eth-0-1: Port Timer    - Hello 1, ForwardDelay 0, MessageAge 0, TopoChange 0
+            
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			show spanning-tree mst brief
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show spanning-tree mst config" help="MST configuration information">
+		<ACTION>	
+			 cdbctl show/cdb/l2/show_mstp/config
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree MST configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree MST configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display spanning-tree MST configurations:
+            Switch# show spanning-tree mst config 
+            MSTP Configuration Information:
+            ------------------------------------------------------------------------
+              Format Id      : 0
+              Name           : 
+              Revision Level : 0
+              Digest         : 0x497210D83A7D4B3427F087788A9F9D59
+              Instances configured 1
+            ------------------------------------------------------------------------
+            
+            Instance  Vlans mapped
+            ---------+--------------------------------------------------------------
+            0         1
+            2         2-10
+            ---------+--------------------------------------------------------------
+            
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			show spanning-tree mst
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show spanning-tree mst instance" help="MST instance information">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true" default="none">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<ACTION>	
+			 cdbctl show/cdb/l2/show_mstp/instance/${instance}/${if_id}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree MST information of a MST instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree MST information of a MST instance.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display spanning-tree MST information of a MST instance:
+            Switch# show spanning-tree mst instance 2
+            ##### MST2   : 2-10
+            MSTI Root Id         - 8002-22a9.e58f.b800
+            MSTI Bridge Id       - 8002-22a9.e58f.b800
+            MSTI Bridge Priority - 32768
+            MSTI Root Path Cost  - 0
+            MSTI Root Port       - 0
+            
+            -----[Interface eth-0-1][Role Designated][State Forwarding]-----
+             eth-0-1: Port          - Index 1, Priority 128, Id 8001
+             eth-0-1: Designated    - Root 32770-22a9.e58f.b800, Bridge 32770-22a9.e58f.b800
+             eth-0-1: Port PathCost - admin None, oper 20000 
+             eth-0-1: Path Cost     - CST External 0, MSTI Internal 0
+             eth-0-1: Priority      - CST 128, MSTI 128
+             eth-0-1: Port Time     - HelloTime 2, MaxAge 20, ForwardDelay 15, MessageAge 0
+             eth-0-1: Port Timer    - Hello 0, ForwardDelay 0, MessageAge 0, TopoChange 0
+            
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			show spanning-tree mst detail
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show spanning-tree mst interface" help="MST interface information">
+		<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		<ACTION>
+			 cdbctl show/cdb/l2/show_mstp/interface/${if_id}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree MST information of an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree MST information of an interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display spanning-tree MST information of an interface:
+            Switch# show spanning-tree mst interface eth-0-1
+            ##### MST0   : 1
+            Root Id              - 8000-22a9.e58f.b800
+            Reg Root Id          - 8000-22a9.e58f.b800
+            Bridge Id            - 8000-22a9.e58f.b800
+            Bridge Times         - HelloTime 2, MaxAge 20, ForwardDelay 15, MaxHops 10
+            Root Info            - Path Cost 0, Port 0, Bridge Priority 32768
+            Root Path Cost       - External 0, Internal 0
+            Path Cost Standard   - dot1t
+            Tx Hold Count        - 6
+            Max Hops             - 10
+            Port Default Action  - BPDU-Filter Disabled, BPDU-Guard Disabled
+            Last TopoChange Time - Thu Dec 15 09:09:05 2016
+            
+            Instance  Interface Vlans mapped
+            ---------+---------+----------------------------------------------------
+            0                   1
+            2         eth-0-1   2-10
+            
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			show spanning-tree mst config
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="spanning-tree mst" help="Multiple spanning tree"/>
+	<COMMAND name="no spanning-tree mst" help="Multiple spanning tree"/>
+
+	<COMMAND name="spanning-tree mst configuration"
+		help="MST configuration"
+		view="configure-mst-view">
+
+		<CTCDESCRIPTION>
+			Use this command to enter spanning-tree MST configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enter spanning-tree MST configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to enter spanning-tree MST configuration mode:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no spanning-tree mst configuration
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree mst configuration" help="MST configuration">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/no_mst_config/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to clear all spanning-tree MST configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear all spanning-tree MST configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to clear all spanning-tree MST configurations:
+			Switch(config)# no spanning-tree mst configuration
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			spanning-tree mst configuration
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="spanning-tree instance" help="Configure particular instance">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+		<PARAM name="priority" help="Bridge priority for the common instance" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="priority_value" help="Bridge priority in increments of 4096, default value is 32768" ptype="MSTP_BRG_PRIORITY"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_instance/${instance}/${priority_value}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set spanning-tree instance priority.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set spanning-tree instance priority. Using a lower priority indicates a higher likelihood of the instance becoming root.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			32678
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set spanning-tree instance priority:
+			Switch(config)# spanning-tree instance 2 priority 4096
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no spanning-tree instance
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree instance" help="Configure particular instance">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+		<PARAM name="priority" help="Bridge priority for the common instance" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_instance/${instance}/32768
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set spanning-tree instance priority to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set spanning-tree instance priority to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set spanning-tree instance priority:
+			Switch(config)# spanning-tree instance 2 priority 4096
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no spanning-tree instance
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="spanning-tree max-hops" help="Max hops">
+		<PARAM name="hops" help="Maximum hops the BPDU be valid, default value is 20" ptype="MSTP_MAX_HOPS"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_maxHops/${hops}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set spanning-tree max hops.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the maximum allowed hops for a BPDU in an MST region. This parameter is used by all the instances of the MST. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			20
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set spanning-tree max hops:
+			Switch(config)# spanning-tree max-hops 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no spanning-tree max-hops
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree max-hops" help="Max hops">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_maxHops/20
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set spanning-tree max hops to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the maximum allowed hops for a BPDU in an MST region to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			20
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set spanning-tree max hops to default value:
+			Switch(config)# no spanning-tree max-hops
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			spanning-tree max-hops
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="spanning-tree instance" help="Configure particular instance">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="path-cost" help="Path cost" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="pathcost" help="Path cost in range(802.1t:1-200000000, 802.1d-1998:1-65535)" ptype="MSTP_PATH_COST"/>
+			</PARAM>
+            <PARAM name="port-priority" help="Port priority" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="priority" help="Port priority in increments of 16, default value is 128" ptype="MSTP_PORT_PRIORITY"/>
+			</PARAM>
+			<PARAM name="restricted-role" help="Restrict the role" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="restricted-tcn" help="Restrict propagation of topology change notifications" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			if [ "path-cost" == ${type} ]; then
+			    cdbctl update/cdb/l2/msti_port/${instance}/${iface}/${type}/${pathcost}
+			elif [ "port-priority" == ${type} ]; then
+			    cdbctl update/cdb/l2/msti_port/${instance}/${iface}/${type}/${priority}
+			else
+			    cdbctl update/cdb/l2/msti_port/${instance}/${iface}/${type}/1
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set interface instance parameters.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set interface instance parameters. The parameters includes path-cost, port-priority, restricted-role and restricted-tcn.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set interface instance path-cost:
+			Switch(config)# interface eth-0-1
+			Switch(config-if-eth-0-1)# spanning-tree instance 10 path-cost 20
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no spanning-tree instance
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree instance" help="Configure particular instance">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="path-cost" help="Path cost" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="port-priority" help="Port priority" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="restricted-role" help="Restrict the role" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="restricted-tcn" help="Restrict propagation of topology change notifications" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			if [ "path-cost" == ${type} ]; then
+			    cdbctl update/cdb/l2/msti_port/${instance}/${iface}/${type}/0
+			elif [ "port-priority" == ${type} ]; then
+			    cdbctl update/cdb/l2/msti_port/${instance}/${iface}/${type}/128
+			else
+			    cdbctl update/cdb/l2/msti_port/${instance}/${iface}/${type}/0
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set interface instance parameters to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set interface instance parameters to default value. The parameters includes path-cost, port-priority, restricted-role and restricted-tcn.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set interface instance path-cost to default value:
+			Switch(config)# interface eth-0-1
+			Switch(config-if-eth-0-1)# no spanning-tree instance 10 path-cost
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			spanning-tree instance
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-mst-view"
+	prompt="${SYSTEM_NAME}(config-mst)# "
+	depth="1">
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from MST configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from MST configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults"/>
+
+	<COMMAND name="region" help="MST region">
+		<PARAM name="name" help="Name of the region" ptype="REGION_NAME"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/mstp_region_name/${name}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set MST region name.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set MST region name.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set MST region name:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# region ChinaRegion01
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no region
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no region" help="MST region">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/mstp_region_name
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set MST region name.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set MST region name to empty string.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set MST region name to empty string:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# no region
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			region
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="revision" help="MST revision level">
+		<PARAM name="level" help="Revision level, default value is 0" ptype="REVISION_LEVEL"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/mstp_revision_level/${level}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set MST revision level.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set MST revision level.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set MST revision level:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# revision 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no revision
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no revision" help="MST revision level">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/mstp_revision_level/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to set MST revision level to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set MST revision level to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to set MST revision level to default value:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# no revision
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			revision
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="instance" help="MST instance">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+		<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		<ACTION>
+			cdbctl create/cdb/l2/mstp_instance/${instance}/${vlan_list}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to create a MST instance and map VLANs to a MST instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When you map VLANs to a MST instance, the mapping is incremental, and the VLANs specified in the command are added to or removed from the VLANs that were previously mapped.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to map VLANs to an MST instance:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# instance 1 vlan 10-20
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no instance
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no instance" help="MST instance">
+		<PARAM name="instance" help="Instance ID" ptype="INSTANCE_ID"/>
+		<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand" optional="true" default="none"> 
+			<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		</PARAM>
+		<ACTION>
+			if [ "none" == ${vlan} ]; then
+				cdbctl delete/cdb/l2/mstp_instance/${instance}
+			else
+				cdbctl delete/cdb/l2/mstp_instance/${instance}/${vlan_list}
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to unmap VLANs to a MST instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When you unmap VLANs to an MST instance, the mapping is incremental. When a MST instance has no VLANs, the MST instance should be removed.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to map VLANs to an MST instance:
+			Switch(config)# spanning-tree mst configuration
+			Switch(config-mst)# no instance 1 vlan 10-20
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			no instance
+		</CTCRCMD>
+
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

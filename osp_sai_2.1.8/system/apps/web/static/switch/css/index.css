@@ -1,0 +1,113 @@
+#body-left a {
+    color: black;
+}
+
+
+#body-left > div > .nav > li {
+    line-height: 1;
+}
+
+#body-left > div > .nav li.active > a {
+//    background: white none repeat scroll 0% 0%;
+    background: #eeeeee;
+    border-radius: 0;
+}
+
+#body-left > div > .nav > li.active ul > li {
+    line-height: 0.8;
+    padding-left: 20px;
+}
+
+#body-left > div > .nav > li.active ul > li > a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#body-left li ul {
+    display: none;
+    margin-top: 2px;
+}
+
+#body-left li.active > ul {
+    display: block;
+}
+
+/* tri-right */
+#body-left li a span.toggle {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-left: 4px dashed;
+    border-bottom: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+/* tri-down */
+#body-left li.active > a span.toggle {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+.panel-remove-border-top {
+    border-top: 0;
+    border-radius: 0;
+}
+
+.if-table {
+    border-color: white;
+}
+
+
+.if-table td {
+    border: 1px solid #AAAAAA;
+    height: 60px;
+    width: 60px;
+    padding: 8px;
+}
+
+.if-table td img {
+    height: 100%;
+    width: 100%;
+}
+
+.if-sub-table td {
+    border: 1px solid #AAAAAA;
+    height: 20px;
+    width: 20px;
+    padding: 1px;
+}
+
+.if-sub-table td img {
+    height: 100%;
+    width: 100%;
+}
+
+.ifFixed {
+    position: fixed;
+}
+
+#addChannelGroupForm {
+    
+}
+
+#addChannelGroupForm {
+    margin: 15px;
+}
+
+#addChannelGroupForm input[type="text"] {
+    display: inline-block;
+    width: auto;
+}
+
+
+

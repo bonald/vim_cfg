@@ -1,0 +1,14 @@
+  SNMP Versions Supported:    1 2c 3
+  Building for:               linux
+  Net-SNMP Version:           5.7.2.1
+  Network transport support:  Callback Unix Alias TCP UDP TCPIPv6 UDPIPv6 IPv4Base SocketBase TCPBase UDPIPv4Base UDPBase IPv6Base
+  SNMPv3 Security Modules:     usm
+  Agent MIB code:             smux agentx notification target mibII/vacm_vars snmpv3mibs ucd-snmp/memory ucd-snmp/vmstat ucd-snmp/loadave mibII/tcp mibII/udp mibII/icmp mibII/snmp_mib default_modules =>  smux/smux agentx/master agentx/subagent notification/snmpNotifyTable snmp-notification-mib/snmpNotifyFilterTable notification/snmpNotifyFilterProfileTable target/target_counters_5_5 target/snmpTargetAddrEntry target/snmpTargetParamsEntry target/target util_funcs/header_generic mibII/vacm_context mibII/vacm_conf snmpv3/snmpMPDStats_5_5 snmpv3/usmStats_5_5 snmpv3/snmpEngine snmpv3/usmConf snmpv3/usmUser hardware/memory hardware/cpu util_funcs/header_simple_table mibII/kernel_linux mibII/tcpTable mibII/kernel_linux mibII/udpTable mibII/kernel_linux mibII/updates snmpv3mibs notification notification-log-mib target agentx
+  MYSQL Trap Logging:         unavailable
+  Embedded Perl support:      disabled
+  SNMP Perl modules:          building -- not embeddable
+  SNMP Python modules:        disabled
+  Crypto support from:        crypto
+  Authentication support:     MD5 SHA1
+  Encryption support:         DES AES
+  Local DNSSEC validation:    disabled

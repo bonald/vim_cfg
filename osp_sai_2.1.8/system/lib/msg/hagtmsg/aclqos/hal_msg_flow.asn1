@@ -1,0 +1,202 @@
+HAL-MSG-FLOW DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+
+    HalMsgIpv4addr,
+    HalMsgIpv6addr
+    FROM HAL-MSG-L3TYPES
+    ;
+    
+-- DATA STRUCTURE definitions for ACL (BEGIN) {
+
+HalMsgFlowL4PortType ::= SEQUENCE
+{
+    operator        INTEGER,    -- GLB_FLOW_L4PORT_OPERATOR_XXX
+    port            INTEGER,
+    port2           INTEGER
+}
+
+HalMsgFlowTcpFlagType ::= SEQUENCE
+{
+    operator        INTEGER,    -- GLB_FLOW_TCP_FLAG_OP_ANY or GLB_FLOW_TCP_FLAG_OP_ALL
+    flag            INTEGER     -- bitmap of GLB_FLOW_TCP_FLAG_XXX
+}
+
+HalMsgFlowMacRule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_FLOW_MAC_RULE_FLAG_XXX
+    senderIp        HalMsgIpv4addr,
+    senderIpMask  HalMsgIpv4addr,
+    targetIp        HalMsgIpv4addr,
+    targetIpMask    HalMsgIpv4addr,
+    macSa           HalMsgDefL2MacAddr,
+    macSaMask       HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    macDaMask       HalMsgDefL2MacAddr,
+    cVlanId         INTEGER,
+    sVlanId         INTEGER,
+    cTagCos         INTEGER,
+    sTagCos         INTEGER,
+    l3Type          INTEGER,
+    l2Type          INTEGER,
+    ethType         INTEGER,
+    ethTypeMask     INTEGER,
+    arpOpCode       INTEGER
+}
+
+HalMsgFlowIpv4Rule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_FLOW_IPV4_RULE_FLAG_XXX
+    ipSa            HalMsgIpv4addr,
+    ipSaMask        HalMsgIpv4addr,
+    ipDa            HalMsgIpv4addr,
+    ipDaMask        HalMsgIpv4addr,
+    l4SrcPort       HalMsgFlowL4PortType,
+    l4DestPort      HalMsgFlowL4PortType,
+    ipFrag          INTEGER,    -- GLB_FLOW_IP_FRAG_XXX
+    tcpFlag         HalMsgFlowTcpFlagType,
+    ipOption        INTEGER,
+    routedPacket    INTEGER,
+    dscp            INTEGER,
+    l4Protocol      INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER,
+    igmpType        INTEGER,
+	scos			INTEGER,
+	ccos			INTEGER,
+	svlan			INTEGER,
+	cvlan			INTEGER,
+    ethType         INTEGER,
+    ethTypeMask     INTEGER,
+    macSa           HalMsgDefL2MacAddr,
+    macSaMask       HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    macDaMask       HalMsgDefL2MacAddr
+}
+
+HalMsgFlowExtIpv4Rule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_FLOW_IPV4_RULE_FLAG_XXX
+    ipSa            HalMsgIpv4addr,
+    ipSaMask        HalMsgIpv4addr,
+    ipDa            HalMsgIpv4addr,
+    ipDaMask        HalMsgIpv4addr,
+    l4SrcPort       HalMsgFlowL4PortType,
+    l4DestPort      HalMsgFlowL4PortType,
+    ipFrag          INTEGER,    -- GLB_FLOW_IP_FRAG_XXX
+    tcpFlag         HalMsgFlowTcpFlagType,
+    ipOption        INTEGER,
+    routedPacket    INTEGER,
+    dscp            INTEGER,
+    l4Protocol      INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER,
+    macSa           HalMsgDefL2MacAddr,
+    macSaMask       HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    macDaMask       HalMsgDefL2MacAddr,
+    cVlanId         INTEGER,
+    sVlanId         INTEGER,
+    cTagCos         INTEGER,
+    sTagCos         INTEGER,
+    l3Type          INTEGER,
+    l2Type          INTEGER
+}
+
+HalMsgFlowIpv6Rule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of  GLB_FLOW_IPV6_RULE_FLAG_XXX
+    sprefix         HalMsgIpv6addr,
+    sprefixLen      INTEGER,
+    dprefix         HalMsgIpv6addr,
+    dprefixLen      INTEGER,
+    l4SrcPort       HalMsgFlowL4PortType,
+    l4DestPort      HalMsgFlowL4PortType,
+    ipFrag          INTEGER,    -- GLB_FLOW_IP_FRAG_XXX
+    tcpFlag         HalMsgFlowTcpFlagType,
+    ipOptions       INTEGER,
+    routedPacket    INTEGER,
+    l4Protocol      INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER,
+    dscp            INTEGER,
+    flowLabel       INTEGER
+}
+
+HalMsgFlowExtIpv6Rule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of  GLB_FLOW_IPV6_RULE_FLAG_XXX
+    sprefix         HalMsgIpv6addr,
+    sprefixLen      INTEGER,
+    dprefix         HalMsgIpv6addr,
+    dprefixLen      INTEGER,
+    l4SrcPort       HalMsgFlowL4PortType,
+    l4DestPort      HalMsgFlowL4PortType,
+    ipFrag          INTEGER,    -- GLB_FLOW_IP_FRAG_XXX
+    tcpFlag         HalMsgFlowTcpFlagType,
+    ipOptions       INTEGER,
+    routedPacket    INTEGER,
+    l4Protocol      INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER,
+    extHdr          INTEGER,
+    dscp            INTEGER,
+    flowLabel       INTEGER,
+    macSa           HalMsgDefL2MacAddr,
+    macSaMask       HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    macDaMask       HalMsgDefL2MacAddr,
+    cVlanId         INTEGER,
+    sVlanId         INTEGER,
+    cTagCos         INTEGER,
+    sTagCos         INTEGER,
+    l3Type          INTEGER,
+    l2Type          INTEGER
+}
+
+HalMsgFlowMplsRule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_FLOW_MPLS_RULE_FLAG_XXX
+    macSa           HalMsgDefL2MacAddr,
+    macSaMask       HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    macDaMask       HalMsgDefL2MacAddr,
+    cVlanId         INTEGER,
+    sVlanId         INTEGER,
+    cTagCos         INTEGER,
+    sTagCos         INTEGER,
+    l2Type          INTEGER,
+    label0          INTEGER,
+    label0Mask      INTEGER,
+    label1          INTEGER,
+    label1Mask      INTEGER,
+    label2          INTEGER,
+    label2Mask      INTEGER,
+    label3          INTEGER,
+    label3Mask      INTEGER
+}
+
+HalMsgFlowRule ::= SEQUENCE
+{
+    ruleType      INTEGER,    -- GLB_FLOW_FILTER_XXX
+    rule CHOICE 
+    {
+        macRule         HalMsgFlowMacRule,
+        ipv4Rule        HalMsgFlowIpv4Rule,
+        ipv6Rule        HalMsgFlowIpv6Rule,
+        mplsRule        HalMsgFlowMplsRule
+        --extIpv4Rule     HalMsgFlowExtIpv4Rule,
+        --extIpv6Rule     HalMsgFlowExtIpv6Rule
+    },
+
+	discard         INTEGER,
+	invalid         INTEGER,
+    hasExtMacRule   INTEGER,
+    extMacRule      HalMsgFlowMacRule
+}
+
+-- } DATA STRUCTURE definitions for FLOW (END)
+
+END

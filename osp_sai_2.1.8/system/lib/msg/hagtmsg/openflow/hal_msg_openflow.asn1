@@ -1,0 +1,20 @@
+HAL-MSG-OPENFLOW DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+------------------------------------
+--  Type definitions for OpenFlow (BEGIN) {
+------------------------------------
+
+------------------------------------
+--  } Type definitions for OpenFlow (END)
+------------------------------------
+
+------------------------------------
+--  Message definitions for OpenFlow (BEGIN) {
+------------------------------------
+
+------------------------------------
+--  } Message definitions for OpenFlow (END)
+------------------------------------
+
+END
+

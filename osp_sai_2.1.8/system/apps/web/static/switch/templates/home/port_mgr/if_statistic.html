@@ -1,0 +1,244 @@
+<!-- option -->
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <!-- select -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" ng-click="setCheckboxAll(true)">{{ 'Select all' | translate }}</button>
+                <button type="button" class="btn btn-default" ng-click="setCheckboxAll(false)">{{ 'Clear all' | translate }}</button>
+                <button type="button" class="btn btn-default" ng-click="setCheckboxAll('inverse')">{{ 'Inverse' | translate }}</button>
+            </div>
+            <button class="btn btn-primary" ng-click="update()" ng-disabled="loading">{{ 'Update Statistics' | translate }}</button>
+        </div>
+    </div>
+</div>
+
+<!-- info -->
+<div ng-class="{true: 'col-md-8', false: 'col-md-12'}[hasSel()]">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ $rootScope.Product }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center"><input type="checkbox" ng-model="multiSelAllCtl" ng-click="setCheckboxAll(multiSelAllCtl)"/></th>
+                        <th class="text-center">{{ 'Port' | translate }}</th>
+                        <th class="text-center">{{ 'Packets Input' | translate }}</th>
+                        <th class="text-center">{{ 'Bytes Input' | translate }}</th>
+                        <th class="text-center">{{ '5 Minute Input Rate(packets/sec)' | translate }}</th>
+
+                        <!--
+
+                            <th class="text-center">{{ '5 Minute Input Rate(bits/sec)' | translate }}</th>
+                            <th class="text-center">{{ 'Input Unicast Packet' | translate }}</th>
+                            <th class="text-center">{{ 'Input Broadcast Packet' | translate }}</th>
+                            <th class="text-center">{{ 'Input Multicast Packet' | translate }}</th>
+                            <th class="text-center">{{ 'Input Runts' | translate }}</th>
+                            <th class="text-center">{{ 'Input Giants' | translate }}</th>
+                            <th class="text-center">{{ 'Input Errors' | translate }}</th>
+                            <th class="text-center">{{ 'Input CRC' | translate }}</th
+                            <th class="text-center">{{ 'Input Frame' | translate }}</th>
+                            <th class="text-center">{{ 'Input Pause' | translate }}</th>
+                        -->
+                        <th class="text-center">{{ 'Packets Output' | translate }}</th>
+                        <th class="text-center">{{ 'Bytes Output' | translate }}</th>
+                        <th class="text-center">{{ '5 Minute Output Rate(packets/sec)' | translate }}</th>
+                        <!--
+                            <th class="text-center">{{ '5 Minute Output Rate(packets/sec)' | translate }}</th>
+                            <th class="text-center">{{ '5 Minute Output Rate(bits/sec)' | translate }}</th>
+                            <th class="text-center">{{ 'Output Unicast Packet' | translate }}</th>
+                            <th class="text-center">{{ 'Output Broadcast Packet' | translate }}</th>
+                            <th class="text-center">{{ 'Output Multicast Packet' | translate }}</th>
+                            <th class="text-center">{{ 'Output Errors' | translate }}</th>
+                            <th class="text-center">{{ 'Output Pause' | translate }}</th>
+                        -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in stats.if_statistic_arr">
+                        <th class="text-center"><input type="checkbox" ng-model="multiSel[$index]"/></th>
+                        <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewDetail(x)">{{ x.full_name | switchPort }}</a></td>
+                        <td class="text-center">{{ x.pkts_rcv }}</td>
+                        <td class="text-center">{{ x.octets_rcv }}</td>
+                        <td class="text-center">{{ x.pkts_rcv_rate ? x.pkts_rcv_rate :'0'}}</td>
+                        <!--
+                            <td class="text-center">{{ x.pkts_rcv_rate }}</td>
+                            <td class="text-center">{{ x.octets_rcv_rate }}</td>
+                            <td class="text-center">{{ x.uc_pkts_rcv }}</td>
+                            <td class="text-center">{{ x.brdc_pkts_rcv }}</td>
+                            <td class="text-center">{{ x.mc_pkts_rcv }}</td>
+                            <td class="text-center">{{ x.undersize_pkts }}</td>
+                            <td class="text-center">{{ x.oversize_pkts }}</td>
+                            <td class="text-center">{{ x.mac_rcv_error }}</td>
+                            <td class="text-center">{{ x.bad_crc }}</td>
+                            <td class="text-center">{{ x.frame_error }}</td>
+                            <td class="text-center">{{ x.pause_rcv }}</td>
+                        -->
+                        <td class="text-center">{{ x.pkts_send }}</td>
+                        <td class="text-center">{{ x.octets_send }}</td>
+                        <td class="text-center">{{ x.pkts_send_rate ? x.pkts_send_rate : '0' }}</td>
+                        <!--
+                            <td class="text-center">{{ x.pkts_send_rate }}</td>
+                            <td class="text-center">{{ x.octets_send_rate }}</td>
+                            <td class="text-center">{{ x.uc_pkts_send }}</td>
+                            <td class="text-center">{{ x.brdc_pkts_send }}</td>
+                            <td class="text-center">{{ x.mc_pkts_send }}</td>
+                            <td class="text-center">{{ x.mac_transmit_err }}</td>
+                            <td class="text-center">{{ x.pause_send }}</td>
+                        -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="if-statistic-modify" class="col-md-4" ng-show="hasSel()">
+    <div class="panel panel-default ifFixed">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Modify' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form" name="PortStatisticsForm">
+                <!-- Port -->
+                <div class="form-group">
+                    <label>{{ 'Port' | translate }}</label>
+                    <p>
+                    <span style="display: inline-block;" ng-repeat="x in selected.arrIndex">{{ statsInfo[x].full_name | switchPort }}&nbsp;</span>
+                    </p>
+                </div>
+
+                <!-- submit -->
+
+                <button class="btn btn-primary" ng-click="clear()" ng-disabled='loading'>{{ 'Clear Statistics' | translate }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- modal -->
+<div class="modal fade" id="statisticDetailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Detail' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Packets Input' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.pkts_rcv }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Bytes Input' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.octets_rcv }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Packets Output' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.pkts_send }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Bytes Output' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.octets_send }}</td>
+                    </tr>
+
+
+                    <tr>
+                        <th class="text-right col-md-6">{{ '5 Minute Input Rate(packets/sec)' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.pkts_rcv_rate }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ '5 Minute Input Rate(bits/sec)' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.octets_rcv_rate }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Unicast Packet' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.uc_pkts_rcv }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Broadcast Packet' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.brdc_pkts_rcv }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Multicast Packet' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.mc_pkts_rcv }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Runts' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.undersize_pkts }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Giants' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.oversize_pkts }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Errors' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.mac_rcv_error }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input CRC' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.bad_crc }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Frame' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.frame_error }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Input Pause' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.pause_rcv }}</td>
+                    </tr>
+
+                    <tr>
+                        <th class="text-right col-md-6">{{ '5 Minute Output Rate(packets/sec)' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.pkts_send_rate }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ '5 Minute Output Rate(bits/sec)' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.octets_send_rate }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Output Unicast Packet' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.uc_pkts_send }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Output Broadcast Packet' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.brdc_pkts_send }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Output Multicast Packet' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.mc_pkts_send }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Output Errors' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.mac_transmit_err }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-6">{{ 'Output Pause' | translate }}</th>
+                        <td class="text-left col-md-6">{{ dispDetail.pause_send }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="clearDetail()" ng-disabled="loading">
+                    <span class="glyphicon glyphicon-trash"></span>&nbsp;{{ 'Clear' | translate }}
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="update()" ng-disabled="loading">
+                    <span class="glyphicon glyphicon-refresh"></span>&nbsp;{{ 'Refresh' | translate }}
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

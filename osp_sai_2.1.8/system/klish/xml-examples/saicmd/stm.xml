@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+STM
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show stm" help="Switch table management">
+	</COMMAND>
+        
+        <COMMAND name="show stm prefer" help="Select a profile mode">
+            <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="default" help="Balance on all kinds of tables size" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="ipv6" help="IPv6 profile information" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+			
+            <ACTION>
+                cdbctl show/cdb/sys/show_stm/${mode}
+                RES=`ps --cols 250 aux | grep [o]vs-vswitchd | grep -v grep`
+                if [ -n "$RES" ]; then
+                    cdbctl show/cdb/openflow/show_openflow_resource/${mode}
+                fi
+            </ACTION>
+							
+		    <CTCDESCRIPTION>
+Use the show stm prefer privileged EXEC command to display information about the profiles that can be used to maximize system resources for a particular feature.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The numbers displayed for each profile represent an approximate maximum number for each feature resource.
+Use this command to show the defautl balance on all kinds onf tables size.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None     
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This is an example of output from the show stm prefer default command, displaying the profile default in use:   
+    Switch# show stm prefer default   
+    default profile::   
+    number of Ethernet features:   
+        VLAN forwarding instances             : 1/4094   
+    number of IP unicast features:   
+        IPv4 host routes                      : 0/3072   
+        Indirect IPv4 routes                  : 0/6144   
+    number of Security features:   
+        ACL entries                           : 0/864  
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="show stm prefer current" help="Current profile information">
+            <ACTION>
+            vtysh -c "show ip route summary write"
+            cdbctl show/cdb/sys/show_stm/current
+            RES=`ps --cols 250 aux | grep [o]vs-vswitchd | grep -v grep`
+            if [ -n "$RES" ]; then
+                cdbctl show/cdb/openflow/show_openflow_resource/current
+            fi
+            </ACTION>
+							
+		    <CTCDESCRIPTION>
+Use the show stm prefer privileged EXEC command to display information about the profiles that can be used to maximize system resources for a particular feature.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+If you did not reload the switch after entering the stm prefer Global Configuration command, the show stm prefer privileged EXEC command displays the profile currently in use and not the newly configured profile.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This is an example of output from the show stm prefer current command, displaying the profile currently in use:    
+    Switch# show stm prefer current   
+    default profile::    
+    number of Ethernet features:    
+        VLAN forwarding instances             : 1/4094    
+    number of IP unicast features:    
+        IPv4 host routes                      : 0/3072    
+        Indirect IPv4 routes                  : 0/6144    
+    number of Security features:    
+        ACL entries                           : 0/32    
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+        </COMMAND>
+        
+        <COMMAND name="show stm prefer next" help="Next profile information">
+            <ACTION>
+            		cdbctl show/cdb/sys/show_stm/next
+            		RES=`ps --cols 250 aux | grep [o]vs-vswitchd | grep -v grep`
+	             if [ -n "$RES" ]; then
+	                 cdbctl show/cdb/openflow/show_openflow_resource/next
+	             fi
+            </ACTION>
+							
+		    <CTCDESCRIPTION>
+Use this command to display information about the profiles that after reload the switch can be used to maximize system resources for a particular feature.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Use this command to show the next balance on all kinds of tables size, which you reload the switch after entering the stm prefer Global Configuration command.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This is an example of output from the show stm prefer next command, displaying the profile currently in use:    
+    Switch# show stm prefer next  
+	default profile::   
+    number of Ethernet features:    
+        VLAN forwarding instances             : 1/4094    
+    number of IP unicast features:    
+        IPv4 host routes                      : 0/3072   
+        Indirect IPv4 routes                  : 0/6144   
+    number of Security features:   
+        ACL entries                           : 0/32      
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+		    </CTCRCMD>
+        </COMMAND>
+
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="stm" help="Switch table management" access="4">
+	</COMMAND>
+        <COMMAND name="stm prefer" help="Select a profile mode">
+            <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="default" help="Balance on all kinds of tables size" ptype="SUBCOMMAND" mode="subcommand" />
+                <PARAM name="ipv6" help="IPv6 profile" ptype="SUBCOMMAND" mode="subcommand" />
+            </PARAM>
+			
+			<ACTION>
+                cdbctl update/cdb/sys/chassis/next_stm_mode/${mode}
+                if [ $? -eq 0 ]; then
+                    echo "Changes to STM profile have been stored, but cannot take effect until the next reload. Use 'show stm prefer current' to see what STM profile is currently active."
+                fi
+            </ACTION>
+							
+		    <CTCDESCRIPTION>
+Use the stm prefer Global Configuration command to configure the profile used in Switch Table Management (STM) resource allocation. You can use profile to allocate system memory to best support the features being used in your application. Use profile to approximate the maximum number of unicast MAC addresses, quality of service (QoS) access control entries (ACEs) and unicast routes.         
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Users must reload the switch for the configuration to take effect.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+System use the default profile when first boot up, this profile balance all the features. 
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to configure the default profile on the switch:    
+	Switch(config)# stm prefer default   
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show stm prefer current
+		    </CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Internal-debug-view">
+    <COMMAND name="show stm" help="Switch table management"/>
+    <COMMAND name="show stm prefer" help="Select a profile mode"/>
+    <COMMAND name="show stm prefer current" help="Current profile information">
+        <ACTION>
+            cdbctl show/cdb/sys/show_stm/current/internal_debug
+        </ACTION>
+    <CTCDESCRIPTION>
+    </CTCDESCRIPTION>
+    <CTCUSAGE>
+    </CTCUSAGE>
+    <CTCDEFAULT>
+    </CTCDEFAULT>
+    <CTCEXAMPLE>
+    </CTCEXAMPLE>
+    <CTCRCMD>
+    </CTCRCMD>
+    </COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

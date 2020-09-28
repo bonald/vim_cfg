@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+MANAGEMENT IPv6
+</CTCMODULENAME>
+
+<VIEW name="Configure">
+
+	<COMMAND name="management ipv6" help="Internet Protocol v6" />
+	<COMMAND name="no management ipv6" help="Internet Protocol v6" />
+
+	<COMMAND name="management ipv6 address" help="Set the IPv6 address">
+		<PARAM name="addr" help="IPv6 address and prefix length (e.g. 3ffe:506::1/48)" ptype="IPV6_ADDR_MASK"/>
+		<ACTION>cdbctl update/cdb/sys/manage_if/addr_v6/${addr}</ACTION>	
+	</COMMAND>
+
+	<COMMAND name="no management ipv6 address" help="Set the IPv6 address">
+		<ACTION>cdbctl update/cdb/sys/manage_if/addr_v6</ACTION>
+	</COMMAND>
+
+    <COMMAND name="management ipv6 route" help="Set the IPv6 route">
+        <PARAM name="op_type" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="add" help="Add the route" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="gateway" help="Add gateway" ptype="SUBCOMMAND" mode="subcommand" />
+            </PARAM>
+            <PARAM name="del" help="Del the route" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="gateway" help="Del gateway" ptype="SUBCOMMAND" mode="subcommand" />
+            </PARAM>
+        </PARAM>
+        <PARAM name="gateway_ipv6_addr" help="IPv6 gateway address(e.g. 3ffe:506::100)" ptype="IPV6_ADDR"/>
+        <ACTION>
+            if [ ${op_type} == "add" ]; then
+                cdbctl update/cdb/sys/manage_if/gateway_v6/${gateway_ipv6_addr}
+            else
+                cdbctl update/cdb/sys/manage_if/gateway_v6/${gateway_ipv6_addr}/del
+            fi
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to set the gateway on the Switch for management ip. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example sets the gateway of 192.168.100.254 for the switch.  
+    Switch(config)# management route add gateway 192.168.100.254  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+        </CTCRCMD>		
+    </COMMAND>
+  
+</VIEW>
+
+</CLISH_MODULE>

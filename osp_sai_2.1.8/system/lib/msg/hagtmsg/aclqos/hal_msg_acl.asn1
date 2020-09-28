@@ -1,0 +1,159 @@
+HAL-MSG-ACL DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgFlowRule
+    FROM HAL-MSG-FLOW
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+-- DATA STRUCTURE definitions for ACL (BEGIN) {
+
+HalMsgAclAction ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_FLOW_ACTION_FLAG_XXX
+    redirect        INTEGER,
+    logId           INTEGER,
+    logWeight       INTEGER,
+    priority        INTEGER,
+    color           INTEGER,
+    trust           INTEGER,
+    macroPolicerId  INTEGER,
+    microPolicerId  INTEGER,
+    dscp            INTEGER,
+    qosDomain       INTEGER,
+    cos             INTEGER
+    
+}
+
+HalMsgAce ::= SEQUENCE
+{
+    seqNum      INTEGER,
+    action      HalMsgAclAction,
+    rule        HalMsgFlowRule
+}
+
+HalMsgSetAclCpuRandomLog ::= SEQUENCE
+{
+    seqNum      INTEGER,
+    logReason   INTEGER,    -- GLB_PACKET_TOCPU_REASON_XXX
+    logWeight   INTEGER
+}
+
+HalMsgPendAce ::= SEQUENCE
+{
+    label       INTEGER,
+    aclType     INTEGER,
+    seqNum      INTEGER
+}
+
+-- } DATA STRUCTURE definitions for ACL (END)
+
+
+-- MESSAGE definitions for ACL (BEGIN) {
+HalMsgAclLabelOpReq ::= SEQUENCE
+{
+    isVlan      INTEGER,
+    label       INTEGER
+}
+
+HalMsgApplyAclLabelReq ::= SEQUENCE
+{
+    isVlan         INTEGER,
+    portOrVid      INTEGER,
+    dir            INTEGER,
+    label          INTEGER, 
+    isGlobalAcl    INTEGER,
+    isFirstMemner  INTEGER
+}
+
+HalMsgUnapplyAclLabelReq ::= SEQUENCE
+{
+    isVlan         INTEGER,
+    portOrVid      INTEGER,
+    dir            INTEGER,
+    isLastMemner  INTEGER,
+    label          INTEGER
+}
+
+HalMsgAddAccessGroupReq ::= SEQUENCE
+{
+    label       INTEGER,   
+    aceList     SEQUENCE OF HalMsgAce
+}
+
+HalMsgDelAccessGroupReq ::= SEQUENCE
+{
+    label       INTEGER,
+    aclType        INTEGER     -- GLB_FLOW_FILTER_XXX
+}
+
+HalMsgAddAceReq ::= SEQUENCE
+{
+    label       INTEGER,
+    prevSeqNum  INTEGER,
+    prevExtMacSeqNum  INTEGER,
+    ace         HalMsgAce
+}
+
+HalMsgDelAceReq ::= SEQUENCE
+{
+    label       INTEGER,
+    aclType        INTEGER,    -- GLB_FLOW_RULE_XXX
+    seqNum      INTEGER
+}
+
+HalMsgSetAclEnableReq ::= SEQUENCE
+{
+    isVlan      INTEGER,
+    portOrVid   INTEGER,
+    dir         INTEGER,    -- GLB_INGRESS or GLB_EGRESS
+    enable      BOOLEAN
+}
+
+HalMsgSetAceInvalidReq ::= SEQUENCE
+{
+    label       INTEGER,
+    aclType     INTEGER,
+    seqNum      INTEGER,
+    invalid     BOOLEAN
+}
+ 
+HalMsgSetAclProcFlagReq ::= SEQUENCE
+{
+    flag       INTEGER
+}
+HalMsgSetAclCpuRandomLogReq ::= SEQUENCE
+{
+    label       INTEGER,
+    aclType        INTEGER,    -- GLB_FLOW_RULE_XXX
+    logList     SEQUENCE OF HalMsgSetAclCpuRandomLog
+}
+
+HalMsgUnsetAclCpuRandomLogReq ::= SEQUENCE
+{
+    label       INTEGER,
+    aclType        INTEGER,    -- GLB_FLOW_RULE_XXX
+    seqNumList  SEQUENCE OF INTEGER
+}
+
+HalMsgPendAceResp ::= SEQUENCE
+{
+    pendList    SEQUENCE OF HalMsgPendAce
+}
+ 
+-- } DATA STRUCTURE definitions for ACL (END)
+
+HalMsgAddGlobalAceReq ::= SEQUENCE
+{
+    enable            INTEGER,
+    seqNum            INTEGER,
+    firstOrlast       INTEGER,
+    mac         HalMsgDefL2MacAddr
+}
+
+HalMsgAclUsePacketVlanReq ::= SEQUENCE
+{
+    enable            INTEGER
+}
+END

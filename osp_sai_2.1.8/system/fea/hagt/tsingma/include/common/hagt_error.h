@@ -1,0 +1,41 @@
+#ifndef __HSRV_ERROR_H__
+#define __HSRV_ERROR_H__
+#include "glb_const.h"
+enum hagt_err
+{
+    HAGT_E_NONE = 0,
+    HAGT_E_NO_MEMORY = GLB_HAGT_ERROR_BASE,/*-4000*/
+    HAGT_E_INVALID_PARAM,
+    HAGT_E_INVALID_PTR,
+    HAGT_E_SOCK_CREATE_ERR,
+    HAGT_E_SOCK_BIND_ERR,
+    
+    HAGT_E_SOCK_ACCEPT_ERR,/*-3995*/
+    HAGT_E_SOCK_READ_ERR,
+    HAGT_E_MSG_LEN_TOO_LONG,
+    HAGT_E_MSG_TYPE_EER,
+    HAGT_E_NOT_INIT,
+    
+    HAGT_E_HAS_INITED,/*-3990*/
+    HAGT_E_SOCK_WRITE_ERR,
+    HAGT_E_ENTRY_NOT_EXIST,
+    HAGT_E_ENTRY_EXIST,
+    HAGT_E_RESOURCE_FULL,
+    
+    HAGT_E_NOT_FOUND,/*-3985*/
+    HAGT_E_RMT_WRITE_ERR,
+    HAGT_E_SOCK_SET_OPT_ERR,
+    HAGT_E_HAVE_INIT,
+    HAGT_E_INVALID_MSG_SESSION,
+    
+    HAGT_E_CONNECT_ERR,/*-3980*/
+    HAGT_E_SEND_MSG_FAIL,
+    HAGT_E_MSG_ENCODE_EER,
+    HAGT_E_MSG_SEND_ERR,
+    /* qicx added for different board has different ASIC interrupt handling, 2013-07-04 */
+    HAGT_E_INVALID_BOARD,
+
+    HAGT_E_MAX
+};
+
+#endif /*__HSRV_ERROR_H__*/

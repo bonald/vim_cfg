@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+RIP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show ip rip" help="Show RIP routes">
+		<ACTION>
+			vtysh -c "show ip rip"
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="show ip rip status" help="IP routing protocol process parameters and statistics">
+		<ACTION>
+			vtysh -c "show ip rip status"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show debugging rip" help="Rip information">
+		<ACTION>
+			vtysh -c "show debugging rip"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="debug rip" help="Rip information">
+	</COMMAND>
+
+	<COMMAND name="no debug rip" help="Rip information">
+	</COMMAND>
+
+	<COMMAND name="debug rip event" help="Rip event">
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/rip_event/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug rip event"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for rip event troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for rip event troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# debug rip event
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+	
+	<COMMAND name="no debug rip event" help="Rip event">
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/rip_event/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug rip event"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# no debug rip event
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	   
+	</COMMAND>
+
+	<COMMAND name="debug rip packet" help="Rip packet">
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/rip_packet/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug rip packet"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for rip packet troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for rip packet troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# debug rip packet
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no debug rip packet" help="Rip packet">
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/rip_packet/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug rip packet"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# no debug rip packet
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug rip zebra" help="Rip and ZEBRA communication">
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/rip_zebra/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug rip zebra"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for rip zebra troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for rip zebra troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# debug rip zebra
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no debug rip zebra" help="Rip and ZEBRA communication">
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/rip_zebra/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug rip zebra"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+Switch(config)# no debug rip zebra
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="router rip" help="Start RIP configuration" view="configure-rip-view">
+	
+		<CTCDESCRIPTION>
+To configure RIP routing process, use the router rip command in global configuration mode. To terminate an RIP routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can create RIP routing processes by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No RIP routing process is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to create the RIP routing process:
+Switch(config)# router rip
+Switch(config-router)#
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+network
+	   	</CTCRCMD>
+	   	<ACTION>
+			cdbctl create/cdb/l3/rip/create_rip
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="no router rip" help="Start RIP configuration">
+	
+		<CTCDESCRIPTION>
+To configure RIP routing process, use the router ospf command in global configuration mode. To terminate an RIP routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can remove RIP routing processes by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No RIP routing process is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to remove the RIP routing process:
+Switch(config)# no router rip
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+no network
+	   	</CTCRCMD>
+	   	<ACTION>
+			cdbctl delete/cdb/l3/rip/remove_rip
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "no router rip" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+
+	<COMMAND name="ip rip" help="Routing Information Protocol">
+	</COMMAND>
+
+	<COMMAND name="no ip rip" help="Routing Information Protocol">
+	</COMMAND>
+
+	<COMMAND name="ip rip receive" help="Advertisement reception">
+	</COMMAND>
+	
+	<COMMAND name="no ip rip receive" help="Advertisement reception">
+	</COMMAND>
+
+	<COMMAND name="ip rip receive version" help="Version control">
+	</COMMAND>
+	
+	<COMMAND name="ip rip receive version 1" help="Version 1">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_recv_version/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip receive version 1" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+
+	<COMMAND name="ip rip receive version 2" help="Version 2">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_recv_version/2
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip receive version 2" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip receive version 1 2" help="Version 1 2">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_recv_version/3
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip receive version 1 2" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	
+	<COMMAND name="ip rip receive version none" help="Version none">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_recv_version/4
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip receive version none" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+
+	<COMMAND name="no ip rip receive version" help="Version control">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_recv_version/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip receive version" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip send" help="Advertisement transmission">
+	</COMMAND>
+	
+	<COMMAND name="no ip rip send" help="Advertisement transmission">
+	</COMMAND>
+	
+	<COMMAND name="ip rip send version" help="Version control">
+	</COMMAND>
+	
+	<COMMAND name="ip rip send version 1" help="Version 1">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_send_version/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip send version 1" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip send version 2" help="Version 2">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_send_version/2
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip send version 2" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip send version 1 2" help="Version 1 2">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_send_version/3
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip send version 1 2" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip rip send version" help="Version control">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_send_version/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip send version" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip v2-broadcast" help="Send ip broadcast v2 update">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_v2_broadcast/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip v2-broadcast" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip rip v2-broadcast" help="Send ip broadcast v2 update">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_v2_broadcast/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip v2-broadcast" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip split-horizon" help="Perform split horizon">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_split_horizon/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip split-horizon" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip rip split-horizon" help="Perform split horizon">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_split_horizon/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip split-horizon" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip split-horizon poisoned-reverse" help="With poisoned-reverse">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_poisoned_reverse/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip split-horizon poisoned-reverse" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip rip split-horizon poisoned-reverse" help="With poisoned-reverse">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/rip_poisoned_reverse/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip split-horizon poisoned-reverse" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip rip authentication" help="Authentication control">
+	</COMMAND>
+
+	<COMMAND name="no ip rip authentication" help="Authentication control">
+	</COMMAND>
+	
+<!--
+	<COMMAND name="ip rip authentication key-chain" help="Authentication key-chain">
+		<PARAM name="keychain" help="name of key-chain" ptype="NAME_STRING"/>
+		<ACTION>
+		IFACE=`echo ${iface} | sed 's/\//_/'`
+		cdbctl update/cdb/l3/route_if/$IFACE/rip_aut_kchain/add/${keychain}
+		if [ "$?" != "0" ] ; then
+			exit 1
+		else
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip authentication key-chain ${keychain}" -c "end"
+		fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip rip authentication key-chain" help="Authentication key-chain">
+		<ACTION>
+		IFACE=`echo ${iface} | sed 's/\//_/'`
+		cdbctl update/cdb/l3/route_if/$IFACE/rip_aut_kchain/del
+		if [ "$?" != "0" ] ; then
+			exit 1
+		else
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip authentication key-chain" -c "end"
+		fi
+		</ACTION>
+	</COMMAND>
+-->
+
+	<COMMAND name="ip rip authentication mode" help="Authentication mode">
+		<PARAM name="auth_mode" help="mode choice" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="md5" help="Keyed message digest" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="text" help="Clear text authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		IFACE=`echo ${iface} | sed 's/\//_/'`
+		cdbctl update/cdb/l3/route_if/$IFACE/rip_auth_mode/add/${auth_mode}
+		if [ "$?" != "0" ] ; then
+			exit 1
+		else
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip authentication mode ${auth_mode}" -c "end"
+		fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip rip authentication mode" help="Authentication mode">
+		<ACTION>
+		IFACE=`echo ${iface} | sed 's/\//_/'`
+		cdbctl update/cdb/l3/route_if/$IFACE/rip_auth_mode/del
+		if [ "$?" != "0" ] ; then
+			exit 1
+		else
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip authentication mode" -c "end"
+		fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip rip authentication string" help="Authentication string">
+		<PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+		<PARAM name="string_name" help="name of string" ptype="AUTHDKEY"/>
+		<ACTION>
+		IFACE=`echo ${iface} | sed 's/\//_/'`
+		if [ "${encrypt}" == "8" ]; then
+		    keystr=`fnconvert -c decrypt -m "${string_name}"`
+		else
+			keystr=${string_name}
+		fi
+		cdbctl update/cdb/l3/route_if/$IFACE/rip_auth_string/add/$keystr
+		if [ "$?" != "0" ] ; then
+			exit 1
+		else
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "ip rip authentication string $keystr" -c "end"
+		fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip rip authentication string" help="Authentication string">
+		<ACTION>
+		IFACE=`echo ${iface} | sed 's/\//_/'`
+		cdbctl update/cdb/l3/route_if/$IFACE/rip_auth_string/del
+		if [ "$?" != "0" ] ; then
+			exit 1
+		else
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip rip authentication string" -c "end"
+		fi
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-rip-view"
+	prompt="${SYSTEM_NAME}(config-router)# "
+	depth="1">
+
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from router rip configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from router rip configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+
+	<COMMAND name="network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="network prefix" ptype="IP_ADDR_MASK"/>
+		<ACTION>
+			cdbctl create/cdb/l3/rip_network/${prefix}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "network ${prefix}" -c "end"			
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To define the interfaces on which RIP runs , use the network area command in router configuration mode. To disable rip routing for interfaces defined with the address wildcard-mask pair, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The IP-ADDRESS and WILDCARD-MASK arguments together allow you to define one or multiple interfaces to be associated with rip using a single command.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following partial example initializes the rip routing process.
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip address 10.108.20.1/24
+Switch(config)# router rip
+Switch(config-router)# network 10.108.0.0/16 
+Switch(config-router)# network 10.109.10.0/24 
+Switch(config-router)# network 0.0.0.0/0 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router rip
+	   </CTCRCMD>
+		
+	</COMMAND>  
+
+	<COMMAND name="no network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="network prefix" ptype="IP_ADDR_MASK"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/rip_network/${prefix}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "no network ${prefix}" -c "end"			
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+       	<CTCUSAGE>
+The IP-ADDRESS and WILDCARD-MASK arguments together allow you to define one or multiple interfaces to be associated with rip using a single command.
+       	</CTCUSAGE>
+	   	<CTCDEFAULT>
+This command is disabled by default.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following partial example initializes the rip routing process.
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchprot
+Switch(config-if)# version 2
+Switch(config-if)# ip address 10.108.20.1/24
+Switch(config)# router rip
+Switch(config-router)# no network 10.108.0.0/16 
+Switch(config-router)# no network 10.109.10.0/24 
+Switch(config-router)# no network 0.0.0.0/0 
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+router rip
+	   	</CTCRCMD>
+		
+	</COMMAND> 
+	
+	<COMMAND name="neighbor" help="Specify a neighbor router">
+		<PARAM name="prefix" help="Neighbor address" ptype="IP_ADDR"/>
+		<ACTION>
+			cdbctl create/cdb/l3/rip_neighbor/${prefix}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "neighbor ${prefix}" -c "end"			
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following partial example initializes the rip routing process.
+Switch(config)# router rip
+Switch(config-router)# neighbor 10.108.0.0 
+Switch(config-router)# neighbor 10.109.10.0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router rip
+	   </CTCRCMD>
+		
+	</COMMAND>	
+
+ 	<COMMAND name="no neighbor" help="Set router rip neighbor">
+		<PARAM name="prefix" help="Neighbor address" ptype="IP_ADDR"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/rip_neighbor/${prefix}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "no neighbor ${prefix}" -c "end"			
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following partial example initializes the rip routing process.
+Switch(config)# router rip
+Switch(config-router)# no neighbor 10.108.0.0 
+Switch(config-router)# no neighbor 10.109.10.0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router rip
+	   </CTCRCMD>
+		
+	</COMMAND>	
+
+	<COMMAND name="version" help="Set rip protocol version">
+		<PARAM name="ver" help="rip version 1/2" ptype="RIP_VERSION"/>
+		<ACTION>
+			cdbctl update/cdb/l3/rip/version/${ver}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "version ${ver}" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+       	<CTCUSAGE>
+       	</CTCUSAGE>
+	   	<CTCDEFAULT>
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example specifies a fixed version:
+Switch(config)# router rip
+Switch(config-router)# version 2
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+router rip
+	   	</CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no version" help="Set rip version to default">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/version/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "no version" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+       	<CTCUSAGE>
+       	</CTCUSAGE>
+	   	<CTCDEFAULT>
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example specifies a fixed version:
+Switch(config)# router rip
+Switch(config-router)# no version
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+router rip
+	   	</CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="timers" help="Adjusting routing timers">
+	</COMMAND>	
+	
+	<COMMAND name="no timers" help="Adjusting routing timers">
+	</COMMAND>	
+	
+	<COMMAND name="timers basic" help="Basic routing protocol update timers">
+		<PARAM name="update" help="Routing table update time value.Default is 30." ptype="RIP_TIME"/>
+		<PARAM name="timeout" help="Routing information timeoutr time.Default is 180." ptype="RIP_TIME"/>
+		<PARAM name="garbage" help="Garbage timer.Default is 120." ptype="RIP_TIME"/>
+		<ACTION>
+			cdbctl update/cdb/l3/rip/timers/${update}/${timeout}/${garbage}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "timers basic ${update} ${timeout} ${garbage}" -c "end"
+			fi
+		</ACTION>
+		
+	</COMMAND>
+
+	<COMMAND name="no timers basic" help="Timers set to default">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/timers/30/180/120
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "no timers basic" -c "end"
+			fi
+		</ACTION>
+		
+	</COMMAND>
+
+	<COMMAND name="default-information" help="Control distribution of default information" >
+	</COMMAND>
+
+	<COMMAND name="no default-information" help="Control distribution of default information" >
+	</COMMAND>
+
+	<COMMAND name="default-information originate" help="Distribute a default route">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/default_information/add
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "default-information originate" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To generate a default external route into a rip routing domain, use the default-information originate command in router configuration mode. To disable this feature, use the no form of this command.
+		</CTCDESCRIPTION>
+       	<CTCUSAGE>
+Whenever you use the redistribute or the default-information router configuration command to redistribute routes into a rip routing domain, the switch automatically becomes an autonomous System Boundary Router (ASBR). However, an ASBR does not, by default, generate a default route into the OSPF routing domain. The system still must have a default route for itself before it generates one, except when you have specified the always keyword.
+       	</CTCUSAGE>
+	   	<CTCDEFAULT>
+This command is disabled by default.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example specifiesthe default route:
+Switch(config)# router rip
+Switch(config-router)#default-information originate
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+router rip
+	   	</CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no default-information originate" help="Distribute a default route">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/default_information/del
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "no default-information originate" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="passive-interface" help="Suppress routing updates on an interface">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EV"/>
+		<ACTION>
+			cdbctl create/cdb/l3/rip_passive_if/${iface_name}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "passive-interface ${iface_name}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>	
+
+	<COMMAND name="no passive-interface" help="Suppress routing updates on an interface">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EV"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/rip_passive_if/${iface_name}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "no passive-interface ${iface_name}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>	
+
+	<COMMAND name="passive-interface default" help="Default for all interface">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/passive_if_default/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "passive-interface default" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>	
+
+	<COMMAND name="no passive-interface default" help="Default for all interface">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/passive_if_default/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "no passive-interface default" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>	
+	
+	<COMMAND name="redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ospf" help="Open Shortest Path First (OSPFv2)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="metric" help="Metric" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="met" help="Metric valut" ptype="RIP_METRIC"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${metric}" != "" ]; then
+				cdbctl update/cdb/l3/rip/redistribute/add/${redist}/red_metric/${met}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router rip" -c "redistribute ${redist} metric ${met}" -c "end"
+				fi
+			else
+				cdbctl update/cdb/l3/rip/redistribute/add/${redist}/
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router rip" -c "redistribute ${redist}" -c "end"
+				fi
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ospf" help="Open Shortest Path First (OSPFv2)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/rip/redistribute/del/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router rip" -c "no redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="default-metric" help="Set a metric of redistribute routes">
+		<PARAM name="met" help="Default metric" ptype="RIP_METRIC_DEFAULT"/>
+		<ACTION>
+			cdbctl update/cdb/l3/rip/default_metric/${met}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "default-metric ${met}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no default-metric" help="Set a metric of redistribute routes">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/default_metric/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "no default-metric" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="allow-ecmp" help="Allow Equal Cost Multipath">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/allow_ecmp/add
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "allow-ecmp" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no allow-ecmp" help="Allow Equal Cost Multipath">
+		<ACTION>
+			cdbctl update/cdb/l3/rip/allow_ecmp/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "router rip" -c "no allow-ecmp" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,11 @@
+include $(MK_DIR)/sys.mk
+LIB = eeprom
+SRCS  = eeprom_api.c
+SRCS  += eeprom_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/eeprom
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+
+include $(MK_DIR)/lib.mk

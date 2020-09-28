@@ -1,0 +1,153 @@
+
+<!-- add clock global configure start -->      
+<div id="clock_conf" class="panel panel-default" >
+  <div class="panel-heading">
+      <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+  </div>
+  <div class="panel-body">
+
+    <form id="clockGlobalConfForm" name="clockGlobalConfForm" class="form"  novalidate>
+    <dl>
+     <dd class="row" style="margin-top: 10px;">
+        <div class="col-md-2">{{ 'System Time'  | translate }}</div>
+        <div class="col-md-2 text-muted"> {{currentSysTime}} </div>
+<!--
+        <div class="col-md-2 text-primary"> {{currentSysTime}} </div>
+        <div class="col-md-2 text-success"> {{currentSysTime}} </div>
+        <div class="col-md-1 text-info"> {{currentSysTime}} </div>
+        <div class="col-md-1 text-warning"> {{currentSysTime}} </div>
+        <div class="col-md-1 text-danger"> {{currentSysTime}} </div>
+-->
+        <div class="col-md-2">
+        <button class="btn btn-primary" ng-click="getSysCurrentTime()"  >{{ 'Refresh' | translate }}</button>   
+        </div> 
+    </dd> 
+    </dl>
+
+<!--    
+     <dl>
+        <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Set Time-Zone'  | translate }}</div>
+            <div class="col-md-2">
+             <select class="form-control" ng-change="sysLogLevelChange(sysLogLevelSel)"
+                  ng-model="sysLogLevelSel" ng-options="m for m in logLevel">
+             </select>
+            </div>
+        </dd> 
+    </dl>    
+-->
+
+    <dl>
+        <dd class="row " style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Set Time'  | translate }}</div>
+
+            <div class="col-md-1" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.clockYear.$valid]" title="Year 2000~2037">
+                <input type="text" name="clockYear" class="form-control " placeholder="Year " ng-pattern="/^(20[0-2][0-9]|203[0-7])$/" ng-model="clockArr[3]"  required />
+            </div>
+
+            <div class="col-md-1" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.clockMonth.$valid]" title="Month 1~12">
+              <input type="text" name="clockMonth" class="form-control input-sm" placeholder="Month" ng-pattern="/^(0?[1-9]|1[0-2])$/" ng-model="clockArr[4]"  required/>
+            </div>
+            <div class="col-md-1" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.clockDay.$valid]" title="Day 1~31">
+              <input type="text" name="clockDay" class="form-control input-sm" placeholder="Day" ng-pattern="/^(0?[1-9]|((1|2)[0-9])|30|31)$/" ng-model="clockArr[5]" required />
+            </div>
+            <div class="col-md-1" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.clockHour.$valid]" title="Hour 0~23">
+              <input type="text" name="clockHour" class="form-control input-sm" placeholder="Hour" ng-pattern="/^(0?[0-9]|1[0-9]|2[0-3])$/" ng-model="clockArr[0]" required />
+            </div>
+
+            <div class="col-md-1" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.clockMinute.$valid]" title="Minute 0~59">
+              <input type="text" name="clockMinute"class="form-control input-sm" placeholder="Minute" ng-pattern="/^(0?[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])$/" ng-model="clockArr[1]"  required />
+            </div>
+
+            <div class="col-md-1" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.clockSecond.$valid]" title="Second 0~59">
+              <input type="text" name="clockSecond" class="form-control input-sm" placeholder="Second" ng-pattern="/^(0?[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])$/" ng-model="clockArr[2]" required />
+            </div>
+
+            <div class="col-md-2">
+            <button class="btn btn-primary" ng-click="setSysCurrentTime(clockArr)" ng-disabled="clockGlobalConfForm.clockYear.$invalid || clockGlobalConfForm.clockMonth.$invalid
+            || clockGlobalConfForm.clockDay.$invalid || clockGlobalConfForm.clockHour.$invalid || clockGlobalConfForm.clockMinute.$invalid
+            || clockGlobalConfForm.clockSecond.$invalid "  required>{{ 'Submit' | translate }}</button>   
+            </div>
+        </dd> 
+    </dl>  
+  
+    <dl>
+        <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Set Ntp Server'  | translate }}</div>
+            <div class="col-md-2">
+               <select class="form-control" ng-model="srvVrfsel" ng-options="i for i in vrfIds"></select>
+            </div>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.ntpServer.$valid]" title="A.B.C.D    Address of server">
+                <input type="text" name="ntpServer" class="form-control" placeholder="A.B.C.D    Address of server" ng-model="ntpServerAddr" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+            </div>
+            <div class="col-md-2">
+            <button class="btn btn-primary" ng-click="addNtpServer()" ng-disabled="clockGlobalConfForm.ntpServer.$invalid "  >{{ 'Submit' | translate }}</button>
+            </div>                
+        </dd> 
+    </dl>  
+
+    <dl  ng-show=" System_product == 'Tap-580' || System_product == 'Tap-550' || System_product == 'Tap-530'">
+        <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Timestamp sync'  | translate }}</div>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[clockGlobalConfForm.ntpServer.$valid]">
+                <btn-switch switch-state="timeStampSyncEnable" switch-on-change="setTimeStampSyncEnable(timeStampSyncEnable)" switch-disabled="loading"></btn-switch>
+            </div>
+            
+        </dd> 
+        <dd class="row" style="margin-top: 10px;" ng-hide="!timeStampSyncEnable">
+            <div class="col-md-2">{{ 'Last Sync Time'  | translate }}</div>
+            <div class="col-md-2 text-muted"> {{lastSyncTime}} </div>                
+        </dd>         
+    </dl>  
+
+    </form>
+  
+  </div>      
+</div>    
+
+<div class="panel panel-default" ng-show="ntpSrvs.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'NTP Server Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'Server address' | translate }}</th>
+                        <th class="text-center">{{ 'version' | translate }}</th>
+                        <th class="text-center">{{ 'prefer' | translate }}</th>
+     
+                        <th class="text-center">{{ 'VRF' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr ng-repeat="srv in ntpSrvs">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ srv.key }}</td>
+                        <td class="text-center">{{ (srv.version==0)?"All":(srv.version)}}</td>
+                        <td class="text-center">{{ (srv.prefer==0)?"N/A":(srv.prefer) }}</td>
+
+                        <td class="text-center">{{ srv.is_inband }}</td>
+                        
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="deleteNtpServer(srv)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="macAddressTable.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>

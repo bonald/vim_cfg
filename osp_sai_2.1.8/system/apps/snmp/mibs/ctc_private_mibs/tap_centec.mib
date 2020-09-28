@@ -1,0 +1,2696 @@
+-- Imports declare
+
+CENTEC DEFINITIONS ::= BEGIN
+
+IMPORTS
+      SnmpAdminString
+      FROM SNMP-FRAMEWORK-MIB
+      
+      ifIndex
+      FROM IF-MIB
+      
+      TimeTicks, Counter32, OBJECT-IDENTITY,
+      mib-2, MODULE-IDENTITY, IpAddress, Counter64,
+      Unsigned32, Integer32, Gauge32, OBJECT-TYPE,
+      NOTIFICATION-TYPE
+      FROM SNMPv2-SMI
+
+      OwnerString
+      FROM RMON-MIB
+      
+      NOTIFICATION-GROUP, MODULE-COMPLIANCE, OBJECT-GROUP
+      FROM SNMPv2-CONF
+      
+      InetAddressPrefixLength, InetAddress, InetAddressType
+      FROM INET-ADDRESS-MIB
+      
+      InterfaceIndex, InterfaceIndexOrZero, ifIndex
+      FROM IF-MIB
+      
+      VrId
+      FROM VRRP-MIB      
+      
+      TestAndIncr, TimeStamp, AutonomousType,
+      PhysAddress, TEXTUAL-CONVENTION, TruthValue, DateAndTime,
+      MacAddress, RowStatus
+        FROM SNMPv2-TC
+      
+      enterprises
+        FROM SNMPv2-SMI;
+        
+-- Child OID declare
+
+centec MODULE-IDENTITY
+    LAST-UPDATED "201611280000Z"        -- Nov 28, 2016 at 00:00 GMT
+    ORGANIZATION
+       ""
+    CONTACT-INFO
+       "
+       "
+    DESCRIPTION
+           "The System Information of the switch"
+    ::= { enterprises 27975 }
+
+------------------------------------------------------------------
+--                      Centec Identifiers                      --
+------------------------------------------------------------------
+
+system                     OBJECT IDENTIFIER ::= { centec 1 }
+linkAgg                    OBJECT IDENTIFIER ::= { centec 10 }
+interface                  OBJECT IDENTIFIER ::= { centec 42 }
+management                 OBJECT IDENTIFIER ::= { centec 43 }
+product                    OBJECT IDENTIFIER ::= { centec 99 }
+tapflow                    OBJECT IDENTIFIER ::= { centec 111 }
+tapgroup                   OBJECT IDENTIFIER ::= { centec 112 }
+
+-- Module declares
+-- Sub Module: product
+
+    e3008TS OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E300,8TS."
+        ::= { product 3080 } 
+        
+    e30016TX OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E300,16TX."
+        ::= { product 3160 }
+
+    e3508T12X OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E350,8T12X."
+        ::= { product 3200 }
+            
+    e30024TS OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E300,24TS."
+        ::= { product 3240 }
+    
+    e30024ST OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E300,24ST."
+        ::= { product 3241 }
+    
+    e30048TS OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E300,48TS."
+        ::= { product 3480 }
+    
+    b30048T OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "B300,48T."
+        ::= { product 3481 }
+        
+    e33048T OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E330,48T."
+        ::= { product 3485 }
+
+    e33048SE OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E330,48SE."
+        ::= { product 3486 }
+
+    e33048S OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E330,48S."
+        ::= { product 3487 }
+
+    g24eu OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "G24EU,24+4."
+        ::= { product 3488 }
+
+    e35048T4X OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E350,48T4X."
+        ::= { product 3520 }
+        
+    e58024Q OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E580,24Q."
+        ::= { product 5801 }
+        
+    e58048X2Q4Z OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E580,48X2Q4Z."
+        ::= { product 5802 }
+        
+    e58048X6Q OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E580,48X6Q."
+        ::= { product 5803 }
+        
+    e58032X2Q OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E580,32X2Q."
+        ::= { product 5804 }
+                        
+    e602 OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E600,2 slots."
+        ::= { product 6020 }  
+    
+    e606 OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E600,6 slots."
+        ::= { product 6060 }  
+    
+    e614 OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E600,14 slots."
+        ::= { product 6140 }  
+           
+    e802 OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E800,2 slots"
+        ::= { product 8020 } 
+    
+    e806 OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E800,6 slots"
+        ::= { product 8060 } 
+    
+    e814 OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E800,14 slots"
+        ::= { product 8140 } 
+                 
+
+
+
+
+operate        OBJECT IDENTIFIER ::= { system 3 }
+    
+configSave         OBJECT-TYPE
+    SYNTAX          Integer32 (0..1)
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "This should always write running-config to startup-config.And the 
+        valid set value is 1. "
+    ::= { operate 1 }
+    
+reload         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        rebootWithoutSave(1),
+        saveAndReboot(2)
+    }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "This should allow to reboot the switch.The valid input value is 1 and 2.
+        Value 1 means the switch will reboot without saving current configuration.
+        Value 2 means the switch will save current configuration before reboot the switch."
+    ::= { operate 2 }
+
+resetToFactory         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        reset(1)
+    }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "This should allow to restore default configuration and reset to factory.
+        The valid input value is 1."
+    ::= { operate 20 }
+        
+    
+-- Sub Module: LINKAGG
+
+staticLinkAggObject OBJECT IDENTIFIER    ::= { linkAgg 3 }
+--
+--  static link aggregation table
+--     
+
+staticLinkAggTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF StaticLinkAggEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "This table stores the link aggregator number, name and 
+         configure type and member list."
+    ::= { staticLinkAggObject 1 }
+
+staticLinkAggEntry     OBJECT-TYPE
+    SYNTAX          StaticLinkAggEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "This table stores the link aggregator number, name and configure type
+         and memberlist."
+                 
+   INDEX{
+        staticLinkAggNumber,
+        ifIndex
+        }
+    ::= { staticLinkAggTable 1 }
+
+StaticLinkAggEntry    ::=
+    SEQUENCE 
+    {
+        staticLinkAggNumber
+            Integer32,
+        staticLinkAggMemberRowStatus 
+            RowStatus 
+    }
+
+staticLinkAggNumber         OBJECT-TYPE
+    SYNTAX          Integer32 (1..31)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The number of Link aggregator interface.This is the index of Link 
+        Aggregator table."
+    ::= { staticLinkAggEntry 1 }
+       
+             
+staticLinkAggMemberRowStatus         OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this conceptual row.Now only realize CreateAndGo 
+        and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { staticLinkAggEntry 10 }    
+
+
+
+--
+--  for load balance
+--
+
+lacpLoadBalanceObject OBJECT IDENTIFIER    ::= { linkAgg 100 } 
+
+linkAggLoadBalDstMac         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config load balance dest-mac.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 1  }   
+    
+linkAggLoadBalSrcMac         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config load balance src-mac.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 2  } 
+
+linkAggLoadBalDstIp         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config load balance dest-ip.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 3  } 
+    
+linkAggLoadBalSrcIp         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config load balance src-ip.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 4  } 
+    
+linkAggLoadBalIpProtocol         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config IP-protocol based load balancing.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 5  } 
+    
+linkAggLoadBalDstL4         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config destination TCP/UDP port based load balancing.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 6  } 
+    
+linkAggLoadBalSrcL4         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config source TCP/UDP port based load balancing.
+        enable(1), disable(2)."
+    ::= { lacpLoadBalanceObject 7  } 
+
+    
+    
+roundRobinCfgTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF RoundRobinCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The port channel group Round-robin mode configured Table."
+    ::= { linkAgg 101 }
+
+roundRobinCfgEntry     OBJECT-TYPE
+    SYNTAX          RoundRobinCfgEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Each entry consists of information of Round-robin mode channel group."
+    INDEX  { roundRobinGroupId }
+    ::= { roundRobinCfgTable 1 }
+
+RoundRobinCfgEntry    ::=
+    SEQUENCE 
+    {
+        roundRobinGroupId
+            Integer32,
+        roundRobinCfgStatus 
+            INTEGER 
+    }
+
+roundRobinGroupId         OBJECT-TYPE
+    SYNTAX          Integer32 (1..15)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The Channel group id configured Round-robin mode."
+    ::= { roundRobinCfgEntry 1 }
+      
+roundRobinCfgStatus          OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            enable(1),
+            disable(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Config agg Round-robin mode.
+        enable(1), disable(2)."
+    ::= { roundRobinCfgEntry 2  } 
+
+    
+    
+-- Sub Module: INTERFACE
+
+interfaceTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF InterfaceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Table of interface entry."
+    ::= { interface 1 }
+            
+interfaceEntry         OBJECT-TYPE
+    SYNTAX          InterfaceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "interface entry        "
+    INDEX     { interfaceIndex }
+    ::= { interfaceTable 1 }
+            
+InterfaceEntry    ::=
+    SEQUENCE
+    {
+        interfaceIndex
+            Integer32,
+        interfaceName
+            OCTET STRING,
+        interfaceSpeed
+            INTEGER,
+        interfaceDuplex
+            INTEGER,
+        interfaceResetCnt
+            INTEGER,
+        interfaceBandwidth
+            INTEGER,
+        interfaceUnidirectional
+            INTEGER,    
+        interfaceEgressFlowName 
+            OCTET STRING,
+        interfaceLinkStatus
+            INTEGER,    
+        interfaceResetFlowCnt
+            INTEGER,
+        interface5minInputBitsRate
+            Counter64,
+        interface5minInputPacketRate
+            Counter64,
+        interface5minOutputBitsRate 
+            Counter64,
+        interface5minOutputPacketRate
+            Counter64
+    }
+
+interfaceIndex         OBJECT-TYPE
+    SYNTAX          Integer32 (1..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Interface index. physical interface:0x1~0x3FF,
+  agg interface: 0x400~0x7FF, vlan interface:0x1000~0x1FFF,
+  lookback interface:0x3000~0x3FFF"
+    ::= { interfaceEntry 1 }
+
+interfaceName         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (1..16))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Interface name."
+    ::= { interfaceEntry 2 }
+
+interfaceSpeed         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            auto(0),
+            speed10M(1),
+            speed100M(2),
+            speed1000M(3),
+            speed10G(4),
+            speed40G(5),
+            speed100G(6)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Specifies the port speed.0:auto 1:10M 2:100M 3:1000M 4:10G 5:40G 6:100G."
+    ::= { interfaceEntry 7 }
+
+interfaceDuplex         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            auto(0),
+            half(1),
+            full(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        "Specifies the port duplexStatus .0:auto 1:half 2:full."
+    ::= { interfaceEntry 8 }
+
+interfaceResetCnt         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            noUse(0),
+            resetCount(1)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Reset interface counters; 0: noUse, 1: resetCount."
+    ::= { interfaceEntry 9 }
+
+interfaceBandwidth OBJECT-TYPE
+    SYNTAX  INTEGER(0..10000000)
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+    "Set bandwidth informational parameter(bandwidth in kilobits). Use 0 to set default value.
+    The default value of 10M port is 10000.
+    The default value of 100M port is 100000.
+    The default value of 1000M port is 1000000."
+    ::= { interfaceEntry 15 }
+    
+interfaceUnidirectional          OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            enable(1),
+            disable(2),
+            rx-only(3),
+            tx-only(4)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Enable/Disable unidirectional; 1: enable, 2: disable, 3: rx-only, 4: tx-only."
+    ::= { interfaceEntry 31 }
+    
+interfaceEgressFlowName         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (1..20))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        "Interface egress flow name."
+    ::= { interfaceEntry 32 }
+    
+interfaceLinkStatus          OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            up(1),
+            down(2)
+        }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The selected interface link status; 1: up, 2: down."
+    ::= { interfaceEntry 33 }
+
+interfaceResetFlowCnt         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            noUse(0),
+            resetCount(1)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Reset interface flow counters; 0: noUse, 1: resetCount."
+    ::= { interfaceEntry 34 }   
+    
+interface5minInputBitsRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min input rate of bits, bits/sec."
+    ::= { interfaceEntry 41 }
+    
+interface5minInputPacketRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min input rate of packet, packets/sec."
+    ::= { interfaceEntry 42 }
+    
+interface5minOutputBitsRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min output rate of bits, bits/sec."
+    ::= { interfaceEntry 43 }
+    
+interface5minOutputPacketRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min output rate of packet, packets/sec."
+    ::= { interfaceEntry 44 }
+
+
+-- Sub Module: MANAGEMENTIP
+
+managementIpAddress         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..256))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        
+        "IP addresses with masklen. The format is like 'xxx.xxx.xxx.xxx/xx'."
+    ::= { management 100 }           
+ 
+managementIpGateway         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        
+        "Management ip gateway."
+    ::= { management 101 }
+        
+
+    
+    
+    
+-- Sub Module: TAPFLOW
+
+-- Rule action value
+RuleAction    ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "The value of rule's action.
+             permit: The packet matching the rule will be permitted to forward.
+             deny: The packet matching the rule will be denied.
+        "
+    SYNTAX          INTEGER
+        {
+            permit(1),
+            deny(2)
+        }
+
+-- CounterClear value
+    CounterClear    ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "cleared: Reset the value of the rule's counter.
+             nouse: 'nouse' will be returned when getting.
+        "
+    SYNTAX          INTEGER
+        {
+            cleared(1),
+            nouse(2)
+        }
+
+-- PortOp value
+    PortOp    ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "The operation type of TCP and UDP.
+             lt : Less than given port number.
+             eq : Equal to given port number.
+             gt : Greater than given port number.
+             range : Between two port numbers.
+        "
+    SYNTAX          INTEGER
+        {
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+			any(5)
+            invalid(6)
+        }
+
+-- Precedence value
+    PrecedenceValue    ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "The value of IP-packet's precedence.
+            <0-7>           Value of precedence
+            routine         Specify routine precedence(0)
+            priority        Specify priority precedence(1)
+            immediate       Specify immediate precedence(2)
+            flash           Specify flash precedence(3)
+            flash-override  Specify flash-override precedence(4)
+            critical        Specify critical precedence(5)
+            internet        Specify internetwork control precedence(6)
+            network         Specify network control precedence(7)        "
+    SYNTAX          Integer32 (0..7|8)
+
+-- DSCP value
+    DSCPValue    ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "The value of DSCP.
+             <0-63>  Value of DSCP
+             nouse   Do not use this filter(64)
+        "
+    SYNTAX          Integer32 (0..64)
+    
+    
+
+    
+
+--
+-- nodes defined
+
+-- Node of FlowTable
+--
+flowTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF FlowEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Configure the match-order of number-acl flow."
+    ::= { tapflow 1 }
+
+flowEntry         OBJECT-TYPE
+    SYNTAX          FlowEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Define the index of FlowTable."
+    INDEX     { flowName }
+    ::= { flowTable 1 }
+
+FlowEntry    ::=
+    SEQUENCE
+        {
+            flowName
+                OCTET STRING,
+            flowDecap
+                INTEGER,
+            flowRowStatus 
+                RowStatus,
+            flowDescription
+                OCTET STRING
+         }
+
+flowName         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of flow and index of Flowtable. Range 0~20."
+    ::= { flowEntry 1 }
+	
+flowDecap         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {decap-en(1),decap-dis(2)}
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flow decap enable or disable. Default is decap disable."
+    ::= { flowEntry 2 }
+
+flowRowStatus     OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { flowEntry 10 }
+    
+flowDescription OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..100))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+            "The description of this flow.Up to 100 characters.Range 0~100."
+    ::= { flowEntry 11 }
+
+--
+-- Nodes of FlowRuleTable
+--
+flowRuleTable       OBJECT-TYPE
+    SYNTAX          SEQUENCE OF FlowRuleEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of flow rule.
+             If some objects of this table are not supported by some products,
+             these objects can't be created, changed and applied.
+             Default value of these objects will be returned when they are read.
+        "
+    ::= { tapflow 2 }
+
+flowRuleEntry       OBJECT-TYPE
+    SYNTAX          FlowRuleEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        " flow rule information."
+    INDEX         { flowGroupName, flowRuleIndex }
+    ::= { flowRuleTable 1 }
+
+FlowRuleEntry    ::=
+    SEQUENCE
+        {
+            flowGroupName
+                OCTET STRING,
+            flowRuleIndex
+                Integer32,
+            flowRuleAct
+                RuleAction,
+            flowRuleIpProtocol
+                Integer32,
+            flowRuleTcpSrcOp
+                PortOp,
+            flowRuleTcpSrcPort1
+                Integer32,
+            flowRuleTcpSrcPort2
+                Integer32,
+            flowRuleTcpDestOp
+                PortOp,
+            flowRuleTcpDestPort1
+                Integer32,
+            flowRuleTcpDestPort2
+                Integer32,
+            flowRuleTcpFlagOp
+                INTEGER,
+            flowRuleTcpFlagUrg
+                TruthValue,
+            flowRuleTcpFlagAck
+                TruthValue,
+            flowRuleTcpFlagPsh
+                TruthValue,
+            flowRuleTcpFlagRst
+                TruthValue,
+            flowRuleTcpFlagSyn
+                TruthValue,
+            flowRuleTcpFlagFin
+                TruthValue,             
+            flowRuleUdpSrcOp
+                PortOp,
+            flowRuleUdpSrcPort1
+                Integer32,
+            flowRuleUdpSrcPort2
+                Integer32,
+            flowRuleUdpDestOp
+                PortOp,
+            flowRuleUdpDestPort1
+                Integer32,
+            flowRuleUdpDestPort2
+                Integer32,
+            flowRuleSrcIp
+                IpAddress,
+            flowRuleSrcWild
+                IpAddress,  
+            flowRuleDestIp
+                IpAddress,
+            flowRuleDestWild
+                IpAddress,
+            flowRuleIpPrecedence
+                Integer32,  
+            flowRuleIpDscp
+                Integer32,
+            flowRuleIpFragments
+                INTEGER,
+            flowRuleIpOptions
+                TruthValue, 
+            flowRuleTruncation
+                TruthValue,
+            flowRuleVlanId
+                Integer32,
+            flowRuleVlanIdWild
+                OCTET STRING,
+            flowRuleInnerVlanId
+                Integer32,
+            flowRuleInnerVlanIdWild
+                OCTET STRING,
+            flowRuleCos
+                Integer32,
+            flowRuleInnerCos
+                Integer32,              
+            flowRuleEtherType
+                OCTET STRING,
+            flowRuleEtherTypeWild
+                OCTET STRING,
+            flowRuleSrcMac
+                MacAddress,
+            flowRuleSrcMacWild
+                MacAddress,
+            flowRuleDestMac
+                MacAddress,
+            flowRuleDestMacWild
+                MacAddress,
+            flowRuleEditDstMac
+	        MacAddress,
+	    flowRuleEditSrcMac
+		MacAddress,
+	    flowRuleEditDstIpState
+	        INTEGER,
+	    flowRuleEditDstIp
+		IpAddress,
+	    flowRuleEditSrcIpState
+		INTEGER,
+	    flowRuleEditSrcIp
+	        IpAddress,
+	    flowRuleStripHeader
+	        INTEGER,
+            flowRuleVniState
+		INTEGER,
+	    flowRuleVxlanVni
+	        Integer32,
+	    flowRuleVxlanVniWild
+		OCTET STRING,
+	    flowRuleUntagState
+		INTEGER,
+	    flowRuleMarkSourceVlan
+		Integer32,
+            flowRuleRowStatus
+                RowStatus
+         }
+
+flowGroupName      OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of flow group. Range 0~20."
+    ::= { flowRuleEntry 1 }
+
+flowRuleIndex       OBJECT-TYPE
+    SYNTAX          Integer32 (1..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The rule index of flow group. Range 1~65535."
+    ::= { flowRuleEntry 2 }
+
+flowRuleAct             OBJECT-TYPE
+    SYNTAX          RuleAction
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The action of flow rule.
+         (1) permit.
+         (2) deny."
+    ::= { flowRuleEntry 3 }
+    
+flowRuleIpProtocol         OBJECT-TYPE
+    SYNTAX          Integer32 (0..256)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The protocol-type of Ip acl group.
+             <0-255>  Protocol number
+              tcp      Transmission Control Protocol (6)
+              udp      User Datagram Protocol (17)
+              any      Any protocol (256)        "
+    ::= { flowRuleEntry 4 }
+
+flowRuleTcpSrcOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The source port's operator of tcp flow group rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+			any(5),
+            invalid(6)"
+    ::= { flowRuleEntry 5 }
+
+flowRuleTcpSrcPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port1. Range 0~65535. "
+    ::= { flowRuleEntry 6 }
+
+flowRuleTcpSrcPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port2. Range 0~65535."
+    ::= { flowRuleEntry 7 }
+
+flowRuleTcpDestOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The destination port's operator of tcp flow group rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+			any(5)
+            invalid(6)"
+    ::= { flowRuleEntry 8 }
+
+flowRuleTcpDestPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port1. Range 0~65535."
+    ::= { flowRuleEntry 9 }
+
+flowRuleTcpDestPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port2. Range 0~65535."
+    ::= { flowRuleEntry 10 }
+
+flowRuleTcpFlagOp         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            matchAll(0),
+			matchAny(1),
+            invalid(2)
+        }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-flags' operator of tcp flow rule.
+        For example, established tcp packet with ack or rst flag setted, set this node matchAny(0) and set FlowRuleTcpFlagAck and FlowRuleTcpFlagRst can filter established tcp packet.
+        matchAll(0), matchAny(1), invalid(2)."
+    ::= { flowRuleEntry 11 }
+
+flowRuleTcpFlagUrg         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-urg flag of tcp flow rule. True(1),False(2).
+            TCP protocol URG Packet."
+    ::= { flowRuleEntry 12 }
+
+flowRuleTcpFlagAck         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-ack flag of tcp flow rule.
+            TCP protocol ACK Packet. True(1),False(2)."
+    ::= { flowRuleEntry 13 }
+
+flowRuleTcpFlagPsh         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-psh flag of tcp flow rule. True(1),False(2).
+            TCP protocol PSH Packet."
+    ::= { flowRuleEntry 14 }
+
+flowRuleTcpFlagRst         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-rst flag of tcp flow rule. True(1),False(2).
+            TCP protocol RST Packet."
+    ::= { flowRuleEntry 15 }
+
+flowRuleTcpFlagSyn         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-syn flag of tcp flow rule. True(1),False(2).
+            TCP protocol SYN Packet."
+    ::= { flowRuleEntry 16 }
+
+flowRuleTcpFlagFin         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-fin flag of tcp flow rule. True(1),False(2).
+            TCP protocol FIN Packet."
+    ::= { flowRuleEntry 17 }    
+    
+flowRuleUdpSrcOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The source port's operator of udp flow rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+			any(5),
+            invalid(6)"
+    ::= { flowRuleEntry 18 }
+
+flowRuleUdpSrcPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port1. Range 0~65535."
+    ::= { flowRuleEntry 19 }
+
+flowRuleUdpSrcPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port2. Range 0~65535."
+    ::= { flowRuleEntry 20 }
+
+flowRuleUdpDestOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The destination port's operator of udp flow rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+			any(5),
+            invalid(6)"
+    ::= { flowRuleEntry 21 }
+
+flowRuleUdpDestPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port1. Range 0~65535."
+    ::= { flowRuleEntry 22 }
+
+flowRuleUdpDestPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port2. Range 0~65535."
+    ::= { flowRuleEntry 23 }
+
+flowRuleSrcIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source IP-address of group flow."
+    ::= { flowRuleEntry 24 }
+
+flowRuleSrcWild         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source IP-address wild of group flow."
+    ::= { flowRuleEntry 25 }
+
+flowRuleDestIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination IP-address of group flow."
+    ::= { flowRuleEntry 26 }
+
+flowRuleDestWild         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination IP-address wild of group flow."
+    ::= { flowRuleEntry 27 }
+
+flowRuleIpPrecedence         OBJECT-TYPE
+    SYNTAX          Integer32 (0..8)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The value of Precedence.8 means do not use this filter.Range 0~8.
+         DSCP and Precedence both use IP TOS segment.This node can not be setted for FlowIpDscp is setted."
+    ::= { flowRuleEntry 28 }
+
+flowRuleIpDscp         OBJECT-TYPE
+    SYNTAX          Integer32 (0..64)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The value of DSCP.64 means do not use this filter.
+         DSCP and Precedence both use IP TOS segment.This node can not be setted for FlowIpPrecedence is setted."
+    ::= { flowRuleEntry 29 }
+
+flowRuleIpFragments         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        nonFragment(0),
+        firstFragment(1),
+        nonOrFirstFragment(2),
+        smallFragment(3),
+        nonFirstFragment(4),
+	anyFragment(5),
+        noUse(6)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of matching fragmented packet."
+    ::= { flowRuleEntry 30 }
+
+flowRuleIpOptions         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of matching packet with ip option. True(1),False(2)."
+    ::= { flowRuleEntry 31 }
+	
+flowRuleTruncation         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of matching Tap truncation packet. True(1),False(2)."
+    ::= { flowRuleEntry 32 }
+    
+flowRuleVlanId         OBJECT-TYPE
+    SYNTAX          Integer32 (0..4096)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The vlan id of acl rule.Range 0~4095.
+             nouse(4096)        "
+    ::= { flowRuleEntry 33 }
+
+flowRuleVlanIdWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..5))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Vlan Wild in decimal/hexadecimal, ranging in <0x0-0xfff>."
+    ::= { flowRuleEntry 34 }
+
+flowRuleInnerVlanId         OBJECT-TYPE
+    SYNTAX          Integer32 (0..4096)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The inner vlan id of acl rule. Range 0~4095
+             nouse(4096)        "
+    ::= { flowRuleEntry 35 }
+
+flowRuleInnerVlanIdWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..5))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Inner Vlan Wild in decimal/hexadecimal, ranging in <0x0-0xfff>."
+    ::= { flowRuleEntry 36 }
+
+flowRuleCos         OBJECT-TYPE
+    SYNTAX          Integer32 (0..8)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Vlan priority of MAC acl rule.Range 0~8
+         nouse(8)."
+    ::= { flowRuleEntry 37 }
+
+flowRuleInnerCos         OBJECT-TYPE
+    SYNTAX          Integer32 (0..8)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Inner vlan priority of MAC acl rule.Range 0~8.
+         nouse(8)."
+    ::= { flowRuleEntry 38 }
+
+flowRuleEtherType         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..6))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Ether type in decimal/hexadecimal, ranging in <0x600-0xffff>.
+         This node can not be setted if other ip referenced field is setted.
+         "
+    ::= { flowRuleEntry 39 }
+
+flowRuleEtherTypeWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..6))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Ether type wildcard in decimal/hexadecimal, ranging in <0x0-0xffff>,
+         reversely encoded.
+         "
+         ::= { flowRuleEntry 40 }
+
+flowRuleSrcMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source MAC of flow rule.
+             If you do not want to use this filter,
+             set this item with any valid value 
+             and set FlowRuleSrcMacWild 'FFFF.FFFF.FFFF'."
+    ::= { flowRuleEntry 41 }
+
+flowRuleSrcMacWild      OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source MAC wildcard of flow rule.
+        If you do not want to use this filter, 
+        set FlowRuleSrcMac with any valid value 
+        and set this item 'FFFF.FFFF.FFFF'."
+    ::= { flowRuleEntry 42 }
+
+flowRuleDestMac         OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination MAC of flow rule.
+        If you do not want to use this filter,
+        set this item with any valid value 
+        and set FlowRuleDestMacWild 'FFFF.FFFF.FFFF'."
+    ::= { flowRuleEntry 43 }
+
+flowRuleDestMacWild     OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination MAC wildcard of flow rule. 
+        If you do not want to use this filter, 
+        set FlowRuleDestMac with any valid value 
+        and set this item 'FFFF.FFFF.FFFF'."
+    ::= { flowRuleEntry 44 }
+
+flowRuleEditDstMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Dest MAC of flow rule."
+    ::= { flowRuleEntry 45 }
+
+flowRuleEditSrcMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Source MAC of flow rule."
+    ::= { flowRuleEntry 46 }
+
+	
+flowRuleEditDstIpState             OBJECT-TYPE
+    SYNTAX          INTEGER
+	{
+            enable(1),
+            disable(2)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The edit destination IP-address state of flow rule.
+         (1) enable.
+         (2) disable."
+    ::= { flowRuleEntry 47 }
+	
+flowRuleEditDstIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Destination IP-address of group flow."
+    ::= { flowRuleEntry 48 }
+
+flowRuleEditSrcIpState             OBJECT-TYPE
+    SYNTAX          INTEGER
+	{
+            enable(1),
+            disable(2)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The edit source IP-address state of flow rule.
+         (1) enable.
+         (2) disable."
+    ::= { flowRuleEntry 49 }
+
+flowRuleEditSrcIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Source IP-address of group flow."
+    ::= { flowRuleEntry 50 }
+	
+flowRuleStripHeader             OBJECT-TYPE
+    SYNTAX          INTEGER
+	{
+            enable(1),
+            disable(2)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The strip header of flow rule.
+         (1) enable.
+         (2) disable."
+    ::= { flowRuleEntry 51 }
+	
+flowRuleVniState             OBJECT-TYPE
+    SYNTAX          INTEGER
+	{
+            enable(1),
+            disable(2)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The vxlan vni state of flow rule.
+         (1) enable.
+         (2) disable."
+    ::= { flowRuleEntry 52 }
+	
+flowRuleVxlanVni         OBJECT-TYPE
+    SYNTAX          Integer32 (0..16777215)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Vxlan Vni value of flow rule.Range 0~16777215.
+         If flowRuleVniState is enable, this node return vni value is valid."
+    ::= { flowRuleEntry 53 }
+	
+flowRuleVxlanVniWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..8))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Vxlan Vni type wildcard in decimal/hexadecimal, ranging in <0x0-0xffffff>,
+         reversely encoded.
+         "
+         ::= { flowRuleEntry 54 }
+
+flowRuleUntagState             OBJECT-TYPE
+    SYNTAX          INTEGER
+	{
+            enable(1),
+            disable(2)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The untag state of flow rule.
+         (1) enable.
+         (2) disable."
+    ::= { flowRuleEntry 55 }
+		 
+flowRuleMarkSourceVlan         OBJECT-TYPE
+    SYNTAX          Integer32 (0..4094)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The mark source vlan id of flow rule.Range 0~4094.
+             nouse(0)        "
+    ::= { flowRuleEntry 56 }
+
+flowRuleRowStatus         OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { flowRuleEntry 70 }
+    
+    
+-- Flow Interface Stats Table
+flowInterfaceStatsTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF FlowInterfaceStatsEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of Stats for flow applied on the interface."
+    ::= { tapflow 3 }
+
+flowInterfaceStatsEntry         OBJECT-TYPE
+    SYNTAX          FlowInterfaceStatsEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Flow Interface Stats information entry."
+    INDEX     { flowInterfaceStatsIfindex ,
+                flowInterfaceStatsFlowName,
+                flowInterfaceStatsSeqNum }
+    ::= { flowInterfaceStatsTable 1 }
+
+FlowInterfaceStatsEntry    ::=
+    SEQUENCE
+        {
+        flowInterfaceStatsIfindex
+            Integer32,
+        flowInterfaceStatsFlowName
+            OCTET STRING,
+        flowInterfaceStatsSeqNum
+            Integer32,
+        flowInterfaceStatsMatchPkts
+            Counter64,
+        flowInterfaceStatsMatchBytes
+            Counter64
+        }
+
+flowInterfaceStatsIfindex         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Interface index."
+    ::= { flowInterfaceStatsEntry 1 }
+
+flowInterfaceStatsFlowName  OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of flow. Name length range 1~20."
+    ::= { flowInterfaceStatsEntry 2 }
+
+flowInterfaceStatsSeqNum        OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The sequence number for flow rule , range 1-65535.
+         0 means total sequence flow rule on this interface."
+    ::= { flowInterfaceStatsEntry 3 }
+
+flowInterfaceStatsMatchPkts          OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of flow match packets."
+    ::= { flowInterfaceStatsEntry 4 }
+    
+flowInterfaceStatsMatchBytes         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of flow match bytes."
+    ::= { flowInterfaceStatsEntry 5 }
+	
+-- Flow Interface Egress Stats Table
+flowInterfaceEgressStatsTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF FlowInterfaceEgressStatsEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of Stats for egress flow applied on the interface."
+    ::= { tapflow 4 }
+
+flowInterfaceEgressStatsEntry         OBJECT-TYPE
+    SYNTAX          FlowInterfaceEgressStatsEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Egress Flow Interface Stats information entry."
+    INDEX     { flowInterfaceEgressStatsIfindex ,
+                flowInterfaceEgressStatsSeqNum }
+    ::= { flowInterfaceEgressStatsTable 1 }
+
+FlowInterfaceEgressStatsEntry    ::=
+    SEQUENCE
+        {
+        flowInterfaceEgressStatsIfindex
+            Integer32,
+        flowInterfaceEgressStatsSeqNum
+            Integer32,
+        flowInterfaceEgressStatsMatchPkts
+            Counter64,
+        flowInterfaceEgressStatsMatchBytes
+            Counter64
+        }
+
+flowInterfaceEgressStatsIfindex         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Interface index."
+    ::= { flowInterfaceEgressStatsEntry 1 }
+
+flowInterfaceEgressStatsSeqNum        OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The sequence number for flow rule , range 1-65535.
+         0 means total sequence flow rule on this interface."
+    ::= { flowInterfaceEgressStatsEntry 2 }
+
+flowInterfaceEgressStatsMatchPkts          OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of flow match packets."
+    ::= { flowInterfaceEgressStatsEntry 3 }
+    
+flowInterfaceEgressStatsMatchBytes         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of flow match bytes."
+    ::= { flowInterfaceEgressStatsEntry 4 }
+	
+	
+	
+-- Node of IpAccessTable
+--
+ipaccessTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF IpAccessEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Configure the match-order of number-acl ip access list."
+    ::= { tapflow 5 }
+
+ipaccessEntry         OBJECT-TYPE
+    SYNTAX          IpAccessEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Define the index of IpAccessTable."
+    INDEX     { ipaccessName }
+    ::= { ipaccessTable 1 }
+
+IpAccessEntry    ::=
+    SEQUENCE
+        {
+            ipaccessName
+                OCTET STRING,
+            ipaccessRowStatus 
+                RowStatus,
+            ipaccessDescription
+                OCTET STRING
+         }
+
+ipaccessName         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of ip access list and index of IpAccesstable. Range 0~20."
+    ::= { ipaccessEntry 1 }
+
+ipaccessRowStatus     OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { ipaccessEntry 10 }
+    
+ipaccessDescription OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..100))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+            "The description of this ip access list.Up to 100 characters.Range 0~100."
+    ::= { ipaccessEntry 11 }
+
+--
+-- Nodes of IpAccessRuleTable
+--
+ipaccessRuleTable       OBJECT-TYPE
+    SYNTAX          SEQUENCE OF IpAccessRuleEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of ip access list rule.
+             If some objects of this table are not supported by some products,
+             these objects can't be created, changed and applied.
+             Default value of these objects will be returned when they are read.
+        "
+    ::= { tapflow 6 }
+
+ipaccessRuleEntry       OBJECT-TYPE
+    SYNTAX          IpAccessRuleEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        " flow rule information."
+    INDEX         { ipaccessName, ipaccessRuleIndex }
+    ::= { ipaccessRuleTable 1 }
+
+IpAccessRuleEntry    ::=
+    SEQUENCE
+        {
+            ipaccesslistName
+                OCTET STRING,
+            ipaccessRuleIndex
+                Integer32,
+            ipaccessRuleAct
+                RuleAction,
+            ipaccessRuleIpProtocol
+                Integer32,
+            ipaccessRuleTcpSrcOp
+                PortOp,
+            ipaccessRuleTcpSrcPort1
+                Integer32,
+            ipaccessRuleTcpSrcPort2
+                Integer32,
+            ipaccessRuleTcpDestOp
+                PortOp,
+            ipaccessRuleTcpDestPort1
+                Integer32,
+            ipaccessRuleTcpDestPort2
+                Integer32,
+            ipaccessRuleTcpFlagOp
+                INTEGER,
+            ipaccessRuleTcpFlagUrg
+                TruthValue,
+            ipaccessRuleTcpFlagAck
+                TruthValue,
+            ipaccessRuleTcpFlagPsh
+                TruthValue,
+            ipaccessRuleTcpFlagRst
+                TruthValue,
+            ipaccessRuleTcpFlagSyn
+                TruthValue,
+            ipaccessRuleTcpFlagFin
+                TruthValue,             
+            ipaccessRuleUdpSrcOp
+                PortOp,
+            ipaccessRuleUdpSrcPort1
+                Integer32,
+            ipaccessRuleUdpSrcPort2
+                Integer32,
+            ipaccessRuleUdpDestOp
+                PortOp,
+            ipaccessRuleUdpDestPort1
+                Integer32,
+            ipaccessRuleUdpDestPort2
+                Integer32,
+            ipaccessRuleSrcIp
+                IpAddress,
+            ipaccessRuleSrcWild
+                IpAddress,  
+            ipaccessRuleDestIp
+                IpAddress,
+            ipaccessRuleDestWild
+                IpAddress,
+            ipaccessRuleIpPrecedence
+                Integer32,  
+            ipaccessRuleIpDscp
+                Integer32,
+            ipaccessRuleIpFragments
+                INTEGER,
+            ipaccessRuleIpOptions
+                TruthValue, 
+            ipaccessRuleVlanId
+                Integer32,  
+            ipaccessRuleVlanIdWild
+                OCTET STRING,
+            ipaccessRuleInnerVlanId
+                Integer32,  
+            ipaccessRuleInnerVlanIdWild
+                OCTET STRING,
+            ipaccessRuleCos
+                Integer32,
+            ipaccessRuleInnerCos
+                Integer32,              
+            ipaccessRuleEtherType
+                OCTET STRING,
+            ipaccessRuleEtherTypeWild
+                OCTET STRING,
+            ipaccessRuleSrcMac
+                MacAddress,
+            ipaccessRuleSrcMacWild
+                MacAddress,
+            ipaccessRuleDestMac
+                MacAddress,
+            ipaccessRuleDestMacWild
+                MacAddress,
+            ipaccessRuleRowStatus
+                RowStatus
+         }
+
+ipaccesslistName      OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of ip access list. Range 0~20."
+    ::= { ipaccessRuleEntry 1 }
+
+ipaccessRuleIndex       OBJECT-TYPE
+    SYNTAX          Integer32 (1..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The rule index of ip access list. Range 1~65535."
+    ::= { ipaccessRuleEntry 2 }
+
+ipaccessRuleAct             OBJECT-TYPE
+    SYNTAX          RuleAction
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The action of ip access list rule.
+         (1) permit.
+         (2) deny."
+    ::= { ipaccessRuleEntry 3 }
+    
+ipaccessRuleIpProtocol         OBJECT-TYPE
+    SYNTAX          Integer32 (0..256)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The protocol-type of Ip acl access list.
+             <0-255>  Protocol number
+              tcp      Transmission Control Protocol (6)
+              udp      User Datagram Protocol (17)
+              any      Any protocol (256)        "
+    ::= { ipaccessRuleEntry 4 }
+
+ipaccessRuleTcpSrcOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The source port's operator of tcp ip access list rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+			any(5),
+            invalid(6)"
+    ::= { ipaccessRuleEntry 5 }
+
+ipaccessRuleTcpSrcPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port1. Range 0~65535. "
+    ::= { ipaccessRuleEntry 6 }
+
+ipaccessRuleTcpSrcPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port2. Range 0~65535."
+    ::= { ipaccessRuleEntry 7 }
+
+ipaccessRuleTcpDestOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The destination port's operator of tcp ip access list rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+	    any(5)
+            invalid(6)"
+    ::= { ipaccessRuleEntry 8 }
+
+ipaccessRuleTcpDestPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port1. Range 0~65535."
+    ::= { ipaccessRuleEntry 9 }
+
+ipaccessRuleTcpDestPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port2. Range 0~65535."
+    ::= { ipaccessRuleEntry 10 }
+
+ipaccessRuleTcpFlagOp         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            matchAll(0),
+            matchAny(1),
+            invalid(2)
+        }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-flags' operator of tcp ip access list rule.
+        For example, established tcp packet with ack or rst flag setted, set this node matchAny(0) and set FlowRuleTcpFlagAck and FlowRuleTcpFlagRst can filter established tcp packet.
+        matchAll(0),
+        matchAny(1),
+        invalid(2)."
+    ::= { ipaccessRuleEntry 11 }
+
+ipaccessRuleTcpFlagUrg         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-urg flag of tcp ip access list rule. True(1),False(2).
+            TCP protocol URG Packet."
+    ::= { ipaccessRuleEntry 12 }
+
+ipaccessRuleTcpFlagAck         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-ack flag of tcp ip access list rule.
+            TCP protocol ACK Packet. True(1),False(2)."
+    ::= { ipaccessRuleEntry 13 }
+
+ipaccessRuleTcpFlagPsh         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-psh flag of tcp ip access list rule. True(1),False(2).
+            TCP protocol PSH Packet."
+    ::= { ipaccessRuleEntry 14 }
+
+ipaccessRuleTcpFlagRst         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-rst flag of tcp ip access list rule. True(1),False(2).
+            TCP protocol RST Packet."
+    ::= { ipaccessRuleEntry 15 }
+
+ipaccessRuleTcpFlagSyn         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-syn flag of tcp ip access list rule. True(1),False(2).
+            TCP protocol SYN Packet."
+    ::= { ipaccessRuleEntry 16 }
+
+ipaccessRuleTcpFlagFin         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The tcp-fin flag of tcp ip access list rule. True(1),False(2).
+            TCP protocol FIN Packet."
+    ::= { ipaccessRuleEntry 17 }    
+    
+ipaccessRuleUdpSrcOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The source port's operator of udp ip access list rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+	    any(5),
+            invalid(6)"
+    ::= { ipaccessRuleEntry 18 }
+
+ipaccessRuleUdpSrcPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port1. Range 0~65535."
+    ::= { ipaccessRuleEntry 19 }
+
+ipaccessRuleUdpSrcPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer source port2. Range 0~65535."
+    ::= { ipaccessRuleEntry 20 }
+
+ipaccessRuleUdpDestOp         OBJECT-TYPE
+    SYNTAX          PortOp
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The destination port's operator of udp ip access list rule.
+            eq(1),
+            lt(2),
+            gt(3),
+            range(4),
+	    any(5),
+            invalid(6)"
+    ::= { ipaccessRuleEntry 21 }
+
+ipaccessRuleUdpDestPort1    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port1. Range 0~65535."
+    ::= { ipaccessRuleEntry 22 }
+
+ipaccessRuleUdpDestPort2    OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The fourth layer destination port2. Range 0~65535."
+    ::= { ipaccessRuleEntry 23 }
+
+ipaccessRuleSrcIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source IP-address of ip access list."
+    ::= { ipaccessRuleEntry 24 }
+
+ipaccessRuleSrcWild         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source IP-address wild of ip access list."
+    ::= { ipaccessRuleEntry 25 }
+
+ipaccessRuleDestIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination IP-address of ip access list."
+    ::= { ipaccessRuleEntry 26 }
+
+ipaccessRuleDestWild         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination IP-address wild of ip access list."
+    ::= { ipaccessRuleEntry 27 }
+
+ipaccessRuleIpPrecedence         OBJECT-TYPE
+    SYNTAX          Integer32 (0..8)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The value of Precedence.8 means do not use this filter.Range 0~8.
+         DSCP and Precedence both use IP TOS segment.This node can not be setted for FlowIpDscp is setted."
+    ::= { ipaccessRuleEntry 28 }
+
+ipaccessRuleIpDscp         OBJECT-TYPE
+    SYNTAX          Integer32 (0..64)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The value of DSCP.64 means do not use this filter.
+         DSCP and Precedence both use IP TOS segment.This node can not be setted for FlowIpPrecedence is setted."
+    ::= { ipaccessRuleEntry 29 }
+
+ipaccessRuleIpFragments         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        nonFragment(0),
+        firstFragment(1),
+        nonOrFirstFragment(2),
+        smallFragment(3),
+        nonFirstFragment(4),
+	anyFragment(5),
+        noUse(6)
+    }
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of matching fragmented packet."
+    ::= { ipaccessRuleEntry 30 }
+
+ipaccessRuleIpOptions         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of matching packet with ip option. True(1),False(2)."
+    ::= { ipaccessRuleEntry 31 }
+	
+    
+ipaccessRuleVlanId         OBJECT-TYPE
+    SYNTAX          Integer32 (0..4096)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The vlan id of acl rule.Range 0~4095.
+             nouse(4096)        "
+    ::= { ipaccessRuleEntry 32 }
+
+ipaccessRuleVlanIdWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..5))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Vlan Wild in decimal/hexadecimal, ranging in <0x0-0xfff>."
+    ::= { ipaccessRuleEntry 33 }
+
+ipaccessRuleInnerVlanId         OBJECT-TYPE
+    SYNTAX          Integer32 (0..4096)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The inner vlan id of acl rule. Range 0~4095
+             nouse(4096)        "
+    ::= { ipaccessRuleEntry 34 }
+
+ipaccessRuleInnerVlanIdWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..5))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Inner Vlan Wild in decimal/hexadecimal, ranging in <0x0-0xfff>."
+    ::= { ipaccessRuleEntry 35 }
+
+ipaccessRuleCos         OBJECT-TYPE
+    SYNTAX          Integer32 (0..8)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Vlan priority of MAC acl rule.Range 0~8
+         nouse(8)."
+    ::= { ipaccessRuleEntry 36 }
+
+ipaccessRuleInnerCos         OBJECT-TYPE
+    SYNTAX          Integer32 (0..8)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Inner vlan priority of MAC acl rule.Range 0~8.
+         nouse(8)."
+    ::= { ipaccessRuleEntry 37 }
+
+ipaccessRuleEtherType         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..6))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Ether type in decimal/hexadecimal, ranging in <0x600-0xffff>.
+         This node can not be setted if other ip referenced field is setted.
+         "
+    ::= { ipaccessRuleEntry 38 }
+
+ipaccessRuleEtherTypeWild         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..6))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Ether type wildcard in decimal/hexadecimal, ranging in <0x0-0xffff>,
+         reversely encoded.
+         "
+         ::= { ipaccessRuleEntry 39 }
+
+ipaccessRuleSrcMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source MAC of flow rule.
+             If you do not want to use this filter,
+             set this item with any valid value 
+             and set IpAccessRuleSrcMacWild 'FFFF.FFFF.FFFF'."
+    ::= { ipaccessRuleEntry 40 }
+
+ipaccessRuleSrcMacWild      OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source MAC wildcard of ip access list entry.
+        If you do not want to use this filter, 
+        set IpAccessRuleSrcMac with any valid value 
+        and set this item 'FFFF.FFFF.FFFF'."
+    ::= { ipaccessRuleEntry 41 }
+
+ipaccessRuleDestMac         OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination MAC of ip access list entry.
+        If you do not want to use this filter,
+        set this item with any valid value 
+        and set IpAccessRuleDestMacWild 'FFFF.FFFF.FFFF'."
+    ::= { ipaccessRuleEntry 42 }
+
+ipaccessRuleDestMacWild     OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination MAC wildcard of flow rule. 
+        If you do not want to use this filter, 
+        set IpAccessRuleDestMac with any valid value 
+        and set this item 'FFFF.FFFF.FFFF'."
+    ::= { ipaccessRuleEntry 43 }
+
+ipaccessRuleRowStatus         OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { ipaccessRuleEntry 50 }
+    
+--
+-- Node of timeStampTable
+--
+timeStampTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF TimeStampEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Configure the time stamp over ether information."
+    ::= { tapgroup 1 }
+
+timeStampEntry         OBJECT-TYPE
+    SYNTAX          TimeStampEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Define the entry of timeStampTable."
+    INDEX     { timeStampIndex }
+    ::= { timeStampTable 1 }
+
+TimeStampEntry    ::=
+    SEQUENCE
+        {
+            timeStampIndex
+                Integer32,
+            timeStampDestMac
+                MacAddress,
+            timeStampSrcMac
+                MacAddress, 
+            timeStampEtherType
+                OCTET STRING,   
+            timeStampRowStatus 
+                RowStatus
+         }
+
+timeStampIndex         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The index of timeStamp, only can be 0. Only one can be configured.
+        Time stamp should be configured before tap group."
+    ::= { timeStampEntry 1 }
+    
+timeStampDestMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Destination MAC of time stamp."
+    ::= { timeStampEntry 2 }
+    
+timeStampSrcMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Source MAC of time stamp."
+    ::= { timeStampEntry 3 }
+    
+timeStampEtherType         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..6))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Ether type in decimal/hexadecimal, ranging in <0x0-0xffff>.
+         This node can not be setted if other ip referenced field is setted.
+         "
+    ::= { timeStampEntry 4 }
+
+timeStampRowStatus     OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { timeStampEntry 10 }
+    
+truncation         OBJECT-TYPE
+    SYNTAX          Integer32 (0|64..144)
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Truncation length, range is from 64 to 144.
+		 0 means no truncation length."
+    ::= { tapgroup 2 }
+
+-- Node of tapGroupTable
+--
+tapGroupTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF TapGroupEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Configure the tap group."
+    ::= { tapgroup 3 }
+
+tapGroupEntry         OBJECT-TYPE
+    SYNTAX          TapGroupEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Define the entry of tapGroupTable."
+    INDEX     { tapGroupName, tapGroupId }
+    ::= { tapGroupTable 1 }
+
+TapGroupEntry    ::=
+    SEQUENCE
+        {
+            tapGroupName
+                OCTET STRING,
+	    tapGroupId
+	        Integer32,
+            tapGroupRowStatus 
+                RowStatus,
+            tapGroupDescription
+                OCTET STRING
+         }
+
+tapGroupName         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of tap group and index of tapGrouptable. Range 0~20."
+    ::= { tapGroupEntry 1 }
+	
+tapGroupId         OBJECT-TYPE
+    SYNTAX          Integer32(1..512)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The id of tap group, range is 1 to 512."
+    ::= { tapGroupEntry 2 }
+
+tapGroupRowStatus     OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { tapGroupEntry 10 }
+    
+tapGroupDescription OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..80))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+            "The description of this tap group.Up to 80 characters.Range 0~80."
+    ::= { tapGroupEntry 11 }
+
+--
+-- Nodes of tapGroupIngressTable
+--
+tapGroupIngressTable       OBJECT-TYPE
+    SYNTAX          SEQUENCE OF TapGroupIngressEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of tap group ingress interface flow information.
+             If some objects of this table are not supported by some products,
+             these objects can't be created, changed and applied.
+             Default value of these objects will be returned when they are read.
+        "
+    ::= { tapgroup 4 }
+
+tapGroupIngressEntry       OBJECT-TYPE
+    SYNTAX          TapGroupIngressEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        " TAP group ingress interface information."
+    INDEX         { tapGroupIngressName, tapGroupIngressIfindex }
+    ::= { tapGroupIngressTable 1 }
+
+TapGroupIngressEntry    ::=
+    SEQUENCE
+        {
+            tapGroupIngressName
+                OCTET STRING,
+            tapGroupIngressIfindex
+                Integer32,
+            tapGroupIngressFlowName
+                OCTET STRING,
+            tapGroupIngressMarkSource
+                Integer32,
+            tapGroupIngressUntag
+                TruthValue,
+            tapGroupIngressTruncation
+                TruthValue,
+            tapGroupIngressEditSrcMac
+                MacAddress,
+            tapGroupIngressEditDstMac
+                MacAddress,
+            tapGroupIngressEditSrcIpEnable
+                TruthValue,
+            tapGroupIngressEditSrcIp
+                IpAddress,
+            tapGroupIngressEditDstIpEnable
+                TruthValue,
+            tapGroupIngressEditDstIp
+                IpAddress,				
+            tapGroupIngressRowStatus
+                RowStatus
+         }
+
+tapGroupIngressName      OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of tap group. Range 0~20."
+    ::= { tapGroupIngressEntry 1 }
+
+tapGroupIngressIfindex       OBJECT-TYPE
+    SYNTAX          Integer32 (1..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The ingress interface index."
+    ::= { tapGroupIngressEntry 2 }
+
+tapGroupIngressFlowName      OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The name of flow. Range 0~20.
+        This node can not be setted for tapGroupIngressTruncation is setted."
+    ::= { tapGroupIngressEntry 3 }
+
+tapGroupIngressMarkSource         OBJECT-TYPE
+    SYNTAX          Integer32 (0..4094)
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The value of mark-source vlan id.
+        vlan id (1-4094), unset (0)."
+    ::= { tapGroupIngressEntry 4 }
+
+tapGroupIngressUntag         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of weather remove vlan tag. True(1),False(2)."
+    ::= { tapGroupIngressEntry 5 }
+
+tapGroupIngressTruncation         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of matching tap truncation packet, this node can not be configured after flow.
+        True(1),False(2)."
+    ::= { tapGroupIngressEntry 6 }
+
+tapGroupIngressEditSrcMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Source MAC of tap group ingress interface."
+    ::= { tapGroupIngressEntry 7 }
+	
+tapGroupIngressEditDstMac          OBJECT-TYPE
+    SYNTAX          MacAddress 
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Destination MAC of tap group ingress interface."
+    ::= { tapGroupIngressEntry 8 }
+
+tapGroupIngressEditSrcIpEnable         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of weather edit source ip of tap group ingress interface. True(1),False(2)."
+    ::= { tapGroupIngressEntry 9 }	
+
+tapGroupIngressEditSrcIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Source IP-address of tap group ingress interface."
+    ::= { tapGroupIngressEntry 10 }
+	
+tapGroupIngressEditDstIpEnable         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of weather edit destination ip of tap group ingress interface. True(1),False(2)."
+    ::= { tapGroupIngressEntry 11 }	
+	
+tapGroupIngressEditDstIp         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "Edit Destination IP-address of tap group ingress interface."
+    ::= { tapGroupIngressEntry 12 }
+    
+tapGroupIngressRowStatus         OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { tapGroupIngressEntry 15 } 
+    
+--
+-- Nodes of tapGroupEgressTable
+--
+tapGroupEgressTable       OBJECT-TYPE
+    SYNTAX          SEQUENCE OF TapGroupEgressEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A table of tap group egress interface flow information.
+             If some objects of this table are not supported by some products,
+             these objects can't be created, changed and applied.
+             Default value of these objects will be returned when they are read.
+        "
+    ::= { tapgroup 5 }
+
+tapGroupEgressEntry       OBJECT-TYPE
+    SYNTAX          TapGroupEgressEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        " TAP group egress interface information."
+    INDEX         { tapGroupEgressName, tapGroupEgressIfindex }
+    ::= { tapGroupEgressTable 1 }
+
+TapGroupEgressEntry    ::=
+    SEQUENCE
+        {
+            tapGroupEgressName
+                OCTET STRING,
+            tapGroupEgressIfindex
+                Integer32,
+            tapGroupEgressTimestamp
+                TruthValue, 
+            tapGroupEgressRowStatus
+                RowStatus
+         }
+
+tapGroupEgressName      OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..20))
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The name of tap group. Range 0~20."
+    ::= { tapGroupEgressEntry 1 }
+
+tapGroupEgressIfindex       OBJECT-TYPE
+    SYNTAX          Integer32 (1..655251)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The egress interface index."
+    ::= { tapGroupEgressEntry 2 }
+
+tapGroupEgressTimestamp         OBJECT-TYPE
+    SYNTAX          TruthValue
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The flag of weather time stamp append to packet. True(1),False(2)."
+    ::= { tapGroupEgressEntry 3 }
+    
+tapGroupEgressRowStatus         OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION
+        "The status of this row.Now only realize CreateAndGo and Destroy and Active.
+        1 means Active
+        4 means CreateAndGo
+        6 means Destroy"
+    ::= { tapGroupEgressEntry 10 }  
+	
+	
+timeStampSync         OBJECT-TYPE
+    SYNTAX      INTEGER
+        {   
+            systime(1),
+            none(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Configure timestamp sync type.
+        systime(1), none(2)."
+    ::= { tapgroup 6 }   
+    
+    
+
+END

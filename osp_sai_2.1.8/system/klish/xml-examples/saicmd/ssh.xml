@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+SSH
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+<COMMAND name="show ip ssh" help="SSH (secure shell)"/>
+<COMMAND name="show ip ssh server" help="SSH server"/>
+<COMMAND name="show ip ssh server status"
+    help="Status">
+    <ACTION>
+cdbctl show/cdb/app/ssh_cfg
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To display the version and configuration data for Secure Shell (SSH), use the show ip ssh server status command in Privileged EXEC mode.  
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use the show ip ssh server status command to view the version and configuration data.  
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None      
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following example shows the current SSH configurations:  
+    Switch# show ip ssh server status  
+    SSH server enabled  
+    Version: v2  
+    Authentication timeout: 33 second(s)  
+    Authentication retries: 6 time(s)  
+    Server key lifetime: 60 minute(s)  
+    Authentication type: password, public-key  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="ssh" help="Open a secure shell client connection" access="1">
+<PARAM name="-l" help="Log in using this user name" ptype="SUBCOMMAND" mode="subcommand">
+    <PARAM name="loginname" help="Login name" ptype="NAME_STRING"/> 
+</PARAM>
+<PARAM name="-i" help="Specify RSA private key" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="rkey" help="Specify key name" ptype="RSAKEYNAME"/> 
+</PARAM>
+<PARAM name="-p" help="Connect to this port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="PORT" help="Port of remote system" ptype="L4_PORT_NUM"/> 
+</PARAM>
+<PARAM name="-v" help="Specify SSH protocol version" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="vopt" help="Specify SSH protocol version"  ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="1" help="Protocol version 1" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="2" help="Protocol version 2" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+</PARAM>
+<PARAM name="-c" help="Select encryption algorithm" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="3des" help="Triple DES (SSHv1 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="des" help="DES (SSHv1 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="3des-cbc" help="Triple DES (SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="aes128-cbc" help="AES 128 bits (SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="aes192-cbc" help="AES 192 bits (SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="aes256-cbc" help="AES 256 bits (SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+</PARAM>
+<PARAM name="-m" help="Select HMAC algorithm" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="hmac-md5-128" help="MD5 based HMAC (128 bits, SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="hmac-md5-96" help="MD5 based HMAC (96 bits, SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="hmac-sha1-160" help="SHA1 based HMAC (160 bits, SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="hmac-sha1-96" help="SHA1 based HMAC (96 bits, SSHv2 only)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+</PARAM>
+<PARAM name="-o" help="Specify options" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="number-of-password-prompts" help="Specify number of password prompts, default value is 3"  ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="npprompts" help="Number of password prompts, default value is 3" ptype="SSHPINPROMPTS"/>
+    </PARAM>
+</PARAM>    
+<PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand" order="true" optional="true" default=""/> 
+<PARAM name="opt" help="Select encryption algorithm" ptype="SUBCOMMAND" mode="switch" >
+    <PARAM name="ipaddr6" help="Specify IPv6 address of remote system" ptype="IPV6_ADDR"/>
+    <PARAM name="ipaddr" help="Specify IP address of remote system" ptype="IP_ADDR"/>
+    <PARAM name="host" help="Specify hostname of remote system" ptype="STRING"/>
+</PARAM>
+
+<ACTION>
+    cdbctl update/cdb/l3/ssh_check/${ipaddr6}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    fnconvert -c ssh -m "${__line}"
+</ACTION>
+
+	<CTCDESCRIPTION>
+To connect to the remote SSH server, use the ssh command in Privileged EXEC mode.  
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following example displays the usage of this command:  
+    Switch# ssh -l aaa 1.1.1.1  
+    aaa@1.1.1.1's password:   
+      
+    Switch#  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show_ip_ssh_server_status
+	</CTCRCMD>
+</COMMAND>
+
+	<COMMAND name="telnet" help="Open a telnet connection" lock="false"	interrupt="true" access="1">
+		<PARAM name="mode" optional="true" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dst" help="IP address or hostname of a remote system"	ptype="NAME_STRING"/>
+		<PARAM name="port" help="Use specified port number, the default number is 23" ptype="TCP_PORT" optional="true" default="23"/>
+
+		<ACTION>
+            cdbctl update/cdb/l3/telnet_check/${dst}
+            if [ "$?" != "0" ]; then
+                exit 1
+            fi
+			if [ "mgmt-if" == ${mode} ]; then
+				cmd="ip netns exec mgmt telnet"
+			else
+				cmd="telnet"
+			fi
+
+			if [ "0.0.0.0" == ${dst} ]; then
+				echo "connect: Network is unreachable"
+			else
+				cmd=$cmd" ${dst} ${port}"
+				$cmd
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+This command is used to telnet a specific IPv4 address. 
+		</CTCDESCRIPTION>
+		
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		
+		<CTCEXAMPLE> 
+   DUT1# telnet mgmt-if 10.10.39.102 23
+   
+   Entering character mode
+   Escape character is '^]'.
+   
+   
+   Switch# 
+		</CTCEXAMPLE>
+		
+		<CTCRCMD>
+DUT1# telnet 10.10.39.101   
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+
+<COMMAND name="no ip ssh" help="Configure SSH (secure shell)" access="4"/>
+<COMMAND name="no ip ssh server" help="SSH server" access="4"/>
+<COMMAND name="ip ssh" help="Configure SSH (secure shell)" access="4"/>
+<COMMAND name="ip ssh server" help="SSH server" access="4"/>
+<COMMAND name="ip ssh server enable" help="Enable SSH server" access="4">
+
+<ACTION>
+cdbctl update/cdb/app/ssh_cfg/enable/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+To enable SSH service, use ip ssh server enable command in global configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+SSH service is enabled.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following example enables the SSH service on your switch:  
+    Switch(config)# ip ssh server enable  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="ssh" help="Remove knownhost" access="4"/>
+<COMMAND name="ssh remove" help="Remove knownhost"/>
+<COMMAND name="ssh remove knownhost" help="Remove knownhost" >
+<ACTION>
+known_host_file="/root/.ssh/known_hosts"
+if [ -f "$known_host_file" ];then
+	rm "$known_host_file" 
+fi
+
+</ACTION>
+</COMMAND>
+
+
+<COMMAND name="ip ssh server disable" help="Disable SSH server" access="4">
+<ACTION>
+cdbctl update/cdb/app/ssh_cfg/enable/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+To disable SSH service, use ip ssh server disable command.  
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+SSH service is enabled.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following example disable the SSH service on your switch:  
+    Switch(config)# ip ssh server disable  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="ip ssh server authentication-retries" help="Authentication retries" access="4">
+    <PARAM name="retries" help="Retry times(default: 6)" ptype="SSHAUTHRETRIES"/>
+	
+    <ACTION>
+cdbctl update/cdb/app/ssh_cfg/auth_retry/${retries}
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To configure Secure Shell (SSH) authentication retry times on your switch, use the ip ssh server authentication-retries command in global configuration mode. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default is 6.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH authentication retry times on your switch.  
+    Switch(config)# ip ssh server authentication-retries 3 
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip ssh server authentication-retries" help="Authentication retries" access="4">
+    <ACTION>
+cdbctl update/cdb/app/ssh_cfg/auth_retry/6
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To restore the default value of Secure Shell (SSH) authentication retry times on your switch, use this command.     
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default is 6.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH authentication retry times to default value on your switch.  
+    Switch(config)# no ip ssh server authentication-retries  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="ip ssh server authentication-timeout"
+        help="Authentication timeout" access="4">
+    <PARAM name="timeout" help="Timeout seconds(default: 120)" ptype="SSHAUTHTIMEOUT"/>
+	
+    <ACTION>
+cdbctl update/cdb/app/ssh_cfg/auth_timeout/${timeout}
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To configure Secure Shell (SSH) authentication timeout on your switch, use the ip ssh server authentication-timeout command in global configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None   
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default is 120 seconds.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH authentication timeout on your switch:  
+    Switch(config)# ip ssh server authentication-timeout 100  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip ssh server authentication-timeout"
+        help="Authentication timeout" access="4">
+    <ACTION>
+cdbctl update/cdb/app/ssh_cfg/auth_timeout/120
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To restore the default value of Secure Shell (SSH) authentication timeout on your switch, use this command.  
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None 
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default is 120 seconds.      
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH authentication timeout to default value on your switch:  
+    Switch(config)# no ip ssh server authentication-timeout   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="ip ssh server authentication-type" help="Authentication type" access="4">
+    <PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="all" help="Enable all authentication type" ptype="SUBCOMMAND" mode="subcommand" />
+        <PARAM name="public-key" help="Enable SSHv2 public key authentication" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="password" help="Enable password authentication" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>  
+        </PARAM>
+        <PARAM name="password" help="Enable password authentication" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="public-key" help="Enable SSHv2 public key authentication" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+        </PARAM>   
+    </PARAM>
+	
+    <ACTION>
+if [ "all" == "${sub1}" ]; then
+    cdbctl update/cdb/app/ssh_cfg/auth_type/all
+else
+    cdbctl update/cdb/app/ssh_cfg/auth_type/${password},${public-key}
+fi
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To configure Secure Shell (SSH) authentication type on your switch, use the ip ssh server authentication-type command in global configuration mode.        
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default authentication type is public-key and password.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH authentication type on your switch.  
+    Switch(config)# ip ssh server authentication-type password  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip ssh server authentication-type"
+        help="Authentication type" access="4">
+    <ACTION>
+cdbctl update/cdb/app/ssh_cfg/auth_type/password,public-key
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+To restore the default value of Secure Shell (SSH) authentication type on your switch, use this command.  
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None       
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default authentication type is public-key and password.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH authentication type to default value on your switch.  
+    Switch(config)# no ip ssh server authentication-type   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="ip ssh server host-key" help="SSH host key" access="4">
+<PARAM name="rsa" help="RSA" ptype="SUBCOMMAND" mode="subcommand"/>
+<PARAM name="key" help="Key" ptype="SUBCOMMAND" mode="subcommand"/>
+<PARAM name="keyname" help="Key Name" ptype="RSAKEYNAME"/>
+
+<ACTION>cdbctl update/cdb/app/ssh_cfg/hostkey/${keyname}</ACTION>
+
+	<CTCDESCRIPTION>
+To configure Secure Shell (SSH) host-key on your switch, use the ip ssh server host-key rsa key command in global configuration mode. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None 
+	</CTCUSAGE>
+	<CTCDEFAULT>
+There is no host-key defined.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH host key on your switch:  
+    Switch(config)# ip ssh server host-key rsa key KEY1  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip ssh server host-key" help="SSH host key" access="4">
+<ACTION>cdbctl update/cdb/app/ssh_cfg/hostkey</ACTION>
+
+	<CTCDESCRIPTION>
+To restore the default value of Secure Shell (SSH) host-key on your switch, use this command.    
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+There is no host-key defined.  
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH host key on your switch:  
+    Switch(config)# no ip ssh server host-key  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show ip ssh server status
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="ip ssh server port"
+        help="Specify the port of SSH server working, default is 22" access="4">
+    <PARAM name="listenport" help="Port number" ptype="SERVICE_PORT"/>
+
+    <ACTION>cdbctl update/cdb/app/ssh_cfg/listen_port/${listenport}</ACTION>
+	
+	<CTCDESCRIPTION>
+To configure Secure Shell (SSH) listen port on your switch, use the ip ssh server port command in global configuration mode.    
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+22
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH listen port on your switch:  
+    Switch(config)# ip ssh server port 1111  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip ssh server port"
+        help="Specify the port of SSH server working, default is 22" access="4">
+    <ACTION>cdbctl update/cdb/app/ssh_cfg/listen_port/22</ACTION>
+	
+	<CTCDESCRIPTION>
+To restore the default value of Secure Shell (SSH) listen port on your switch, use this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+22
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following examples configure SSH listen port to default value on your switch:  
+    Switch(config)# no ip ssh server port   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+
+	<COMMAND name="ip ssh server acl" help="Set SSH acl"  hidden="true">
+		<PARAM name="acl_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING"/>
+
+		<ACTION>cdbctl update/cdb/sys/sys_global/ssh_acl/${acl_name}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service ssh acl.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>   
+	</COMMAND>
+
+	<COMMAND name="no ip ssh server acl" help="Set SSH acl"   hidden="true">
+		<ACTION>cdbctl update/cdb/sys/sys_global/ssh_acl//</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service ssh acl.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>   
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

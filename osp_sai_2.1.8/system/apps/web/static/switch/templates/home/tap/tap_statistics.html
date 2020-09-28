@@ -1,0 +1,71 @@
+<!-- option -->
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Port List' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <!-- select -->
+
+            <div class="row">
+                <div class="col-md-2; btn-group" ng-repeat="x in stats.if_statistic_arr">
+                    <button type="button" style="width:150px;" class="btn btn-default" ng-click="GetFlowStatistics(x.full_name)" ng-if="x.flow_flag == false">{{ x.full_name | switchPort }}</button>
+                    <button type="button" style="width:150px; background-color:#64E0E" class="btn btn-default" ng-click="GetFlowStatistics(x.full_name)" ng-if="x.flow_flag == true"> {{'●'}}{{ x.full_name | switchPort }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- info -->
+<div ng-class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Flow Statistics' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ 'Interface' | translate }}{{': '}}{{if_name}}</th>
+
+                    </tr>
+                </thead>
+            </table>
+            <!--flow statistics-->
+            <div class="col-md-12">
+                <div class="panel panel-default" ng-repeat="x in flow_statistics">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{'Flow Name' | translate }}{{':'}}{{x.flow_name}}</h3>
+                    </div>
+                    <div class="panel-body" ng-repeat="y in x['ace_arr']">
+                            <tbody>
+                                <tr >
+                                    <td class="text-center text-nowrap">
+                                        {{'Match Rule' | translate }}    {{': '}}{{y.rule}}
+                                        <br/>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;{{'Match Bytes' | translate }}  {{': '}}{{y.bytes}}
+                                        <br/>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;{{'Match Packets' | translate }}{{': '}}{{y.total}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </div>
+                    <div class="panel-body">
+                        <tbody>
+                            <tr>
+                                <td class="text-center text-nowrap">
+                                    {{'Total Match Bytes' | translate }}  {{': '}}{{x.flow_total_statistics.bytes}}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{{'Total Match Packets' | translate }}{{': '}}{{x.flow_total_statistics.total}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </div>
+                </div>
+            </div>
+            <!--flow statistics end-->
+        </div>
+    </div>
+</div>
+
+

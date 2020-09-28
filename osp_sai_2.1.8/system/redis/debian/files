@@ -1,0 +1,3 @@
+redis-server_3.2.4-1~bpo8+1_amd64.deb database optional
+redis-tools_3.2.4-1~bpo8+1_amd64.deb database optional
+redis-sentinel_3.2.4-1~bpo8+1_amd64.deb database optional

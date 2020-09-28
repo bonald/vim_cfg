@@ -1,0 +1,367 @@
+HAL-MSG-OPENFLOW-NEXTHOP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+
+    HalMsgIpv4addr,
+    HalMsgIpv6addr
+    FROM HAL-MSG-L3TYPES
+
+    HalMsgECMPGroupAddReq,
+    HalMsgECMPGroupDelReq
+    FROM HAL-MSG-ECMP
+    ;
+
+------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow nexthop (BEGIN) {
+------------------------------------
+
+HalMsgOpenFlowL2Edit ::= SEQUENCE
+{
+    macSa           HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    cVlanId         INTEGER,
+    sVlanId         INTEGER,
+    cTagCos         INTEGER,
+    sTagCos         INTEGER
+}
+
+HalMsgOpenFlowArpEdit ::= SEQUENCE
+{
+    arpOp           INTEGER,
+    arpSpa          HalMsgIpv4addr,
+    arpTpa          HalMsgIpv4addr,
+    arpSha          HalMsgDefL2MacAddr,
+    arpTha          HalMsgDefL2MacAddr
+}
+
+HalMsgOpenFlowIpv4Edit ::= SEQUENCE
+{
+    ipSa            HalMsgIpv4addr,
+    ipDa            HalMsgIpv4addr,
+    l4SrcPort       INTEGER,
+    l4DestPort      INTEGER,
+    dscp            INTEGER,
+    ecn             INTEGER,
+    ttl             INTEGER,
+    protocol        INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER
+}
+
+HalMsgOpenFlowIpv6Edit ::= SEQUENCE
+{
+    ipSa            HalMsgIpv6addr,
+    ipDa            HalMsgIpv6addr,
+    label           INTEGER,
+    l4SrcPort       INTEGER,
+    l4DestPort      INTEGER,
+    dscp            INTEGER,
+    ecn             INTEGER,
+    ttl             INTEGER,
+    protocol        INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER
+}
+
+HalMsgOpenFlowTunnelEdit ::= SEQUENCE    -- Added by weizj for tunnel
+{
+    type               INTEGER,
+    ttl                INTEGER,
+    vid                INTEGER,
+    dscpOrTos          INTEGER,
+    tunnelKey          INTEGER,
+    tunnelProtocol     INTEGER
+}
+
+HalMsgOpenFlowIpucNh ::= SEQUENCE
+{
+    gport               INTEGER,    
+    vid                 INTEGER,
+	nhMac               HalMsgDefL2MacAddr,
+	rewriteEtherType    INTEGER
+}
+
+HalMsgOpenFlowXlateNh ::= SEQUENCE
+{
+    gport           INTEGER,    
+    innerSvlanTagOp INTEGER,
+	innerSvlanId    INTEGER
+}
+
+HalMsgOpenFlowFlexNh ::= SEQUENCE
+{
+    flag1           INTEGER,        -- bitmap of glb_openflow_action_field_t
+    flag2           INTEGER,        -- bitmap of glb_openflow_action_field_t
+    
+    flowType        INTEGER,
+    pldPacketType   INTEGER,
+    gport           INTEGER,
+    macEdit         HalMsgOpenFlowL2Edit,
+
+    unionEdit CHOICE
+    {
+        arpEdit         HalMsgOpenFlowArpEdit,
+        ipv4Edit        HalMsgOpenFlowIpv4Edit,
+        ipv6Edit        HalMsgOpenFlowIpv6Edit
+    }
+}
+
+HalMsgOpenFlowTunnelNh ::= SEQUENCE    -- Added by weizj for tunnel
+{
+    flags            INTEGER,
+	nextFlags        INTEGER,
+    gport            INTEGER,
+    fid              INTEGER,
+    tnl              HalMsgOpenFlowTunnelEdit,
+    macEdit          HalMsgOpenFlowL2Edit,
+	innerMacEdit     HalMsgOpenFlowL2Edit,
+    ipv4Edit         HalMsgOpenFlowIpv4Edit
+}
+
+HalMsgOpenFlowMcastMemberNh ::= SEQUENCE
+{
+    nhid                     INTEGER,
+    gport                    INTEGER,
+    redirectToIngressPort    INTEGER,
+    portCheckDiscard         INTEGER
+}
+
+------------------------------------
+-- } DATA STRUCTURE definitions for OpenFlow nexthop (END)
+------------------------------------
+
+
+------------------------------------
+--  Message definitions for OpenFlow (BEGIN) {
+------------------------------------
+HalMsgOpenFlowAddMcastNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    statsEn         INTEGER,
+    statsId         INTEGER
+}
+
+HalMsgOpenFlowDelMcastNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddMcastMemberNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    memberInfo      HalMsgOpenFlowMcastMemberNh
+}
+
+HalMsgOpenFlowDelMcastMemberNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    memberInfo      HalMsgOpenFlowMcastMemberNh
+}
+
+HalMsgOpenFlowAddECMPNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    statsEn         INTEGER,
+    statsId         INTEGER
+}
+
+HalMsgOpenFlowDelECMPNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddECMPMemberNhReq ::= SEQUENCE
+{
+    statsId         INTEGER,
+    isFirst         INTEGER,
+    memberNhid      HalMsgECMPGroupAddReq
+}
+
+HalMsgOpenFlowDelECMPMemberNhReq ::= SEQUENCE
+{
+    memberNhid      HalMsgECMPGroupAddReq
+}
+
+HalMsgOpenFlowAddFlexNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    statsEn         INTEGER,
+    statsId         INTEGER,
+    nhInfo          HalMsgOpenFlowFlexNh
+}
+
+HalMsgOpenFlowAddFlexCpuNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    cpuPort         INTEGER,
+    reason          INTEGER,
+    statsEn         INTEGER,
+    statsId         INTEGER
+}
+
+HalMsgOpenFlowDelFlexNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    flowType        INTEGER
+}
+
+HalMsgOpenFlowAddTunnelNhReq ::= SEQUENCE     -- Added by weizj for tunnel
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    statsEn         INTEGER,
+    statsId         INTEGER,
+	isUpdate        INTEGER,
+    nhInfo          HalMsgOpenFlowTunnelNh
+}
+
+HalMsgOpenFlowDelTunnelNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+-- Added by zhangdy for cubro mpls.
+
+-- glb_openflow_mpls_nh_label_param_t
+HalMsgOpenFlowMplsNhLabelParam ::= SEQUENCE
+{
+    flag            INTEGER,
+    ttl             INTEGER,
+    expType         INTEGER,
+    exp             INTEGER,
+    label           INTEGER
+}
+
+HalMsgOpenFlowAddMplsTunnelReq ::= SEQUENCE     
+{
+    tunnelId        INTEGER,
+    tunnelLabel     HalMsgOpenFlowMplsNhLabelParam,
+    gport           INTEGER,    
+    nhMac           HalMsgDefL2MacAddr,
+    outerVlanVid    INTEGER
+}
+
+HalMsgOpenFlowDelMplsTunnelReq ::= SEQUENCE     
+{
+    tunnelId        INTEGER
+}
+
+HalMsgOpenFlowAddPushL2vpnNhReq ::= SEQUENCE     
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    tunnelId        INTEGER,
+    innerSvlanTagOp INTEGER,
+	innerSvlanId    INTEGER,
+    pwLabel         HalMsgOpenFlowMplsNhLabelParam
+}
+
+HalMsgOpenFlowAddApsPushL2vpnNhReq ::= SEQUENCE     
+{
+    nhid             INTEGER,
+    offset           INTEGER,
+    apsGroupId       INTEGER,
+    gport            INTEGER,
+    pgport           INTEGER,
+    lspApsGroupId    INTEGER,
+    plspApsGroupId   INTEGER,
+    tunnelId         INTEGER,
+    innerSvlanTagOp  INTEGER,
+    innerSvlanId     INTEGER,
+    pwLabel          HalMsgOpenFlowMplsNhLabelParam,
+    ptunnelId        INTEGER,
+    pinnerSvlanTagOp INTEGER,
+    pinnerSvlanId    INTEGER,
+    ppwLabel         HalMsgOpenFlowMplsNhLabelParam
+}
+
+-- We do not pass other info, so hagt should maintain a db
+-- to obtain the info that is used to created tunnel in
+-- order to delete it.
+HalMsgOpenFlowDelPushL2vpnNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddPushL3vpnNhReq ::= SEQUENCE     
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    tunnelId        INTEGER
+}
+
+HalMsgOpenFlowDelPushL3vpnNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddSwapMplsNhReq ::= SEQUENCE     
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    tunnelId        INTEGER,
+    pwLabel         HalMsgOpenFlowMplsNhLabelParam
+}
+
+HalMsgOpenFlowDelSwapMplsNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddPopPHPNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    gport           INTEGER,    
+    nhMac           HalMsgDefL2MacAddr,
+    outerVlanVid    INTEGER
+}
+
+HalMsgOpenFlowDelPopPHPNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddIpucNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    nhInfo          HalMsgOpenFlowIpucNh
+}
+
+
+HalMsgOpenFlowSectionNh ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    tunnelId        INTEGER,
+    nhInfo          HalMsgOpenFlowIpucNh
+}
+
+HalMsgOpenFlowDelIpucNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+HalMsgOpenFlowAddXlateNhReq ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    nhInfo          HalMsgOpenFlowXlateNh
+}
+
+HalMsgOpenFlowDelXlateNhReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+------------------------------------
+--  } Message definitions for OpenFlow (END)
+------------------------------------
+
+END
+

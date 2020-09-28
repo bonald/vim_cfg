@@ -1,0 +1,57 @@
+HAL-MSG-TYPES DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgMirrorCfgSrcItem
+    FROM HAL-MSG-MIRROR
+    ;
+    
+HalMsgDefErrorCode ::= ENUMERATED
+{
+    success,
+    noMemory,
+    genericErr,
+    maxErrNum
+}
+
+HalMsgPortList ::= SEQUENCE
+{
+    portNum      INTEGER,
+    portId       SEQUENCE OF INTEGER
+}
+
+HalMsgIntList ::= SEQUENCE
+{
+    int32       SEQUENCE OF INTEGER
+}
+
+HalMsgSyncPortItem ::= SEQUENCE
+{
+    portId               INTEGER,
+    isAggMem             INTEGER,
+    ifBMP                INTEGER,
+    trunkid              INTEGER,
+    vlanTag              INTEGER,
+    macSecDisc           INTEGER,
+    defVid               INTEGER,
+    phyType              INTEGER,
+    mirror               HalMsgMirrorCfgSrcItem,
+    igsDot1qType         INTEGER,
+    egsDot1qType         INTEGER,
+    vrrpId               INTEGER,
+    portNo               INTEGER,
+    speed                INTEGER,
+    duplex               INTEGER,
+    mtuSize              INTEGER,
+    flowctlDirection     INTEGER, 
+    vlanClassType        INTEGER,
+    vlanClassGroup       INTEGER
+}
+
+HalMsgSyncPortPhyItem ::= SEQUENCE
+{
+    portId               INTEGER,
+    portNo               INTEGER,
+    enable               INTEGER
+}
+
+END

@@ -1,0 +1,17 @@
+include $(MK_DIR)/sys.mk
+
+LIB   = cpuspi
+
+SRCS  = src/ctc_spi.c
+SRCS += src/spi_cpu.c
+SRCS += src/spi_epld.c
+SRCS += src/spi_fpga.c
+SRCS += src/spi_gpio.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+
+DEP_LIBS = $(LIB_DIR)/libctclib.a
+LD_LIBS = -lctclib -lrt
+
+include $(MK_DIR)/lib.mk

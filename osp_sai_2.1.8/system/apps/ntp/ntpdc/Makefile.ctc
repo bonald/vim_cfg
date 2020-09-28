@@ -1,0 +1,24 @@
+include $(MK_DIR)/sys.mk
+
+CPPFLAGS += -Wno-error=format-contains-nul
+
+PROG = ntpdc
+
+# ntpd sources
+SRCS = \
+    ntpdc.c \
+    ntpdc_ops.c \
+    ntpdc-opts.c \
+    version.c	\
+	../sntp/libopts/libopts.c
+
+CPPFLAGS+= -DHAVE_CONFIG_H -I$(APP_TOP_DIR)/include -I$(APP_TOP_DIR)/ntp -I$(APP_TOP_DIR)/ntp/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/include/
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/unix/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/sntp/libopts
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/pthreads/include
+
+DEP_LIBS = $(LIB_DIR)/libntp.a
+LD_LIBS = -L$(LIB_DIR) -lntp -lcrypto -lm -pthread -lrt
+
+include $(MK_DIR)/prog.mk

@@ -1,0 +1,76 @@
+ifeq ($(ARCH),um)
+include $(MK_DIR)/sys64.mk
+endif
+ifeq ($(ARCH),powerpc)
+include $(MK_DIR)/sys.mk
+endif
+ifeq ($(ARCH),arm)
+include $(MK_DIR)/sys.mk
+endif
+ifeq ($(ARCH),x86_64)
+include $(MK_DIR)/sys.mk
+endif
+
+CPPFLAGS += -Wno-error=return-type
+CPPFLAGS += -Wno-error=unused-function
+
+ifeq ($(ARCH),um)
+# um is m32, then could not uses -I/usr/lib64/glib-2.0/include
+GLIB_INCDIR=$(shell pkg-config --cflags glib-2.0)
+# GLIB_INCDIR=-I/usr/include/glib-2.0 -I$(THIRD_PARTY_DIR)/thrift/c_glib/lib32
+# GLIB_INCDIR=-I/ctcdata/users/sw/kcao/usr/include/glib-2.0 -I/ctcdata/users/sw/kcao/usr/lib64/glib-2.0/include 
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),powerpc)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),arm)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),mips)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),x86_64)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib64/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+CPPFLAGS += -I.
+CPPFLAGS += -I$(TOP_DIR)/sai/inc
+CPPFLAGS += -I$(TOP_DIR)/lib/sal/include
+CPPFLAGS += -I$(TOP_DIR)/lib/util/include
+CPPFLAGS += -I$(TOP_DIR)/lib/genlog/include
+CPPFLAGS += -I$(SAI_DIR)/ptf_agent
+CPPFLAGS += $(GLIB_INCDIR)
+CPPFLAGS += -DPTF_STUB
+
+PROG = ptf_server
+SRCS = 
+SRCS += ptf_server.c sai_handler.c
+
+LD_LIBS = -L$(LIB_DIR) -lptfagent $(GLIB_LIB) -lm -lrt -lpthread -lcrypt -lcrypto
+
+ifeq ($(ARCH),um)
+include $(MK_DIR)/prog64.mk
+endif
+ifeq ($(ARCH),powerpc)
+include $(MK_DIR)/prog.mk
+endif
+ifeq ($(ARCH),arm)
+include $(MK_DIR)/prog.mk
+endif
+ifeq ($(ARCH),x86_64)
+include $(MK_DIR)/prog.mk
+endif
+

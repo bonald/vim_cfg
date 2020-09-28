@@ -1,0 +1,49 @@
+HAL-MSG-RATELIMIT DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES
+    ;
+
+HalMsgSyncRatelimitItem ::= SEQUENCE
+{
+    port             INTEGER,
+    enable           INTEGER,
+    unit             INTEGER,
+    thresh           INTEGER,
+    op               INTEGER,
+    vlanId           INTEGER
+}
+
+HalMsgL2RatelimitSetEnReq ::= SEQUENCE
+{
+    port             INTEGER,
+    type             INTEGER,
+    enable           INTEGER,
+    op               INTEGER,
+    vlanId           INTEGER
+}
+
+HalMsgL2RatelimitSetThreshReq ::= SEQUENCE
+{
+    port             INTEGER,
+    type             INTEGER,
+    unit             INTEGER,
+    thresh           INTEGER,
+    op               INTEGER,
+    vlanId           INTEGER
+}
+
+HalMsgL2RatelimitSetIpgEnReq ::= SEQUENCE
+{
+    enable           INTEGER
+}
+
+HalMsgL2SyncRatelimitReq ::= SEQUENCE
+{
+    ipg              INTEGER,
+    type             INTEGER,
+    item             SEQUENCE OF HalMsgSyncRatelimitItem
+}
+
+END

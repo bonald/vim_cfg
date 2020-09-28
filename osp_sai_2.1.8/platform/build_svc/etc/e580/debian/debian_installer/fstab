@@ -1,0 +1,4 @@
+ubi0:system		/mnt/flash		ubifs	rw		0 0
+ubi1:boot		/mnt/flash/boot		ubifs	ro		0 0
+tmpfs			/tmp			tmpfs	nodev,nosuid	0 0
+tmpfs			/switch			tmpfs	nodev,nosuid	0 0

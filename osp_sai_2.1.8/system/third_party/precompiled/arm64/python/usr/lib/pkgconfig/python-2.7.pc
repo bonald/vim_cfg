@@ -1,0 +1,13 @@
+prefix=/data01/users/sw/shil/my_tmp/osp_sai/arm64/Python-2.7.13_dir/python2_7_13_for_aarch64/../python2_7_13_for_aarch64_out
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Python
+Description: Python library
+Requires: 
+Version: 2.7
+Libs.private: -lpthread -ldl  -lpthread -lutil
+Libs: -L${libdir} -lpython2.7
+Cflags: -I${includedir}/python2.7 
+

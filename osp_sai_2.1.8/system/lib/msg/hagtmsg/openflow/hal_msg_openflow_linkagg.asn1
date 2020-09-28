@@ -1,0 +1,34 @@
+HAL-MSG-OPENFLOW-LINKAGG DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+    
+------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow linkagg (BEGIN) {
+------------------------------------
+
+------------------------------------
+--  Message definitions for OpenFlow (BEGIN) {
+------------------------------------
+HalMsgOpenFlowCreateLinkAggReq ::= SEQUENCE
+{
+    tid             INTEGER (0..31)
+}
+
+HalMsgOpenFlowDelLinkAggReq ::= SEQUENCE
+{
+    tid             INTEGER (0..31)
+}
+
+HalMsgOpenFlowAddLinkAggMemberReq ::= SEQUENCE
+{
+    tid             INTEGER (0..31),
+    gport           INTEGER
+}
+
+HalMsgOpenFlowDelLinkAggMemberReq ::= SEQUENCE
+{
+    tid             INTEGER (0..31),
+    gport           INTEGER
+}
+------------------------------------
+--  } Message definitions for OpenFlow linkagg (END)
+------------------------------------
+END

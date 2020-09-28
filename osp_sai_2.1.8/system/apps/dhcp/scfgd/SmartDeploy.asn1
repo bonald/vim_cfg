@@ -1,0 +1,26 @@
+InitDeploy DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+Item ::= SEQUENCE
+{
+    type                PrintableString,
+    value               PrintableString,
+    image               PrintableString,
+    config              PrintableString
+}
+
+Default ::= SEQUENCE
+{
+    option              PrintableString,
+    image               PrintableString,
+    config              PrintableString
+}
+
+SmartDeploy ::= SEQUENCE
+{
+    ftype               PrintableString,
+    hostprefix          PrintableString,
+    defItem             Default,
+    groups              SEQUENCE OF Item
+}
+
+END

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+NETCONF
+</CTCMODULENAME>
+
+<VIEW name="Configure">
+
+<COMMAND name="service netconf" help="Configure NETCONF" access="4"/>
+
+<COMMAND name="service netconf enable" help="Enable this service" access="4">
+	<PARAM name="port" help="Set L4 port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+		<PARAM name="portnum" help="NETCONF ssh port number, default is 830" ptype="SERVICE_PORT" default="830"/>
+	</PARAM>
+	<ACTION>cdbctl update/cdb/app/ssh_cfg/netconf_service/1/${portnum}</ACTION>
+</COMMAND>
+
+<COMMAND name="service netconf disable" help="Disable this service" access="4">
+	<ACTION>cdbctl update/cdb/app/ssh_cfg/netconf_service/0/830</ACTION>
+</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

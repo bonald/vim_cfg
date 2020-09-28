@@ -1,0 +1,20 @@
+include $(MK_DIR)/sys.mk
+
+LIB = cpui2c
+SRCS  = src/i2c_cpm.c
+SRCS += src/ctc_i2c.c
+SRCS += src/i2c_gb.c
+SRCS += src/i2c_gg.c
+SRCS += src/i2c_gpio.c
+ifeq ($(CPU),x86_64)
+SRCS += src/i2c_smbus.c
+SRCS += src/i2c_susi.c
+endif
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_gpio
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/src/susi/Susi4Demo
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/pci
+
+include $(MK_DIR)/lib.mk

@@ -1,0 +1,215 @@
+HAL-MSG-L2-BRG DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2BrgName,
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+    ;
+    
+HalMsgBrgFdbOpReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    mac         HalMsgDefL2MacAddr,
+    glPort      INTEGER,
+    label       INTEGER,
+    gsrcportType   INTEGER,
+    flag        INTEGER,
+    nhid        INTEGER,
+    virtualPort   INTEGER
+}
+
+HalMsgBrgIfLearnEnReq ::= SEQUENCE
+{
+    gport       INTEGER,
+    enable      INTEGER
+}
+
+HalMsgBrgLearnEnReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgBrgHwLearnEnReq ::= SEQUENCE
+{
+        enable      INTEGER
+}
+
+HalMsgBrgQueryHwDB ::= SEQUENCE
+{
+    fid          INTEGER,
+    mac          HalMsgDefL2MacAddr,
+    glPort       INTEGER,
+    queryType    INTEGER,
+    queryFlag    INTEGER
+}
+
+HalMsgBrgSystemEntryReq ::= SEQUENCE
+{
+    flag        INTEGER,
+    isroutemac    INTEGER,
+    gport       INTEGER,
+    mac         HalMsgDefL2MacAddr
+}
+
+HalMsgBrgSystemEntryListReq ::= SEQUENCE
+{
+    err         HalMsgDefErrorCode,
+    entryArray  SEQUENCE OF HalMsgBrgSystemEntryReq
+}
+
+HalMsgBrgCpuPacketReq ::= SEQUENCE
+{
+    index           INTEGER,
+    byPassAll       INTEGER,
+    ethType         INTEGER,
+    ethTypeMask     INTEGER,
+    mac             HalMsgDefL2MacAddr,
+    macMask         HalMsgDefL2MacAddr
+}
+
+HalMsgBrgCpuPacketListReq ::= SEQUENCE
+{
+    err         HalMsgDefErrorCode,
+    cpuPacketArray  SEQUENCE OF HalMsgBrgCpuPacketReq
+}
+
+HalMsgBrgFilterToCpuReq ::= SEQUENCE
+{
+    index           INTEGER,
+    ethType         INTEGER,
+    enable	        INTEGER
+}
+
+HalMsgBrgFilterToCpuListReq ::= SEQUENCE
+{
+    err         HalMsgDefErrorCode,
+    filterToCpuArray  SEQUENCE OF HalMsgBrgFilterToCpuReq
+}
+
+HalMsgBrgFdbFlushByVlanPortReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    glPort      INTEGER
+}
+
+HalMsgBrgFdbFlushByVlanMacReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    mac         HalMsgDefL2MacAddr
+}
+
+HalMsgBrgFdbFlushByLabelReq ::= SEQUENCE
+{
+    label       INTEGER
+}
+
+HalMsgBrgFdbFlushFdbReq ::= SEQUENCE
+{
+    type       INTEGER,
+    fid         INTEGER,
+    glPort      INTEGER
+    
+}
+
+HalMsgBrgLearnEntryReq ::= SEQUENCE
+{
+    mac         HalMsgDefL2MacAddr,
+    fid         INTEGER,
+    glSrcPort   INTEGER
+}
+
+HalMsgBrgLearnEntryListReq ::= SEQUENCE
+{
+    err         HalMsgDefErrorCode,
+    learnArray  SEQUENCE OF HalMsgBrgLearnEntryReq
+}
+
+HalMsgBrgLearnRawReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgBrgAgingRawReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+            
+HalMsgBrgAgingEntryReq ::= SEQUENCE                
+{                                                  
+    mac         HalMsgDefL2MacAddr,                
+    fid         INTEGER,                           
+    glSrcPort   INTEGER,                           
+    gsrcportType      INTEGER,                           
+    label       INTEGER,                           
+    nhId        INTEGER,                           
+    flag        INTEGER,
+    virtualPort   INTEGER                            
+}                                                  
+                                                   
+HalMsgBrgAgingEntryListReq ::= SEQUENCE            
+{                                                  
+    err         HalMsgDefErrorCode, 
+    gchip       INTEGER,                 
+    agingList  SEQUENCE OF HalMsgBrgAgingEntryReq  
+}                                                  
+
+HalMsgBrgFdbEntryListReq ::= SEQUENCE
+{
+    err           HalMsgDefErrorCode,
+    fdbEntryList  SEQUENCE OF HalMsgBrgFdbOpReq
+}
+
+HalMsgBrgFdbEntryListRawReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgBrgAgingScanEnReq  ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgBrgChangeMacLearningAbilityReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgBrgSetPortStateReq  ::= SEQUENCE
+{
+    ifValue      INTEGER,
+    instance     INTEGER,
+    state        INTEGER
+}
+
+HalMsgBrgSetFdbLookupTypeReq  ::= SEQUENCE
+{
+    noHash      INTEGER
+}
+
+HalMsgBrgDeleteEntryReq ::= SEQUENCE                
+{                                                  
+    mac         HalMsgDefL2MacAddr,                
+    fid         INTEGER,
+    glPort      INTEGER,
+    flag        INTEGER                           
+}  
+
+HalMsgBrgSetDiscardReq ::= SEQUENCE
+{
+    fid         INTEGER,
+    type        INTEGER,
+    discard     INTEGER
+}
+
+HalMsgBrgFlushFdbEnd ::= SEQUENCE
+{
+    type       INTEGER,
+    fid         INTEGER,
+    glPort      INTEGER
+}
+END

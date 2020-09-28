@@ -1,0 +1,237 @@
+HAL-MSG-STATS DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-------------------------------------
+--  Type definitions for Stats (BEGIN) {
+-------------------------------------
+
+HalMsgStatsIntfKey ::= SEQUENCE
+{
+    gport      INTEGER
+}
+
+HalMsgStatsIlmKey ::= SEQUENCE
+{
+    label      INTEGER,
+    space      INTEGER
+}
+
+HalMsgStatsNhKey ::= SEQUENCE
+{
+    nh      INTEGER
+}
+
+HalMsgStatsAceKey ::= SEQUENCE
+{
+    label      INTEGER,
+    aceType    INTEGER,
+    seqNum     INTEGER
+}
+
+--HalMsgStatsSflowKey ::= SEQUENCE
+--{
+--    labelIngress INTEGER,
+--    labelEgress  INTEGER
+--}
+HalMsgStatsSflowKey  ::= SEQUENCE
+{
+    gportListKey  SEQUENCE OF INTEGER,
+    ingressEn     INTEGER,
+    egressEn      INTEGER
+}
+
+HalMsgPortPolicerKey ::= SEQUENCE
+{
+    port        INTEGER,
+    dir         INTEGER
+}
+
+HalMsgFlowPolicerKey ::= SEQUENCE
+{
+    policerId   INTEGER
+}
+
+HalMsgPortQueueKey ::= SEQUENCE
+{
+    port        INTEGER,
+    qid         INTEGER
+}
+
+HalMsgFlowRuleKey ::= SEQUENCE
+{
+    label      INTEGER,
+    aceType    INTEGER,
+    entryId    INTEGER,
+    statsId    INTEGER
+}
+
+HalMsgStatsKey ::= CHOICE
+{
+    portKey      HalMsgStatsIntfKey,
+    ilmKey       HalMsgStatsIlmKey,    
+    nhKey        HalMsgStatsNhKey,
+    aceKey       HalMsgStatsAceKey,
+    sflowKey     HalMsgStatsSflowKey,
+    portPlcKey   HalMsgPortPolicerKey,
+    flowPlcKey   HalMsgFlowPolicerKey,
+    portQueueKey HalMsgPortQueueKey,
+    flowRuleKey  HalMsgFlowRuleKey
+    -- The newly added Stats's key should be placed from here
+}
+
+HalMsgStatsBasicRslt ::= SEQUENCE
+{
+    pkts        OCTET STRING,
+    octets      OCTET STRING
+}
+
+HalMsgStatsPortRslt ::= SEQUENCE
+{
+    gportid                 INTEGER,
+    goodOctetsRcv           OCTET STRING,
+    badOctetsRcv            OCTET STRING,
+    macTransmitErr          OCTET STRING,
+    goodPktsRcv             OCTET STRING,
+    badPktsRcv              OCTET STRING,
+    ucPktsRcv               OCTET STRING,
+    mcPktsRcv               OCTET STRING,
+    brdcPktsRcv             OCTET STRING,
+    oamPktsRcv              OCTET STRING,
+    pkts64octets            OCTET STRING,
+    pkts65To127octets       OCTET STRING,
+    pkts128To255octets      OCTET STRING,
+    pkts256To511octets      OCTET STRING,
+    pkts512To1023octets     OCTET STRING,
+    pkts1024TomaxOctets     OCTET STRING,
+    goodOctetsSend          OCTET STRING,
+    goodPktsSend            OCTET STRING,
+    ucPktsSend              OCTET STRING,
+    mcPktsSend              OCTET STRING,
+    brdcPktsSend            OCTET STRING,
+    oamPktsSend             OCTET STRING,
+    dropEvents              OCTET STRING,
+    undersizePkts           OCTET STRING,
+    fragmentsPkts           OCTET STRING,
+    oversizePkts            OCTET STRING,
+    jabberPkts              OCTET STRING,
+    macRcvError             OCTET STRING,
+    badCrc                  OCTET STRING,
+    badFcRcv                OCTET STRING,
+    octetsRcv               OCTET STRING,
+    pktsRcv                 OCTET STRING,
+    octetsSend              OCTET STRING,
+    pktsSend                OCTET STRING,
+    underruns               OCTET STRING,
+    frameError              OCTET STRING,
+    pauseRcv                OCTET STRING,
+    pauseSend               OCTET STRING,
+    badPktsRcvSec           OCTET STRING,
+    octetsRcvRate           OCTET STRING,
+    pktsRcvRate             OCTET STRING,
+    octetsSendRate          OCTET STRING,
+    pktsSendRate            OCTET STRING,
+    
+    fcsPktsRcv            OCTET STRING,
+    fcsOctetsRcv            OCTET STRING,
+    fcsPktsSend            OCTET STRING,
+    fcsOctetsSend            OCTET STRING
+}
+
+HalMsgStatsQueueRslt ::= SEQUENCE
+{
+    gportId         INTEGER,
+    deqPkts0         OCTET STRING,
+    deqBytes0        OCTET STRING,
+    dropPkts0       OCTET STRING,
+    dropBytes0       OCTET STRING,
+	deqPkts1         OCTET STRING,
+    deqBytes1        OCTET STRING,
+    dropPkts1        OCTET STRING,
+    dropBytes1       OCTET STRING,
+    deqPkts2         OCTET STRING,
+    deqBytes2        OCTET STRING,
+    dropPkts2        OCTET STRING,
+    dropBytes2       OCTET STRING,
+    deqPkts3         OCTET STRING,
+    deqBytes3        OCTET STRING,
+    dropPkts3        OCTET STRING,
+    dropBytes3       OCTET STRING,
+	deqPkts4         OCTET STRING,
+    deqBytes4        OCTET STRING,
+    dropPkts4        OCTET STRING,
+    dropBytes4       OCTET STRING,
+    deqPkts5         OCTET STRING,
+    deqBytes5        OCTET STRING,
+    dropPkts5        OCTET STRING,
+    dropBytes5       OCTET STRING,
+    deqPkts6         OCTET STRING,
+    deqBytes6        OCTET STRING,
+    dropPkts6        OCTET STRING,
+    dropBytes6       OCTET STRING,
+    deqPkts7         OCTET STRING,
+    deqBytes7        OCTET STRING,
+    dropPkts7        OCTET STRING,
+    dropBytes7       OCTET STRING,
+    supportFlag     INTEGER
+}
+
+HalMsgStatsPolicerRslt ::= SEQUENCE
+{
+    confirmPackets  OCTET STRING,
+    confirmBytes    OCTET STRING,
+    exceedPackets   OCTET STRING,
+    exceedBytes     OCTET STRING,
+    violatePackets  OCTET STRING,
+    violateBytes    OCTET STRING,
+    resourceId      INTEGER,
+    supportFlag     INTEGER
+}
+
+HalMsgStatsOpenFlowRslt ::= SEQUENCE
+{
+    pkts        OCTET STRING,
+    octets      OCTET STRING,
+    resourceId  INTEGER,
+    rsv1        INTEGER
+}
+
+HalMsgStatsResult  ::= CHOICE
+{
+    basicRslt    HalMsgStatsBasicRslt,
+    portRslt     HalMsgStatsPortRslt,
+    queueRslt    HalMsgStatsQueueRslt,
+    policerRslt  HalMsgStatsPolicerRslt,
+    openflowRslt HalMsgStatsOpenFlowRslt
+    -- The newly added Stats's result should be placed from here
+}
+
+-------------------------------------
+--  } Type definitions for Stats (END)
+-------------------------------------
+
+-------------------------------------
+--  Message definitions for Stats (BEGIN) {
+-------------------------------------
+
+HalMsgStatsGetReq ::= SEQUENCE
+{
+    type      INTEGER,
+    statsKey  HalMsgStatsKey
+}
+
+HalMsgStatsClearReq ::= SEQUENCE
+{
+    type      INTEGER,
+    statsKey  SEQUENCE OF HalMsgStatsKey
+}
+
+HalMsgStatsResponseReq   ::= SEQUENCE
+{
+    type        INTEGER,
+    notify      INTEGER,
+    rslt        HalMsgStatsResult
+}
+
+-------------------------------------
+--  } Message definitions for Stats (END)
+-------------------------------------
+END

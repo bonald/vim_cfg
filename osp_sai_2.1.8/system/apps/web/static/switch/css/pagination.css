@@ -1,0 +1,25 @@
+.ng-pagination {
+    display: inline-block;
+    position: relative;
+    left: 50%;
+}
+
+.ng-pagination > nav {
+    display: inline-block;
+    position: relative;
+    right: 50%;
+}
+
+.ng-pagination .pagination {
+    float: left;
+}
+
+.ng-pagination form {
+    float: left;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.ng-pagination .pag-input {
+    width: 50px;
+}

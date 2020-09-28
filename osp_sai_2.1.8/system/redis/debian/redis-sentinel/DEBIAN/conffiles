@@ -1,0 +1,8 @@
+/etc/default/redis-sentinel
+/etc/init.d/redis-sentinel
+/etc/logrotate.d/redis-sentinel
+/etc/redis/redis-sentinel.post-down.d/00_example
+/etc/redis/redis-sentinel.post-up.d/00_example
+/etc/redis/redis-sentinel.pre-down.d/00_example
+/etc/redis/redis-sentinel.pre-up.d/00_example
+/etc/redis/sentinel.conf

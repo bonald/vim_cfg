@@ -1,0 +1,75 @@
+HAL-MSG-L2-LACP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+HalMsgAggReq ::= SEQUENCE
+{
+    trunkid     INTEGER,
+    portmac     HalMsgDefL2MacAddr
+}
+
+HalMsgMemportPropSyncReq ::= SEQUENCE
+{
+    portid        INTEGER,
+    routeEn       INTEGER,
+    defEntrySync  INTEGER,
+    secbindSync   INTEGER
+}
+
+HalMsgAggPropSyncReq ::= SEQUENCE
+{
+    memPortid     INTEGER,
+    aggPortid     INTEGER,
+    routeEn       INTEGER,
+    -- agg l3ifid
+    l3ifid        INTEGER
+}
+
+HalMsgAttachAggReq ::= SEQUENCE
+{
+    trunkid       INTEGER,
+    portid        INTEGER,
+    routeEn       INTEGER,
+    portmac     HalMsgDefL2MacAddr
+}
+
+HalMsgSetPortFlagReq ::= SEQUENCE
+{
+    enable       INTEGER,
+    flag        INTEGER,
+    portid     INTEGER
+}
+
+HalMsgDebugLacp ::= SEQUENCE
+{
+    tidorPortorVid INTEGER
+}
+
+HalMsgAggSetLoadBalance ::= SEQUENCE
+{
+    loadBalance INTEGER
+}
+
+HalMsgAggSetLoadBalanceMode ::= SEQUENCE
+{
+    tid INTEGER,
+    mode INTEGER
+}
+
+HalMsgAggMemProperty ::= SEQUENCE
+{
+    portId      INTEGER
+}
+
+HalMsgAggSyncReq ::= SEQUENCE
+{
+    trunkid     INTEGER,
+    routeEn     INTEGER,
+    l3ifid      INTEGER,
+    memList     SEQUENCE OF HalMsgAggMemProperty
+}
+
+END

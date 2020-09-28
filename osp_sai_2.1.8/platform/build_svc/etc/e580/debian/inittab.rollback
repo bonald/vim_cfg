@@ -1,0 +1,5 @@
+::sysinit:/switch/etc/rc.sysinit
+::respawn:-/bin/sh
+#ttyS0::respawn:/switch/etc/start_klish_for_console.sh
+#::respawn:/usr/sbin/klish
+::shutdown:/usr/sbin/restart.sh

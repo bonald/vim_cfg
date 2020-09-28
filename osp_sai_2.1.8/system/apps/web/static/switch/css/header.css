@@ -1,0 +1,82 @@
+#head-bar-container {
+    padding-top: 14px;
+}
+
+#head-logo: {
+    display: block;
+}
+
+.head-bar {
+    line-height: 30px;
+    height: 30px;
+    background: #DDDDDD;
+    margin-bottom: 10px;
+}
+
+#head-bar-menu {
+    padding-left: 60px;
+}
+
+#tap-head-bar-menu {
+    padding-left: 46px;
+    font-size: 18px; 
+    height:30px
+}
+
+#head-bar-body {
+    padding-left: 30px;
+}
+
+#global-alert-cnt {
+    position: fixed;
+    float: left;
+    left: 50%;
+    z-index: 100;
+}
+
+#global-alert-cnt .modal-backdrop {
+    z-index: 99;
+}
+
+#global-alert {
+    position: relative;
+    float: left;
+    right: 50%;
+    min-width: 400px;
+    z-index: 101;
+}
+
+
+#global-confirm-cnt {
+    position: fixed;
+    float: left;
+    left: 50%;
+    z-index: 103;
+}
+
+#global-confirm-cnt .modal-backdrop {
+    z-index: 102;
+}
+
+#global-confirm {
+    position: relative;
+    float: left;
+    right: 50%;
+    min-width: 300px;
+    max-width: 600px;
+    z-index: 104;
+}
+
+#global-confirm .content {
+    word-break: break-all;
+}
+
+#global-confirm .content {
+    word-break: break-all;
+}
+
+#global-confirm button.conf {
+    float: right;
+    margin-left: 10px;
+    margin-top: 10px;
+}

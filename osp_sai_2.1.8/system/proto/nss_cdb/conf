@@ -1,0 +1,5 @@
+# /etc/nsswitch.conf
+#   Alexander Liu
+#   2014-11-04 9:15
+passwd:     files cdb
+hosts:      files dns

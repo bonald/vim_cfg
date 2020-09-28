@@ -1,0 +1,1203 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+RSTP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+    <COMMAND name="clear spanning-tree" help="Spanning-tree"/>
+
+    <COMMAND name="clear spanning-tree detected-protocols" help="Port received STP protocols">
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+        <ACTION>
+  			cdbctl update/cdb/l2/mstp_port/${if_id}/mcheck/1
+        </ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to clear spanning-tree detected protocols.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear spanning-tree detected protocols of all ports.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to clear spanning-tree detected protocols of all ports:
+			Switch# clear spanning-tree detected-protocols
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+    </COMMAND>
+
+    <COMMAND name="clear spanning-tree disabled-port" help="Spanning tree protocol disabled ports">
+        <ACTION>
+            cdbctl update/cdb/l2/clear_stp/disabled-port
+        </ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to clear spanning-tree disabled ports.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear spanning-tree disabled ports, that is, set all port to enable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to clear spanning-tree disabled ports:
+			Switch# clear spanning-tree disabled-port
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear spanning-tree counters" help="BPDU counters">
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+        <ACTION>
+            cdbctl update/cdb/l2/clear_stp/counters/${if_id}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to clear spanning-tree BPDU counters.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear spanning-tree received and transmitted BPDU counters of specific port or all ports.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to clear spanning-tree BPDU counters all ports:
+			Switch# clear spanning-tree counters
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+    </COMMAND>
+
+	<COMMAND name="show spanning-tree"
+		help="Spanning-tree information">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true" default="all">
+            <PARAM name="brief" help="Brief" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All interfaces" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true" default="none" >
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<ACTION>
+			if [ "none" == ${interface} ]; then
+			    cdbctl show/cdb/l2/show_mstp/${type}
+			else
+				cdbctl show/cdb/l2/show_mstp/${type}/interface/${if_id}
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree configuration and infomation.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display spanning-tree infomation, including global infomation and per-port infomation.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display the spanning-tree information:
+			Switch# show spanning-tree
+			-----[Spanning-tree Enabled][Mode RSTP]-----
+			Root Id              - 8000-3c16.2830.c300
+			Bridge Id            - 8000-3c16.2830.c300
+			Bridge Times         - HelloTime 2, MaxAge 20, ForwardDelay 15, MaxHops 20
+			Root Info            - Path Cost 0, Port 0, Bridge Priority 32768
+			Path Cost Standard   - dot1t
+			Tx Hold Count        - 6
+			Port Default Action  - BPDU-Filter Disabled, BPDU-Guard Disabled
+			Last TopoChange Time - Thu Jun  2 05:12:33 2016
+
+			-----[Interface eth-0-1][Role Designated][State Learning]-----
+			 eth-0-1: Port          - Index 1, Priority 128, Id 8001
+			 eth-0-1: Port PathCost - admin None, oper 500 
+			 eth-0-1: Port Time     - HelloTime 2, MaxAge 20, ForwardDelay 15, MessageAge 0
+			 eth-0-1: Port Timer    - Hello 1, ForwardDelay 1, MessageAge 0, TopoChange 0
+			 eth-0-1: Designated    - Root 32768-3c16.2830.c300, Bridge 32768-3c16.2830.c300
+			 eth-0-1: Designated    - Port Id 8001, Priority 128, Path Cost 0
+			 eth-0-1: BPDU Count    - Send 3, Received 0
+			 eth-0-1: BPDU Version  - RSTP, Send RSTP, Received None
+			 eth-0-1: Edgeport      - admin Disabled, oper Off
+			 eth-0-1: BPDU Filter   - admin Default, oper Off
+			 eth-0-1: BPDU Guard    - admin Default, oper Off
+			 eth-0-1: Root Guard    - admin Disabled, oper Off
+			 eth-0-1: Loop Guard    - admin Disabled, oper Off
+			 eth-0-1: Link Type     - admin Auto, oper P2p
+			 eth-0-1: Forward-transitions 0
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show spanning-tree disabled-port"
+		help="Spanning tree protocol disabled ports">
+		<ACTION>
+			cdbctl show/cdb/l2/mstp_port/disabled
+		</ACTION>
+
+		<CTCDESCRIPTION>
+			Use this command to display spanning-tree disabled port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+			This command is used to display spanning-tree disabled port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+			None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+			This example shows how to display the spanning-tree disabled port:
+			Switch# show spanning-tree disabled-port
+			Interface       
+			----------------
+			eth-0-1    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+			spanning-tree port
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+	<COMMAND name="spanning-tree" help="Spanning-tree information" />
+	<COMMAND name="no spanning-tree" help="Spanning-tree information" />
+
+	<COMMAND name="spanning-tree enable" help="Enable spanning-tree protocol">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/enable/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command enable spanning-tree.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The spanning-tree will initialize all protocol state-machine for all switch ports.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable spanning-tree:
+    Switch(config)# spanning-tree enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree enable" help="Enable spanning-tree protocol">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/enable/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command disable spanning-tree.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The spanning-tree will stop all protocol state-machine for all switch ports, and set all ports to forwarding state.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable spanning-tree:
+    Switch(config)# no spanning-tree enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree mode" help="Mode">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="stp" help="STP" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="rstp" help="Rapid STP(default)" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="mstp" help="Multiple-instance STP" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/type/${type}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command configure spanning-tree mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+System support stp and rstp mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+rstp 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree mode to stp:
+    Switch(config)# spanning-tree mode stp
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree mode
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree mode" help="Mode">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/type/rstp
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command configure spanning-tree mode to default mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+rstp 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree mode to default mode:
+    Switch(config)# no spanning-tree mode
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree mode
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree pathcost-standard" help="Standard of path cost">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="dot1d-1998" help="IEEE 802.1D-1998" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dot1t" help="IEEE 802.1T(default)" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/pathcost_standard/${type}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command configure spanning-tree pathcost standard.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the pathcost-standard is changed, cost of every port will be reset and auto-calculated.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+dot1t 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree pathcost standard to dot1d-1998:
+    Switch(config)# spanning-tree pathcost-standard dot1d-1998
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree pathcost-standard
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree pathcost-standard" help="Standard of path cost">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/pathcost_standard/dot1t
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command configure spanning-tree pathcost standard to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the pathcost-standard is changed, cost of every port will be reset and auto-calculated.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+dot1t 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree pathcost standard to default value:
+    Switch(config)# no spanning-tree pathcost-standard
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree pathcost-standard
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree priority" help="Bridge priority for the common instance">
+		<PARAM name="priority" help="Bridge priority in increments of 4096, default value is 32768" ptype="MSTP_BRG_PRIORITY"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_priority/${priority}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the bridge priority. Using a lower priority indicates a higher likelihood of the bridge becoming root.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the priority of the bridge. The priority values must be in multiples of 4096.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+32678 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge priority:
+    Switch(config)# spanning-tree priority 4096
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree priority
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree priority" help="Bridge priority for the common instance">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_priority/32768
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the bridge priority to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the priority of the bridge to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+32678 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge priority to default value:
+    Switch(config)# no spanning-tree priority
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree priority
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree transmit-holdcount" help="Transmit hold count of the bridge">
+		<PARAM name="count" help="Transmit hold count, default value is 6" ptype="MSTP_TX_HOLD_COUNT"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/txHoldCount/${count}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge transmit holdcount.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge transmit holdcount.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+6 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge transmit holdcount:
+    Switch(config)# spanning-tree transmit-holdcount 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree transmit-holdcount
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree transmit-holdcount" help="Transmit hold count of the bridge">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/txHoldCount/6
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge transmit holdcount to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge transmit holdcount to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+6 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge transmit holdcount to default value:
+    Switch(config)# no spanning-tree transmit-holdcount
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree transmit-holdcount
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree tc-protection" help="Topology change protection">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/tc_protection/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable spanning-tree bridge tc-protection. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If tc-protection is set, the number of TC packets which can be processed every hello time interval shouldn’t be greater than the number of tc-protection threshold.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable spanning-tree bridge tc-protection:
+    Switch(config)# spanning-tree tc-protection
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree tc-protection
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree tc-protection" help="Topology change protection">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/tc_protection/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable spanning-tree bridge tc-protection. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If tc-protection is set, the number of TC packets which can be processed every hello time interval shouldn’t be greater than the number of tc-protection threshold.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable spanning-tree bridge tc-protection:
+    Switch(config)# no spanning-tree tc-protection
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree tc-protection
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree forward-time" help="Forwarding delay time">
+		<PARAM name="timer" help="Forward time, default value is 15" ptype="MSTP_FWD_DELAY_TIME"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_fwdDelay/${timer}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge forward time.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge forward time. The bridge port will after the forward time and changes state to learning and forwarding.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+15 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge forward time:
+    Switch(config)# spanning-tree forward-time 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree forward-time
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree forward-time" help="Forwarding delay time">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_fwdDelay/15
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge forward time to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge forward time to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+15 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge forward time to default value:
+    Switch(config)# no spanning-tree forward-time
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree forward-time
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree hello-time" help="Hello BPDU interval">
+		<PARAM name="timer" help="Hello time, default value is 2" ptype="MSTP_HELLO_TIME"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_helloTime/${timer}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge hello time.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge hello time. The bridge port will send BPDUs in hello time interval.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge hello time:
+    Switch(config)# spanning-tree hello-time 4
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree hello-time
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree hello-time" help="Hello BPDU interval">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_helloTime/2
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge hello time to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge hello time to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge hello time to default value:
+    Switch(config)# no spanning-tree hello-time
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree hello-time
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree max-age" help="Max age time">
+		<PARAM name="timer" help="Max age time, default value is 20" ptype="MSTP_MAX_AGE_TIME"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_maxAge/${timer}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge max age.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge max age. Max age is the maximum time for which (if a bridge is the root bridge) a message is considered valid. This prevents the frames from looping indefinitely. The value of maximum age should be greater than twice the value of hello time plus 1, and less than twice the value of forward delay minus 1. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+20
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge max age:
+    Switch(config)# spanning-tree max-age 30
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree max-age
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree max-age" help="Max age time">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_global/bridge_maxAge/20
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree bridge max age to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree bridge max age to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+20
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree bridge max age to default value:
+    Switch(config)# no spanning-tree max-age
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree max-age
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree edgeport" help="Edgeport">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="bpdu-filter" help="Filter the BPDUs on edgeport enabled ports" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="bpdu-guard" help="Guard the edgeport ports against bpdu receive" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+		if [ "bpdu-filter" == ${type} ]; then
+			cdbctl update/cdb/l2/mstp_global/bpdufilter/1
+		else
+			cdbctl update/cdb/l2/mstp_global/bpduguard/1
+		fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable spanning-tree edgeport properties.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Enableing bpdu-filter ensures that edgeport enabled ports do not transmit or receive any BPDUs. Enableing bpdu-guard makes that edgeport enabled ports will enter port errdisable when receive any BPDUs.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable spanning-tree bridge edgeport bpdu-filter:
+    Switch(config)# spanning-tree edgeport bpdu-filter
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree edgeport
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree edgeport" help="Edgeport">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="bpdu-filter" help="Filter the BPDUs on edgeport enabled ports" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="bpdu-guard" help="Guard the edgeport ports against bpdu receive" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+		if [ "bpdu-filter" == ${type} ]; then
+			cdbctl update/cdb/l2/mstp_global/bpdufilter/0
+		else
+			cdbctl update/cdb/l2/mstp_global/bpduguard/0
+		fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable spanning-tree edgeport properties.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Enableing bpdu-filter ensures that edgeport enabled ports do not transmit or receive any BPDUs. Enableing bpdu-guard makes that edgeport enabled ports will enter port errdisable when receive any BPDUs.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable spanning-tree bridge edgeport bpdu-filter:
+    Switch(config)# no spanning-tree edgeport bpdu-filter
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree edgeport
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+	<COMMAND name="spanning-tree" help="Spanning-tree information" />
+	<COMMAND name="no spanning-tree" help="Spanning-tree information" />
+
+	<COMMAND name="spanning-tree link-type" help="Link type - point-to-point or shared">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch" >
+            <PARAM name="auto" help="Automatically detect link type" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="point-to-point" help="Enable point to point link" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="shared" help="Disable point to point link" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+		if [ "point-to-point" == ${type} ]; then
+			cdbctl update/cdb/l2/mstp_port/${iface}/adminP2PMac/p2p
+		else
+			cdbctl update/cdb/l2/mstp_port/${iface}/adminP2PMac/${type}
+		fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port link-type.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port link-type.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port link-type:
+    Switch(config-if-eth-0-1)# spanning-tree link-type point-to-point
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree link-type
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree link-type" help="Link type - point-to-point or shared">
+		<ACTION>
+		cdbctl update/cdb/l2/mstp_port/${iface}/adminP2PMac/auto
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port link-type to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port link-type to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port link-type to default value:
+    Switch(config-if-eth-0-1)# no spanning-tree link-type
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree link-type
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree force-version" help="Version of the protocol">
+		<PARAM name="version" help="Version ID" ptype="MSTP_VERSION"/>
+		<ACTION>
+		cdbctl update/cdb/l2/mstp_port/${iface}/adminForceVersion/${version}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port force-version.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port force-version.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port force-version:
+    Switch(config-if-eth-0-1)# spanning-tree force-version 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree force-version
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree force-version" help="Version of the protocol">
+		<ACTION>
+		cdbctl update/cdb/l2/mstp_port/${iface}/adminForceVersion
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port force-version to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port force-version to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port force-version to default value:
+    Switch(config-if-eth-0-1)# no spanning-tree force-version
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree force-version
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree edgeport" help="Edgeport">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/adminEdge/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable port edgeport.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable port edgeport.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port edgeport:
+    Switch(config-if-eth-0-1)# spanning-tree edgeport
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree edgeport
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree edgeport" help="Edgeport">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/adminEdge/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable port edgeport.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable port edgeport.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable port edgeport:
+    Switch(config-if-eth-0-1)# no spanning-tree edgeport
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree edgeport
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree edgeport bpdu-filter" help="Filter the BPDUs on edgeport enabled ports">
+        <PARAM name="action" help="Action" test='"${type}"!="edgeport"' ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="default" help="Depends on global spanning-tree edgeport bpdu-filter configuration" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="disable" help="Disable BPDU filtering for this port" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="enable" help="Enable BPDU filtering for this port" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/admin_bpdufilter/${action}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port edgeport bpdu-filter properties.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If select default, will uses bridge's edgeport bpdu-filter configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port edgeport bpdu-filter:
+    Switch(config-if-eth-0-1)# spanning-tree edgeport bpdu-filter enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree edgeport bpdu-filter
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree edgeport bpdu-filter" help="Filter the BPDUs on edgeport enabled ports">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/admin_bpdufilter/default
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port edgeport bpdu-filter properties to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If select default, will uses bridge's edgeport bpdu-filter configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port edgeport bpdu-filter to default:
+    Switch(config-if-eth-0-1)# no spanning-tree edgeport bpdu-filter
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree edgeport bpdu-filter
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree edgeport bpdu-guard" help="Guard the edgeport ports against bpdu receive">
+        <PARAM name="action" help="Action" test='"${type}"!="edgeport"' ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="default" help="Depends on global spanning-tree edgeport bpdu-guard configuration" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="disable" help="Disable BPDU guarding for this port" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="enable" help="Enable BPDU guarding for this port" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/admin_bpduguard/${action}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port edgeport bpdu-guard properties.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If select default, will uses bridge's edgeport bpdu-guard configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port edgeport bpdu-guard
+    Switch(config-if-eth-0-1)# spanning-tree edgeport bpdu-guard enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree edgeport bpdu-guard
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree edgeport bpdu-guard" help="Guard the edgeport ports against bpdu receive">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/admin_bpduguard/default
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port edgeport bpdu-guard properties to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If select default, will uses bridge's edgeport bpdu-guard configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port edgeport bpdu-guard to default:
+    Switch(config-if-eth-0-1)# no spanning-tree edgeport bpdu-guard
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree edgeport bpdu-guard
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree guard" help="Guard">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="loop" help="Prevent forwarding datas circularly" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="root" help="Disable reception of superior BPDUs" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/admin_${type}guard/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable port guard properties.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The root guard makes sure that the port on which it is enabled is a designated port. This loop guard provides additional protection against Layer 2 forwarding loops.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port root guard
+    Switch(config-if-eth-0-1)# spanning-tree guard root
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree guard
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree guard" help="Guard">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="loop" help="Prevent forwarding datas circularly" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="root" help="Disable reception of superior BPDUs" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/admin_${type}guard/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable port guard properties.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The root guard makes sure that the port on which it is enabled is a designated port. This loop guard provides additional protection against Layer 2 forwarding loops.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable port root guard
+    Switch(config-if-eth-0-1)# no spanning-tree guard root
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree guard
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree path-cost" help="Port path cost">
+		<PARAM name="pathcost" help="Path cost in range(802.1t:1-200000000, 802.1d-1998:1-65535)" ptype="MSTP_PATH_COST"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/adminPortPathCost/${pathcost}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port path-cost.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port path-cost.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port path-cost:
+    Switch(config-if-eth-0-1)# spanning-tree path-cost 2000000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree path-cost
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree path-cost" help="Port path cost">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/adminPortPathCost/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port path-cost to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port path-cost to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port path-cost to default value:
+    Switch(config-if-eth-0-1)# no spanning-tree path-cost 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree path-cost
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree port" help="Set port property">
+        <PARAM name="action" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="disable" help="Disable" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>
+			if [ "enable" == ${action} ]; then
+				cdbctl update/cdb/l2/mstp_port/${iface}/port_enable/1
+			else
+				cdbctl update/cdb/l2/mstp_port/${iface}/port_enable/0
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure spanning-tree port enable.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure spanning-tree port enable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure spanning-tree port enable:
+    Switch(config-if-eth-0-1)# spanning-tree port enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree port-priority" help="Port priority">
+		<PARAM name="priority" help="Port priority in increments of 16, default value is 128" ptype="MSTP_PORT_PRIORITY"/>
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/priority/${priority}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port priority.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port priority. The priority values must be in multiples of 16.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+128
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port priority:
+    Switch(config-if-eth-0-1)# spanning-tree port-priority 16
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree port-priority
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree port-priority" help="Port priority">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/priority/128
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure port priority to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure port priority to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+128
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure port priority to default value:
+    Switch(config-if-eth-0-1)# no spanning-tree port-priority
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree port-priority
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree restricted-role" help="Restrict the role of the port">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/restricted_role/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable port restricted-role.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable port restricted-role.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port restricted-role:
+    Switch(config-if-eth-0-1)# spanning-tree restricted-role
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree restricted-role
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree restricted-role" help="Restrict the role of the port">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/restricted_role/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable port restricted-role.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable port restricted-role.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable port restricted-role:
+    Switch(config-if-eth-0-1)# no spanning-tree restricted-role
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree restricted-role
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="spanning-tree restricted-tcn" help="Restrict propagation of topology change and received topology change notifications">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/restricted_tcn/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable port restricted-tcn.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable port restricted-tcn.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable port restricted-tcn:
+    Switch(config-if-eth-0-1)# spanning-tree restricted-tcn
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no spanning-tree restricted-tcn
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no spanning-tree restricted-tcn" help="Restrict propagation of topology change and received topology change notifications">
+		<ACTION>
+			cdbctl update/cdb/l2/mstp_port/${iface}/restricted_tcn/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable port restricted-tcn.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable port restricted-tcn.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable port restricted-tcn:
+    Switch(config-if-eth-0-1)# no spanning-tree restricted-tcn
+		</CTCEXAMPLE>
+		<CTCRCMD>
+spanning-tree restricted-tcn
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

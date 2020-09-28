@@ -1,0 +1,47 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <form name="TracerouteForm" class="form form-inline" novalidate>
+            <div class="form-group">
+                <label>VRF ID:</label>
+                <select class="form-control" ng-model="selVrf" ng-options="x for x in vrfIds" name="selVrf"></select>
+            </div>
+
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[TracerouteForm.destIP.$valid]">
+                <label>{{ 'Destination IP' | translate }}</label>
+                <input class="form-control" type="text" ng-model="destIP" name="destIP" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required/>
+            </div>
+
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[TracerouteForm.timeout.$valid]">
+                <label>{{ 'timeout/second' | translate }}</label>
+                <input type="number" ng-model="timeout" name="timeout" class="form-control" ng-focus="waringDisp=true" ng-blur="waringDisp=false" required/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" ng-disabled="TracerouteForm.$invalid || loading" ng-click="exec()">OK</button>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade in" style="display: inline-block;" role="alert" ng-show="waringDisp">
+                {{ 'Waring: If timeout is too long, the web serve threading may be blocked!' | translate }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Console' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!--
+        <table>
+            <tr ng-repeat="line in content">
+                <td>{{ line }}</td>
+            </tr>
+        </table>
+        -->
+        <textarea class="form-control" ng-model="content" rows="15"></textarea>
+    </div>
+</div>

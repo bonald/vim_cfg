@@ -1,0 +1,1060 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+ERPS
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+        <COMMAND name="show erps" help="ERPS Domain ID">
+		<PARAM name="domain_id" help="ERPS Domain ID" ptype="ERPS_DOMAIN_ID"/>
+		
+		<ACTION>cdbctl show/cdb/l2/show_erps/${domain_id}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show the configuration for specific erps domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the configuration for erps domain 1:
+    Switch# show erps 1
+    ERPS domain ID: 1
+    ERPS domain name: ERPS001
+    ERPS domain primary control VLAN ID: 0
+    ERPS domain sub control VLAN ID: 0
+    ERPS domain hello timer interval: 1 second(s)
+    ERPS domain fail timer interval: 3 second(s)
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="show erps list" help="Display ERPS domain list">
+	        <ACTION>cdbctl show/cdb/l2/show_erps_list</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show the list of erps domain(s).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the erps domain list:
+    Switch# show erps list
+    ERPS Domain List 
+    ID        Name   
+    ============================== 
+    11        ERPS0011
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>			
+	</COMMAND>
+
+	<COMMAND name="clear erps"
+		help="Ethernet ring automatic recovery">
+        </COMMAND>
+
+        <COMMAND name="clear erps counters"
+		help="Counters">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All erps domains" ptype="SUBCOMMAND" mode="subcommand" default="null"/>
+			<PARAM name="domain" help="ERPS Domain" ptype="SUBCOMMAND" mode="subcommand">
+  				<PARAM name="domain_id" help="ERPS Domain ID" ptype="ERPS_DOMAIN_ID">
+  					<PARAM name="ring" help="ERPS Ring" ptype="SUBCOMMAND" mode="subcommand">
+  		    				<PARAM name="ring_id" help="ERPS Ring ID" ptype="ERPS_RING_ID"/>
+  		    			</PARAM>
+  				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		if [ "all" == ${type} ]; then
+		    <ACTION>cdbctl update/cdb/l2/clear_erps_counters</ACTION>
+		else
+		    <ACTION>cdbctl update/cdb/l2/clear_erps_counters/${domain_id}/${ring_id}</ACTION>
+		fi;
+		
+		<CTCDESCRIPTION>
+Use this command to clear the statistics for all domains or for single domain and single ring.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear all domain statistics:
+    Switch# clear erps counters all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="erps"
+		help="Create/configure erps domain"
+		view="configure-erps-domain-view"
+		viewid="domain_id=${domain_id}">
+		<PARAM name="domain_id" help="ERPS Domain ID" ptype="ERPS_DOMAIN_ID"/>
+		<PARAM name="domain_name" help="Domain name" ptype="NAME_STRING" optional="true"/>
+
+		<ACTION>cdbctl create/cdb/l2/erps_domain/${domain_id}/${domain_name}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to create erps domain instance and enter erps domain configuration 
+mode. When erps domain is existed, enter erps domain configuration mode directly.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to create erps domain instance and enter erps domain configuration 
+mode. When erps domain is existed, enter erps domain configuration mode directly.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create an erps domain with ID 11 and name test11:
+    Switch(config)# erps 11 test11
+    Switch(config-erps-domain11)# 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps list
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="no erps" help="Delete ethernet ring automatic recovery domain">
+	        <PARAM name="domain_id" help="ERPS Domain ID" ptype="ERPS_DOMAIN_ID"/>
+
+		<ACTION>cdbctl delete/cdb/l2/erps_domain/${domain_id}</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to delete a erps domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to remove erps 1:
+    Switch(config)# no erps 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="erps mode"
+		help="ERPS working mode">
+		<PARAM name="rrpp"  help="Compatible with RRPP" ptype="SUBCOMMAND" mode="subcommand" />
+
+		<ACTION>cdbctl update/cdb/l2/opm_global/erps_mode/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure ERPS mode huawei. In this mode, switch can 
+communicate with Huawei device.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Erps mode change will take effect until next reload.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to configure erps mode:
+    Switch# configure terminal
+    Switch(config)# erps mode rrpp
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no erps mode"
+		help="ERPS working mode">
+		<ACTION>cdbctl update/cdb/l2/opm_global/erps_mode/0</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to configure ERPS default mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Erps mode change will take effect until next reload.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to configure erps default mode:
+    Switch# configure terminal
+    Switch(config)# no erps mode
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="erps ring" help="ERPS Ring" view="configure-erps-ring-view" viewid="ring_id=${domain_id}-${ring_id}">
+		<PARAM name="domain_id" help="ERPS Domain ID" ptype="ERPS_DOMAIN_ID"/>
+		<PARAM name="ring_id" help="ERPS Ring ID" ptype="ERPS_RING_ID"/>
+		<PARAM name="level" help="Type" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch" default="none">
+				<PARAM name="primary" help="Primary ring" ptype="SUBCOMMAND" mode="subcommand" />
+				<PARAM name="sub" help="Sub ring" ptype="SUBCOMMAND" mode="subcommand" />
+			</PARAM>
+    	</PARAM>
+
+		<ACTION>
+			if [ "none" == ${value} ]; then
+			    cdbctl create/cdb/l2/erps_ring/${domain_id}/${ring_id}/
+			else
+			    cdbctl create/cdb/l2/erps_ring/${domain_id}/${ring_id}/erps_ring_level/${value}
+			fi;
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to create an ERPS ring for specific ERPS domain and enter ERPS ring 
+configuration mode. When ERPS ring is existed, enter ERPS ring configuration mode directly. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to create an ERPS ring for specific ERPS domain and enter ERPS ring 
+configuration mode. When ERPS ring is existed, enter ERPS ring configuration mode directly. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to create a sub ring with ID 1 for ERPS domain 11:
+    Switch(config)# erps ring 11 1 level sub
+    Switch(config-erps-ring-11-1)# 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="no erps ring" help="ERPS Ring">
+		<PARAM name="domain_id" help="ERPS Domain ID" ptype="ERPS_DOMAIN_ID"/>
+		<PARAM name="ring_id" help="ERPS Ring ID" ptype="ERPS_RING_ID"/>
+
+		<ACTION>cdbctl delete/cdb/l2/erps_ring/${domain_id}/${ring_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use the erps configuration command to delete a erps ring.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete erps ring 1 of domain 1:
+    Switch(config)# no erps ring 1 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+
+<VIEW name="configure-erps-domain-view"
+	prompt="${SYSTEM_NAME}(config-erps-domain${domain_id})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+        </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from ERPS configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from ERPS configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+        </COMMAND>
+
+        <COMMAND name="hellotime"
+		help="Hello timer interval, default is 1 second">
+		<PARAM name="interval" help="Seconds" ptype="ERPS_DOMAIN_HELLO_TIME"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/hello_timer_interval/${interval}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set hello timer interval for specific erps domain instance. The timer 
+should be the same of all nodes in the ring.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1 second
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set erps hello time interval:
+    Switch(config-erps-domain1)# hellotime 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+        <COMMAND name="no hellotime"
+		help="Hello timer interval">
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/hello_timer_interval/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no hellotime command to change hello time to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1 second
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset erps hello time interval:
+    Switch(config-erps-domain1)# no hellotime
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="primary" help="Primary ring" />
+	<COMMAND name="no primary" help="Primary ring" />
+
+    <COMMAND name="primary control" help="Primary ring control vlan" />
+	<COMMAND name="no primary control" help="Primary ring control vlan" />
+
+    <COMMAND name="primary control vlan"
+		help="Primary ring control vlan">
+		<PARAM name="vlan_id" help="VLAN ID" ptype="ERPS_CTRL_VLAN"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/primary_control_vlan_id/${vlan_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify erps domain's primary control vlan.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The erps major ring protocol packet is transferred in the primary control vlan.
+It is best to add the control vlan into the instance which is bound by the domain.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set vlan 15 as primary control vlan for erps domain 11:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# primary control vlan 15
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no primary control vlan"
+		help="Primary ring control vlan">
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/primary_control_vlan_id/0</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to unset erps domain's primary control vlan.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset primary control vlan for erps domain 11:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# no primary control vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="sub" help="Sub ring" />
+	<COMMAND name="no sub" help="Sub ring" />
+
+	<COMMAND name="sub control" help="Sub ring control vlan" />
+	<COMMAND name="no sub control" help="Sub ring control vlan" />
+
+	<COMMAND name="sub control vlan"
+		help="Sub ring control vlan">
+		<PARAM name="vlan_id" help="VLAN ID" ptype="ERPS_CTRL_VLAN"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/sub_control_vlan_id/${vlan_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify erps domain's sub control vlan.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The erps sub ring protocol packet is transferred in the sub control vlan.
+It is best to add the control vlan into the instance which is bound by the domain.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set vlan 16 as sub control vlan for erps domain 11:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# sub control vlan 16
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+        <COMMAND name="no sub control vlan"
+		help="Sub ring control vlan">
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/sub_control_vlan_id/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to unset erps domain's sub control vlan.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset sub control vlan for erps domain 11:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# no sub control vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="failtime"
+		help="Failure timer interval, default is 3 seconds">
+		<PARAM name="interval" help="Seconds" ptype="ERPS_DOMAIN_FAIL_TIME"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/failure_timer_interval/${interval}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set fail timer interval for specific erps domain instance. The timer 
+should be the same of all nodes in the ring.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3 seconds
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set fail timer interval of erps domain 11 to 6:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# failtime 6
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no failtime"
+		help="Failure timer interval">
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/failure_timer_interval/3</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set fail timer interval to defaut value for specific erps domain 
+instance. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3 seconds
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset erps failure time interval:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# no failtime
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="mstp" help="MSTP mode" />
+	<COMMAND name="no mstp" help="MSTP mode" />
+
+	<COMMAND name="mstp instance"
+		help="MSTP instance">
+		<PARAM name="instance_id" help="MSTP instance id" ptype="INSTANCE_LIST"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/instance_id/${instance_id}/add</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to set the mstp instance which ERPS will block.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+instance 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set instance 1 as protected instance:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# mstp instance 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no mstp instance"
+		help="MSTP instance">
+		<PARAM name="instance_id" help="MSTP instance id" ptype="INSTANCE_LIST" optional="true" default="65535"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/instance_id/${instance_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to remove the mstp instance which ERPS will block.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+instance 0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove instance 1 from protected instances:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# no mstp instance 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="enable"
+		help="Enable the domain">
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/erps_enable/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable specific ERPS domain instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to enable all the ring of the erps domain.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable erps domain 11:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="disable"
+		help="Disable the domain">
+
+		<ACTION>cdbctl update/cdb/l2/erps_domain/${domain_id}/erps_enable/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable specific ERPS domain instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable all the ring of the erps domain.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable erps domain 11:
+    Switch(config)# erps 11 
+    Switch(config-erps-domain11)# disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-erps-ring-view"
+	prompt="${SYSTEM_NAME}(config-erps-ring-${ring_id})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+        </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from ERPS ring configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from ERPS ring configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+        </COMMAND>
+
+        <COMMAND name="mode" help="Erps mode">
+		<PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch">
+            		<PARAM name="master" help="Master node" ptype="SUBCOMMAND" mode="subcommand" />
+            		<PARAM name="transit" help="Transit node" ptype="SUBCOMMAND" mode="subcommand" />
+        	</PARAM>
+
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/node_role/${value}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set specific ERPS ring instance mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The master node is used to send and receive erps protocol packet.
+The transit node is used to transfer erps protocol packet to neighbor switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set node as ERPS domain 11 ring 1 transit node:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# mode transit
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no mode" help="Erps mode">
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/node_role/null</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to unset specific ERPS ring instance mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset node as ERPS domain 11 ring 1 transit mode:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# no mode 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="edge-mode" help="Erps edge mode">
+		<PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch">
+            		<PARAM name="edge" help="Edge node" ptype="SUBCOMMAND" mode="subcommand" />
+            		<PARAM name="assistant-edge" help="Assistant node" ptype="SUBCOMMAND" mode="subcommand" />
+        	</PARAM>
+
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/edge_node_role/${value}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set specific ERPS ring instance edge node mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Both the edge node and the assistant-edge node are special transit nodes.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set node as ERPS domain 11 ring 1 edge node:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# edge-mode edge
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no edge-mode" help="Erps edge mode">
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/edge_node_role/null</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to unset specific ERPS ring instance edge node mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Both the edge node and the assistant-edge node are special transit nodes.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset node as ERPS domain 11 ring 1 edge node:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# no edge-mode
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="srpt"
+		help="Sub ring packet tunnel in primary ring">
+        </COMMAND>
+
+        <COMMAND name="srpt enable" help="Enable">
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/erps_srpt_enable/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable srpt functionality for specific ERPS ring instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable srpt functionality for ERPS domain 11 ring 1:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# srpt enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="srpt disable" help="Disable">
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/erps_srpt_enable/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable srpt functionality for specific ERPS ring instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable srpt functionality for ERPS domain 11 ring 1:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# srpt disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="enable" help="Enable the ring">
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/erps_ring_state/6</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable specific erps ring instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable ERPS domain 11 ring 1:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="disable" help="Disable the ring">
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/erps_ring_state/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable specific erps ring instance.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable ERPS domain 11 ring 1:
+    Switch(config)# erps ring 11 1 
+    Switch(config-erps-ring-11-1)# disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="primary" help="Primary port"/>
+	
+	<COMMAND name="primary interface" help="Physical or aggregator interface">
+	        <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/primary_port_ifindex/${if_id}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the erps configuration command to set primary interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+For master node, the interface with type primary is used to send erps protocol packet.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set primary interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# primary interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD> 
+	</COMMAND>
+
+	<COMMAND name="no primary"
+		help="Primary port">
+        </COMMAND>
+
+	<COMMAND name="no primary interface" help="Physical or aggregator interface">
+	        <ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/primary_port_ifindex/null</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the erps configuration command to unset primary interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset primary interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# no primary interface
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="secondary" help="Secondary port"/>
+	
+	<COMMAND name="secondary interface" help="Physical or aggregator interface">
+	        <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+                
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/secondary_port_ifindex/${if_id}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the erps configuration command to set secondary interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set secondary interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# secondary interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no secondary"
+		help="Secondary port">
+        </COMMAND>
+
+	<COMMAND name="no secondary interface" help="Physical or aggregator interface">
+	        <ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/secondary_port_ifindex/null</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the erps configuration command to unset secondary interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset secondary interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# no secondary interface
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="edge" help="Edge port"/>
+	
+	<COMMAND name="edge interface" help="Physical or aggregator interface">
+	        <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/edge_port_ifindex/${if_id}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the erps configuration command to set edge interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Of the two ports via which the edge node (assistant-edge node) accesses the subring, 
+one is a common port and the other is an edge port. The common port is the port for the
+edge node (assistant-edge node) to access the primary ring and the subring, while the 
+edge port is the port for the edge node to access the subring only.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set edge interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# edge interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no edge"
+		help="Edge port">
+        </COMMAND>
+
+	<COMMAND name="no edge interface" help="Physical or aggregator interface">
+	        <ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/edge_port_ifindex/null</ACTION>
+
+		<CTCDESCRIPTION>
+Use the erps configuration command to unset edge interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset edge interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# no edge interface
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="common" help="Common port"/>
+	
+	<COMMAND name="common interface" help="Physical or aggregator interface">
+		<PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+ 
+		<ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/common_port_ifindex/${if_id}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the erps configuration command to set common interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Of the two ports via which the edge node (assistant-edge node) accesses the subring, 
+one is a common port and the other is an edge port. The common port is the port for the 
+edge node (assistant-edge node) to access the primary ring and the subring, while the 
+edge port is the port for the edge node to access the subring only.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set common interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# common interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no common"
+		help="Common port">
+        </COMMAND>
+
+	<COMMAND name="no common interface" help="Physical or aggregator interface">
+	        <ACTION>cdbctl update/cdb/l2/erps_ring/${domain_id}/${ring_id}/common_port_ifindex/null</ACTION>
+
+		<CTCDESCRIPTION>
+Use the erps configuration command to unset common interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset common interface:
+    Switch(config)# erps ring 1 1
+    Switch(config-erps-ring-1-1)# no common interface
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show erps
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,19 @@
+HAL-MSG-IPT DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES  
+    ;
+
+HalMsgIptSetMacEqualReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgIptSetIpEqualReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+END
+

@@ -1,0 +1,10 @@
+1. 交叉编译ppc版本
+./configure --host=powerpc-fsl_networking-linux-gnuspe --prefix=/switch/
+make
+
+2. 25.25
+证书生成：
+/usr/bin/openssl genrsa -out key.pem 2048
+/usr/bin/openssl req -new -x509 -key key.pem -out cert.pem -days 1095
+cat key.pem cert.pem >> stunnel.pem
+

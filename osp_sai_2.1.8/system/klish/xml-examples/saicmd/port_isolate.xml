@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+PORT ISOLATE
+</CTCMODULENAME>
+
+	<VIEW name="Exec">
+
+		<COMMAND name="show port-isolate"
+			help="Port isolate configuration">
+			<ACTION>cdbctl show/cdb/l2/show_isolation</ACTION>
+			<CTCDESCRIPTION>
+Use this command to show all the information about port-isolate. 
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+The output command can display port-isolate, include mode, group_id and member ports of all group id.
+			</CTCUSAGE>
+			<CTCDEFAULT>
+None 
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+	This example shows how to display the information about port-isolate:  
+	Switch# show port-isolate     
+	Port Isolate Mode  : l2
+	--------------------------------------------------------------------------------
+	Group ID  Member ports
+	---------+----------------------------------------------------------------------
+	1         eth-0-1   eth-0-2   
+	--------------------------------------------------------------------------------
+	2         eth-0-3   eth-0-4   
+	--------------------------------------------------------------------------------
+			</CTCEXAMPLE>
+			<CTCRCMD>
+show port-isolate group
+			</CTCRCMD>
+		</COMMAND>
+		
+		<COMMAND name="show port-isolate group"
+			help="Port isolate configuration">
+			<PARAM name="isolate_id" help="Port isolate group" ptype="PORT_ISOLATE_ID"/>
+			<!--<ACTION>cdbctl show/cdb/interface/port_isolate/${isolate_id}</ACTION> old implementation -->
+			<ACTION>cdbctl show/cdb/l2/show_isolation/${isolate_id}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the information about the port-isolate groupid. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The output command can get the the port-isolate mode, group_id and member ports of one group id.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the information about port-isolate groupid:  
+	Switch# show port-isolate group 1   
+	Port Isolate Mode  : l2
+	--------------------------------------------------------------------------------
+	Group ID  Member ports
+	---------+----------------------------------------------------------------------
+	1         eth-0-1   eth-0-2   
+	-------------------------------------------------------------------------------
+			</CTCEXAMPLE>
+			<CTCRCMD>
+show port-isolate
+			</CTCRCMD>
+		</COMMAND>
+
+	</VIEW>
+
+	<VIEW name="Configure">
+
+    <COMMAND name="port-isolate" help="Set Port Isolate"/>  
+    <COMMAND name="no port-isolate" help="Set Port Isolate"/>
+    
+		<COMMAND name="port-isolate mode" help="Port isolate mode" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="l2" help="Isolate l2 packets (default)" ptype="SUBCOMMAND" mode="subcommand" /> 
+				<PARAM name="all" help="Isolate all packets" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+      
+			<ACTION>cdbctl update/cdb/l2/brg_global/port_isolate_mode/${type}</ACTION>
+			<CTCDESCRIPTION>
+Use this command to set the mode of port-isolate in system.
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+The l2 mode of port-isolate can isolate the l2 packets, the all mode of port-isolate can isolate the all packets, include l2 and l3 packets. 
+			</CTCUSAGE>
+			<CTCDEFAULT>
+l2
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+	This example shows how to set the mode of port-isolate in system:  
+	Switch(config)# port-isolate mode all   
+			</CTCEXAMPLE>
+			<CTCRCMD>
+no port-isolate mode  
+			</CTCRCMD>	
+		</COMMAND>
+
+		<COMMAND name="no port-isolate mode" help="Port isolate mode" ptype="SUBCOMMAND" mode="subcommand" >
+
+			<ACTION>cdbctl update/cdb/l2/brg_global/port_isolate_mode/l2</ACTION>
+			<CTCDESCRIPTION>
+Use this command to unset the mode of port-isolate in system.
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+The no command will set the default mode, the default port-isolate mode is l2.
+			</CTCUSAGE>
+			<CTCDEFAULT>
+l2
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+	This example shows how to unset the mode of port-isolate in system:  
+	Switch(config)# no port-isolate mode   
+			</CTCEXAMPLE>
+			<CTCRCMD>
+port-isolate mode
+			</CTCRCMD>
+		</COMMAND>
+
+	</VIEW>
+
+	<VIEW name="configure-if-view">
+		<COMMAND name="port-isolate" help="Set Port Isolate">
+			<PARAM name="group" help="Group" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="group_id" help="Isolate group ID" ptype="PORT_ISOLATE_ID"/>
+			<ACTION>cdbctl update/cdb/interface/${iface}/isolate_group_id/${group_id}</ACTION>
+			<CTCDESCRIPTION>
+Use this command to configure the group_id of port-isolate in port.
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+The command can set the group id for interface, the range of group_id is 1 to 29. 
+			</CTCUSAGE>
+			<CTCDEFAULT>
+None
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+    This example shows how to configure the group_id of port-isolate in port:
+	Switch(config-if-eth-0-1)# port-isolate group 1  
+			</CTCEXAMPLE>
+			<CTCRCMD>
+no port-isolate group
+			</CTCRCMD>
+		</COMMAND>
+
+		<COMMAND name="no port-isolate" help="Unset Port Isolate">
+			<PARAM name="group" help="Group" ptype="SUBCOMMAND" mode="subcommand"/>
+			<ACTION>cdbctl update/cdb/interface/${iface}/isolate_group_id/0</ACTION>
+			<CTCDESCRIPTION>
+Use this command to delete the group_id of port-isolate in port.
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+The no command can remove the group id for interface. 
+			</CTCUSAGE>
+			<CTCDEFAULT>
+None
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+	This example shows how to delete the group_id of port-isolate in port:
+	Switch(config-if-eth-0-1)# no port-isolate group
+			</CTCEXAMPLE>
+			<CTCRCMD>
+port-isolate group
+			</CTCRCMD>
+		</COMMAND>
+
+	</VIEW>
+
+</CLISH_MODULE>

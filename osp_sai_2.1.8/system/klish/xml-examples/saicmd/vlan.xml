@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+VLAN
+</CTCMODULENAME>
+	
+	
+<VIEW name="Exec">
+
+	<COMMAND name="show vlan"
+		help="VLAN status and configuration">
+		<PARAM name="vlan_id" optional="true" help="VLAN ID" ptype="VLAN_ID">
+		<PARAM name="statistics" optional="true" default="no" help="VLAN Statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+
+			if [ "statistics" == ${statistics} ]; then
+			cdbctl show/cdb/sys/vlan_stats/${vlan_id}/cmd
+		    	else
+		       cdbctl show/cdb/l2/show_vlan/${vlan_id}
+		    	fi
+
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to display VLAN status and configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display VLAN properties including name, state, stp id, member ports.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    
+    This example shows how to display the information on VLAN 11:  
+    Switch# show vlan 11
+    VLAN ID  Name             State    Instance Member ports                        
+    --------+----------------+--------+--------+----------------------------------
+    11       VLAN0011         Active   0        eth-0-3, eth-0-4, eth-0-5    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear vlan"
+		help="Clear vlan statistics information">
+		<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID">
+		<PARAM name="statistics"  help="VLAN Statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/sys/vlan_stats/${vlan_id}</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to clear the VLAN statistics information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to disable the VLAN statistics information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear VLAN 10 statistics:
+    Switch# clear vlan 10 statistics
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan vlan_id statistics 
+		</CTCRCMD>
+	</COMMAND>	
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="vlan"
+		help="Create/configure a VLAN"
+		view="configure-vlan-view"
+		viewid="vlan_id=${vlan_id}">
+		<PARAM name="vlan_id"
+				help="VLAN ID"
+				ptype="VLAN_ID"/>		
+		<ACTION>cdbctl create/cdb/l2/vlan/${_params}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the vlan VLAN configuration command to create a VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Default VLAN 1 can not be removed.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+VLAN 1 is the default VLAN and all ports have been added to it by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create VLAN 11:  
+    Switch(config)# vlan 11 
+    Switch(config-vlan11)# 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no vlan"
+		help="Delete a VLAN">
+		<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+		
+		<ACTION>
+			usleep 300000
+			cdbctl delete/cdb/l2/vlan/${_params}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete a VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Default VLAN 1 can not be removed.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+VLAN 1 is the default VLAN and all ports have been added to it by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove VLAN 11:  
+    Switch(config)# no vlan 11  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="vlan range"
+		help="Create VLAN list">
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		
+		<ACTION>cdbctl create/cdb/l2/vlanrange/${vlan_list}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the vlan VLAN_LIST configuration command to add a normal-range VLANs to the VLAN database.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The vlan list should be connected with - and , the value should be in the range of 1-4094 and should be ascending order.    
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Vlan 1 is the default vlan and all ports have been added to it by default. Default VLAN 1 can not be removed.  
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add vlans of 100,200,300-400:  
+    Switch(config)# vlan range 100,200,300-400  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan
+show vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no vlan range"
+		help="Delete VLAN list">
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		
+		<ACTION>
+			usleep 300000
+			cdbctl delete/cdb/l2/vlanrange/${vlan_list}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the no vlan VLAN_LIST configuration command to remove a normal-range VLANs from the VLAN database.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The vlan list should be connected with - and , the value should be in the range of 1-4094 and should be ascending order.   
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Vlan 1 is the default vlan and all ports have been added to it by default. Default VLAN 1 can not be removed.   
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove vlans of 100,200,300-400:  
+    Switch(config)# no vlan range 100,200,300-400  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan
+show vlan
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-vlan-view"
+	prompt="${SYSTEM_NAME}(config-vlan${vlan_id})# "
+	depth="1">
+
+
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+
+
+	<COMMAND name="exit"
+		help="Exit from VLAN configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from VLAN configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+	<COMMAND name="name"
+		help="Set VLAN name">
+		<PARAM name="vlan_name" help="VLAN name" ptype="NAME_STRING"/>
+		
+		<ACTION>cdbctl update/cdb/l2/vlan/${vlan_id}/name/${_params}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the vlan name command to set VLAN name.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Default VLAN 1 name can not be set. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+VLANxxxx
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set name VLAN 11:
+    Switch(config)# vlan 11
+    Switch(config-vlan11)# name vlan11
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan
+show vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no name"
+		help="Set default VLAN name">
+		<ACTION>cdbctl update/cdb/l2/vlan/${vlan_id}/name</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set VLAN to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Default VLAN 1 name can not be set. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+VLANxxxx
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset vlan 11 name:
+    Switch(config)# vlan 11
+    Switch(config-vlan11)# no name
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan
+show vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="statistics"
+		help="VLAN statistics">
+      </COMMAND>
+	
+	<COMMAND name="statistics enable"
+		help="Set vlan statistics enable">
+		<ACTION>cdbctl update/cdb/l2/vlan/${vlan_id}/stats_en/1</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to enable the VLAN statistics.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to enable the VLAN statistics.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable VLAN statistics:
+    Switch(config)# vlan 10
+    Switch(config-vlan10)# statistics enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan vlan_id statistics 
+		</CTCRCMD>
+	</COMMAND>
+		
+	<COMMAND name="no statistics"
+		help="no VLAN statistics">
+      </COMMAND>
+      
+	<COMMAND name="no statistics enable"
+		help="Set vlan statistics disable">
+		<ACTION>cdbctl update/cdb/l2/vlan/${vlan_id}/stats_en/0</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to disable the VLAN statistics.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to disable the VLAN statistics.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable VLAN statistics:
+    Switch(config-vlan10)# no statistics enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan vlan_id statistics 
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

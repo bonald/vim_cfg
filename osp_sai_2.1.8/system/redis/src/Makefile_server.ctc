@@ -1,0 +1,19 @@
+include $(TOP_DIR)/Makefile.env.inc
+export WARN_NOERROR = y
+include $(MK_DIR)/sys.mk
+
+include $(REDIS_DIR)/Makefile.inc
+
+PROG = redis-server
+SRCS += adlist.c quicklist.c ae.c anet.c dict.c server.c sds.c zmalloc.c lzf_c.c lzf_d.c pqsort.c zipmap.c sha1.c ziplist.c release.c networking.c util.c object.c db.c replication.c rdb.c t_string.c t_list.c t_set.c t_zset.c t_hash.c config.c aof.c pubsub.c multi.c debug.c sort.c intset.c syncio.c cluster.c crc16.c endianconv.c slowlog.c scripting.c bio.c rio.c rand.c memtest.c crc64.c bitops.c sentinel.c notify.c setproctitle.c blocked.c hyperloglog.c latency.c sparkline.c redis-check-rdb.c geo.c
+
+CFLAGS = -Wno-error
+CPPFLAGS += -std=c99 -pedantic
+#CPPFLAGS+= -DUSE_JEMALLOC
+ 
+LD_LIBS = -L$(LIB_DIR) -llua -lgeohash -lhiredis -llinenoise -lpthread  -lm
+
+include $(MK_DIR)/prog.mk
+
+.PHONY: FORCE
+FORCE:

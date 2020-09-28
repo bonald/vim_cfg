@@ -1,0 +1,1072 @@
+/****************************************************************************
+ * header_format.txt   Provides all header format of CTP.
+ *
+ * Copyright:    (c)2007 Centec Networks Inc.  All rights reserved.
+ *
+ * Modify History:
+ * Revision:     R0.01.
+ * Author:       Anchor Xie.
+ * Date:         2007-04-12.
+ * Reason:       First Create.
+*****************************************************************************/
+*** FLAGS_EXIST Start **
+#define OP_FLAG_STAND_ONLY       (1 << 0)
+#define OP_FLAG_AND_NEXT         (1 << 1)
+#define OP_FLAG_OR_NEXT          (1 << 2)
+#define OP_FLAG_DEC_CNT          (1 << 3)
+
+*** Layer 2 Protocol Header Format Region Start **
+*** Ethernet Header Foramt Start **
+$TYPES   CPUPKT
+$JUMP    CPUPKT_EXIST$       1     1     $CPUPKT_PKT_TYPE$            [$CPUPKT_EXIST$] == [#0]
+                             1     1     $CPUPKT_GG_PACKET_OFFSET$ [$CPUPKT_EXIST$] == [#5]
+							 0     1     $CPUPKT_DT2_PACKET_OFFSET$ [$CPUPKT_EXIST$] == [#6]
+
+$JUMP    CPUPKT_VLANEXIST$   0     1     $CPUPKT_TYPE$           [$CPUPKT_VLANEXIST$] == [#0]
+
+$JUMP    CPUPKT_TYPE$         0     1    $CPUPKT_GG_PACKET_OFFSET$     [$CPUPKT_EXIST$] == [#5]
+
+$JUMP    CPUPKT_RES$         1     1     $CPUPKT_HM_HEADER_TYPE$ [$CPUPKT_EXIST$] == [#3]
+                             1     1     $CPUPKT_GB_SRCPORT_15_14$ [$CPUPKT_EXIST$] == [#4]
+                             1     1     $CPUPKT_GG_PACKET_OFFSET$ [$CPUPKT_EXIST$] == [#5]
+							 1     1     $CPUPKT_DT2_PACKET_OFFSET$ [$CPUPKT_EXIST$] == [#6]
+                             0     1     $CPUPKT_PKT_TYPE$            [null]
+
+$JUMP    CPUPKT_GG_U1_MODE$    1     1     $CPUPKT_GG_L3_OFFSET$   [$CPUPKT_GG_U1_MODE$] == [#0]
+							   1	 1	   $CPUPKT_GG_OAM_RXOAM$        [$CPUPKT_GG_U1_MODE$] == [#1]
+                               1     1     $CPUPKT_GG_DM_RESERVE$       [$CPUPKT_GG_U1_MODE$] == [#2]
+                               1     1     $CPUPKT_GG_LM_PKTTYPE$       [$CPUPKT_GG_U1_MODE$] == [#3]
+                               1     1     $CPUPKT_GG_PTP_RESERVE$      [$CPUPKT_GG_U1_MODE$] == [#4]
+                               0     1     $CPUPKT_GG_C2C_RESERVE$      [$CPUPKT_GG_U1_MODE$] == [#5]
+
+$JUMP   CPUPKT_GG_METADATA$             0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_GG_OAM_ISELOOPPKT$       0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_GG_DM_ISELOOPPKT$        0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_GG_LM_RXTXFCL$           0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_GG_PTP_ISELOOPPKT$       0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_GG_C2C_STACKING_SRCPORT$ 0     1     $CPUPKT_PKT_TYPE$              [null]
+
+$JUMP    CPUPKT_DT2_U3_MODE$    1     1     $CPUPKT_DT2_U3_OTHER_I2E_SRC_CID_VALID$            [$CPUPKT_DT2_U3_MODE$] == [#0]
+							    0	  1	    $CPUPKT_DT2_U3_OAM_RXTXFCL$          [$CPUPKT_DT2_U3_MODE$] == [#1]
+
+$JUMP   CPUPKT_DT2_U3_OAM_RXTXFCL$      0     1     $CPUPKT_DT2_LOCAL_PHY_PORT$              [null]
+
+
+$JUMP    CPUPKT_DT2_U1_MODE$    1     1     $CPUPKT_DT2_NORMAL_RES$       [$CPUPKT_DT2_U1_MODE$] == [#0]
+							    1	  1	    $CPUPKT_DT2_OAM_RES$          [$CPUPKT_DT2_U1_MODE$] == [#1]
+                                1     1     $CPUPKT_DT2_DM_RESERVE$       [$CPUPKT_DT2_U1_MODE$] == [#2]
+                                1     1     $CPUPKT_DT2_LM_PKTTYPE$       [$CPUPKT_DT2_U1_MODE$] == [#3]
+                                1     1     $CPUPKT_DT2_PTP_RESERVE$      [$CPUPKT_DT2_U1_MODE$] == [#4]
+                                0     1     $CPUPKT_DT2_C2C_RESERVE$      [$CPUPKT_DT2_U1_MODE$] == [#5]
+
+$JUMP   CPUPKT_DT2_NEED_DOT1AE_ENCRYPT$  0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_DT2_OAM_RXTXFCL$          0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_DT2_DM_OFFSET$            0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_DT2_LM_RXTXFCL$           0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_DT2_PTP_SRC_DSCP_VALID$   0     1     $CPUPKT_PKT_TYPE$              [null]
+$JUMP   CPUPKT_DT2_C2C_STACKING_SRCPORT$ 0     1     $CPUPKT_PKT_TYPE$              [null]
+
+$NEXTP   CPUPKT_PKT_TYPE$               1     1     $WIRELESSDOT11$         [$CPUPKT_PKT_TYPE$] == [#1]
+                                        1     1     $PKT_PAYLOAD$              [$CPUPKT_PKT_TYPE$] == [#2]
+                                        0     1     $ETHERNET$              [$CPUPKT_PKT_TYPE$] == [#0]
+
+
+$TYPES   WIRELESSDOT11$
+$REPEAT  DOT11_MAX_MAC_NUM$               0     1     $DOT11_UDT$                      [$DOT11_MAX_MAC_NUM$]
+
+$JUMP    DOT11_MAC_ADDR$                  0     9     $DOT11_MAC_ADDR$                  [@REPEAT@] > [#1]
+
+$JUMP    DOT11_SEQ_CTL_EXIST$             0     1     $DOT11_MAC_ADDR4_EXIST$             [$DOT11_SEQ_CTL_EXIST$]  == [#0]
+
+$JUMP    DOT11_MAC_ADDR4_EXIST$           0     1     $DOT11_QOS_CTL_EXIST$             [$DOT11_MAC_ADDR4_EXIST$]  == [#0]
+
+$JUMP    DOT11_QOS_CTL_EXIST$           0     1     $DOT11_HT_CTL_EXIST$             [$DOT11_QOS_CTL_EXIST$]  == [#0]
+
+$JUMP    DOT11_HT_CTL_EXIST$           0     1     $DOT11_PAYLOAD_EXIST$             [$DOT11_HT_CTL_EXIST$]  == [#0]
+
+$JUMP    DOT11_PAYLOAD_EXIST$           1     1     $PKT_PAYLOAD_LEN$                       [$DOT11_PAYLOAD_EXIST$] == [#1]
+																	0     1     $DOT11_LLC_EXIST$                       [$DOT11_PAYLOAD_EXIST$] == [#0]
+
+$JUMP    DOT11_LLC_EXIST$           0     1     $DOT11_UDT$                       [$DOT11_LLC_EXIST$] == [#0]
+
+$JUMP    DOT11_LLC_VLAN_EXIST$				1     1     $DOT11_LLC_TYPE$							[$DOT11_LLC_VLAN_EXIST$]  == [#0]
+																	0     1     $DOT11_LLC_VLAN_TAG$				[$DOT11_LLC_VLAN_EXIST$]  == [#1]
+
+$NEXTP   DOT11_LLC_TYPE$    1     1     $IPV4$            [$DOT11_LLC_TYPE$] == [#0800]
+                          1     1     $ARP$             [$DOT11_LLC_TYPE$] == [#0806]
+                          1     1     $CFM$             [$DOT11_LLC_TYPE$] == [#8902]
+                          1     1     $EAPOL$           [$DOT11_LLC_TYPE$] == [#888E]
+                          1     1     $MPLS$            [$DOT11_LLC_TYPE$] == [#8847]
+                          1     1     $MPLS$            [$DOT11_LLC_TYPE$] == [#8848]
+                          1     1     $PBB$             [$DOT11_LLC_TYPE$] == [#88e7]
+                          1     1     $ETAG$            [$DOT11_LLC_TYPE$] == [#893F]
+                          1     1     $FCOE$            [$DOT11_LLC_TYPE$] == [#8906]
+                          1     1     $FIP$             [$DOT11_LLC_TYPE$] == [#8914]
+                          1     1     $IPV6$            [$DOT11_LLC_TYPE$] == [#86DD]
+                          1     1     $PKT_PAYLOAD$     [$DOT11_LLC_TYPE$] == [#0]
+                          1     1     $SLPR$            [$DOT11_LLC_TYPE$] == [#8809]
+                          1     1     $PTP$             [$DOT11_LLC_TYPE$] == [#88f7]
+                          1     1     $TRILL$           [$DOT11_LLC_TYPE$] == [#22f3]
+                          1     1     $RBCHANNEL$       [$DOT11_LLC_TYPE$] == [#22f5]
+						  1     1     $NSH$             [$DOT11_LLC_TYPE$] == [#894F]
+						  1     1     $MACSECTAG$       [$DOT11_LLC_TYPE$] == [#88e5]
+                          0     1     $STP$             [$DOT11_LLC_TYPE$] == [#7ff]
+
+$TYPES   ETHERNET$
+keyword  blongs           next  flag  Union             Repeat  expression
+$EXIST   ETH_TPID$        1     1     $ETH_LEN_TYPE$        [#0] == [#1]
+                          1     1     $ETH_LEN_TYPE$        [$ETH_TPID$] == [#8100]
+                          1     1     $ETH_LEN_TYPE$        [$ETH_TPID$] == [#9100]
+                          0     1     $ETH_LEN_TYPE$        [$ETH_TPID$] == [#88a8]
+
+$JUMP    ETH_VLAN_ID$     0     1     $ETH_TPID$            [null]
+
+$NEXTP   ETH_LEN_TYPE$    1     1     $IPV4$            [$ETH_LEN_TYPE$] == [#0800]
+                          1     1     $ARP$             [$ETH_LEN_TYPE$] == [#0806]
+                          1     1     $CFM$             [$ETH_LEN_TYPE$] == [#8902]
+                          1     1     $EAPOL$           [$ETH_LEN_TYPE$] == [#888E]
+                          1     1     $MPLS$            [$ETH_LEN_TYPE$] == [#8847]
+                          1     1     $MPLS$            [$ETH_LEN_TYPE$] == [#8848]
+                          1     1     $PBB$             [$ETH_LEN_TYPE$] == [#88e7]
+                          1     1     $ETAG$            [$ETH_LEN_TYPE$] == [#893F]
+                          1     1     $FCOE$            [$ETH_LEN_TYPE$] == [#8906]
+                          1     1     $FIP$             [$ETH_LEN_TYPE$] == [#8914]
+                          1     1     $IPV6$            [$ETH_LEN_TYPE$] == [#86DD]
+                          1     1     $PKT_PAYLOAD$     [$ETH_LEN_TYPE$] == [#0]
+                          1     1     $SLPR$            [$ETH_LEN_TYPE$] == [#8809]
+                          1     1     $PTP$             [$ETH_LEN_TYPE$] == [#88f7]
+                          1     1     $TRILL$           [$ETH_LEN_TYPE$] == [#22f3]
+                          1     1     $RBCHANNEL$       [$ETH_LEN_TYPE$] == [#22f5]
+						  1     1     $NSH$             [$ETH_LEN_TYPE$] == [#894F]
+						  1     1     $MACSECTAG$       [$ETH_LEN_TYPE$] == [#88e5]
+						  1     1     $SGTCMD$          [$ETH_LEN_TYPE$] == [#8909]
+                          0     1     $STP$             [$ETH_LEN_TYPE$] == [#7ff]
+
+
+$EXIST   ETH_DSAP$        1     2     $ETH_UDT$         [@PKT_LEN@] <= [@MTU@]
+                          0     1     $ETH_UDT$         [@EN_8022@] == [#1]
+
+$NEXTP   ETH_DSAP$        0     1     $STP$             [$ETH_DSAP$] == [#42]
+
+$EXIST   ETH_CTL1$        0     1     $ETH_OUI$         [$ETH_TPID$ & #3] != [#3]
+
+$EXIST   ETH_OUI$         1     2     $ETH_UDT$         [$ETH_DSAP$] == [#AA]
+                          1     2     $ETH_UDT$         [$ETH_SSAP$] == [#AA]
+                          0     1     $ETH_UDT$         [$ETH_CTL0$] == [#3]
+
+$NEXTP   ETH_L2_TYPE$     1     1     $IPV4$            [$ETH_L2_TYPE$] == [#0800]
+                          0     1     $IPV6$            [$ETH_L2_TYPE$] == [#86DD]
+*** Layer 2 Protocol Header Format Region End **
+
+**** Payload Type head Begin****
+$TYPES PKT_PAYLOAD
+$REPEAT  PKT_PAYLOAD_LEN$           0     1     $PKT_PAYLOAD_UDT$             [$PKT_PAYLOAD_LEN$]
+$JUMP    PKT_PAYLOAD_LEN$           0     1     $PKT_PAYLOAD_UDT$             [$PKT_PAYLOAD_LEN$]  == [#0]
+
+$JUMP    PKT_PAYLOAD_DATA$          0     9     $PKT_PAYLOAD_DATA$            [@REPEAT@] > [#1]
+**** Payload Type head End****
+
+$TYPES   MACSECTAG$
+$JUMP    MACSEC_PN$               1     1     $MACSEC_SCI$                    [$MACSEC_TCI_SC$] == [#1]
+								  0     1     $MACSEC_PAYLOAD$                [$MACSEC_TCI_SC$] == [#0]
+
+$NEXTP   MACSEC_PAYLOAD$          0     1     $PKT_PAYLOAD$                   [$MACSEC_PAYLOAD$] == [#0]
+
+$TYPES   SGTCMD$
+$NEXTP   SGTCMD_NEXT_TYPE$    1     1     $IPV4$            [$SGTCMD_NEXT_TYPE$] == [#0800]
+							  1     1     $ARP$             [$SGTCMD_NEXT_TYPE$] == [#0806]
+							  1     1     $CFM$             [$SGTCMD_NEXT_TYPE$] == [#8902]
+							  1     1     $EAPOL$           [$SGTCMD_NEXT_TYPE$] == [#888E]
+							  1     1     $MPLS$            [$SGTCMD_NEXT_TYPE$] == [#8847]
+							  1     1     $MPLS$            [$SGTCMD_NEXT_TYPE$] == [#8848]
+							  1     1     $PBB$             [$SGTCMD_NEXT_TYPE$] == [#88e7]
+							  1     1     $ETAG$            [$SGTCMD_NEXT_TYPE$] == [#893F]
+							  1     1     $FCOE$            [$SGTCMD_NEXT_TYPE$] == [#8906]
+							  1     1     $FIP$             [$SGTCMD_NEXT_TYPE$] == [#8914]
+							  1     1     $IPV6$            [$SGTCMD_NEXT_TYPE$] == [#86DD]
+							  1     1     $PKT_PAYLOAD$     [$SGTCMD_NEXT_TYPE$] == [#0]
+							  1     1     $SLPR$            [$SGTCMD_NEXT_TYPE$] == [#8809]
+							  1     1     $PTP$             [$SGTCMD_NEXT_TYPE$] == [#88f7]
+							  1     1     $TRILL$           [$SGTCMD_NEXT_TYPE$] == [#22f3]
+							  1     1     $RBCHANNEL$       [$SGTCMD_NEXT_TYPE$] == [#22f5]
+							  1     1     $NSH$             [$SGTCMD_NEXT_TYPE$] == [#894F]
+							  1     1     $MACSECTAG$       [$SGTCMD_NEXT_TYPE$] == [#88e5]
+							  1     1     $SGTCMD$          [$SGTCMD_NEXT_TYPE$] == [#8909]
+							  0     1     $STP$             [$SGTCMD_NEXT_TYPE$] == [#7ff]
+
+$TYPES   TRILL$
+$REPEAT  TRILL_OL$                  0     1     $TRILL_NEXTP$                    [$TRILL_OL$]
+
+$EXIST   TRILL_OP$                  0     1     $TRILL_NEXTP$                    [$TRILL_OL$] == 0
+
+$JUMP    TRILL_OP$                  1     1     $TRILL_NEXTP$                    [$TRILL_OL$] == 0
+                                    0     9     $TRILL_OP$                     [@REPEAT@] > [#1]
+
+$JUMP    TRILL_NEXTP$               1     1     $L2H_MACDA$                    [$TRILL_NEXTP$] == [#1]
+                                    0     1     $TRILL_UDT$                    [null]
+
+$TYPES   RBCHANNEL$
+$NEXTP   CHAN_ERR$                  1     1     $BFD$                          [$CHAN_PROTOTOL$] == [#2]
+                                    1     1     $PKT_PAYLOAD$                  [$CHAN_PROTOTOL$] == [#3]
+                                    0     1     $PKT_PAYLOAD$                  [null]
+
+$TYPES   MPLS$
+$JUMP    LAB_TTL$                   0     1     $LABEL$                        [$LAB_S$] == [#0]
+
+$REPEAT  LAB_PAYLOAD_LEN$           0     1     $MPLS_UDT$                     [$LAB_PAYLOAD_LEN$]
+$JUMP    LAB_PAYLOAD_LEN$           0     1     $MPLS_UDT$                     [$LAB_PAYLOAD_LEN$] == [#0]
+
+$JUMP    LAB_PAYLOAD_DATA$          0     9     $LAB_PAYLOAD_DATA$             [@REPEAT@] > [#1]
+
+
+$NEXTP   LAB_NEXTP$                 1     1     $L2H$                          [$LAB_NEXTP$] == [#1]
+                                    1     1     $IPV6$                         [$LAB_NEXTP$] == [#2]
+                                    1     1     $ACH$                          [$LAB_NEXTP$] == [#3]
+                                    1     1     $CW$                           [$LAB_NEXTP$] == [#4]
+                                    1     1     $PKT_PAYLOAD$                  [$LAB_NEXTP$] == [#0]
+                                    0     1     $IPV4$                         [$LAB_NEXTP$] == [#5]
+
+
+$NEXTP  CW_NEXTP$                   0     1     $L2H$                          [$CW_NEXTP$] == [#0]
+
+$TYPES   L2H$
+$REPEAT  L2H_MAXVNUM$               0     1     $L2H_UDT$                      [$L2H_MAXVNUM$]
+
+$EXIST   L2H_TYPE_ID$               1     1     $L2H_LEN_TYPE$                 [$L2H_TYPE_ID$] == [#8100]
+                                    0     1     $L2H_LEN_TYPE$                 [$L2H_TYPE_ID$] == [#88a8]
+
+$JUMP    L2H_VLAN_ID$               0     9     $L2H_TYPE_ID$                  [@REPEAT@] > [#0]
+
+$NEXTP   L2H_LEN_TYPE$              1     1     $IPV4$                         [$L2H_LEN_TYPE$] == [#0800]
+                                    1     1     $EAPOL$                        [$L2H_LEN_TYPE$] == [#888E]
+                                    1     1     $MPLS$                         [$L2H_LEN_TYPE$] == [#8847]
+                                    1     1     $PBB$                          [$L2H_LEN_TYPE$] == [#88e7]
+                                    1     1     $CFM$                          [$L2H_LEN_TYPE$] == [#8902]
+                                    1     1     $PTP$                          [$L2H_LEN_TYPE$] == [#88f7]
+                                    1     1     $RBCHANNEL$                    [$L2H_LEN_TYPE$] == [#22f5]
+                                    1     1     $PKT_PAYLOAD$                  [$L2H_LEN_TYPE$] == [#0]
+                                    0     1     $IPV6$                         [$L2H_LEN_TYPE$] == [#86DD]
+
+
+$TYPES   ACH$
+$NEXTP   ACH_CHANNELTYPE$           1     1     $CFM$                          [$ACH_CHANNELTYPE$] == [#8902]
+                                    1     1     $BFD$                          [$ACH_CHANNELTYPE$] == [#0022]
+                                    1     1     $BFD$                          [$ACH_CHANNELTYPE$] == [#0023]
+                                    1     1     $BFD$                          [$ACH_CHANNELTYPE$] == [#7]
+                                    1     1     $CSF$                          [$ACH_CHANNELTYPE$] == [#9]
+                                    1     1     $MPLSLM$                       [$ACH_CHANNELTYPE$] == [#a]
+                                    1     1     $MPLSLM$                       [$ACH_CHANNELTYPE$] == [#b]
+                                    1     1     $MPLSDM$                       [$ACH_CHANNELTYPE$] == [#c]
+                                    1     1     $MPLSLDM$                      [$ACH_CHANNELTYPE$] == [#d]
+                                    1     1     $MPLSLDM$                      [$ACH_CHANNELTYPE$] == [#e]
+                                    1     1     $IPV4$                         [$ACH_CHANNELTYPE$] == [#0021]
+                                    1     1     $IPV6$                         [$ACH_CHANNELTYPE$] == [#0057]
+                                    0     1     $PKT_PAYLOAD$                  [$ACH_CHANNELTYPE$] == [#0]
+
+
+
+$TYPES   MPLSLM$
+$EXIST   MPLSLM_TLV_TYPE$           0     1     $MPLSLM_UDT$                               [#0] == [#1]
+
+$JUMP    MPLSLM_TLV_TYPE$           0     1     $MPLSLM_UDT$                               [$MPLSLM_TLV_TYPE$] == [#0]
+
+$REPEAT  MPLSLM_TLV_LEN$            0     1     $MPLSLM_UDT$                               [$MPLSLM_TLV_LEN$]
+
+$JUMP    MPLSLM_TLV_VALUE$          1     9     $MPLSLM_TLV_VALUE$                         [@REPEAT@] > [#1]
+                                    0     1     $MPLSLM_TLV_TYPE$                          [null]
+
+$TYPES   MPLSDM$
+$EXIST   MPLSDM_TLV_TYPE$           0     1     $MPLSDM_UDT$                               [#0] == [#1]
+
+$JUMP    MPLSDM_TLV_TYPE$           0     1     $MPLSDM_UDT$                               [$MPLSDM_TLV_TYPE$] == [#0]
+
+$REPEAT  MPLSDM_TLV_LEN$            0     1     $MPLSDM_UDT$                               [$MPLSDM_TLV_LEN$]
+
+$JUMP    MPLSDM_TLV_VALUE$          1     9     $MPLSDM_TLV_VALUE$                         [@REPEAT@] > [#1]
+                                    0     1     $MPLSDM_TLV_TYPE$                          [null]
+
+$TYPES   MPLSLDM$
+$EXIST   MPLSLDM_TLV_TYPE$          0     1     $MPLSLDM_UDT$                              [#0] == [#1]
+
+$JUMP    MPLSLDM_TLV_TYPE$           0     1     $MPLSLDM_UDT$                               [$MPLSLDM_TLV_TYPE$] == [#0]
+
+$REPEAT  MPLSLDM_TLV_LEN$            0     1     $MPLSLDM_UDT$                               [$MPLSLDM_TLV_LEN$]
+
+$JUMP    MPLSLDM_TLV_VALUE$          1     9     $MPLSLDM_TLV_VALUE$                         [@REPEAT@] > [#1]
+                                     0     1     $MPLSLDM_TLV_TYPE$                          [null]
+
+
+
+
+$TYPES   PBB$
+$EXIST   PBB_STAG_TPID$             1     1     $PBB_CTAG_TPID$                [#1] == [#0]
+                                    1     1     $PBB_CTAG_TPID$                [$PBB_STAG_TPID$]  ==  [#8100]
+                                    0     1     $PBB_CTAG_TPID$                [$PBB_STAG_TPID$]  ==  [#88a8]
+
+$EXIST   PBB_CTAG_TPID$             1     1     $PBB_LEN_TYPE$                 [#1] == [#0]
+                                    1     1     $PBB_LEN_TYPE$                 [$PBB_CTAG_TPID$]  ==  [#8100]
+                                    0     1     $PBB_LEN_TYPE$                 [$PBB_CTAG_TPID$]  ==  [#88a8]
+
+$NEXTP   PBB_LEN_TYPE$              1     1     $IPV4$                         [$PBB_LEN_TYPE$] == [#0800]
+                                    1     1     $EAPOL$                        [$PBB_LEN_TYPE$] == [#888E]
+                                    1     1     $MPLS$                         [$PBB_LEN_TYPE$] == [#8847]
+                                    1     1     $CCM$                          [$PBB_LEN_TYPE$] == [#8902]
+                                    0     1     $IPV6$                         [$PBB_LEN_TYPE$] == [#86DD]
+
+
+$TYPE    ETAG$
+$EXIST   ETAG_STAG_TPID$            1     1     $ETAG_CTAG_TPID$               [#1] == [#0]
+                                    0     1     $ETAG_STAG_COS$                [#1] == [#1]
+
+$EXIST   ETAG_CTAG_TPID$            1     1     $ETAG_LEN_TYPE$                [#1] == [#0]
+                                    0     1     $ETAG_CTAG_COS$                [#1] == [#1]
+
+$NEXTP   ETAG_LEN_TYPE$             1     1     $IPV4$                         [$ETAG_LEN_TYPE$] == [#0800]
+									1     1     $ARP$             			   [$ETAG_LEN_TYPE$] == [#0806]
+                                    1     1     $EAPOL$                        [$ETAG_LEN_TYPE$] == [#888E]
+                                    1     1     $MPLS$                         [$ETAG_LEN_TYPE$] == [#8847]
+                                    1     1     $CCM$                          [$ETAG_LEN_TYPE$] == [#8902]
+                                    0     1     $IPV6$                         [$ETAG_LEN_TYPE$] == [#86DD]
+
+$TYPES   FIP$
+$REPEAT  FIP_PAYLOAD_LEN$           0     1     $FIP_UDT$                      [$FIP_PAYLOAD_LEN$]
+$JUMP    FIP_PAYLOAD_LEN$           0     1     $FIP_UDT$                      [$FIP_PAYLOAD_LEN$] == [#0]
+
+$JUMP    FIP_PAYLOAD_DATA$          1     9     $FIP_PAYLOAD_DATA$             [@REPEAT@] > [#1]
+                                    0     1     $FIP_UDT$                      [null]
+
+$TYPES   FCOE$
+$REPEAT  FCOE_PAYLOAD_LEN$          0     1     $FCOE_UDT$                     [$FCOE_PAYLOAD_LEN$]
+$JUMP    FCOE_PAYLOAD_LEN$          0     1     $FCOE_EOF$                     [$FCOE_PAYLOAD_LEN$] == [#0]
+
+
+$JUMP    FCOE_PAYLOAD_DATA$         1     9     $FCOE_PAYLOAD_DATA$            [@REPEAT@] > [#1]
+                                    0     1     $FCOE_EOF$                     [null]
+
+$TYPES   CCM$
+$JUMP    END_TLV$                   0     1     $CCM_PAYLOAD$                  [$END_TLV$] == [#0]
+
+$REPEAT  TLV_LEN$                   0     1     $CCM_UDT$                      [$TLV_LEN$]
+
+$JUMP    TLV_VALUE$                 1     9     $TLV_VALUE$                    [@REPEAT@] > [#1]
+                                    0     1     $END_TLV$                      [null]
+
+$EXIST   CCM_PAYLOAD$               1     1     $CCM_UDT$                      [$CCM_PAYLOAD$] == [#aa]
+                                    0     1     $CCM_UDT$                      [$CCM_PAYLOAD$] == [#bb]
+
+$JUMP    CCM_PAYLOAD$               0     1     $CCM_PAYLOAD$                  [null]
+
+
+$TYPES   GRE$
+$NEXTP   GRE_PROT$                  1     1     $IPV4$                         [$GRE_PROT$] == [#0800]
+                                    1     1     $EAPOL$                        [$GRE_PROT$] == [#888E]
+                                    1     1     $L2H$                          [$GRE_PROT$] == [#6558]
+                                    1     1     $MPLS$                         [$GRE_PROT$] == [#8847]
+                                    1     1     $MPLS$                         [$GRE_PROT$] == [#8848]
+                                    1     1     $PBB$                          [$GRE_PROT$] == [#88e7]
+                                    1     1     $CCM$                          [$GRE_PROT$] == [#8902]
+                                    1     1     $PKT_PAYLOAD$                  [$GRE_PROT$] == [#0]
+                                    0     1     $IPV6$                         [$GRE_PROT$] == [#86DD]
+
+$JUMP    GRE_PROT$                  1     1     $GRE_UDT$                      [$GRE_CBIT$ + $GRE_KBIT$ + $GRE_SBIT$] == [#0]
+                                    1     1     $GRE_CHECKSUM$                 [$GRE_CBIT$] == [#1]
+                                    1     1     $GRE_KEY$                      [$GRE_KBIT$] == [#1]
+                                    0     1     $GRE_SEQ$                      [$GRE_SBIT$] == [#1]
+
+$JUMP    GRE_RES1$                  1     1     $GRE_UDT$                      [$GRE_KBIT$ + $GRE_SBIT$] == [#0]
+                                    1     1     $GRE_KEY$                      [$GRE_SBIT$] == [#0]
+                                    0     1     $GRE_SEQ$                      [$GRE_KBIT$] == [#0]
+
+$JUMP    GRE_KEY$                   0     1     $GRE_UDT$                      [$GRE_SBIT$] == [#0]
+
+
+$TYPES   EAPOL$
+$JUMP    EAPOL_LEN$                 0     1     $EAPOL_UDT$                    [$EAPOL_TYPE$] != [#0]
+
+$REPEAT  EAP_PACKET_LEN$            0     1     $EAPOL_UDT$                    [$EAP_PACKET_LEN$]
+
+$JUMP    EAP_PACKET_LEN$            1     1     $EAPOL_UDT$                    [$EAP_PACKET_LEN$] == [#0]
+                                    1     1     $EAP_PACKET_TYPE$              [$EAP_PACKET_CODE$] == [#1]
+                                    1     1     $EAP_PACKET_TYPE$              [$EAP_PACKET_CODE$] == [#2]
+                                    0     1     $EAPOL_UDT$                    [null]
+
+$JUMP    EAP_PACKET_TYPE$           0     1     $EAP_MD5_CHALL_VALUE_SIZE$     [$EAP_PACKET_TYPE$] == [#4]
+
+$JUMP    EAP_PACKET_DATA$           1     9     $EAP_PACKET_DATA$              [@REPEAT@] > [#6]
+                                    0     1     $EAPOL_UDT$                    [null]
+
+$REPEAT  EAP_MD5_CHALL_VALUE_SIZE$  0     1     $EAPOL_UDT$                    [$EAP_MD5_CHALL_VALUE_SIZE$]
+
+$JUMP    EAP_MD5_CHALL_VALUE$       1     9     $EAP_MD5_CHALL_VALUE$          [@REPEAT@] > [#1]
+                                    1     1     $EAPOL_UDT$                    [$EAP_PACKET_LEN$ - $EAP_MD5_CHALL_VALUE_SIZE$ - #6] <= [#0]
+                                    0     1     $EAP_MD5_CHALL_NAME_LEN$       [null]
+
+$REPEAT  EAP_MD5_CHALL_NAME_LEN$    0     1     $EAPOL_UDT$                    [$EAP_MD5_CHALL_NAME_LEN$]
+
+$JUMP    EAP_MD5_CHALL_NAME$        1     9     $EAP_MD5_CHALL_NAME$           [@REPEAT@] > [#0]
+                                    0     1     $EAPOL_UDT$                    [null]
+
+
+*** Layer 3 Protocol Header Format Region Start **
+$TYPES   SLPR$
+$JUMP    SLPR_SUBTYPE$                         1     1     $SLPR_EFM_FLAGS$                         [$SLPR_SUBTYPE$] == [#3]
+                                               0     1     $SLPR_LACP_VER$                          [$SLPR_SUBTYPE$] == [#1]
+
+$REPEAT  SLPR_EFM_PLD_LEN$                     0     1     $SLPR_UDT$                               [$SLPR_EFM_PLD_LEN$]
+
+$JUMP    SLPR_EFM_PLD_DATA$                    1     9     $SLPR_EFM_PLD_DATA$                      [@REPEAT@] > [#1]
+                                               0     1     $SLPR_UDT$                               [null]
+
+
+
+$TYPES   CFM$
+$JUMP    CFM_FIRST_TLV_OFFSET$                 1     1     $CFM_LB_TP$                             [$CFM_OP_CODE$] == [#2]
+                                               1     1     $CFM_LB_TP$                             [$CFM_OP_CODE$] == [#3]
+                                               1     1     $CFM_LB_TP$                             [$CFM_OP_CODE$] == [#25]
+                                               1     1     $CFM_LT_ID$                             [$CFM_OP_CODE$] == [#4]
+                                               1     1     $CFM_LT_ID$                             [$CFM_OP_CODE$] == [#5]
+                                               1     1     $CFM_LM_TXFCF$                          [$CFM_OP_CODE$] == [#2A]
+                                               1     1     $CFM_LM_TXFCF$                          [$CFM_OP_CODE$] == [#2B]
+                                               1     1     $CFM_APS_LEN$                           [$CFM_OP_CODE$] == [#27]
+                                               1     1     $CFM_APS_LEN$                           [$CFM_OP_CODE$] == [#28]
+                                               1     1     $CFM_DM_TX_STPF$                        [$CFM_OP_CODE$] == [#2d]
+                                               1     1     $CFM_DM_TX_STPF$                        [$CFM_OP_CODE$] == [#2e]
+                                               1     1     $CFM_DM_TX_STPF$                        [$CFM_OP_CODE$] == [#2f]
+                                               1     1     $CFM_CCM_SEQ_NUM$                       [$CFM_OP_CODE$] == [#1]
+                                               1     1     $CFM_SLM_SRC_MEPID$                     [$CFM_OP_CODE$] == [#37]
+                                               1     1     $CFM_SLM_SRC_MEPID$                     [$CFM_OP_CODE$] == [#36]
+                                               0     1     $CFM_PAYLOAD_LEN$                       [null]
+
+$REPEAT  CFM_PAYLOAD_LEN$                      0     1     $CFM_UDT$                               [$CFM_PAYLOAD_LEN$]
+$JUMP    CFM_PAYLOAD_LEN$                      0     1     $CFM_UDT$                               [$CFM_PAYLOAD_LEN$] == [#0]
+
+
+$JUMP    CFM_PAYLOAD_DATA$                     1     9     $CFM_PAYLOAD_DATA$                      [@REPEAT@] > [#1]
+                                               0     1     $CFM_UDT$                               [null]
+
+$JUMP    CFM_CCM_MAIN_DOMAIN_NAME_FORMAT$      0     1     $CFM_CCM_SHORT_MA_NAME_FORMAT$          [$CFM_CCM_MAIN_DOMAIN_NAME_FORMAT$] == [#1]
+
+$REPEAT  CFM_CCM_MAIN_DOMAIN_NAME_LEN$         0     1     $CFM_UDT$                               [$CFM_CCM_MAIN_DOMAIN_NAME_LEN$]
+
+$JUMP    CFM_CCM_MAIN_DOMAIN_NAME_STR$         1     9     $CFM_CCM_MAIN_DOMAIN_NAME_STR$          [@REPEAT@] > [#1]
+                                               0     1     $CFM_CCM_SHORT_MA_NAME_FORMAT$          [null]
+
+$JUMP    CFM_CCM_SHORT_MA_NAME_FORMAT$         0     1     $CFM_CCM_MAID_ZERO_PAD$                 [$CFM_CCM_SHORT_MA_NAME_FORMAT$] == [#1]
+
+$REPEAT  CFM_CCM_SHORT_MA_NAME_LEN$            0     1     $CFM_UDT$                               [$CFM_CCM_SHORT_MA_NAME_LEN$]
+$JUMP    CFM_CCM_SHORT_MA_NAME_LEN$            0     1     $CFM_UDT$                               [$CFM_CCM_SHORT_MA_NAME_LEN$] == [#0]
+
+$JUMP    CFM_CCM_SHORT_MA_NAME_STR$            1     9     $CFM_CCM_SHORT_MA_NAME_STR$             [@REPEAT@] > [#1]
+                                               0     1     $CFM_CCM_MAID_ZERO_PAD$                 [null]
+
+$EXIST   CFM_CCM_MAID_ZERO_PAD$                1     1     $CFM_CCM_TXFCF$                         [#0] == [#1]
+                                               0     1     $CFM_CCM_MAID_ZERO_PAD$                 [#1] == [#1]
+
+
+$JUMP    CFM_CCM_MAID_ZERO_PAD$                0     1     $CFM_CCM_MAID_ZERO_PAD$                 [null]
+
+$JUMP    CFM_CCM_RESERVED$                     0     1     $CFM_TLV_TYPE$                          [null]
+
+$JUMP    CFM_LB_ID$                            1     1     $CFM_TP_LBM_TLV_TYPE$                   [$CFM_LB_TP$] == [#1]
+                                               0     1     $CFM_TLV_TYPE$                          [null]
+
+$JUMP    CFM_LT_TTL$                           0     1     $CFM_LTR_RL_ACT$                        [$CFM_OP_CODE$] == [#4]
+
+$JUMP    CFM_LTM_TAR_MAC$                      0     1     $CFM_TLV_TYPE$                          [null]
+
+$JUMP    CFM_LTR_RL_ACT$                       0     1     $CFM_TLV_TYPE$                          [null]
+
+$JUMP    CFM_LM_TXFCB$                         0     1     $CFM_TLV_TYPE$                          [null]
+
+$REPEAT  CFM_APS_LEN$                          0     1     $CFM_UDT$                               [$CFM_APS_LEN$]
+
+$JUMP    CFM_APS_DATA$                         1     9     $CFM_APS_DATA$                          [@REPEAT@] > [#1]
+                                               0     1     $CFM_TLV_TYPE$                          [null]
+
+$EXIST   CFM_DM_TX_STPB$                       1     1     $CFM_TLV_TYPE$                          [#0] == [#1]
+                                               0     1     $CFM_TLV_TYPE$                          [$CFM_OP_CODE$] != [#2d]
+
+$JUMP    CFM_DM_RX_STPB$                       0     1     $CFM_TLV_TYPE$                          [null]
+
+$JUMP    CFM_SLM_TXFCB$                        0     1     $CFM_TLV_TYPE$                          [null]
+
+
+$JUMP    CFM_TLV_TYPE$                         0     1     $CFM_UDT$                               [$CFM_TLV_TYPE$] == [#0]
+
+$REPEAT  CFM_TLV_LEN$                          0     1     $CFM_UDT$                               [$CFM_TLV_LEN$]
+
+$JUMP    CFM_TLV_VALUE$                        1     9     $CFM_TLV_VALUE$                         [@REPEAT@] > [#1]
+                                               0     1     $CFM_TLV_TYPE$                          [null]
+
+
+$TYPES   IPV4$
+$NEXTP   IPV4_PROTO$                           1     1     $PKT_PAYLOAD$                           [$IPV4_PAYLOAD_FORCE$] == [#1]
+                                               1     1     $TCP$                                   [$IPV4_PROTO$] == [#6]
+                                               1     1     $UDP$                                   [$IPV4_PROTO$] == [#11]
+                                               1     1     $ICMP$                                  [$IPV4_PROTO$] == [#1]
+                                               1     1     $IGMP$                                  [$IPV4_PROTO$] == [#2]
+                                               1     1     $VRRP$                                  [$IPV4_PROTO$] == [#70]
+                                               1     1     $IPV6$                                  [$IPV4_PROTO$] == [#29]
+                                               1     1     $GRE$                                   [$IPV4_PROTO$] == [#2f]
+                                               1     1     $PKT_PAYLOAD$                           [$IPV4_PROTO$] == [#0]
+                                               1     1     $OSPF$                                  [$IPV4_PROTO$] == [#59]
+                                               1     1     $PKT_PAYLOAD$                           [$IPV4_PROTO$] == [#67]
+                                               0     1     $HEADER_TYPE_NUM$                       [null]
+
+$JUMP    IPV4_DA$                              1     1     $IPV4_UDT$                              [$IPV4_PROTO$] == [#4]
+                                               1     1     $IPV4_UDT$                              [$IPV4_PROTO$] == [#29]
+                                               0     1     $IPV4_UDT$                              [$IPV4_PROTO$] == [#2f]
+
+$REPEAT  IPV4_PAYLOAD_LEN$                     0     1     $IPV4_UDT$                              [$IPV4_PAYLOAD_LEN$]
+$JUMP    IPV4_PAYLOAD_LEN$                     0     1     $IPV4_UDT$                              [$IPV4_PAYLOAD_LEN$]  == [#0]
+
+$JUMP    IPV4_PAYLOAD$                         1     9     $IPV4_PAYLOAD$                          [@REPEAT@] > [#1]
+                                               0     1     $IPV4_UDT$                              [null]
+
+
+
+
+$TYPES   IPV6$
+$NEXTP   IPV6_NEXT_HDR$                        1     1     $IPV6_HBH_OPT_HEADER$                   [$IPV6_NEXT_HDR$] == [#0]
+                                               1     1     $IPV4$                                  [$IPV6_NEXT_HDR$] == [#4]
+                                               1     1     $IPV6$                                  [$IPV6_NEXT_HDR$] == [#29]
+                                               1     1     $GRE$                                   [$IPV6_NEXT_HDR$] == [#2f]
+                                               1     1     $IPV6_DEST_OPT_HEADER$                  [$IPV6_NEXT_HDR$] == [#3c]
+                                               1     1     $IPV6_ROUT_HEADER$                      [$IPV6_NEXT_HDR$] == [#2b]
+                                               1     1     $IPV6_FRAG_HEADER$                      [$IPV6_NEXT_HDR$] == [#2c]
+                                               1     1     $IPV6_AUTHEN_HEADER$                    [$IPV6_NEXT_HDR$] == [#33]
+                                               1     1     $OSPF$                                  [$IPV6_NEXT_HDR$] == [#59]
+                                               1     1     $IPV6_ENCAP_SEUC_PAYL_HEADER$           [$IPV6_NEXT_HDR$] == [#32]
+                                               1     1     $TCP$                                   [$IPV6_NEXT_HDR$] == [#6]
+                                               1     1     $UDP$                                   [$IPV6_NEXT_HDR$] == [#11]
+                                               1     1     $ICMPV6$                                [$IPV6_NEXT_HDR$] == [#3a]
+                                               0     1     $HEADER_TYPE_NUM$                       [null]
+
+$JUMP    IPV6_DA$                              1     1     $IPV6_UDT$                              [$IPV6_NEXT_HDR$] == [#4]
+                                               1     1     $IPV6_UDT$                              [$IPV6_NEXT_HDR$] == [#29]
+                                               0     1     $IPV6_UDT$                              [$IPV6_NEXT_HDR$] == [#2f]
+
+$REPEAT  IPV6_PAYLOAD_LEN$                     0     1     $IPV6_UDT$                              [$IPV6_PAYLOAD_LEN$]
+
+$JUMP    IPV6_PAYLOAD_LEN$                     0     1     $IPV6_UDT$                              [$IPV6_PAYLOAD_LEN$]  == [#0]
+
+$JUMP    IPV6_PAYLOAD$                         1     9     $IPV6_PAYLOAD$                          [@REPEAT@] > [#1]
+                                               0     1     $IPV6_UDT$                              [null]
+
+
+
+$TYPES   IPV6_HBH_OPT_HEADER$
+$NEXTP   IPV6_HBH_OPT_HEADER_NEXT_HEADER$           1     1     $IPV6_DEST_OPT_HEADER$                      [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#3c]
+                                                    1     1     $IPV6_ROUT_HEADER$                          [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#2b]
+                                                    1     1     $IPV6_FRAG_HEADER$                          [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#2c]
+                                                    1     1     $IPV6_AUTHEN_HEADER$                        [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#33]
+                                                    1     1     $IPV6_ENCAP_SEUC_PAYL_HEADER$               [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#32]
+                                                    1     1     $TCP$                                       [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#6]
+                                                    1     1     $UDP$                                       [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#11]
+                                                    1     1     $IPV6$                    [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#29]
+                                                    1     1     $ICMPV6$                                    [$IPV6_HBH_OPT_HEADER_NEXT_HEADER$] == [#3a]
+                                                    0     1     $HEADER_TYPE_NUM$                           [null]
+
+$JUMP    IPV6_HBH_OPT_HEADER_OPTION_TYPE$           1     1     $IPV6_HBH_OPT_HEADER_UDT$                   [$IPV6_HBH_OPT_HEADER_OPTION_TYPE$] == [#0]
+                                                    1     1     $IPV6_HBH_OPT_HEADER_PADN_OPTION_LEN$       [$IPV6_HBH_OPT_HEADER_OPTION_TYPE$] == [#1]
+                                                    1     1     $IPV6_HBH_OPT_HEADER_PADN_OPTION_LEN$       [$IPV6_HBH_OPT_HEADER_OPTION_TYPE$] == [#87]
+                                                    1     1     $IPV6_HBH_OPT_HEADER_JUM_PAYL_OPTION_LEN$   [$IPV6_HBH_OPT_HEADER_OPTION_TYPE$] == [#c2]
+                                                    0     1     $IPV6_HBH_OPT_HEADER_ROUT_ALT_OPTION_LEN$   [$IPV6_HBH_OPT_HEADER_OPTION_TYPE$] == [#5]
+
+$JUMP    IPV6_HBH_OPT_HEADER_JUM_PAYL_LEN$          0     1     $IPV6_HBH_OPT_HEADER_UDT$                   [null]
+
+$JUMP    IPV6_HBH_OPT_HEADER_ROUT_ALT_VALUE$        0     1     $IPV6_HBH_OPT_HEADER_UDT$                   [null]
+
+$REPEAT  IPV6_HBH_OPT_HEADER_PADN_OPTION_LEN$       0     1     $IPV6_HBH_OPT_HEADER_UDT$                   [$IPV6_HBH_OPT_HEADER_PADN_OPTION_DATA_NUM$]
+
+$JUMP    IPV6_HBH_OPT_HEADER_PADN_OPTION_DATA$      0     9     $IPV6_HBH_OPT_HEADER_PADN_OPTION_DATA$      [@REPEAT@] > [#0]
+
+$EXIST   IPV6_HBH_OPT_HEADER_PADN_OPTION_DATA$      0     1     $IPV6_HBH_OPT_HEADER_UDT$                   [$IPV6_HBH_OPT_HEADER_PADN_OPTION_DATA$ ] > [#0]
+
+
+$TYPE    IPV6_DEST_OPT_HEADER$
+$NEXTP   IPV6_DEST_OPT_HEADER_NEXT_HEADER$          1     1     $IPV6_ROUT_HEADER$                          [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#2b]
+                                                    1     1     $IPV6_FRAG_HEADER$                          [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#2c]
+                                                    1     1     $IPV6_AUTHEN_HEADER$                        [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#33]
+                                                    1     1     $IPV6_ENCAP_SEUC_PAYL_HEADER$               [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#32]
+                                                    1     1     $TCP$                                       [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#6]
+                                                    1     1     $UDP$                                       [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#11]
+                                                    1     1     $IPV6$                    [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#29]
+                                                    1     1     $ICMPV6$                                    [$IPV6_DEST_OPT_HEADER_NEXT_HEADER$] == [#3a]
+                                                    0     1     $HEADER_TYPE_NUM$                           [null]
+
+$JUMP    IPV6_DEST_OPT_HEADER_OPTION_TYPE$          1     1     $IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_LEN$   [$IPV6_DEST_OPT_HEADER_OPTION_TYPE$] == [#c6]
+                                                    1     1     $IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_LEN$  [$IPV6_DEST_OPT_HEADER_OPTION_TYPE$] == [#7]
+                                                    1     1     $IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_LEN$  [$IPV6_DEST_OPT_HEADER_OPTION_TYPE$] == [#8]
+                                                    0     1     $IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_LEN$ [$IPV6_DEST_OPT_HEADER_OPTION_TYPE$] == [#c9]
+
+$REPEAT  IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SUB_OPTION_NUM$   0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [$IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SUB_OPTION_NUM$]
+
+$JUMP    IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SUB_OPTION$       1    9     $IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SUB_OPTION$    [@REPEAT@] > [#0]
+                                                               0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [null]
+
+$REPEAT  IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SUB_OPTION_NUM$  0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [$IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SUB_OPTION_NUM$]
+
+$JUMP    IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SUB_OPTION$      1    9     $IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SUB_OPTION$   [@REPEAT@] > [#0]
+                                                               0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [null]
+
+$REPEAT  IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_SUB_OPTION_NUM$  0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [$IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_SUB_OPTION_NUM$]
+
+$JUMP    IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_SUB_OPTION$      1    9     $IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_SUB_OPTION$   [@REPEAT@] > [#0]
+                                                               0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [null]
+
+$REPEAT  IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_SUB_OPTION_NUM$ 0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [$IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_SUB_OPTION_NUM$]
+
+$JUMP    IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_SUB_OPTION$     1    9     $IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_SUB_OPTION$  [@REPEAT@] > [#0]
+                                                               0    1     $IPV6_DEST_OPT_HEADER_UDT$                          [null]
+
+
+$TYPES   IPV6_ROUT_HEADER$
+$NEXTP   IPV6_ROUT_HEADER_NEXT_HEADER$              1     1     $IPV6_FRAG_HEADER$                          [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#2c]
+                                                    1     1     $IPV6_AUTHEN_HEADER$                        [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#33]
+                                                    1     1     $IPV6_ENCAP_SEUC_PAYL_HEADER$               [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#32]
+                                                    1     1     $TCP$                                       [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#6]
+                                                    1     1     $UDP$                                       [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#11]
+                                                    1     1     $IPV6$                    [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#29]
+                                                    1     1     $ICMPV6$                                    [$IPV6_ROUT_HEADER_NEXT_HEADER$] == [#3a]
+                                                    0     1     $HEADER_TYPE_NUM$                           [null]
+
+$JUMP    IPV6_ROUT_HEADER_ROUT_TYPE$                0     1     $IPV6_ROUT_TYPE0_HEADER_SEG_LEFT$           [$IPV6_ROUT_HEADER_ROUT_TYPE$] == [#0]
+
+$REPEAT  IPV6_ROUT_HEADER_ROUT_TYPE_SPEC_DATA_NUM$  0     1     $IPV6_ROUT_HEADER_UDT$                      [$IPV6_ROUT_HEADER_ROUT_TYPE_SPEC_DATA_NUM$]
+
+$JUMP    IPV6_ROUT_HEADER_ROUT_TYPE_SPEC_DATA$      1     9     $IPV6_ROUT_HEADER_ROUT_TYPE_SPEC_DATA$      [@REPEAT@] > [#0]
+                                                    0     1     $IPV6_ROUT_HEADER_UDT$                      [null]
+
+$REPEAT  IPV6_ROUT_TYPE0_HEADER_ADDR_NUM$           0     1     $IPV6_ROUT_HEADER_UDT$                      [$IPV6_ROUT_TYPE0_HEADER_ADDR_NUM$]
+
+$JUMP    IPV6_ROUT_TYPE0_HEADER_ADDR$               0     9     $IPV6_ROUT_TYPE0_HEADER_ADDR$               [@REPEAT@] > [#0]
+
+
+$TYPES   IPV6_FRAG_HEADER$
+$NEXTP   IPV6_FRAG_HEADER_NEXT_HEADER$              1     1     $IPV6_AUTHEN_HEADER$                        [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#33]
+                                                    1     1     $IPV6_ENCAP_SEUC_PAYL_HEADER$               [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#32]
+                                                    1     1     $TCP$                                       [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#6]
+                                                    1     1     $UDP$                                       [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#11]
+                                                    1     1     $IPV6$                    [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#29]
+                                                    1     1     $ICMPV6$                                    [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#3a]
+                                                    1     1     $GRE$                                       [$IPV6_FRAG_HEADER_NEXT_HEADER$] == [#2f]
+                                                    0     1     $HEADER_TYPE_NUM$                           [null]
+
+$TYPES   IPV6_AUTHEN_HEADER$
+$NEXTP   IPV6_AUTHEN_HEADER_NEXT_HEADER$            1     1     $IPV6_ENCAP_SEUC_PAYL_HEADER$               [$IPV6_AUTHEN_HEADER_NEXT_HEADER$] == [#32]
+                                                    1     1     $TCP$                                       [$IPV6_AUTHEN_HEADER_NEXT_HEADER$] == [#6]
+                                                    1     1     $UDP$                                       [$IPV6_AUTHEN_HEADER_NEXT_HEADER$] == [#11]
+                                                    1     1     $IPV6$                    [$IPV6_AUTHEN_HEADER_NEXT_HEADER$] == [#29]
+                                                    1     1     $ICMPV6$                                    [$IPV6_AUTHEN_HEADER_NEXT_HEADER$] == [#3a]
+                                                    0     1     $HEADER_TYPE_NUM$                           [null]
+
+$REPEAT  IPV6_AUTHEN_HEADER_AUTHEN_DATA_NUM$        0     1     $IPV6_AUTHEN_HEADER_UDT$                    [$IPV6_AUTHEN_HEADER_AUTHEN_DATA_NUM$]
+
+$JUMP    IPV6_AUTHEN_HEADER_AUTHEN_DATA$            0     9     $IPV6_AUTHEN_HEADER_AUTHEN_DATA$            [@REPEAT@] > [#0]
+
+
+$TYPES   IPV6_ENCAP_SEUC_PAYL_HEADER$
+$NEXTP   IPV6_ENCAP_SEUC_PAYL_HEADER_NEXT_HEADER$   1     1     $TCP$                                       [$IPV6_ENCAP_SEUC_PAYL_HEADER_NEXT_HEADER$] == [#6]
+                                                    1     1     $UDP$                                       [$IPV6_ENCAP_SEUC_PAYL_HEADER_NEXT_HEADER$] == [#11]
+                                                    1     1     $IPV6$                    [$IPV6_ENCAP_SEUC_PAYL_HEADER_NEXT_HEADER$] == [#29]
+                                                    1     1     $ICMPV6$                                    [$IPV6_ENCAP_SEUC_PAYL_HEADER_NEXT_HEADER$] == [#3a]
+                                                    0     1     $HEADER_TYPE_NUM$                           [null]
+
+$REPEAT  IPV6_ENCAP_SEUC_PAYL_HEADER_PAYL_DATA_NUM$   0   1      $IPV6_ENCAP_SEUC_PAYL_HEADER_UDT$          [$IPV6_ENCAP_SEUC_PAYL_HEADER_PAYL_DATA_NUM$]
+
+$JUMP    IPV6_ENCAP_SEUC_PAYL_HEADER_PAYL_DATA$       0   9      $IPV6_ENCAP_SEUC_PAYL_HEADER_PAYL_DATA$    [@REPEAT@] > [#0]
+
+$REPEAT  IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING_NUM$     0   1      $IPV6_ENCAP_SEUC_PAYL_HEADER_UDT$          [$IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING_NUM$]
+
+$JUMP    IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING$         0   9      $IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING$      [@REPEAT@] > [#0]
+
+$REPEAT  IPV6_ENCAP_SEUC_PAYL_HEADER_AUTHEN_DATA_NUM$ 0   1      $IPV6_ENCAP_SEUC_PAYL_HEADER_UDT$          [$IPV6_ENCAP_SEUC_PAYL_HEADER_AUTHEN_DATA_NUM$]
+
+$JUMP    IPV6_ENCAP_SEUC_PAYL_HEADER_AUTHEN_DATA$     0   9      $IPV6_ENCAP_SEUC_PAYL_HEADER_AUTHEN_DATA$  [@REPEAT@] > [#0]
+
+
+$TYPES   VRRP$
+keyword  blongs                           next flag    Union                             expression
+$REPEAT  VRRP_COUNT_IP_ADDR$              0    1      $VRRP_UDT$                         [$VRRP_COUNT_IP_ADDR$]
+
+$JUMP    VRRP_IP_ADDR$                    1    9      $VRRP_IP_ADDR$                     [@REPEAT@] > [#1]
+                                          0    1      $VRRP_AUTH_DATA1$                  [null]
+
+
+$TYPES   TCP$
+$JUMP    TCP_USE_PAYLOAD$                 1    1      $PKT_PAYLOAD_LEN$                  [$TCP_USE_PAYLOAD$] > [#0]
+                                          0    1      $TCP_SOURCE_PORT$                  [null]
+
+$NEXTP   TCP_OPTION$                      0    1      $PKT_PAYLOAD$                      [null]
+
+$TYPES   UDP$
+$JUMP    UDP_USE_PAYLOAD$                 1    1      $PKT_PAYLOAD_LEN$                  [$UDP_USE_PAYLOAD$] > [#0]
+                                          0    1      $UDP_SOURCE_PORT$                  [null]
+
+$NEXTP   UDP_DEST_PORT$                   1    1      $DHCP$                             [$UDP_DEST_PORT$] == [#43]
+                                          1    1      $DHCP$                             [$UDP_DEST_PORT$] == [#44]
+                                          1    1      $DHCP$                             [$UDP_DEST_PORT$] == [#222]
+                                          1    1      $DHCP$                             [$UDP_DEST_PORT$] == [#223]
+                                          1    1      $L2TP$                             [$UDP_DEST_PORT$] == [#6a5]
+                                          1    1      $RIP$                              [$UDP_DEST_PORT$] == [#208]
+                                          1    1      $LDP$                              [$UDP_DEST_PORT$] == [#286]
+                                          1    1      $RADIUS$                           [$UDP_DEST_PORT$] == [#714]
+                                          1    1      $RADIUS$                           [$UDP_DEST_PORT$] == [#715]
+                                          1    1      $BFD$                              [$UDP_DEST_PORT$] == [#EC8]
+                                          1    1      $BFD$                              [$UDP_DEST_PORT$] == [#12B0]
+                                          1    1      $CAPWAP$                           [$UDP_DEST_PORT$] == [#147E]
+                                          1    1      $CAPWAP$                           [$UDP_DEST_PORT$] == [#147F]
+                                          1    1      $CAPWAP$                           [$UDP_SOURCE_PORT$] == [#147E]
+                                          1    1      $CAPWAP$                           [$UDP_SOURCE_PORT$] == [#147F]
+                                          1    1      $PTP$                              [$UDP_DEST_PORT$] == [#13F]
+                                          1    1      $PTP$                              [$UDP_DEST_PORT$] == [#140]
+                                          1    1      $VXLAN$                            [$UDP_VXLANHEADER$] == [#1]
+										  1	   1	  $CAPWAP$							 [$UDP_CAPWAPHEADER$] == [#1]
+										  1	   1	  $OWAMP$							 [$UDP_OTWAMPHEADER$] == [#1]
+										  1	   1	  $TWAMP$							 [$UDP_OTWAMPHEADER$] == [#2]
+                                          0    1      $PKT_PAYLOAD$                      [null]
+$TYPES VXLAN
+$NEXTP   VXLAN_RESERVED2$                  1    1      $L2H$                             [$VXLAN_PAYLOADMODE$] == [#1]
+										   1    1      $IPV4$                            [$VXLAN_PAYLOADMODE$] == [#2]
+										   0    1      $IPV6$                            [$VXLAN_PAYLOADMODE$] == [#3]
+$JUMP    VXLAN_RESERVED2$                  1    1      $VXLAN_UDT$                       [$VXLAN_PAYLOADMODE$] == [#1]
+										   1    1      $VXLAN_UDT$                       [$VXLAN_PAYLOADMODE$] == [#2]
+										   0    1      $VXLAN_UDT$                       [$VXLAN_PAYLOADMODE$] == [#3]
+
+$REPEAT  VXLAN_PAYLOADLEN$                 0    1      $VXLAN_UDT$                       [$VXLAN_PAYLOADLEN$]
+$JUMP    VXLAN_PAYLOAD$                    1    9      $VXLAN_PAYLOAD$                   [@REPEAT@] > [#0]
+                                           0    1      $VXLAN_UDT$                       [null]
+
+$TYPES OWAMP
+$REPEAT  OWAMP_PAYLOAD_LEN$                0    1      $OWAMP_UDT$                         [$OWAMP_PAYLOAD_LEN$]
+$JUMP    OWAMP_PAYLOAD_LEN$                0    1      $OWAMP_UDT$                         [$OWAMP_PAYLOAD_LEN$] == [#0]
+$JUMP    OWAMP_PAYLOAD_DATA$               1    9      $OWAMP_PAYLOAD_DATA$                [@REPEAT@] > [#1]
+                                           0    1      $OWAMP_UDT$                         [null]
+
+$TYPES TWAMP
+$REPEAT  TWAMP_PAYLOAD_LEN$                0    1      $TWAMP_UDT$                         [$TWAMP_PAYLOAD_LEN$]
+$JUMP    TWAMP_PAYLOAD_LEN$                0    1      $TWAMP_UDT$                         [$TWAMP_PAYLOAD_LEN$] == [#0]
+$JUMP    TWAMP_PAYLOAD_DATA$               1    9      $TWAMP_PAYLOAD_DATA$                [@REPEAT@] > [#1]
+                                           0    1      $TWAMP_UDT$                         [null]
+
+$TYPES   RIP$
+$JUMP    RIP_EXTEND$                      0    1      $UDP_UDT$                          [$UDP_LENGTH$ - #C]  < [#1]
+
+$REPEAT  RIP_ENTRY_NUM$                   0    1      $UDP_UDT$                          [$RIP_ENTRY_NUM$]
+
+$JUMP    RIP_METRIC$                      1    9      $RIP_ADDR_FAMILY_ID$               [@REPEAT@] > [#0]
+                                          0    1      $UDP_UDT$                          [null]
+
+$JUMP    RIP_ADDR_FAMILY_ID$              1    1      $RIP_ADDR_FAMILY_TYPEFF_AUT_TYPE$  [$RIP_ADDR_FAMILY_ID$]  == [#FFFF]
+                                          0    1      $RIP_ROUT_TAG$                     [null]
+
+$JUMP    RIP_ADDR_FAMILY_TYPEFF_AUT_TYPE$ 1    1      $RIP_MD5_DIG_OFFSET$               [$RIP_ADDR_FAMILY_TYPEFF_AUT_TYPE$]  == [#3]
+                                          0    1      $RIP_ADDR_FAMILY_TYPEFF_AUT_INFO$  [null]
+
+$JUMP    RIP_ADDR_FAMILY_TYPEFF_AUT_INFO$ 1    9      $RIP_ADDR_FAMILY_ID$               [@REPEAT@] > [#0]
+                                          0    1      $UDP_UDT$                          [null]
+
+$JUMP    RIP_MD5_ZERO_PADD$               1    9      $RIP_ADDR_FAMILY_ID$               [@REPEAT@] > [#0]
+                                          0    1      $UDP_UDT$                          [null]
+
+$TYPES   OSPF$
+$JUMP    OSPF_AU_DATA$                    1    1      $OSPF_HELLO_MASK$                  [$OSPF_TYPE$] == [#1]
+                                          1    1      $OSPF_DBDES_INT_MTU$               [$OSPF_TYPE$] == [#2]
+                                          1    1      $OSPF_LSR_LS_TYPE$                 [$OSPF_TYPE$] == [#3]
+                                          1    1      $OSPF_LSA$                         [$OSPF_TYPE$] == [#5]
+                                          0    1      $OSPF_UDT$                         [null]
+
+$EXIST   OSPF_HELLO_NEIG$                 1    1      $OSPF_UDT$                         [#0]  == [#1]
+                                          0    1      $OSPF_UDT$                         [#0]  == [#1]
+$JUMP    OSPF_HELLO_NEIG$                 0    1      $OSPF_HELLO_NEIG$                  [null]
+
+$EXIST   OSPF_DBDES_LSA$                  1    1      $OSPF_UDT$                         [#0]  == [#1]
+                                          0    1      $OSPF_UDT$                         [#0]  == [#1]
+$JUMP    OSPF_DBDES_LSA$                  0    1      $OSPF_DBDES_LSA$                   [null]
+
+$EXIST   OSPF_LSR_LS_TYPE$                1    1      $OSPF_UDT$                         [#0]  == [#1]
+                                          0    1      $OSPF_UDT$                         [#0]  == [#1]
+$JUMP    OSPF_LSR_ADV_ROUT$               0    1      $OSPF_LSR_LS_TYPE$                 [null]
+
+$TYPES   L2TP$
+$JUMP    L2TP_VER$                        0    1      $L2TP_TUNL_ID$                     [$L2TP_L$] == [#0]
+
+$JUMP    L2TP_SESS_ID$                    0    1      $L2TP_OFF_SZ$                      [$L2TP_S$] == [#0]
+
+$JUMP    L2TP_NR$                         0    1      $L2TP_AVP_M$                       [$L2TP_O$] == [#0]
+
+$REPEAT  L2TP_OFF_SZ$                     0    1      $L2TP_UDT$                         [$L2TP_OFF_SZ$]
+
+$JUMP    L2TP_OFF_PAD$                    1    9      $L2TP_OFF_PAD$                     [@REPEAT@] > [#1]
+                                          0    1      $L2TP_AVP_M$                       [null]
+
+$EXIST   L2TP_AVP_M$                      1    1      $L2TP_UDT$                         [#1] == [#0]
+                                          0    1      $L2TP_UDT$                         [#1] == [#0]
+
+$LENGTH  L2TP_AVP_LENGTH$                 0    1      $L2TP_AVP_VALUE$                   [$L2TP_AVP_LENGTH$ - #6  * #8]
+
+$JUMP    L2TP_AVP_VALUE$                  0    1      $L2TP_AVP_M$                       [null]
+
+$TYPES   DHCP$
+$EXIST   DHCP_OPT_TYPE$                   0    1      $DHCP_OPT_PAYLOAD_LEN$             [null]
+
+$JUMP    DHCP_OPT_TYPE$                   1    1      $DHCP_OPT_REQ_IP_ADDR_LEN$         [$DHCP_OPT_TYPE$] == [#32]
+                                          1    1      $DHCP_OPT_MESSAGE_TYPE_LEN$        [$DHCP_OPT_TYPE$] == [#35]
+                                          1    1      $DHCP_OPT_PARA_REQ_LEN$            [$DHCP_OPT_TYPE$] == [#37]
+                                          1    1      $DHCP_OPT_AGE_INFO_LEN$            [$DHCP_OPT_TYPE$] == [#52]
+                                          1    1      $DHCP_OPT_TIME_LEN$                [$DHCP_OPT_TYPE$] == [#33]
+                                          0    1      $DHCP_OPT_TIME_LEN$                [$DHCP_OPT_TYPE$] == [#3A]
+
+$JUMP    DHCP_OPT_REQ_IP_ADDR$            0    1      $DHCP_OPT_TYPE$                    [null]
+
+$JUMP    DHCP_OPT_MESSAGE_TYPE$           0    1      $DHCP_OPT_TYPE$                    [null]
+
+$REPEAT  DHCP_OPT_PARA_REQ_LEN$           0    1      $UDP_UDT$                          [$DHCP_OPT_PARA_REQ_LEN$]
+
+$JUMP    DHCP_OPT_PARA_REQ_DATA$          1    9      $DHCP_OPT_PARA_REQ_DATA$           [@REPEAT@] > [#1]
+                                          0    1      $DHCP_OPT_TYPE$                    [null]
+
+$JUMP    DHCP_OPT_AGE_INFO_LEN$           0    1      $DHCP_OPT_TYPE$                    [null]
+
+$REPEAT  DHCP_OPT_AGE_INFO_SUB_SEQ1_LEN$  0    1      $UDP_UDT$                          [$DHCP_OPT_AGE_INFO_SUB_SEQ1_LEN$]
+
+$JUMP    DHCP_OPT_AGE_INFO_SUB_SEQ1_DATA$ 1    9      $DHCP_OPT_AGE_INFO_SUB_SEQ1_DATA$  [@REPEAT@] > [#0]
+                                          1    1      $DHCP_OPT_AGE_INFO_SUB_SEQ2$       [$DHCP_OPT_AGE_INFO_LEN$ - $DHCP_OPT_AGE_INFO_SUB_SEQ1_LEN$] > [#2]
+                                          0    1      $DHCP_OPT_TYPE$                    [null]
+
+$REPEAT  DHCP_OPT_AGE_INFO_SUB_SEQ2_LEN$  0    1      $UDP_UDT$                          [$DHCP_OPT_AGE_INFO_SUB_SEQ2_LEN$]
+
+$JUMP    DHCP_OPT_AGE_INFO_SUB_SEQ2_DATA$ 1    9      $DHCP_OPT_AGE_INFO_SUB_SEQ2_DATA$  [@REPEAT@] > [#0]
+                                          0    1      $DHCP_OPT_TYPE$                    [null]
+
+$JUMP    DHCP_OPT_TIME_DATA$              0    1      $DHCP_OPT_TYPE$                    [null]
+
+
+$REPEAT  DHCP_OPT_PAYLOAD_LEN$            0    1      $UDP_UDT$                          [$DHCP_OPT_PAYLOAD_LEN$]
+$JUMP    DHCP_OPT_PAYLOAD_LEN$            0    1      $UDP_UDT$                          [$DHCP_OPT_PAYLOAD_LEN$] == [#0]
+
+$JUMP    DHCP_OPT_PAYLOAD$                1    9      $DHCP_OPT_PAYLOAD$                 [@REPEAT@] > [#1]
+                                          0    1      $UDP_UDT$                          [null]
+
+$TYPES   RADIUS$
+$REPEAT  RADIUS_ATTRI_LEN$                0    1      $UDP_UDT$                          [$RADIUS_ATTRI_LEN$]
+
+$JUMP    RADIUS_ATTRI_LEN$                0    1      $UDP_UDT$                          [$RADIUS_ATTRI_LEN$] < [#3]
+
+$JUMP    RADIUS_ATTRI_DATA$               1    9      $RADIUS_ATTRI_DATA$                [@REPEAT@] > [#3]
+                                          0    1      $RADIUS_ATTRI_NUM$                 [null]
+
+$JUMP    RADIUS_ATTRI_NUM$                1    1      $RADIUS_ATTRI_TYPE$                [$RADIUS_ATTRI_NUM$] > [#0]
+                                          0    1      $UDP_UDT$                          [null]
+
+$TYPES   BFD$
+$NEXTP   BFD_ECHOVAL$                     0    1      $PKT_PAYLOAD$                      [null]
+
+$TYPES   PTP$
+$JUMP    PTP_LOG_MSG_INT$                 1    1      $PTP_AM_ORG_TMSTMP$                [$PTP_MSG_TYPE$] == [#b]
+                                          1    1      $PTP_SDRM_ORG_TMSTMP$              [$PTP_MSG_TYPE$] == [#0]
+                                          1    1      $PTP_SDRM_ORG_TMSTMP$              [$PTP_MSG_TYPE$] == [#1]
+                                          1    1      $PTP_FUM_PRC_ORG_TMSTMP$           [$PTP_MSG_TYPE$] == [#8]
+                                          1    1      $PTP_DRM_REC_TMSTMP$               [$PTP_MSG_TYPE$] == [#9]
+                                          1    1      $PTP_PRQM_ORG_TMPSTMP$             [$PTP_MSG_TYPE$] == [#2]
+                                          1    1      $PTP_PRSM_REQ_RCPT_TMSTMP$         [$PTP_MSG_TYPE$] == [#3]
+                                          1    1      $PTP_PRFUM_RES_ORG_TMSTMP$         [$PTP_MSG_TYPE$] == [#a]
+                                          1    1      $PTP_SM_TGT_PT_ID$                 [$PTP_MSG_TYPE$] == [#c]
+                                          1    1      $PTP_MM_TGT_PT_ID$                 [$PTP_MSG_TYPE$] == [#d]
+                                          0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_AM_TIME_SRC$                 0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_SDRM_ORG_TMSTMP$             0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_FUM_PRC_ORG_TMSTMP$          0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_DRM_REQ_PT_ID$               0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_PRQM_RES$                    0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_PRSM_REQ_PT_ID$              0    1      $PTP_UDT$                          [null]
+
+$JUMP    PTP_PRFUM_REQ_PT_ID$             0    1      $PTP_UDT$                          [null]
+
+$REPEAT  PTP_SM_TLV_LEN$                  0    1      $PTP_UDT$                          [$PTP_SM_TLV_LEN$]
+
+$JUMP    PTP_SM_TLV_LEN$                  0    1      $PTP_UDT$                          [$PTP_SM_TLV_LEN$] == [#0]
+
+$JUMP    PTP_SM_TLV_VALUE$                1    9      $PTP_SM_TLV_VALUE$                 [@REPEAT@] > [#1]
+                                          0    1      $PTP_UDT$                          [null]
+
+$REPEAT  PTP_MM_TLV_LEN$                  0    1      $PTP_UDT$                          [$PTP_MM_TLV_LEN$]
+
+$JUMP    PTP_MM_TLV_LEN$                  0    1      $PTP_UDT$                          [$PTP_MM_TLV_LEN$] == [#0]
+
+$JUMP    PTP_MM_TLV_VALUE$                1    9      $PTP_MM_TLV_VALUE$                 [@REPEAT@] > [#1]
+                                          0    1      $PTP_UDT$                          [null]
+
+$TYPES   CAPWAP$
+$JUMP    CAPWAP_PRE_TYPE$                 1    1      $CAPWAP_HLEN$                      [$CAPWAP_PRE_TYPE$] == [#0]
+                                          0    1      $DTLS_RES$                         [$CAPWAP_PRE_TYPE$] == [#1]
+
+$NEXTP   CAPWAP_WBID$                     0    1      $WIRELESSDOT11$                    [$CAPWAP_WBID$] == [#1]
+
+$JUMP    CAPWAP_RES$                      1    1      $CAPWAP_RAD_MAC_ADDR$              [$CAPWAP_M$] == [#1]
+                                          1    1      $CAPWAP_WIR_SPEC_INFO$             [$CAPWAP_W$] == [#1]
+                                          0    1      $CAPWAP_PAYLOAD_LEN$               [$CAPWAP_W$ + $CAPWAP_M$] == [#0]
+
+$JUMP    CAPWAP_RAD_MAC_ADDR$             1    1      $CAPWAP_WIR_SPEC_INFO$             [$CAPWAP_W$] == [#1]
+                                          0    1      $CAPWAP_PAYLOAD_LEN$               [$CAPWAP_W$] == [#0]
+
+$REPEAT  CAPWAP_PAYLOAD_LEN$              0    1      $CAPWAP_ONLY_USE_PAYLOAD$          [$CAPWAP_PAYLOAD_LEN$]
+$JUMP    CAPWAP_PAYLOAD_LEN$              0    1      $CAPWAP_ONLY_USE_PAYLOAD$          [$CAPWAP_PAYLOAD_LEN$] == [#0]
+
+$JUMP    CAPWAP_PAYLOAD_DATA$             0    9      $CAPWAP_PAYLOAD_DATA$              [@REPEAT@] > [#1]
+
+$JUMP    CAPWAP_ONLY_USE_PAYLOAD$         1    1      $CAPWAP_UDT$                       [$CAPWAP_ONLY_USE_PAYLOAD$] == [#1]
+                                          0    1      $CAPWAP_80211_PAYLOAD$             [$CAPWAP_ONLY_USE_PAYLOAD$] == [#0]
+
+$NEXTP   CAPWAP_80211_PAYLOAD$            1    1      $WIRELESSDOT11$                    [$CAPWAP_T$] == [#1]
+                                          0    1      $ETHERNET$                         [null]
+
+$TYPES   DTLS$
+
+$REPEAT  DTLS_PAYLOAD_LEN$              0    1      $UDP_UDT$                          [$DTLS_PAYLOAD_LEN$]
+$JUMP    DTLS_PAYLOAD_LEN$              0    1      $UDP_UDT$                          [$DTLS_PAYLOAD_LEN$] == [#0]
+
+
+$JUMP    DTLS_PAYLOAD_DATA$             0    9      $DTLS_PAYLOAD_DATA$                [@REPEAT@] > [#1]
+
+
+$TYPES   LLC$
+$JUMP    LLC_VLAN_EXIST$                1    1      $LLC_VLAN_DSAP$                    [$LLC_VLAN_EXIST$] == [#1]
+                                        0    1      $LLC_DSAP$                         [$LLC_VLAN_EXIST$] == [#0]
+
+$EXIST   LLC_DSAP$        1     2     $LLC_UDT$         [@PKT_LEN@] <= [@MTU@]
+                          0     1     $LLC_UDT$         [@EN_8022@] == [#1]
+
+$NEXTP   LLC_DSAP$        0     1     $STP$             [$LLC_DSAP$] == [#42]
+
+
+
+$EXIST   LLC_OUI$         1     2     $LLC_UDT$         [$LLC_DSAP$] == [#AA]
+                          1     2     $LLC_UDT$         [$LLC_SSAP$] == [#AA]
+                          0     1     $LLC_UDT$         [$LLC_CTL0$] == [#3]
+
+$NEXTP   LLC_L2_TYPE$     1     1     $IPV4$            [$LLC_L2_TYPE$] == [#0800]
+                          0     1     $IPV6$            [$LLC_L2_TYPE$] == [#86DD]
+
+
+$TYPES   NSH$
+$NEXTP   NSH_MANDATORY_4$                1    1      $IPV4$                         [$NSH_NEXT_PROTOCOL$] == [#1]
+                                         0    1      $L2H$                          [$NSH_NEXT_PROTOCOL$] == [#3]
+
+
+
+$TYPES   IGMP$
+$JUMP    IGMP_TYPE$                       1    1      $IGMPV3_REP_RESERVER1$             [$IGMP_TYPE$] == [#22]
+                                          1    1      $IGMP_RESP_CODE$                   [$IGMP_TYPE$] == [#17]
+                                          1    1      $IGMP_RESP_CODE$                   [$IGMP_TYPE$] == [#16]
+                                          1    1      $IGMP_RESP_CODE$                   [$IGMP_TYPE$] == [#11]
+                                          0    1      $IGMP_UDT$                         [null]
+
+$JUMP    IGMP_VERSION$                    1    1      $IGMPV3_QUE_RESV$                  [$IGMP_VERSION$] == [#3]
+                                          0    1      $IGMP_UDT$                         [null]
+
+$REPEAT  IGMPV3_QUE_NUM_OF_SRC$           0    1      $IGMP_UDT$                         [$IGMPV3_QUE_NUM_OF_SRC$]
+$JUMP    IGMPV3_QUE_NUM_OF_SRC$           1    1      $IGMP_UDT$                         [$IGMPV3_QUE_NUM_OF_SRC$]  == [#0]
+                                          0    1      $IGMPV3_QUE_SRC_ADDR$              [null]
+
+$JUMP    IGMPV3_QUE_SRC_ADDR$             1    9      $IGMPV3_QUE_SRC_ADDR$              [@REPEAT@] > [#1]
+                                          0    1      $IGMP_UDT$                         [null]
+
+$JUMP    IGMPV3_REP_NUM_OF_REC$           1    1      $IGMP_UDT$                         [$IGMPV3_REP_NUM_OF_REC$]  == [#0]
+                                          0    1      $IGMPV3_REP_RECORD_TYPE$           [null]
+
+$EXIST   IGMPV3_REP_RECORD_TYPE$          0    1      $IGMP_UDT$                         [null]
+
+$REPEAT  IGMPV3_REP_NUM_OF_SRC$           0    1      $IGMP_UDT$                         [$IGMPV3_REP_NUM_OF_SRC$]
+
+$JUMP    IGMPV3_REP_SRC_ADDR$             1    9      $IGMPV3_REP_SRC_ADDR$              [@REPEAT@] > [#1]
+                                          0    1      $IGMPV3_REP_AUX_DATA_LEN2$         [null]
+
+$REPEAT  IGMPV3_REP_AUX_DATA_LEN2$        0    1      $IGMP_UDT$                         [$IGMPV3_REP_AUX_DATA_LEN2$]
+
+$JUMP    IGMPV3_REP_AUX_DATA$             1    9      $IGMPV3_REP_AUX_DATA$              [@REPEAT@] > [#1]
+                                          0    1      $IGMPV3_REP_RECORD_TYPE$           [null]
+
+
+
+$TYPES   ICMP$
+$JUMP    ICMP_CHECKSUM$                   1    1      $ICMP_PPM_POINTER$                 [$ICMP_TYPE$] == [#c]
+                                          1    1      $ICMP_ECHO_IDE$                    [$ICMP_TYPE$] == [#0]
+                                          1    1      $ICMP_ECHO_IDE$                    [$ICMP_TYPE$] == [#8]
+                                          0    1      $ICMP_UDT$                         [null]
+
+
+$REPEAT  ICMP_ECHO_DATA_REP$              0    1      $ICMP_UDT$                         [$ICMP_ECHO_DATA_REP$]
+
+$JUMP    ICMP_ECHO_DATA$                  1    9      $ICMP_ECHO_DATA$                   [@REPEAT@] > [#0]
+                                          0    1      $ICMP_UDT$                         [null]
+
+
+$TYPES   ICMPV6$
+$JUMP    ICMPV6_CHECKSUM$                 1    1      $ICMPV6_ECHO_IDE$                  [$ICMPV6_TYPE$] == [#80]
+                                          1    1      $ICMPV6_ECHO_IDE$                  [$ICMPV6_TYPE$] == [#81]
+                                          1    1      $ICMPV6_MLD_MAX_RES$               [$ICMPV6_TYPE$] == [#82]
+                                          1    1      $ICMPV6_MLD_MAX_RES$               [$ICMPV6_TYPE$] == [#83]
+                                          1    1      $ICMPV6_MLD_MAX_RES$               [$ICMPV6_TYPE$] == [#84]
+                                          1    1      $ICMPV6_RS_RESERVED$               [$ICMPV6_TYPE$] == [#85]
+                                          1    1      $ICMPV6_RA_CHL$                    [$ICMPV6_TYPE$] == [#86]
+                                          1    1      $ICMPV6_NS_RESERVED$               [$ICMPV6_TYPE$] == [#87]
+                                          1    1      $ICMPV6_NA_R$                      [$ICMPV6_TYPE$] == [#88]
+                                          1    1      $ICMPV6_RM_RESERVED $              [$ICMPV6_TYPE$] == [#89]
+                                          0    1      $ICMPV6_UDT$                       [null]
+
+$REPEAT  ICMPV6_ECHO_DATA_REP$            0    1      $ICMPV6_UDT$                       [$ICMPV6_ECHO_DATA_REP$]
+
+$JUMP    ICMPV6_ECHO_DATA$                1    9      $ICMPV6_ECHO_DATA$                 [@REPEAT@] > [#0]
+                                          0    1      $ICMPV6_UDT$                       [null]
+
+$JUMP    ICMPV6_RS_RESERVED$              0    1      $ICMPV6_OPT_NUM$                   [null]
+
+$JUMP    ICMPV6_RA_RET_TIME$              0    1      $ICMPV6_OPT_NUM$                   [null]
+
+$JUMP    ICMPV6_NS_TAR_ADDR$              0    1      $ICMPV6_OPT_NUM$                   [null]
+
+$JUMP    ICMPV6_NA_TAR_ADDR$              0    1      $ICMPV6_OPT_NUM$                   [null]
+
+$JUMP    ICMPV6_RM_DES_ADDR$              0    1      $ICMPV6_OPT_NUM$                   [null]
+
+$REPEAT  ICMPV6_OPT_NUM$                  0    1      $ICMPV6_UDT$                       [$ICMPV6_OPT_NUM$]
+
+$JUMP    ICMPV6_OPT_NUM$                  0    1      $ICMPV6_UDT$                       [$ICMPV6_OPT_NUM$] == [#0]
+
+$JUMP    ICMPV6_OPT_LEN$                  1    1      $ICMPV6_OPT_LINK_LAY_ADDR$         [$ICMPV6_OPT_TYPE$] == [#1]
+                                          1    1      $ICMPV6_OPT_LINK_LAY_ADDR$         [$ICMPV6_OPT_TYPE$] == [#2]
+                                          1    1      $ICMPV6_OPT_PRE_LEN$               [$ICMPV6_OPT_TYPE$] == [#3]
+                                          1    1      $ICMPV6_OPT_MTU_RESERVED$          [$ICMPV6_OPT_TYPE$] == [#5]
+                                          0    1      $ICMPV6_UDT$                       [null]
+
+$JUMP    ICMPV6_OPT_LINK_LAY_ADDR$        1    9      $ICMPV6_OPT_TYPE$                  [@REPEAT@] > [#1]
+                                          0    1      $ICMPV6_UDT$                       [null]
+
+$JUMP    ICMPV6_OPT_PRE_PREFIX$           1    9      $ICMPV6_OPT_TYPE$                  [@REPEAT@] > [#1]
+                                          0    1      $ICMPV6_UDT$                       [null]
+
+$JUMP    ICMPV6_OPT_MTU_MTU$              1    9      $ICMPV6_OPT_TYPE$                  [@REPEAT@] > [#1]
+                                          0    1      $ICMPV6_UDT$                       [null]
+
+
+
+$TYPES   STP$
+$EXIST   STP_R_VER_1_LENGTH$              0    1      $STP_UDT$                          [null]
+
+$EXIST   STP_R_M_VER_3_LENGTH$            0    1      $STP_UDT$                          [null]
+
+$JUMP    STP_R_M_MSTI_CFG_NUM$            0    1      $STP_UDT$                          [$STP_R_M_MSTI_CFG_NUM$] == [#0]
+
+$REPEAT  STP_R_M_MSTI_CFG_NUM$            0    1      $STP_UDT$                          [$STP_R_M_MSTI_CFG_NUM$]
+
+$JUMP    STP_R_M_MSTI_REMAIN_HOP$         0    9      $STP_R_M_MSTI_FLG$                 [@REPEAT@] > [#1]
+*** Layer 3 Protocol Header Format Region End **
+

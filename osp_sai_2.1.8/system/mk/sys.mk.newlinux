@@ -1,0 +1,294 @@
+override TOP_DIR := $(shell cd $(TOP_DIR) && pwd)
+
+#VENDOR = centec
+
+OBJ_DIR = $(BLD_DIR)/obj/$(subst $(TOP_DIR)/,,$(CURDIR))
+LIB_DIR = $(BLD_DIR)/lib
+BIN_DIR = $(BLD_DIR)/bin
+
+LD = $(CROSS_COMPILE)ld
+
+CC = $(CROSS_COMPILE)gcc
+ifeq ($(ARCH),um)
+ifeq ($(ENABLE_NETCONF),yes)
+CC = $(CROSS_COMPILE)gcc-4.8
+endif
+endif
+
+AR = $(CROSS_COMPILE)ar
+RANLIB = $(CROSS_COMPILE)ranlib
+OBJCOPY = $(CROSS_COMPILE)objcopy 
+
+ifeq ($(ARCH),um)
+CPPFLAGS = -D_GLB_HOST_IS_LE=1
+endif
+ifeq ($(ARCH),arm)
+CPPFLAGS = -D_GLB_HOST_IS_LE=1
+endif
+ifeq ($(ARCH),arm64)
+CPPFLAGS = -D_GLB_HOST_IS_LE=1
+endif
+ifeq ($(ARCH), x86_64)
+CPPFLAGS = -D_GLB_HOST_IS_LE=1
+endif
+ifeq ($(ARCH), powerpc)
+CPPFLAGS = -D_GLB_HOST_IS_LE=0
+endif
+
+CPPFLAGS += -DCNOS_OS
+
+ifeq ($(CHIPNAME),goldengate)
+CPPFLAGS += -DGOLDENGATE
+else
+ifeq ($(CHIPNAME),duet2)
+CPPFLAGS += -DDUET2
+CPPFLAGS += -DUSW
+else
+ifeq ($(CHIPNAME),tsingma)
+CPPFLAGS += -DTSINGMA
+CPPFLAGS += -DUSW
+else
+CPPFLAGS += -DGREATBELT
+endif
+endif
+endif
+
+ifeq ($(PRODUCT), tap)
+CPPFLAGS += -DTAPPRODUCT
+endif
+
+ifeq ($(PRODUCT), sai)
+CPPFLAGS += -DSAIPRODUCT
+endif
+
+ifeq ($(PRODUCT), ofdpa)
+CPPFLAGS += -DOFDPAPRODUCT
+endif
+
+CPPFLAGS += -DKERNEL_ARP
+ifeq ($(PRODUCT), of)
+CPPFLAGS += -DOFPRODUCT
+endif
+
+ifeq ($(PRODUCT), ttp)
+CPPFLAGS += -DTTPPRODUCT
+endif
+
+ifeq ($(USE_LICENSE), yes)
+CPPFLAGS += -DLICENSE
+endif
+
+CPPFLAGS += -DHAVE_DMA
+CPPFLAGS += -DHAVE_CONFIG_H
+CPPFLAGS += -D_CENTEC_
+CPPFLAGS += -D_GLB_ENABLE_DBGSHOW_
+CPPFLAGS += -DMEMMGR
+CPPFLAGS += -D_NEW_VERSION_LINUX_
+
+ifeq ($(ARCH),mips)
+CPPFLAGS += -D_CTC_OCTEON_CN50XX_
+endif
+ifeq ($(ARCH), arm)
+ifeq ($(CPU), hi3535)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_ARM_HI3535_
+endif
+endif
+ifeq ($(ARCH), arm64)
+ifeq ($(CPU), ls1023a)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_ARM_LS1023A_
+CPPFLAGS += -DCTC_ENV_IN_SPI_FLASH
+CPPFLAGS += -Wno-error=misleading-indentation
+CPPFLAGS += -fgnu89-inline
+CPPFLAGS += -Wno-error=unused-but-set-variable
+endif
+ifeq ($(CPU), ctc5236)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_ARM_CTC5236_
+CPPFLAGS += -DCTC_ENV_IN_SPI_FLASH
+CPPFLAGS += -Wno-error=misleading-indentation
+CPPFLAGS += -fgnu89-inline
+CPPFLAGS += -Wno-error=unused-but-set-variable
+endif
+endif
+ifeq ($(ARCH), powerpc)
+ifeq ($(CPU), p1010)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_FSCL_P1010_
+CPPFLAGS += -D_GLB_HOST_IS_LE=0
+endif
+ifeq ($(CPU), p1014)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_FSCL_P1014_
+CPPFLAGS += -D_GLB_HOST_IS_LE=0
+endif
+ifeq ($(CPU), 8t4s12x)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_FSCL_P1014_
+CPPFLAGS += -D_CTC_NO_PARTITION2
+endif
+endif
+ifeq ($(ARCH), x86_64)
+CPPFLAGS += -D_CTC_BOARD_TYPE_EEPROM_
+CPPFLAGS += -D_CTC_X86_64_
+endif
+ifeq ($(IPC), y)
+CPPFLAGS += -DHAVE_IPC
+endif
+
+ifeq ($(ETH_OAM), y)
+CPPFLAGS += -DHAVE_ETH_OAM
+endif
+
+ifeq ($(ARCH),um)
+ifeq ($(CPU), i686)
+CPPFLAGS += -m32
+endif
+ifeq ($(CPU), x86_64)
+CPPFLAGS += -D_CTC_X86_64_
+endif
+endif
+
+# SDK flags which is used by sal.
+# added by zhangdy for merging v3.0.2.17, we should add the following def here,
+# since our sal may be used by sdk in a first be included first wins way.
+# the macro SDK_BOARD in defined in env.inc and be passed to sdk mk system as
+# BOARD, so here we should use SDK_BOARD.
+ifeq ($(SDK_BOARD),ctc-sim)
+CPPFLAGS += -DSDK_IN_USERMODE
+CPPFLAGS += -DUSE_SIM_MEM
+CPPFLAGS += -DSDK_WORK_ENV=1
+CPPFLAGS += -DSDK_WORK_PLATFORM=1
+endif
+
+ifeq ($(SDK_BOARD),linux-sim)
+CPPFLAGS += -DSDK_IN_USERMODE
+CPPFLAGS += -DUSE_SIM_MEM
+CPPFLAGS += -DSDK_WORK_ENV=0
+CPPFLAGS += -DSDK_WORK_PLATFORM=1
+endif
+
+ifeq ($(SDK_BOARD),ctc-board)
+CPPFLAGS += -DSDK_IN_USERMODE
+CPPFLAGS += -DSDK_WORK_ENV=1
+CPPFLAGS += -DSDK_WORK_PLATFORM=0
+CPPFLAGS += -DEMULATION_PLATFORM
+endif
+
+ifeq ($(SDK_BOARD),linux-board)
+CPPFLAGS += -DSDK_IN_USERMODE
+CPPFLAGS += -DSDK_WORK_ENV=0
+CPPFLAGS += -DSDK_WORK_PLATFORM=0
+endif
+
+ifeq ($(BTYPE), chassis_svc)
+CPPFLAGS += -D_GLB_DISTRIBUTE_SYSTEM_
+endif
+
+ifeq ($(IS_UML), y)
+CPPFLAGS += -DUSE_SIM_MEM
+CPPFLAGS += -D_GLB_UML_SYSTEM_
+endif
+
+CFLAGS = -Wall -g -fno-strict-aliasing -D_GNU_SOURCE
+ifeq ($(WARN_NOERROR),y)
+else
+ifeq ($(CPU), x86_64)
+else
+#CFLAGS += -Werror
+endif
+endif
+
+ifeq ($(ARCH), mips)
+CFLAGS += -mabi=n32
+CPPFLAGS += -D_GNU_SOURCE
+endif
+
+#add by jiangz for valgrind
+IS_VALGRIND = no
+ifeq ($(IS_VALGRIND),yes)
+CFLAGS += -DISVALGRIND
+endif
+
+#add by zhuj for gprof
+IS_GPROF = no
+ifeq ($(IS_GPROF),yes)
+CFLAGS += -DISGPROF
+CFLAGS += -pg
+endif
+
+#add by zzhu for gcov
+IS_GCOV = no
+ifeq ($(IS_GCOV),yes)
+CFLAGS += -DISGCOV
+endif
+
+ifeq ($(VER),r)
+CFLAGS += -O2
+endif
+ifeq ($(VER),d)
+CFLAGS += -D_LCM_DEBUG_
+endif
+
+#added by shil for support debian
+ifeq ($(ENABLE_DEBIAN_LINUX), y)
+CPPFLAGS+= -DHAVE_DEBIAN
+ifeq ($(ARCH), powerpc)
+LD_FLAGS+= -Wl,--rpath=/switch/lib
+LD_FLAGS+= -Wl,--dynamic-linker=/switch/lib/ld.so.1
+endif
+endif
+ifeq ($(ENABLE_DEBIAN_LINUX), y)
+CPPFLAGS+= -DSWITCH_PREFIX=\"/switch\"
+else
+CPPFLAGS+= -DSWITCH_PREFIX=\"\"
+endif
+
+# common lib
+ifeq ($(ARCH),um)
+LIBASN1=libasn1.a
+LIBMSG=libmsg.a
+LIBMEMIO=libmemio.a
+else
+LIBASN1=libasn1.so
+LIBMSG=libmsg.so
+LIBMEMIO=libmemio.so
+endif
+
+# add by shil for compile on debian8
+ifeq ($(CPU), x86_64)
+CFLAGS += `pkg-config --cflags glib-2.0`
+LDFLAGS += `pkg-config --libs glib-2.0`
+endif
+
+ifeq ($(ENABLE_NETCONF),yes)
+CPPFLAGS += -DHAVE_NETCONF=1
+#
+# XXX:
+#   HAVE_LEGACY_VRF is for CentecOS (Mainly for chvrf)
+#   Please disable this for CNOS
+#
+#CPPFLAGS += -DHAVE_LEGACY_VRF=1
+
+NETCONF_DEP_LIBS  = libyang.so
+NETCONF_DEP_LIBS += libsysrepo.so
+NETCONF_DEP_LIBS += libprotobuf-c.a
+NETCONF_DEP_LIBS += libpcre.a
+NETCONF_DEP_LIBS += libev.a
+NETCONF_DEP_LIBS += libredblack.a
+NETCONF_DEP_LIBS += libncutil.a libsradpt.a
+
+NETCONF_LD_LIBS  = -lsysrepo -lprotobuf-c
+NETCONF_LD_LIBS += -lyang
+NETCONF_LD_LIBS += -lpcre
+NETCONF_LD_LIBS += -lev
+NETCONF_LD_LIBS += -lredblack
+NETCONF_LD_LIBS += -lncutil -lsradpt
+
+NETCONF_CFLAGS  = -I$(APP_TOP_DIR)/netconf/include
+NETCONF_CFLAGS += -I$(APP_TOP_DIR)/netconf/libsradpt
+NETCONF_CFLAGS += -I$(TOP_DIR)/lib/libncutil
+CFLAGS += -O0
+endif
+

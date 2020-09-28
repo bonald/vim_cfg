@@ -1,0 +1,91 @@
+HAL-MSG-L3IF DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIntList
+    FROM HAL-MSG-TYPES
+    HalMsgL3SyncItem
+    FROM HAL-MSG-L3TYPES  
+    ;
+
+
+HalL3IFInfoDefine ::= SEQUENCE
+{
+    iftype       INTEGER,
+    gport        INTEGER,
+    vid          INTEGER
+}
+
+HalL3IFPropDefine  ::= ENUMERATED
+{
+    mtu,
+    vrfid,
+    tx,
+    rx,
+    max
+}
+
+HalMsgL3IFCreate ::= SEQUENCE
+{
+    l3ifid       INTEGER,
+    enable       INTEGER, --1=Create, 0=Destroy
+    l3ifInfo     HalL3IFInfoDefine
+}
+
+HalMsgL3IFSetProp ::= SEQUENCE
+{
+    l3ifid       INTEGER,
+    type         HalL3IFPropDefine,
+    value        INTEGER
+}
+
+HalMsgL3IFSetIPFlag ::= SEQUENCE
+{
+    l3ifid       INTEGER,
+    flags        INTEGER,
+    enable       INTEGER
+}
+
+--agg callback structures
+HalMsgL3IFAggAddMemberCB ::= SEQUENCE
+{
+    portid      INTEGER,
+    l3ifid      INTEGER,
+    -- agg attr set to or remove from member
+    flagAgg     INTEGER,
+    --the following is for agg member detach
+    mtu         INTEGER,
+    vrfid       INTEGER,
+    txEn        INTEGER,
+    rxEn        INTEGER,
+    flagBmp     INTEGER
+}
+
+--set dhcp exception type
+HalMsgL3IFDhcpExcpType ::= SEQUENCE
+{
+    l3ifid      INTEGER,
+    enable      INTEGER,
+    memPortid   HalMsgIntList --member port
+}
+
+
+--sync structures
+HalMsgL3IFAttriSyncItem  ::= SEQUENCE
+{
+    l3ifid      INTEGER,
+    mtu         INTEGER,
+    vrfid       INTEGER,
+    txEn        INTEGER,
+    rxEn        INTEGER,
+    flagBmp     INTEGER,
+    l3ifInfo    HalL3IFInfoDefine, --gportid, vid, iftype
+    memPortid   HalMsgIntList --only for agg member port
+}
+
+HalMsgL3IFAttriSync ::= SEQUENCE
+{
+    l3ifList    SEQUENCE OF HalMsgL3IFAttriSyncItem
+}
+
+END
+

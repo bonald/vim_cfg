@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+ARP LIMIT
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	
+	<COMMAND name="show ip arp number-limit" help="Arp Number limit" >
+	    <ACTION>
+		cdbctl show/cdb/l3/show_arpinsp/number-limit
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show ip arp number-limit command to display the information of all ports which have configured the ARP number-limit, which includes arp numberlimit port, max numberlimit number, current dynamic arp number and violation mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The ARP numberlimit port mode only can be L3 port, the MaxLimitNum and CurrentNum are dynamic ARP address number, not include static ARP address number.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+		This example shows how to display the ARP number-limit:
+		Switch# show ip arp number-limit 
+		ArpNumlimit Port  MaxLimitNum  CurrentNum  ViolationMode
+		-----------------+------------+-----------+-------------
+		eth-0-1        	  512          0           protect
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp number-limit
+ip arp number-limit maximum
+ip arp number-limit violation
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ip arp number-limit interface" help="Arp Number limit" >
+		<PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+	    <ACTION>
+		cdbctl show/cdb/l3/show_arpinsp/number-limit/${if_name}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this show command to display the ARP number-limit information of one L3 port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The ARP number limit port mode only can be l3 port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+		This example shows how to display the ARP number-limit eth-0-1:
+		Switch# show ip arp number-limit interface eth-0-1
+		Arp number limit                    : enabled
+		Arp number limit violate mode       : discard packet silence
+		Arp number limit maximum            : 512 
+		ARP number limit total number       : 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp number-limit
+ip arp number-limit maximum
+ip arp number-limit violation
+		</CTCRCMD>
+	</COMMAND>
+	
+	<!--show ip arp rate-limit [interface interface-name] -->
+	<COMMAND name="show ip arp rate-limit" help="ARP rate limit configuration and statistics" >
+	    <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+	    		<PARAM name="interface" help="Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand"> 
+		     		<PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+		     	</PARAM>
+	    </PARAM>
+	    <ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l3/show_arpinsp/arpratelimit
+		else
+			cdbctl show/cdb/l3/show_arpinsp/arpratelimit/${if_name}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+This command can display the ARP rate limit configuration and statistics on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The interface only can be L3 port. Include vlan port, agg port and routed port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example display how to show the interface arp rate limit:
+		Switch# show ip arp rate-limit
+		Port      States  MaxLimitNum  CurrentNum  Violation     Abnormal
+		---------+-------+------------+-----------+-------------+----------
+		eth-0-1   enable  1500		   1499		   restrict		 N    		
+		eth-0-3   enable  1500		   1600		   restrict		 Y  		
+		vlan1	  enable  1500		   1499		   restrict		 N  		 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp rate-limit enable
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ip arp" help="IP ARP features"/>
+	<COMMAND name="no ip arp" help="IP ARP features"/>
+	
+	<COMMAND name="ip arp number-limit" help="ARP packet number limit"/>
+	<COMMAND name="ip arp number-limit enable" help="Configures ARP packet number limiting enable">
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/arp_numberlimit_enable/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp number-limit configuration command on the L3 port to set arp number-limit enable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.
+The number-limit maximum and number-limit violation will be work only when arp number-limit enable. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp number-limit enable.
+    Switch(config-if-eth-0-1) ip arp number-limit enable	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp number-limit enable
+show ip arp number-limit
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ip arp number-limit maximum" help="Configures ARP packet number limiting max number">
+		<PARAM name="maxinum" help="Maxinum of dynamic limit address, default is 512" ptype="ARP_NUMBERLIMIT" />
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/arp_numberlimit_number/${maxinum}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp number-limit maximum configuration command on the L3 port to set the maximum of arp peckets.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.
+The command can set the maximum of learnt dynamic arp number, the range is 1 to 2048.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is 512.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the maximum of arp number-limit on one port.
+    Switch(config-if-eth-0-1) ip arp number-limit maximum 100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp number-limit maximum
+show ip arp number-limit
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ip arp number-limit violation" help="Configures ARP packet number limiting violation mode">
+		<PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+            <PARAM name="protect" help="Discard packet silently (default)" ptype="SUBCOMMAND" mode="subcommand"/> 
+            <PARAM name="restrict" help="Discard packet and print log" ptype="SUBCOMMAND" mode="subcommand"/> 
+            <PARAM name="errdisable" help="Discard packet, log and set the interface error-disabled" ptype="SUBCOMMAND" mode="subcommand"/> 
+         </PARAM>
+		<ACTION>
+			if [ ${part1} == "protect" ]; then
+                    cdbctl update/cdb/interface/${iface}/arp_numberlimit_violate/0
+                elif [ ${part1} == "restrict" ]; then
+                    cdbctl update/cdb/interface/${iface}/arp_numberlimit_violate/1
+                elif [ ${part1} == "errdisable" ]; then
+                    cdbctl update/cdb/interface/${iface}/arp_numberlimit_violate/2
+			fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp number-limit violation configuration command on the L3 port to set the violation mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The violation mode of protect is discard the packet directly, the mode of restrict is discard packet and print log, the mode of errdisable is not only discard packet and print log, but also set interface errdisable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is protect.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the violation mode on one port.
+    Switch(config-if-eth-0-1) ip arp number-limit violation errdisable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp number-limit violation
+show ip arp number-limit
+		</CTCRCMD>
+	</COMMAND>
+
+	<!-- ip arp rate-limit enable -->
+	<COMMAND name="ip arp rate-limit" help="ARP packet rate limit"/>
+	<COMMAND name="ip arp rate-limit enable" help="Enable ARP rate limit">
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_en/1
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp rate-limit enable configuration command on L3 port to enable ARP rate limit.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port. Include vlan port, agg port and routed port. The rate-limit maximum and rate-limit violation will be work only when arp rate-limit enable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is enable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp rate-limit enable.
+    Switch(config-if-eth-0-1) ip arp rate-limit enable	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp rate-limit enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip arp rate-limit maximum" help="Configures ARP rate limit max packet number receive in 30s">
+		<PARAM name="maxinum" help="Maximum of ARP rate limit, default is 150 per 30s" ptype="ARP_RATE_LIMIT_NUM" />
+		<ACTION>
+		   cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_pkt_max/${maxinum}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp rate-limit maximum configuration command on the L3 port to set the maximum of arp peckets can receive in 30s.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port. Include vlan port, agg port and routed port. The command set the maximum of arp packet receive in 30s, the range is 1 to 9000.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is 150.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the maximum of arp rate-limit on one port.
+    Switch(config-if-eth-0-1) ip arp rate-limit maximum 100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp rate-limit maximum
+		</CTCRCMD>
+	</COMMAND>
+
+	<!-- ip arp rate-limit violation  -->
+	<COMMAND name="ip arp rate-limit violation" help="Configures ARP rate limit violation mode">
+		<PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+            <PARAM name="restrict" help="Discard packet and print log (default)" ptype="SUBCOMMAND" mode="subcommand"/> 
+            <PARAM name="errdisable" help="Discard packet, print log and set the interface error-disabled" ptype="SUBCOMMAND" mode="subcommand"/> 
+         </PARAM>
+		<ACTION>
+			if [ ${part1} == "restrict" ]; then
+	                    cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_violation/0
+	                elif [ ${part1} == "errdisable" ]; then
+	                    cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_violation/1
+			fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp rate-limit violation configuration command on L3 port to set the violation mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The action of restrict is discard packet and print log, the mode of errdisable is not only discard packet and print log, but also set interface errdisable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is restrict.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the violation on one port.
+    Switch(config-if-eth-0-1) ip arp rate-limit violation errdisable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp rate-limit violation
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip arp number-limit" help="ARP packet number limit"/>
+	<COMMAND name="no ip arp number-limit enable" help="Configures ARP packet number limiting">
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/arp_numberlimit_enable/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use no command will set ip arp number-limit to disable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.
+when the ip arp number-limit is disable, the arp number-limit maximum and arp number-limit violation will not work.   
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp number-limit disable.
+    Switch(config-if-eth-0-1) no ip arp number-limit
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp number-limit
+show ip arp number-limit
+		</CTCRCMD>		
+	</COMMAND>
+	
+	<COMMAND name="no ip arp number-limit maximum" help="Configures ARP packet number limiting max number">
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/arp_numberlimit_number/512
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use no command will set the maximum of arp number-limit to default value.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.
+The default value of maximum is 512.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is 512.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the maximum of arp number-limit:
+    Switch(config-if-eth-0-1) no ip arp number-limit maximum
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp number-limit maximum
+show ip arp number-limit
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no ip arp number-limit violation" help="Configures ARP packet number limiting violation mode">
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/arp_numberlimit_violate/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command set the arp number-limit violation to default mode: protect.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.
+The no command can set the arp number-limit violation to default mode, the default violation is protect. When the violation happens, it will discard arp packet directly.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is protect.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the violation mode on one port.
+    Switch(config-if-eth-0-1) no ip arp number-limit violation
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp number-limit violation
+		</CTCRCMD>		
+	</COMMAND>
+
+	<!-- no ip arp rate-limit enable -->
+	<COMMAND name="no ip arp rate-limit" help="ARP packet rate limit"/>
+	<COMMAND name="no ip arp rate-limit enable" help="Enable ARP rate limit">
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_en/0
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use no command will set ip arp rate-limit to disable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.  
+when the ip arp rate-limit is disable, the arp rate-limit maximum and arp rate-limit violation will not work.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is enable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp rate-limit disable.
+    Switch(config-if-eth-0-2) no ip arp rate-limit enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp rate-limit enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<!-- no ip arp rate-limit maximum  -->
+	<COMMAND name="no ip arp rate-limit maximum" help="Configures ARP rate limit max packet number receive in 30s">
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_pkt_max/150
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use no command will set ip arp rate-limit maximum to default.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is 150.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp rate-limit maximum to default.
+    Switch(config-if-eth-0-2) no ip arp rate-limit maximum
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp rate-limit maximum 
+		</CTCRCMD>
+	</COMMAND>
+
+	<!-- no ip arp rate-limit violation -->
+	<COMMAND name="no ip arp rate-limit violation" help="Configures ARP rate limit violation mode">
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/arp_rate_limit_violation/0
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use no command will set ip arp rate-limit violation to default mode: restrict.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be L3 port.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is restrict.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp rate-limit violation to default.
+    Switch(config-if-eth-0-2) no ip arp rate-limit violation
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp rate-limit violation
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

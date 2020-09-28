@@ -1,0 +1,142 @@
+<div id="vlan-status">
+
+    <!-- content -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <div class="btn-toolbar row">
+                <div class="btn-toolbar col-md-10">
+                    <button type="button" class="btn btn-default" ng-click="showAddForm = !showAddForm" ng-hide="showAddForm" ng-disabled="initLoading">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ 'Add' | translate }}
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="showAddForm = !showAddForm" ng-show="showAddForm">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;{{ 'Cancel' | translate }}
+                    </button>
+
+                    <div class="btn-group" role="group" ng-show="isMultiActive()">
+                        <button type="button" class="btn btn-default" ng-click="multiDel()" ng-disabled="loading"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;{{ 'Delete' | translate }}</button>
+                    </div>
+
+                    <button type="button" class="btn btn-danger" ng-click="deleteAllVlan()" ng-disabled="loading" ng-show="status.vlan_arr.length > 1"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;{{ 'Delete all VLAN' | translate }}</button>
+                </div>
+
+                <div class="form-inline col-md-2 padding-15px">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;{{ 'Filter' | translate }}
+                        </span>
+                        <input type="text" class="form-control input-sm" id="vlan-filter" placeholder="name filter" ng-model="nameFilter" ng-disabled="initLoading" />
+                    </div>
+                </div>
+            </div>
+            <!-- BEGIN: add vlan -->
+            <form name="addVlanForm" class="form-inline padding-15px" ng-show="showAddForm" novalidate>
+                <!-- BEGIN: vlan id or range selector -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        {{ (newVlanType == 'id') ? ('VLAN ID') : ('VLAN range') | translate }} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-class="{'active': newVlanType == 'id'}"><a href="javascript:;" ng-click=" newVlanType = 'id' ">VLAN ID</a></li>
+                        <li ng-class="{'active': newVlanType == 'range'}"><a href="javascript:;" ng-click=" newVlanType = 'range' ">VLAN range</a></li>
+                    </ul>
+                </div>
+                <!-- END: vlan id or range selector -->
+
+                <!-- BEGIN: vlan id or range -->
+                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[(newVlanType == 'id' && addVlanForm.vlanIdOrRange.$valid) || (newVlanType == 'range' && vlanRangeAvail())]">
+                    <input name="vlanIdOrRange" type="number" class="form-control" id="vlan-add-id" placeholder="2~4094" ng-model="newVlan.id" ng-change="checkIfModifyName()" ng-if="newVlanType == 'id'" ng-min="2" ng-max="4094" required />
+                    <input name="vlanIdOrRange" type="text" class="form-control" id="vlan-add-range" placeholder="e.g. 2,4-10,20" ng-model="newVlan.range" ng-if="newVlanType == 'range'" required />
+                </div>
+                <!-- END: vlan id or range -->
+
+                <!-- BEGIN: vlan name -->
+                <div class="form-group" ng-show="newVlanType == 'id'" ng-class="{true: 'has-success', false: 'has-error'}[(newVlanType == 'id' && addVlanForm.vlanName.$valid)]">
+                    <label for="vlan-add-name">{{ 'VLAN name' | translate }}</label>
+                    <input name="vlanName" type="text" class="form-control" id="vlan-add-name" placeholder="vlan name(length<=16)" ng-model="newVlan.name" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,15}$/" />
+                </div>
+                <!-- END: vlan name -->
+                <button type="submit" class="btn btn-submit" ng-click="addVlan()" ng-disabled="loading || !((newVlanType == 'id' && addVlanForm.vlanIdOrRange.$valid) || (newVlanType == 'range' && vlanRangeAvail()))">{{ 'Confirm' | translate }}</button>
+            </form>
+            <!-- END: add vlan -->
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">VLAN</h3>
+        </div>
+        <div class="panel-body">
+            <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+                <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+            </div>
+            <table class="table table-hover margin: 10px;" ng-hide="initLoading">
+                <thead>
+                    <tr>
+                        <th class="text-center col-md-1"><input type="checkbox" ng-click="setCheckboxAll(MULSELCTL)" ng-model="MULSELCTL"/></th>
+                        <th class="text-center col-md-2">VLAN id</th>
+                        <th class="text-center col-md-4">{{ 'Member Port' | translate }}</th>
+                        <th class="text-center col-md-3">{{ 'Description' | translate }}</th>
+                        <th class="text-center col-md-3">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in vlanDisp">
+                        <td class="text-center">
+                            <input ng-if="x.id == 1" type="checkbox" disabled />
+                            <input ng-if="x.id != 1" type="checkbox" ng-model="multiSel[x.id]" ng-disabled="x.id == 1" />
+                        </td>
+                        <td class="text-center">{{ x.id }}</td>
+                        <td class="text-left">
+                            <span style="display: inline-block" ng-repeat="portIndex in vlanMemberPortIndex[x.id]">{{ objIfIndex[portIndex] | switchPort}}&nbsp;&nbsp;&nbsp;</span>
+                        </td>
+                        <td class="text-center">{{ x.name }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button type="button" class="btn btn-default" ng-click="modifyVlanName(x.id)" ng-disabled="x.id == 1" title="{{ 'Modify' | translate }}" data-toggle="tooltip" data-placement="bottom">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </button>
+                                <button type="button" class="btn btn-default" ng-click="deleteVlan([x.id])" ng-disabled="x.id == 1" title="{{ 'Delete' | translate }}" data-toggle="tooltip" data-placement="bottom">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- modal -->
+    <div class="modal fade" id="modifyVlanNameModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">{{ 'Modify VLAN description' | translate }}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-group" name="modifyVlanNameForm" ng-class="{true: 'has-success', false: 'has-error'}[modifyVlanNameForm.newVlanName.$valid]" novalidate>
+                        <label>{{ 'New description' | translate }}</label>
+                        <input type="text" class="form-control" name="newVlanName" ng-model="newVlanName" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,15}$/" required />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="modifyVlanNameForm.$invalid" ng-click="modifyVlanName()">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;OK
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>

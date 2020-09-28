@@ -1,0 +1,10 @@
+# Change MAD_ROOT to your path.
+declare -x MAD_ROOT=$(pwd)
+declare -x MAD_USER_BASE=$MAD_ROOT/phy
+declare -x MAD_PROJ_NAME=madDrv
+declare -x MAD_TOOL_DIR=$MAD_USER_BASE/tools
+declare -x RELEASE=YES
+declare -x OS_RUN=LINUX
+declare -x DSP_VCT=FALSE
+declare -x VCT_PENDING=TRUE
+

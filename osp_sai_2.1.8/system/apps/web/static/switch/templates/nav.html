@@ -1,0 +1,282 @@
+<ul class="nav nav-pills nav-stacked" ng-controller="ctlHomeNav">
+
+    <!-- 设备概况 -->
+    <li role="presentation" ng-class="{'active': isAcitve('/home/index$')}">
+        <a href="#">
+            <span class="rect"></span>&nbsp;{{ 'Device Summary' | translate }}
+        </a>
+    </li>
+    <!-- 设备概况 end -->
+
+    <!-- 系统管理 -->
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'System Management' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/sys_mgr/file_mgr')}"><a href="#/home/sys_mgr/file_mgr"><span class="rect"></span>&nbsp;{{ 'File Management' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/sys_mgr/update_mgr')}"><a href="#/home/sys_mgr/update_mgr"><span class="rect"></span>&nbsp;{{ 'Update Management' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/sys_mgr/sys_conf$')}"><a href="#/home/sys_mgr/sys_conf"><span class="rect"></span>&nbsp;{{ 'System Configuration' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/sys_mgr/log_mgr')}"><a href="#/home/sys_mgr/log_mgr"><span class="rect"></span>&nbsp;{{ 'Log Management' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/sys_mgr/snmp_mgr')}"><a href="#/home/sys_mgr/snmp_mgr"><span class="rect"></span>&nbsp;{{ 'Snmp Management' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/sys_mgr/time_mgr')}"><a href="#/home/sys_mgr/time_mgr"><span class="rect"></span>&nbsp;{{ 'Time Management' | translate }}</a></li>
+
+        </ul>
+    </li>
+    <!-- 系统管理 end -->
+
+    <!-- 端口 -->
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'Interface Management' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/port_mgr/status$')}"><a href="#/home/port_mgr/status"><span class="rect"></span>&nbsp;{{ 'Interface Status' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/port_mgr/if_statistic$')}"><a href="#/home/port_mgr/if_statistic"><span class="rect"></span>&nbsp;{{ 'Interface Stats' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/port_mgr/storm_ctl$')}"><a href="#/home/port_mgr/storm_ctl"><span class="rect"></span>&nbsp;{{ 'Storm Control' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/port_mgr/link_agg')}"><a href="#/home/port_mgr/link_agg"><span class="rect"></span>&nbsp;{{ 'Link Aggregation' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/port_mgr/transceiver$')}"><a href="#/home/port_mgr/transceiver"><span class="rect"></span>&nbsp;{{ 'Transceiver Status' | translate }}</a></li>            
+        </ul>
+    </li>
+    <!-- 端口 end -->
+
+    <!-- 服务管理 -->
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'Service Management' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li>
+                <a href="javascript:;">
+                    <span class="toggle"></span>&nbsp;VLAN
+                </a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li ng-class="{'active': isAcitve('/home/srv_mgr/vlan/status$')}"><a href="#/home/srv_mgr/vlan/status"><span class="rect"></span>&nbsp;{{ 'VLAN Status' | translate }}</a></li>
+                    <li ng-class="{'active': isAcitve('/home/srv_mgr/vlan/access_trunk$')}"><a href="#/home/srv_mgr/vlan/access_trunk"><span class="rect"></span>&nbsp;{{ 'Access/Trunk Port' | translate}}</a></li>
+                </ul>
+            </li>
+            <!--
+            <li>
+                <a href="javascript:;">
+                    <span class="toggle"></span>&nbsp;VLAN 分类
+                </a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><span class="rect"></span>&nbsp;状态</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;规则</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;组</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;应用</a></li>
+                </ul>
+            </li>
+            -->
+            <li>
+                <a href="javascript:;">
+                    <span class="toggle"></span>&nbsp;MAC
+                </a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li ng-class="{'active': isAcitve('/home/srv_mgr/mac/mac_address_table$')}"><a href="#/home/srv_mgr/mac/mac_address_table"><span class="rect"></span>&nbsp;{{ 'MAC Address Table' | translate }}</a></li>
+                    <!--
+                    <li><a href="#"><span class="rect"></span>&nbsp;MAC全局配置</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;MAC学习</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;静态MAC地址表</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;黑洞MAC地址表</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;端口安全</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;静态安全MAC地址表</a></li>
+                    -->
+                </ul>
+            </li>
+            <!--
+            <li>
+                <a href="javascript:;">
+                    <span class="toggle"></span>&nbsp;生成树
+                </a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><span class="rect"></span>&nbsp;生成树信息</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;全局配置</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;生成树端口</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;MST域</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <span class="toggle"></span>&nbsp;ERPS
+                </a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><span class="rect"></span>&nbsp;ERPS 配置</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;ERPS 状态</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <span class="toggle"></span>&nbsp;端口镜像
+                </a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><span class="rect"></span>&nbsp;概况</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;配置</a></li>
+                    <li><a href="#"><span class="rect"></span>&nbsp;远程镜像MAC Escape</a></li>
+                </ul>
+            </li>
+            -->
+        </ul>
+    </li>
+    <!-- 服务管理 end -->
+
+    <!-- 认证管理 -->
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'Authentication Management' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/authentication/aaa_mgr')}"><a href="#/home/authentication/aaa_mgr "><span class="rect"></span>&nbsp;AAA</a></li>
+            <li ng-class="{'active': isAcitve('/home/authentication/tacas_mgr')}"><a href="#/home/authentication/tacas_mgr"><span class="rect"></span>&nbsp;Tacas</a></li>
+            <li ng-class="{'active': isAcitve('/home/authentication/radius_mgr')}"><a href="#/home/authentication/radius_mgr"><span class="rect"></span>&nbsp;Radius</a></li>
+
+        </ul>
+    </li>
+    <!-- 认证管理 end -->
+
+    <!-- 组播 -->
+<!--
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;组播
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#"><span class="rect"></span>&nbsp;IGMP Snooping功能</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;IGMP Snooping信息</a></li>
+        </ul>
+    </li>
+-->
+    <!-- 组播 end -->
+
+    <!-- QoS -->
+<!--
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;QOS
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#"><span class="rect"></span>&nbsp;全局配置</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;端口配置</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;端口策略</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;流量整形</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;拥塞管理</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;端口限速</a></li>
+        </ul>
+    </li>
+-->
+    <!-- QoS end -->
+
+    <!-- 访问控制列表 -->
+<!--
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;访问控制列表
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#"><span class="rect"></span>&nbsp;访问控制列表</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;流分类</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;策略分类</a></li>
+        </ul>
+    </li>
+-->
+    <!-- 访问控制列表 end -->
+
+    <!-- TAP -->
+    <li role="presentation" ng-show="System_product == 'Tap-350' || System_product == 'Tap-580' || System_product == 'Tap-550' || System_product == 'Tap-530'">
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'Tap Management' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/tap/tap_mgr')}"><a href="#/home/tap/tap_mgr"><span class="rect"></span>&nbsp;{{ 'Tap Group Table' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/tap/flow_mgr')}"><a href="#/home/tap/flow_mgr"><span class="rect"></span>&nbsp;{{ 'Flow' | translate }}</a></li>
+            <li ng-show="System_product != 'Tap-350'"  ng-class="{'active': isAcitve('/home/tap/flow_inner_match_mgr')}"><a href="#/home/tap/flow_inner_match_mgr"><span class="rect"></span>&nbsp;{{ 'Inner Match' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/tap/acl_mgr')}"><a href="#/home/tap/acl_mgr"><span class="rect"></span>&nbsp;{{ 'Acl' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/tap/tap_statistics')}"><a href="#/home/tap/tap_statistics"><span class="rect"></span>&nbsp;{{ 'Tap Statistics' | translate }}</a></li>
+        </ul>
+    </li>    
+    
+    <!-- IP路由 -->
+
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'IP Routing' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/routing/ipv4_routing$')}"><a href="#/home/routing/ipv4_routing"><span class="rect"></span>&nbsp;{{ 'IPv4 Route' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/routing/ipv4_static$')}"><a href="#/home/routing/ipv4_static"><span class="rect"></span>&nbsp;{{ 'IPv4 Static' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/routing/ipv4_port_cfg$')}"><a href="#/home/routing/ipv4_port_cfg"><span class="rect"></span>&nbsp;{{ 'IPv4 Port' | translate }}</a></li>            
+            <li ng-class="{'active': isAcitve('/home/security/arp_table$')}"><a href="#/home/security/arp_table"><span class="rect"></span>&nbsp;{{ 'ARP' | translate }}</a></li>            
+        </ul>
+    </li>
+
+    <!-- IP路由 end -->
+
+    <!-- 安全 -->
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'Security' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/security/ddos_prevent$')}"><a href="#/home/security/ddos_prevent"><span class="rect"></span>&nbsp;{{ 'DDoS Intercept' | translate }}</a></li>
+			<li ng-class="{'active': isAcitve('/home/security/worm_filter$')}"><a href="#/home/security/worm_filter"><span class="rect"></span>&nbsp;{{ 'Worm Filter' | translate }}</a></li>
+
+            <li ng-class="{'active': isAcitve('/home/security/dhcp_snooping')}"><a href="#/home/security/dhcp_snooping"><span class="rect"></span>&nbsp;DHCP Snooping</a></li>
+            <li ng-class="{'active': isAcitve('/home/security/dot1x')}"><a href="#/home/security/dot1x"><span class="rect"></span>&nbsp;Dot1x</a></li>               
+	    <li ng-class="{'active': isAcitve('/home/security/web_sessions')}"><a href="#/home/security/web_sessions"><span class="rect"></span>&nbsp;{{ 'Web Sessions' | translate }}</a></li>
+	     <li ng-class="{'active': isAcitve('/home/security/user_management')}"><a href="#/home/security/user_management"><span class="rect"></span>&nbsp;{{ 'User Management' | translate }}</a></li>   
+           <!--
+           <li ng-class="{'active': isAcitve('/home/port_mgr/if_statistic$')}"><a href="#/home/port_mgr/if_statistic"><span class="rect"></span>&nbsp;{{ 'Ethernet Stats' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/port_mgr/storm_ctl$')}"><a href="#/home/port_mgr/storm_ctl"><span class="rect"></span>&nbsp;{{ 'Storm Control' | translate }}</a></li>
+            <li ng-class="{'active': isAcitve('/home/port_mgr/link_agg')}"><a href="#/home/port_mgr/link_agg"><span class="rect"></span>&nbsp;{{ 'Link Aggregation' | translate }}</a></li>
+            -->
+        </ul>
+    </li>
+    
+    <!--   
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;安全
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#"><span class="rect"></span>&nbsp;蠕虫攻击防护</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;DDoS攻击防护</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;ARP攻击防护</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;当前会话</a></li>
+            <li><a href="#"><span class="rect"></span>&nbsp;用户管理</a></li>
+        </ul>
+    </li>
+    -->
+    <!-- 安全 end -->
+
+    <!-- 工具 -->
+    <li role="presentation" >
+        <a href="javascript:;">
+            <span class="toggle"></span>&nbsp;{{ 'Tools' | translate }}
+        </a>
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-class="{'active': isAcitve('/home/tools/ping')}"><a href="#/home/tools/ping"><span class="rect"></span>&nbsp;Ping</a></li>
+            <li ng-class="{'active': isAcitve('/home/tools/traceroute')}"><a href="#/home/tools/traceroute"><span class="rect"></span>&nbsp;Traceroute</a></li>
+        </ul>
+    </li>
+    <!-- 工具 end -->
+
+    <!-- 重启/保存 -->
+    <li role="presentation" ng-class="{'active': isAcitve('/home/reboot_and_save')}">
+        <a href="#/home/reboot_and_save">
+            <span class="rect"></span>&nbsp;{{ 'Reboot/Save' | translate }}
+        </a>
+    </li>
+    <!-- 重启/保存 end -->
+
+
+    <!-- 调试
+    <li role="presentation" ng-class="{'active': isAcitve('/home/debug')}">
+        <a href="#/home/debug">
+            <span class="rect"></span>&nbsp;调试cmd用，release时去掉
+        </a>
+    </li>
+	-->
+    <!-- 调试 end -->
+
+
+</ul>

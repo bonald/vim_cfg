@@ -1,0 +1,1624 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+INTERFACE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show route-mac"
+		help="Route MAC">
+		<ACTION>cdbctl show/cdb/sys/sys_global/routemac</ACTION>
+
+		<CTCDESCRIPTION>
+Use the show route-mac privileged EXEC command to display the route-mac of the device.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to display the route-mac of the device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is an example of show route-mac:
+    Switch# show route-mac
+      Route MAC is: 001e.080a.662f
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show system-mac"
+		help="System MAC">
+		<ACTION>cdbctl show/cdb/sys/sys_global/systemmac</ACTION>
+
+		<CTCDESCRIPTION>
+Use the show system-mac privileged EXEC command to display the system-mac of the device.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to display the system-mac of the device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is an example of show system-mac:
+    Switch# show system-mac
+    Index   System MAC
+    mac0    001e.080a.662f
+    mac1    001e.080a.6630
+    mac2    001e.080a.6631
+    mac3    001e.080a.6632
+    mac4    001e.080a.6633
+    mac5    001e.080a.6634
+    mac6    001e.080a.6635
+    mac7    001e.080a.6636
+    mac8    001e.080a.6637
+    mac9    001e.080a.6638
+    mac10   001e.080a.6639
+    mac11   001e.080a.663a
+    mac12   001e.080a.663b
+    mac13   001e.080a.663c
+    mac14   001e.080a.663d
+    mac15   001e.080a.663e
+    mac16   001e.080a.663f
+    mac17   001e.080a.6640
+    mac18   001e.080a.6641
+    mac19   001e.080a.6642
+    mac20   001e.080a.6643
+    mac21   001e.080a.6644
+    mac22   001e.080a.6645
+    mac23   001e.080a.6646
+    mac24   001e.080a.6647
+    mac25   001e.080a.6648
+    mac26   001e.080a.6649
+    mac27   001e.080a.664a
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+<!--  dump link -->
+    <COMMAND name="show link"
+        help="Link configuration and status" hidden="true">
+        <ACTION>cdbctl show/cdb/debug/show_hsrv/interface/link</ACTION>
+    </COMMAND>
+
+	<COMMAND name="show interface"
+		help="Interface status and configuration">
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+        		<PARAM name="iface_name" help="Ethernet interface name" test='"${null}"=""' ptype="IF_NAME_ALL"/>
+        		<PARAM name="null" help="Null interface" test='"${iface_name}"=""' ptype="SUBCOMMAND" mode="subcommand">
+        		        <PARAM name="null_value" help="Port number" ptype="NULL_INTERFACE_NUMBER"/>
+        		</PARAM>
+		</PARAM>
+		<ACTION>
+		    if [ "null" == ${part} ]; then
+		        cdbctl show/cdb/l2/show_interface/null0
+		    else
+			cdbctl update/cdb/sys/update_if_stats/${iface_name}
+			usleep 100000
+			cdbctl show/cdb/l2/show_interface/${iface_name}
+		    fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the configurations and statistics on all interfaces or an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the configurations and statistics on the interface eth-0-1.
+    Switch# show interface eth-0-1
+    Interface eth-0-1
+      Interface current state: DOWN
+      Hardware is Port, address is 001e.0809.78a3
+      Bandwidth 1000000 kbits
+      Index 1 , Metric 1
+      Speed - auto , Duplex - auto , Media type is 1000BASE_T
+      Link speed type is autonegotiation,   Link duplex type is autonegotiation
+      Admin input flow-control is off, output flow-control is off
+      Oper input flow-control is off, output flow-control is off
+      The Maximum Frame Size is 1632 bytes
+        5 minute input rate 0 bits/sec, 0 packets/sec
+        5 minute output rate 0 bits/sec, 0 packets/sec
+        0 packets input, 0 bytes
+        Received 0 unicast, 0 broadcast, 0 multicast
+        0 runts, 0 giants, 0 input errors, 0 CRC
+        0 frame, 0 overrun, 0 pause input
+        0 packets output, 0 bytes
+        Transmitted 0 unicast, 0 broadcast, 0 multicast
+        0 underruns, 0 output errors, 0 pause output
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface status
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show interface status"
+		help="Brief status">
+		<ACTION>cdbctl show/cdb/interface/status</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the brief information on all Ethernet and link aggregation interfaces.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will display interface's brief information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the brief information on all Ethernet and LAG interfaces:    
+    Switch# show interface status
+    Name       Status      Duplex   Speed    Mode    Type         Description
+    ----------+-----------+--------+--------+-------+------------+----------------
+    eth-0-1    up          a-full   a-1000   access  1000BASE_T
+    eth-0-2    down        auto     auto     access  1000BASE_T
+    eth-0-3    down        auto     auto     access  1000BASE_T
+    eth-0-4    down        auto     auto     access  1000BASE_T
+    eth-0-5    down        auto     auto     access  1000BASE_T
+    eth-0-6    down        auto     auto     access  1000BASE_T
+    eth-0-7    down        auto     auto     access  1000BASE_T
+    eth-0-8    down        auto     auto     access  1000BASE_T
+    eth-0-9    down        auto     auto     access  1000BASE_T
+    eth-0-10   down        auto     auto     access  1000BASE_T
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show interface description" help="Display description of the interfaces">
+		<ACTION>cdbctl show/cdb/interface/description</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the description information on all interfaces.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will interface's description information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the description information on all interfaces:
+    Name       Status      Description                                              
+    ----------+-----------+---------------------------------------------------------
+    eth-0-1    admin down  ABCDEABCDE                                               
+    eth-0-2    admin down  ABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDEABCDEAB
+                           CDE1234                                                   
+    eth-0-3    admin down                                                           
+    eth-0-4    admin down                                                           
+    eth-0-5    admin down                                                           
+    eth-0-6    admin down                                                           
+    eth-0-7    admin down                                                           
+    eth-0-8    admin down                                                           
+    ......
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show interface bandwidth-in-use" help="Show bandwidth usage and log-threshold configuration of the interfaces">
+		<PARAM name="iface_name" optional="true" help="Ethernet interface name" ptype="IF_NAME_E">
+			<PARAM name="mode" help="mode" optional="true" ptype="SUBCOMMAND" mode="switch" default="none">
+				<PARAM name="input" help="Input direction" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="output" help="Output direction" ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ "input" == ${mode} ]; then
+				cdbctl show/cdb/sys/show_bandwidth_usage/${iface_name}/input
+			elif [ "output" == ${mode} ]; then
+				cdbctl show/cdb/sys/show_bandwidth_usage/${iface_name}/output
+			else
+				cdbctl show/cdb/sys/show_bandwidth_usage/${iface_name}
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the bandwidth usage information of the interfaces which configured log-threshold.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will display the bandwidth usage information of the interfaces which configured log-threshold.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the bandwidth usage information of the interfaces:  
+    Switch# show interface bandwidth-in-use eth-0-1/1  
+    Name       Direction  Speed    Load-interval Threshold  ResumeRate Usage  
+    ----------+----------+--------+-------------+----------+----------+------  
+    eth-0-1/1  input      40Gb/s   150s          90%        70%        60%  
+    eth-0-1/1  output     40Gb/s   150s          80%        60%        85%  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface bandwidth-in-use
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show loopback" help="Display loopback status on interface">
+		<ACTION>cdbctl show/cdb/interface/loopback </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the loopback information on all interfaces.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will display interface's loopback information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	DUT2# show loopback 
+	Interface  Type       
+	--------------------
+	eth-0-2    internal   
+	--------------------
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear counters"
+            help="Clear counters on one or all interfaces">
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch" optional="true" default="none">
+			<PARAM name="iface_name" optional="true" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+			<PARAM name="mgmt-if" optional="true" help="Management interface" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+		case "${mode}" in
+			"none")
+				cdbctl update/cdb/sys/port_stats/
+				cdbctl update/cdb/sys/clear_if_stats_rate/
+				cdbctl show/cdb/sys/show_management_if/clear_counters
+			;;
+			
+			"iface_name")
+				cdbctl update/cdb/sys/port_stats/${iface_name}
+				cdbctl update/cdb/sys/clear_if_stats_rate/${iface_name}
+			;;
+
+			"mgmt-if")
+				cdbctl show/cdb/sys/show_management_if/clear_counters
+			;;
+		esac
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to clear the counters on the physical interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The clear counters command clears all current interface counters from the interface unless you specify optional arguments that clear only a specific interface type from a specific interface number.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear the counters on all interfaces:  
+    Switch# clear counters   
+                 
+    This example shows how to clear the counters on the interface eth-0-1:   
+    Switch# clear counters eth-0-1   
+            
+    This example shows how to clear the counters on the agg1:    
+    Switch# clear counters agg1   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear carrier" help="Carrier layer"/>
+
+	<COMMAND name="clear carrier blink-down" help="Blink down">
+		<ACTION>cdbctl update/cdb/sys/carrier_blink_down</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to clear carrier blink-down history records.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear carrier blink-down history records. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear carrier blink-down history records:   
+    Switch# clear carrier blink-down 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show carrier blink-down
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show carrier" help="Carrier layer"/>
+
+	<COMMAND name="show carrier blink-down" help="Blink down">
+		<ACTION>cdbctl show/cdb/sys/carrier_blink_down</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show carrier blink-down history records.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show carrier blink-down history records. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show carrier blink-down history records:   
+    Switch# show carrier blink-down 
+    Index  Interface          Time                     
+    ------+------------------+------------------------- 
+    1      eth-0-53           2017-07-17 10:15:16 
+    2      eth-0-54           2017-07-17 13:25:54 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear carrier blink-down
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+
+<COMMAND name="interface range" help="Interface range command"
+    view="InterfaceRange" viewid="ifacelist=${ifacelist}">
+<PARAM name="ifacelist" help="Interfaces joined by '-' or ',', e.g: eth-0-1 - 8 or eth-0-1, eth-0-2" ptype="KLINE"/>
+
+<ACTION builtin="clish_interface_range">${ifacelist}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to operate a list of interfaces, the interface include physical port, vlan interface, linkagg interface and loopback interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to operate a list of interfaces, the interface include physical port, vlan interface, linkagg interface and loopback interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to operate a list of physical interface:   
+    Switch(config)# interface range eth-0-1 – 24    
+    Switch(config-if-range)# shutdown    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+	<COMMAND name="interface"
+		help="Select an interface to configure"
+		access="2"
+		view="configure-if-view"
+		viewid="iface=${iface_name}">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+		<ACTION>cdbctl create/cdb/interface/${iface_name}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to create and enter interface mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The interface name can be either a port name (i.e. eth-0-1) or link-agg name (i.e. agg1) or vlan name (i.e. vlan2).
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enter the interface mode for eth-0-1:   
+    Switch(config)# interface eth-0-1  
+           
+    This example shows how to enter the interface mode for agg1:    
+    Switch(config)# interface agg1   
+          
+    This example shows how to enter the interface mode for vlan2:    
+    Switch(config)# interface vlan2   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+interface
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no interface"
+		help="Delete the selected interface">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+
+		<ACTION>
+			cdbctl delete/cdb/interface/${iface_name}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				usleep 300000
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to delete interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The interface name can be either a port name (i.e. eth-0-1) or vlan name (i.e. vlan2).
+		</CTCUSAGE>
+		<CTCDEFAULT>
+no interface
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete the interface eth-0-1:   
+    Switch(config)# no interface eth-0-1    
+         
+    This example shows how to enter the interface vlan2:   
+    Switch(config)# no interface vlan2   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+interface
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="interface null" help="Null interface"
+        view="configure-if-null0-view" viewid="iface=null0">
+        <PARAM name="null_value" help="Port number" ptype="NULL_INTERFACE_NUMBER"/>
+        <ACTION>
+        </ACTION>
+        <CTCDESCRIPTION>
+            Use this command to operate a list of interfaces, the interface include physical port, vlan interface, linkagg interface and loopback interface.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            Use this command to operate a list of interfaces, the interface include physical port, vlan interface, linkagg interface and loopback interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    This example shows how to operate a list of physical interface:   
+    Switch(config)# interface null 0  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+        </CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view"
+	prompt="${SYSTEM_NAME}(config-if-${iface})# "
+	depth="1">
+
+
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+
+
+	<COMMAND name="exit"
+		help="Exit from interface configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from interface configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="show" help="Show running system information"/>
+    <COMMAND name="show th" help="Current configuration of this interface" hidden="true">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/interface/${iface}
+            rm -rf /tmp/$configfile
+        </ACTION>
+    </COMMAND>
+    
+    <COMMAND name="show this" help="Current configuration of this interface" hidden="true">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/interface/${iface}
+            rm -rf /tmp/$configfile
+        </ACTION>
+    </COMMAND>
+
+	<COMMAND name="shutdown"
+		help="Disable the selected interface">
+        <ACTION>cdbctl update/cdb/interface/${iface}/up/0</ACTION>
+		<CTCDESCRIPTION>
+Use the shutdown interface configuration command to admin down an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to shutdown a port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+shutdown
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following example shows how to shutdown a port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# shutdown
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no shutdown
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no shutdown"
+		help="Enable the selected interface">
+        <ACTION>cdbctl update/cdb/interface/${iface}/up/1</ACTION>
+
+		<CTCDESCRIPTION>
+ Use this command to admin up an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+The following example shows how to admin up a port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# no shutdown
+		</CTCEXAMPLE>
+		<CTCRCMD>
+shutdown
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="description"
+		help="Set description">
+		<PARAM name="desc" help="Interface description" ptype="NAME_STRING"/>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/desc/${desc}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the description on the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the description on the interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the description on the interface:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# description Ethernet
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no description
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no description"
+		help="Unset description">
+		<ACTION>cdbctl update/cdb/interface/${iface}/desc</ACTION>
+
+		<CTCDESCRIPTION>
+To remove the description on the interface, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the description on the interface, 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the description on the interface:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# no description
+		</CTCEXAMPLE>
+		<CTCRCMD>
+description
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="speed"
+		help="Set speed">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="auto" help="Enable auto negotiation" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="10" help="Force 10 Mbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="100" help="Force 100 Mbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="1000" help="Force 1000 Mbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="2.5G" help="Force 2.5 Gbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="5G" help="Force 5 Gbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="10G" help="Force 10 Gbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="25G" help="Force 25 Gbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="40G" help="Force 40 Gbps" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="100G" help="Force 100 Gbps" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+        <ACTION>cdbctl update/cdb/interface/${iface}/speed/${type}</ACTION>
+
+		<CTCDESCRIPTION>
+Use the speed interface configuration command to specify the speed of a 10/100 Mb/s or 10/100/1000 Mb/s port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to set the speed on port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the speed on a port to 1000 Mb/s:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# speed 1000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no speed
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no speed"
+		help="Unset speed">
+		<ACTION>cdbctl update/cdb/interface/${iface}/speed/default</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no of this command to return the port to its default speed value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the no of this command to return the port to its default speed value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to return the speed on a port to default value:
+    Switch(config-if-eth-0-1)# no speed
+		</CTCEXAMPLE>
+		<CTCRCMD>
+speed
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="duplex"
+		help="Set duplex">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="auto" help="Enable auto negotiation" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="full" help="Force full duplex" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="half" help="Force half duplex" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/duplex/${_params}</ACTION>
+
+		<CTCDESCRIPTION>
+Use the duplex interface configuration command to specify the duplex mode of operation for a port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to set the duplex mode on a port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the duplex mode to auto:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# duplex auto
+
+This example shows how to set the duplex mode to full:
+Switch(config-if-eth-0-1)# duplex full
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no duplex
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no duplex"
+		help="Unset duplex">
+		<ACTION>cdbctl update/cdb/interface/${iface}/duplex/default</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to return the port to its default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to return the port to its default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to return the duplex mode to default:
+    Switch(config-if-eth-0-1)# no duplex
+		</CTCEXAMPLE>
+		<CTCRCMD>
+duplex
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="unidirectional" help="Set unidirectional">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable unidirectional" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="disable" help="Disable unidirectional" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/unidir/${_params}</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to set unidirectional function for a port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to set unidirectional function for a port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable unidirectional function:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# unidirectional enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="fec" help="Set FEC to interface">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable FEC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="disable" help="Disable FEC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="none" help="Set FEC NONE" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="rs" help="Set FEC RS" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="baser" help="Set FEC BASE-R" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/fec/${_params}</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to set fec function for a port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to set fec function for a port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable fec function:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# fec enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no fec
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no fec" help="Unset FEC">
+		<ACTION>cdbctl update/cdb/interface/${iface}/fec/default</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to set fec function for a port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to set fec function for a port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable fec function:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# no fec
+		</CTCEXAMPLE>
+		<CTCRCMD>
+fec
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="bandwidth"
+		help="Set bandwidth">
+		<PARAM name="bandwith" help="Bandwidth in kilobits"	ptype="BANDWIDTH"/>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/bandwidth/${_params}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the bandwidth of the port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the bandwidth of the port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the bandwidth of the port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# bandwidth 1000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no bandwidth
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no bandwidth"
+		help="Set bandwidth">
+		<ACTION>cdbctl update/cdb/interface/${iface}/bandwidth/0</ACTION>
+
+		<CTCDESCRIPTION>
+To return the bandwidth to default value, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the bandwidth to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to return the bandwidth to default value:  
+    Switch(config-if-eth-0-1)# no bandwidth   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+bandwidth
+		</CTCRCMD>
+	</COMMAND>
+
+        <COMMAND name="jumboframe"
+            help="Enable interface jumboframe">
+            <PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand" />
+
+            <ACTION>cdbctl update/cdb/interface/${iface}/jumboframe_en/1</ACTION>
+
+		    <CTCDESCRIPTION>
+Use this command to enable jumbo frame.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Jumboframe is disabled by default. The max frame which can be transmitted is 1632 bytes. When enable jumboframe, the max frame can be 9600 bytes.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+Disabled
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to enable the jumboframe:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# jumboframe enable
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+no jumboframe
+		    </CTCRCMD>
+            </COMMAND>
+
+        <COMMAND name="no jumboframe"
+            help="Disable interface jumboframe">
+            <PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand" />
+
+            <ACTION>cdbctl update/cdb/interface/${iface}/jumboframe_en/0</ACTION>
+
+			<CTCDESCRIPTION>
+To disable jumbo frame, use this command.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Use this command to disable jumbo frame. 
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+Disabled
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to disable the jumboframe:   
+    Switch(config-if-eth-0-1)# no jumboframe enable   
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+jumboframe
+		    </CTCRCMD>
+        </COMMAND>
+
+	<COMMAND name="mtu"
+		help="Set IPv4/IPv6 MTU value">
+		<PARAM name="mtu" help="IPv4/IPv6 MTU in bytes" ptype="MTU"/>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/mtu/${mtu}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure the maximum transmit unit for this interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is only allowed to be used in layer3 interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1500
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure MTU 1600 for VLAN interface 1:   
+    Switch(config)# interface vlan1   
+    Switch(config-if-vlan1)# mtu 1600   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no mtu
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no mtu"
+		help="Set default IPv4/IPv6 MTU value">
+		<ACTION>cdbctl update/cdb/interface/${iface}/mtu/1500</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to return the maximum transmit unit for this interface to its default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is only allowed to be used in layer3 interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1500
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure MTU to default value for VLAN interface 1:    
+    Switch(config)# interface vlan1    
+    Switch(config-if-vlan1)# no mtu   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mtu
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="static-channel-group"
+		help="Add interface to static channel group">
+		<PARAM name="gid" help="Channel group id" ptype="AGG_GID"/>
+	        <PARAM name="priority" help="Priority for agg member.the lower of the priority value, the higher of the rank, default is 0" optional="true" ptype="SUBCOMMAND" mode="subcommand" default = "0">
+		         <PARAM name="priority_num" help="Priority of number" ptype="AGG_PRIORITY"/>
+		 </PARAM>
+
+		<ACTION>
+		      cdbctl create/cdb/interface/${iface}/lag/${gid}/mode/static/${priority_num}
+		       
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				usleep 500000
+			fi
+
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to assign a port to a static channel group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to assign a port to a static channel group.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to assign a port to a static channel group 1:   
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1)# static-channel-group 1     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no static-channel-group
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no static-channel-group"
+		help="Delete interface from static channel group">
+		<ACTION>
+			usleep 300000
+			cdbctl delete/cdb/interface/${iface}/lag/static
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				usleep 200000
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to remove a port from a static channel group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove a port from a static channel group.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove a port from a static channel group 1:   
+    Switch(config)# interface eth-0-1   
+    Switch(config-if-eth-0-1)# no static-channel-group    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+static-channel-group
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="max-active-number"
+		help="The active max number for active-backup mode">
+		<PARAM name="NUM" help="The number of active-max-number, default is 16" ptype="AGG_MEMBER_NUM"/>
+
+		<ACTION>
+		         cdbctl update/cdb/interface/${iface}/lag/max_active_number/${NUM}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the active max number.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the active max number.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the active max number:   
+    Switch(config)# interface agg1    
+    Switch(config-if-eth-0-1)# active-max-number 8     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no max-active-number
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no max-active-number"
+		help="The active max number for active-backup mode">
+
+		<ACTION>
+		         cdbctl update/cdb/interface/${iface}/lag/max_active_number/16
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to unset the active max number.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to unset the active max number.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the active max number:   
+    Switch(config)# interface agg1    
+    Switch(config-if-eth-0-1)# no active-max-number     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+max-active-number
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="channel-group"
+		help="Add interface to dynamic channel group">
+		<PARAM name="gid" help="Channel group id" ptype="AGG_GID"/>
+		<PARAM name="mode" help="Mode" mode="subcommand" ptype="SUBCOMMAND">
+			<PARAM name="mode_value" help="Mode value" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="active" help="Enable initiation of LACP negotiation on a port" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="passive" help="Disable initiation of LACP negotiation on a port" ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			cdbctl create/cdb/interface/${iface}/lag/${gid}/mode/${mode_value}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				usleep 500000
+			fi		
+		</ACTION>
+		<CTCPRODUCT>
+		cnos xyz
+		</CTCPRODUCT>
+
+		<CTCDESCRIPTION>
+Use this command to assign a port to a channel group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to assign a port to a channel group.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to assign a port to a channel group 1:   
+    Switch(config-if-eth-0-1)# channel-group 1 mode active   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no channel-group
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no channel-group"
+		help="Delete interface from dynamic channel group">
+		<ACTION>
+			cdbctl delete/cdb/interface/${iface}/lag/dynamic
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				usleep 200000
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to remove a port from a channel group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove a port from a channel group.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove a port from an channel group 1:
+    Switch(config-if)# no channel-group
+		</CTCEXAMPLE>
+		<CTCRCMD>
+channel-group
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="mac" help="MAC"/>
+    <COMMAND name="mac learning" help="Set learning">
+		<PARAM name="action" help="Action" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="disable" help="Disable" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		if [ "enable" == ${action} ]; then
+			cdbctl update/cdb/interface/${iface}/brgif/mac_learning_en/1
+		else
+			cdbctl update/cdb/interface/${iface}/brgif/mac_learning_en/0
+		fi;
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command set mac_learning enable or disable.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set mac-learning enable or disable.   
+    Switch(config-if-eth-0-1) mac learning enable   
+    Switch(config-if-eth-0-1) mac learning disable   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="loopback" help="Enable loopback on current port">
+		<PARAM name="type" help="internal or external" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="internal" help="Enable internal loopback" ptype="SUBCOMMAND" mode="subcommand">
+			</PARAM>
+			<PARAM name="external" help="Enable external loopback" ptype="SUBCOMMAND" mode="subcommand">
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+		if [ "internal" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/phy_loopback_mode/internal
+		elif [ "external" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/phy_loopback_mode/external
+		fi
+ 		</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command set loopback of interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set loopback of interface.   
+    Switch(config-if-eth-0-1) loopback internal   
+    Switch(config-if-eth-0-1) loopback external   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+    <COMMAND name="no loopback" help="Unset loopback">
+		<ACTION>cdbctl update/cdb/interface/${iface}/phy_loopback_mode/default</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the configuration command unset loopback of interface .
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset loopback of port.
+    Switch(config-if-eth-0-1) no loopback
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="flow-statistics" help="Set flow-statistics include-interframe"/>
+	<COMMAND name="flow-statistics include-interframe" help="Set flow-statistics include-interframe">
+		<PARAM name="type" help="Enable or disable" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="flow-statistics include-interframe(default enable)" ptype="SUBCOMMAND" mode="subcommand">
+			</PARAM>
+			<PARAM name="disable" help="flow-statistics not include-interframe" ptype="SUBCOMMAND" mode="subcommand">
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/ifg_stats_en/${type}
+ 		</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command set interface flow-statistics if include packet's interframe length or not.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to interface flow-statistics doesn't include packet's interframe length or not.   
+    Switch(config-if-eth-0-1) flow-statistics include-interframe disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+    <COMMAND name="media-type" help="Set media type of combo port">
+		<PARAM name="type" help="media type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="auto" help="auto select type" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rj45" help="rj45 type" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="sfp" help="sfp type" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION> 
+		if [ "sfp" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/media/sfp
+		elif [ "rj45" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/media/rj45
+		else 
+			cdbctl update/cdb/interface/${iface}/media/auto
+		fi
+		 </ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command set media type of combo port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set media type of combo port.   
+    Switch(config-if-eth-0-1) media-type auto   
+    Switch(config-if-eth-0-1) media-type rj45   
+    Switch(config-if-eth-0-1) media-type sfp   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+    <COMMAND name="no media-type" help="Unset media type">
+		<ACTION>cdbctl update/cdb/interface/${iface}/media/auto</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command unset media type of combo port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset media type of combo port.   
+    Switch(config-if-eth-0-1) no media-type  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+    <COMMAND name="log-threshold" help="Log-threshold configuration">
+		<PARAM name="mode" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="input-rate" help="Enable input bandwidth usage log-threshold" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="bandwidth_usage" help="Bandwidth in use (%)" ptype="BANDWIDTH_USAGE"/>
+				<PARAM name="resume-rate" help="Resume rate" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="resume_usage" help="Resume threshold (%)" ptype="BANDWIDTH_USAGE"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="output-rate" help="Enable output bandwidth usage log-threshold" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="bandwidth_usage" help="Bandwidth in use (%)" ptype="BANDWIDTH_USAGE"/>
+				<PARAM name="resume-rate" help="Resume rate" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="resume_usage" help="Resume threshold (%)" ptype="BANDWIDTH_USAGE"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="output-discard" help="Enable output discard log-threshold" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="discard_threshold" help="Port discard threshold" ptype="PORT_DISCARD"/>
+				<PARAM name="interval" help="Interval" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="interval_value" help="Interval value in minutes" ptype="PORT_DISCARD_INTERVAL"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ "input-rate" == ${mode} ]; then
+				cdbctl update/cdb/sys/port_stats_rate/${iface}/input_rate_threshold/${bandwidth_usage}/input_rate_resume/${resume_usage}
+			elif [ "output-rate" == ${mode} ]; then
+				cdbctl update/cdb/sys/port_stats_rate/${iface}/output_rate_threshold/${bandwidth_usage}/output_rate_resume/${resume_usage}
+			elif [ "output-discard" == ${mode} ]; then
+				cdbctl update/cdb/sys/port_stats_rate/${iface}/output_discard_threshold/${discard_threshold}/output_discard_interval/${interval_value}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command to enable log-threshold on an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable log-threshold on an interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable log-threshold on an interface:  
+    Switch(config-if-eth-0-1/1)# log-threshold input-rate 80 resume-rate 60  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="no log-threshold" help="Log-threshold configuration">
+		<PARAM name="mode" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="input-rate" help="Disable input log-threshold" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="output-rate" help="Disable output log-threshold" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="output-discard" help="Disable output discard log-threshold" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "input-rate" == ${mode} ]; then
+				cdbctl update/cdb/sys/port_stats_rate/${iface}/input_rate_threshold/0/input_rate_resume/0
+			elif [ "output-rate" == ${mode} ]; then
+				cdbctl update/cdb/sys/port_stats_rate/${iface}/output_rate_threshold/0/output_rate_resume/0
+			elif [ "output-discard" == ${mode} ]; then
+				cdbctl update/cdb/sys/port_stats_rate/${iface}/output_discard_threshold/0/output_discard_interval/0
+			fi
+		 </ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command to disable log-threshold on an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable log-threshold on an interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable log-threshold on an interface:  
+    Switch(config-if-eth-0-1/1)# no log-threshold input-rate  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="load-interval" help="Specify interval for speed calculation of an interface">
+		<PARAM name="load_interval" help="Load interval in seconds (default is 300s)" ptype="LOAD_INTERVAL"/>
+
+		<ACTION>
+			cdbctl update/cdb/sys/port_stats_rate/${iface}/load_interval/${load_interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command to set load interval on an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set load interval on an interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+300
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set load interval on an interface:  
+    Switch(config-if-eth-0-1/1)# load-interval 90  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no load-interval" help="Specify interval for speed calculation of an interface">
+		<ACTION>
+			cdbctl update/cdb/sys/port_stats_rate/${iface}/load_interval/300
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command to set default load interval on an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set default load interval on an interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+300
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default load interval on an interface:  
+    Switch(config-if-eth-0-1/1)# no load-interval  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="carrier" help="Carrier layer"/>
+	<COMMAND name="no carrier" help="Carrier layer"/>
+
+	<COMMAND name="carrier down-hold-time" help="Down hold time"/>
+	<COMMAND name="no carrier down-hold-time" help="Down hold time"/>
+
+	<COMMAND name="carrier down-hold-time interval" help="Interval">
+		<PARAM name="holdtime" help="Value of hold time, millisecond (default:0)" ptype="CARRIER_DOWN_HOLDTIME"/>
+		<ACTION>cdbctl update/cdb/interface/${iface}/carrier_down_holdtime_interval/${holdtime}</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no carrier down-hold-time interval" help="Interval">
+		<ACTION>cdbctl update/cdb/interface/${iface}/carrier_down_holdtime_interval/0</ACTION>
+	</COMMAND>
+
+	<COMMAND name="poe" help="poe layer"/>
+	<COMMAND name="no poe" help="poe layer"/>
+	
+	<COMMAND name="poe disable" help="Disable poe of port">
+		<ACTION>cdbctl update/cdb/interface/${iface}/poe/enable/0</ACTION>
+	</COMMAND>
+
+	<COMMAND name="poe enable" help="Enable poe of port">
+		<ACTION>cdbctl update/cdb/interface/${iface}/poe/enable/1</ACTION>
+	</COMMAND>	
+
+	<!--<COMMAND name="poe force-power" help="Force power to port">-->
+	<!--	<ACTION>cdbctl update/cdb/interface/${iface}/poe/force_power/1</ACTION>-->
+	<!--</COMMAND>-->
+
+	<!--<COMMAND name="no poe force-power" help="Force power to port">-->
+	<!--	<ACTION>cdbctl update/cdb/interface/${iface}/poe/force_power/0</ACTION>-->
+	<!--</COMMAND>	-->
+
+    <COMMAND name="poe mode" help="Set poe mode">
+		<PARAM name="type" help="poe type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="af" help="IEEE802.3AF operation" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="at" help="IEEE802.3AF/AT operation(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<!--<PARAM name="poh" help="POH operation" ptype="SUBCOMMAND" mode="subcommand"/>-->
+		</PARAM>
+		<ACTION> 
+		if [ "af" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/poe/mode/af
+		elif [ "at" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/poe/mode/at
+		else 
+			cdbctl update/cdb/interface/${iface}/poe/mode/poh
+		fi
+		 </ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command set power mode of poe port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set power mode of poe port.
+    Switch(config-if-eth-0-1) poe mode af
+    Switch(config-if-eth-0-1) poe mode at 
+    Switch(config-if-eth-0-1) poe mode poh  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="no poe mode" help="Set poe mode">
+		<ACTION>cdbctl update/cdb/interface/${iface}/poe/mode/at</ACTION>
+	</COMMAND>	
+    <COMMAND name="poe priority" help="Set poe priority">
+		<PARAM name="type" help="poe priority" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="critical" help="critical priority" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="high" help="high priority" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="low" help="low priority(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION> 
+		if [ "critical" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/poe/priority/1
+		elif [ "high" == ${type} ]; then
+			cdbctl update/cdb/interface/${iface}/poe/priority/2
+		else 
+			cdbctl update/cdb/interface/${iface}/poe/priority/3
+		fi
+		 </ACTION>
+		<CTCDESCRIPTION>
+Use the configuration command set poe priority of port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set poe priority of port.
+    Switch(config-if-eth-0-1) poe priority critical
+    Switch(config-if-eth-0-1) poe priority high 
+    Switch(config-if-eth-0-1) poe priority low  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="no poe priority" help="Set poe priority">
+		<ACTION>cdbctl update/cdb/interface/${iface}/poe/priority/3</ACTION>
+	</COMMAND>	
+
+	<COMMAND name="poe max-power" help="Set power limit of port">
+		<PARAM name="value" help="power value(mW)" ptype="POE_POWER_CHANNLE"/>
+		<ACTION>cdbctl update/cdb/interface/${iface}/poe/max/${value}</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no poe max-power" help="Set power limit of port">
+		<ACTION>cdbctl update/cdb/interface/${iface}/poe/max/0</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+
+<VIEW name="InterfaceRange" prompt="${SYSTEM_NAME}(config-if-range)# " depth="1">
+<NAMESPACE ref="configure-if-view" help="true" completion="true"/>
+
+<COMMAND name="exit"
+    help="End current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_nested_up"/>
+</COMMAND>
+
+<COMMAND name="quit"
+    help="Exit current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_nested_up"/>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-null0-view"
+	prompt="${SYSTEM_NAME}(config-if-null0)# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="exit"
+		help="Exit from interface configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from interface configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

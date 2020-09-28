@@ -1,0 +1,62 @@
+HAL-MSG-OPENFLOW-STATS DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    -- Openflow Group
+    HalMsgOpenFlowGroupType,
+    HalMsgOpenFlowGroupAllocType
+    FROM HAL-MSG-OPENFLOW-GROUP
+    ;
+
+HalMsgOpenFlowStatsResourceType ::= ENUMERATED
+{
+    flowResource,
+    meterResource,
+    groupResource
+}
+
+HalMsgOpenFlowStatsResourceAllocType ::= SEQUENCE
+{
+    unionResourceAllocType CHOICE
+    {
+        groupAllocType   HalMsgOpenFlowGroupAllocType
+    }
+}
+
+------------------------------------
+--  Message definitions for OpenFlow stats (BEGIN) {
+------------------------------------
+HalMsgOpenFlowAddStatsReq ::= SEQUENCE
+{
+    statsId           INTEGER,
+    resourceType      HalMsgOpenFlowStatsResourceType,
+    resourceAllocType HalMsgOpenFlowStatsResourceAllocType,
+    resourceId        INTEGER,
+    isMplsKey         INTEGER,
+    isMplsVc          INTEGER
+}
+
+HalMsgOpenFlowDelStatsReq ::= SEQUENCE
+{
+    statsId         INTEGER,
+    resourceType    HalMsgOpenFlowStatsResourceType,
+    resourceId      INTEGER
+}
+
+HalMsgOpenFlowGetStatsReq ::= SEQUENCE
+{
+    statsId         INTEGER,
+    resourceType    HalMsgOpenFlowStatsResourceType,
+    resourceId      INTEGER
+}
+
+HalMsgOpenFlowClearStatsReq ::= SEQUENCE
+{
+    statsId         INTEGER,
+    resourceType    HalMsgOpenFlowStatsResourceType,
+    resourceId      INTEGER
+}
+
+------------------------------------
+--  } Message definitions for OpenFlow stats (END)
+------------------------------------
+END

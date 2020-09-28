@@ -1,0 +1,83 @@
+######################################set linux compile env #############################
+ifeq ($(targetbase),linux)
+
+include $(MK_DIR)/sys.mk
+
+
+LIB=dkit
+SRCS = ctc_dkit_cli.c ctc_dkit_api.c ctc_dkit_dump_cfg.c
+SRCS += $(foreach n, $(COMPATIBAL_CHIP), $(shell find $(n)/ -name "*.c"))
+
+CPPFLAGS += -I$(SDK_DIR)/dal/include
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/libctccli/include
+CPPFLAGS += -I$(SDK_DIR)/ctccli/sdkcli
+CPPFLAGS += -I$(SDK_DIR)/driver/api
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/mem_model/$(n)/include)
+CPPFLAGS += -I$(SDK_DIR)/driver
+CPPFLAGS += -I$(SDK_DIR)/dkits
+CPPFLAGS += $(foreach n, $(COMPATIBAL_CHIP), -I$(SDK_DIR)/dkits/$(n))
+#CFLAGS += -Werror -Wall
+CFLAGS += -Wall
+
+ifeq ($(USW),yes)
+SRCS += $(shell find common/ -name "*.c")
+CPPFLAGS += -I$(SDK_DIR)/dkits/common
+endif
+
+include $(MK_DIR)/lib.mk
+
+endif
+
+############################# vxworks #####################################
+ifeq ($(targetbase),vxworks)
+OBJ_DIR=$(OBJ_BASE_DIR)/dkits
+
+ifeq ($(USW),yes)
+all_targets = cli common usw libdkit
+else
+all_targets = cli $(CHIPNAME) libdkit ctc_dkit_dump_cfg.c
+endif
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+cli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/ -f Makefile.vx
+
+clean_cli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/ -f Makefile.vx clean
+ 
+usw: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/usw/ -f Makefile.vx
+
+clean_usw: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/usw/ -f Makefile.vx clean
+goldengate: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/goldengate/ -f Makefile.vx
+    
+clean_goldengate: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/goldengate/ -f Makefile.vx clean
+    
+greatbelt: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/greatbelt/ -f Makefile.vx
+
+clean_greatbelt: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/greatbelt/ -f Makefile.vx clean
+    
+common: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/common -f Makefile.vx
+
+clean_common: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits/common -f Makefile.vx clean
+		
+libdkit: FORCE
+	$(CTC_MAKE) -f Makefile.lib.vx
+
+clean_libdkit: FORCE
+	$(CTC_MAKE) -f Makefile.lib.vx clean
+
+.PHONY: FORCE
+FORCE:
+endif
+

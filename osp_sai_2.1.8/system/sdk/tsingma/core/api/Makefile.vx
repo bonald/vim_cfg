@@ -1,0 +1,17 @@
+include $(MK_DIR)/sys_vx.mk
+
+OBJ_DIR=$(OBJ_BASE_DIR)/core/api
+
+all_targets = src
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+src: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/api/src -f Makefile.vx
+
+clean_src: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/api/src -f Makefile.vx clean
+
+.PHONY: FORCE
+FORCE:

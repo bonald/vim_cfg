@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/include/freebsd/netinet
+END
+pim_var.h
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/include/freebsd/netinet/pim_var.h
+END
+ip_var.h
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/include/freebsd/netinet/ip_var.h
+END
+ip_mroute.h
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/include/freebsd/netinet/ip_mroute.h
+END
+pim.h
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/include/freebsd/netinet/pim.h
+END
+in.h
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/include/freebsd/netinet/in.h
+END

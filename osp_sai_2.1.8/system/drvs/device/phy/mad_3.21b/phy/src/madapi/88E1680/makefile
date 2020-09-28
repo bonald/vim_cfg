@@ -1,0 +1,27 @@
+# Source files in this directory
+CSOURCES	=  88E1680_IEEETest.c 88E1680_MACCtrl.c 88E1680_PatGen.c 88E1680_Stats.c 88E1680_SyncClkCtrl.c 88E1680_SysCtrl.c 
+
+ASOURCES	=
+
+# Include common variable definitions
+ifeq ($(OS_RUN),VXWORKS)
+include $(MAD_TOOL_DIR)\make.defs
+endif
+ifeq ($(OS_RUN),LINUX)
+include $(MAD_TOOL_DIR)/makelnx.defs
+endif
+
+# Add in extra stuffs
+EXTRA_INCLUDE	+= 
+EXTRA_DEFINE	+=
+ADDED_CFLAGS	+=
+
+# Include common build rules
+ifeq ($(OS_RUN),VXWORKS)
+include $(MAD_TOOL_DIR)\make.rules
+endif
+ifeq ($(OS_RUN),LINUX)
+include $(MAD_TOOL_DIR)/makelnx.rules
+endif
+
+# end of file

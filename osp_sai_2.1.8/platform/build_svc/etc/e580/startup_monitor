@@ -1,0 +1,69 @@
+#!/bin/sh
+
+STARTUP_LOG=/mnt/flash/cold/log/startup_log
+MANG_VRF=64
+MANG_DEFAULT_IPADDR=10.10.39.8
+MANG_IPADDR="`cat /mnt/flash/startup-config.conf | grep "management ip address" | awk '{ print $4}' | sed -e "s/\// /" | awk '{ print $1}'`"
+
+touch /tmp/null-startup-config
+NULL_IPADDR="`cat /tmp/null-startup-config | grep "management ip address" | awk '{ print $4}' | sed -e "s/\// /" | awk '{ print $1}'`"
+rm /tmp/null-startup-config
+
+if [ "$MANG_IPADDR" == "$NULL_IPADDR" ]; then
+    MANG_IPADDR=$MANG_DEFAULT_IPADDR
+fi
+
+if [ ! -f /mnt/flash/startup-config.conf ]; then
+    MANG_IPADDR=$MANG_DEFAULT_IPADDR
+fi
+
+# set the managment ip address according to startup-config.conf
+chvrf $MANG_VRF ifconfig eth0 $MANG_IPADDR
+chvrf $MANG_VRF sysctl -w net.ipv4.neigh.eth0.app_solicit=0 2>&1 >/dev/null
+chvrf $MANG_VRF sysctl -w net.ipv4.neigh.eth0.ucast_solicit=3 2>&1 >/dev/null
+chvrf $MANG_VRF sysctl -w net.ipv4.neigh.eth0.mcast_solicit=3 2>&1 >/dev/null
+
+# start sshd
+SSHD_PROC_RUN="`ps -u root | grep "sshd"`"
+if [ "$SSHD_PROC_RUN" == "" ]; then
+    echo "run sshd"
+    /usr/sbin/sshd
+fi
+
+/usr/sbin/logsync.sh 1>/dev/null 2>&1
+# save some important system info to log
+if [ -f /mnt/flash/syslog ] ; then
+    cat /mnt/flash/syslog >> $STARTUP_LOG 
+fi
+
+dmesg >> $STARTUP_LOG 
+ps aux >> $STARTUP_LOG  
+cat /proc/meminfo >> $STARTUP_LOG 
+cat /proc/interrupts >> $STARTUP_LOG 
+netstat -a >> $STARTUP_LOG 2>&1 >/dev/null 
+ls /tmp -al >> $STARTUP_LOG 
+ls /mnt/flash -al >> $STARTUP_LOG 
+lspci -vv >> $STARTUP_LOG
+cat /tmp/ctcos_board_info >> $STARTUP_LOG 
+
+if [ -f /tmp/oem_info ] ; then
+    cat /tmp/oem_info >> $STARTUP_LOG 
+fi
+
+if [ ! -d /mnt/flash/cold/bak/startup ]; then
+    mkdir /mnt/flash/cold/bak/startup
+fi
+
+# if startup bakup log dir is more than 1M size, delete it
+##STARTUP_BAKDIRSIZE="`du /mnt/flash/cold/bak/startup -s | awk '{print $1}'`"
+##if [ "$STARTUP_BAKDIRSIZE" -gt 1000 ] ; then
+##    rm -rf /mnt/flash/cold/bak/startup/.
+##fi
+
+MONTH="`date | awk '{ print $2}'`"
+DAY="`date | awk '{ print $3}'`"
+YEAR="`date | awk '{ print $6}'`"
+TIME="`date | awk '{ print $4}'`"
+
+tar zcf /mnt/flash/cold/bak/startup/$MONTH.$DAY.$YEAR.$TIME.log.tar.gz /mnt/flash/cold/log > /dev/null 2>&1 
+rm -rf $STARTUP_LOG

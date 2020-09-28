@@ -1,0 +1,8 @@
+include $(MK_DIR)/sys.mk
+include $(QUAGGA_TOP_DIR)/Makefile.env.inc
+include ../../Makefile.env.inc
+
+LIB = vtyclt
+SRCS = vtyclient.c vtysh.c vtysh_cmd.c vtysh_config.c vtysh_user.c
+
+include $(MK_DIR)/lib.mk

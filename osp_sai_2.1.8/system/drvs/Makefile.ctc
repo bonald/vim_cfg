@@ -1,0 +1,61 @@
+ifeq ($(CPU),hi3535)
+MY_CPU_DIR=hi3535
+endif
+
+ifeq ($(CPU),p1010)
+MY_CPU_DIR=powerpc
+endif
+
+ifeq ($(CPU),p1014)
+MY_CPU_DIR=powerpc
+endif
+
+ifeq ($(CPU),x86_64)
+MY_CPU_DIR=x86_64
+endif
+
+ifeq ($(CPU),ls1023a)
+MY_CPU_DIR=ls1023a
+endif
+
+ifeq ($(CPU),ctc5236)
+MY_CPU_DIR=ctc5236
+endif
+
+ifeq ($(CPU),ls2h)
+MY_CPU_DIR=ls2h
+endif
+
+ifeq ($(CPU),ls2k)
+MY_CPU_DIR=ls2k
+endif
+
+export MY_CPU_DIR
+
+all_targets += bus device drvio
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+bus: FORCE
+	make -C bus -f Makefile.ctc
+
+clean_bus: FORCE
+	make -C bus clean
+
+device: FORCE
+	make -C device -f Makefile.ctc
+
+clean_device: FORCE
+	make -C device clean
+
+drvio: FORCE
+	@if [ ! -d $(BLD_DIR)/bin ]; then mkdir -p $(BLD_DIR)/bin; fi
+	make -C drvio -f Makefile.ctc 
+
+clean_drvio: FORCE
+	make -C drvio -f Makefile.ctc clean
+
+.PHONY: FORCE
+FORCE:

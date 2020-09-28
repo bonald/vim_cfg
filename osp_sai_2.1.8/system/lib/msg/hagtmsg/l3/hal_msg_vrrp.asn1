@@ -1,0 +1,39 @@
+HAL-MSG-VRRP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    HalMsgIntList
+    FROM HAL-MSG-TYPES
+    ;
+
+    
+HalVRRPVmacDefine ::= SEQUENCE
+{
+    prefixType     INTEGER,
+    subindex       INTEGER,
+    low8bit        INTEGER
+}
+
+HalMsgVRRPSetEnable ::= SEQUENCE
+{
+    l3ifid       INTEGER,
+    enable       INTEGER,
+    vmac         HalVRRPVmacDefine
+}
+
+HalMsgVRRPAddGroup ::= SEQUENCE
+{
+    l3ifid       INTEGER,
+    enable       INTEGER,
+    vmac         HalVRRPVmacDefine
+}
+    
+--sync structures
+HalMsgVRRPSync ::= SEQUENCE
+{
+    l3ifid        INTEGER,
+    vmacList      SEQUENCE OF HalVRRPVmacDefine
+}
+
+END

@@ -1,0 +1,752 @@
+################################################################################
+# Note:
+# 1. 定义CDB中的data type, 包含2项目[DT_TYPE] [DT_MAP]
+#    这样CDB可以清楚的知道data的size, copy方法, val2str方法等，以方便自动产生CDB API代码和CDB sync代码
+# 2. 项目之间以"-----"分隔
+# 3. [DT_TYPE]为基本类型, 包含5列
+#    1) 类型
+#    2) set方法
+#    3) dump方法
+#    4) val2str方法, 简单数据类型可以不需要
+#    5) 是否带引用符, 有第4列val2str函数时才需要, 一般char/uint8的字符串, 不需要带
+# 4. [DT_MAP]为映射表, 包含2列
+#    1) datatype name, 为TBL/DS里面使用的类型
+#    2) datatype type, 为[DT_TYPE]里面定义的, 如果datatype name与datatype type一样, 不需要第2列
+# 5. 其他注意事项
+#    1) 所有的TBL/DS key都必须在这里指定
+#    2) 所有的ENUM需要以MAX结尾, 并在cdb_ds.c定义一个数组, e.g. GLB_IF_TYPE_MAX/glb_if_type_strs
+################################################################################
+--------------------------------------------------------------------------------
+[DT_TYPE]
+# type                  set_oper        dump_oper       protobuf_type   val2str                          & (if is STRING, need not &)
+TASK                    =               %s              none            ctc_task_val2str
+VOID                    =               %p              none
+UINT                    =               %u              uint32
+UINT64                  =               PRIu64          uint64
+INT                     =               %d              int32
+INT64                   =               PRId64          int64
+STRING                  memcpy          %s              string
+ENUM8                   =               %s              uint32
+ENUM32                  =               %s              uint32
+DOUBLE                  =               %f              double
+mac_addr_t              memcpy          %s              compose         cdb_mac_addr_val2str
+ssm_clock_id_t          memcpy          %s              compose         cdb_ssm_clock_id_val2str
+fdb_key_t               memcpy          %s              compose         cdb_fdb_key_val2str             &
+fea_g8032_ring_key_t        memcpy          %s              compose         cdb_g8032_fea_ring_val2str          &
+igsp_group_key_t        memcpy          %s              compose         cdb_igsp_group_val2str          &
+mrt_key_t               memcpy          %s              compose         cdb_mrt_val2str                 &
+brg_allowed_vlan_t      memcpy          %s              compose         cdb_brg_allowed_vlan_val2str    &
+ptp_common_message_header_t      memcpy          %s              compose         cdb_ptp_common_message_header_val2str    &
+ptp_msg_announce_t      memcpy          %s              compose         cdb_ptp_msg_announce_val2str    &
+vlan_memberport_t       memcpy          %s              bytes           cdb_vlan_member_port_val2str    &
+BITMAP                  memcpy          %s              bytes           cdb_bitmap_val2str
+addr_ipv4_t             memcpy          %s              compose         cdb_addr_ipv4_val2str           &
+addr_ipv6_t             memcpy          %s              compose         cdb_addr_ipv6_val2str           &
+prefix_ipv4_t           memcpy          %s              compose         cdb_prefix_ipv4_val2str         &
+prefix_t                memcpy          %s              compose         cdb_prefix_val2str              &
+glb_board_type_t        memcpy          %s              compose         cdb_board_type_val2str          &
+INT8ARRAY               memcpy          %s              bytes           cdb_int8_array_val2str
+UINT8ARRAY              memcpy          %s              bytes           cdb_uint8_array_val2str
+INT32ARRAY              memcpy          %s              repeat,int32    cdb_int32_array_val2str
+UINT32ARRAY             memcpy          %s              repeat,uint32   cdb_uint32_array_val2str
+UINT64ARRAY             memcpy          %s              repeat,uint64   cdb_uint64_array_val2str
+DOUBLEARRAY             memcpy          %s              repeat,double   cdb_double_array_val2str
+STRINGARRAY             memcpy          %s              repeat,string   cdb_string_array_val2str
+ds_connected_key_t      memcpy          %s              compose         cdb_ds_connected_key_val2str    &
+ds_connected_v6_key_t      memcpy          %s              compose         cdb_ds_connected_v6_key_val2str    &
+ds_static_route_dup_ipv4_nh_key_t      memcpy          %s              compose         cdb_ds_static_route_dup_ipv4_nh_key_val2str    &
+time_range_value_t      memcpy          %s              compose         cdb_time_range_value_val2str    &
+time_range_timer_t      memcpy          %s              compose         cdb_time_range_timer_val2str    &
+glb_flow_l4_port_t      memcpy          %s              compose         cdb_l4_port_val2str             &
+glb_flow_tcp_flag_t     memcpy          %s              compose         cdb_tcp_flag_val2str            &
+glb_stats_t             memcpy          %s              compose         cdb_glb_stats_val2str           &
+glb_if_stats_t          memcpy          %s              compose         cdb_glb_if_stats_val2str
+sal_time_t              memcpy          %s              compose         cdb_sal_time_val2str            &
+timestamp_t             memcpy          %s              compose         cdb_timestamp_val2str           &
+route_node_key_t        memcpy          %s              compose         cdb_route_node_key_val2str      &
+route_node_key_with_ad_t        memcpy          %s              compose         cdb_route_node_key_with_ad_val2str      &
+ospf_area_range_key_t   memcpy          %s              compose         cdb_ospf_area_range_key_val2str      &
+ospf6_area_range_key_t   memcpy          %s              compose         cdb_ospf6_area_range_key_val2str      &
+ospf_area_vlink_key_t   memcpy          %s              compose         cdb_ospf_area_vlink_key_val2str &
+rip_timers_t			memcpy			%s				compose			cdb_rip_timers_val2str          &
+nexthop_key_t           memcpy          %s              compose         cdb_nexthop_key_val2str         &
+nexthop_ecmp_t          memcpy          %s              compose         cdb_nexthop_ecmp_val2str        &
+nexthop_ecmp_routed_t          memcpy          %s              compose         cdb_nexthop_ecmp_routed_val2str        &
+aclqos_if_queue_t       memcpy          %s              compose         cdb_aclqos_if_queue_val2str     &
+addr_t                  memcpy          %s              compose         cdb_addr_val2str                &
+snmp_trap_key_t         memcpy          %s              compose         cdb_snmp_trap_val2str           &
+snmp_view_key_t         memcpy          %s              compose         cdb_snmp_view_val2str           &
+snmp_group_usm_key_t    memcpy          %s              compose         cdb_snmp_group_usm_val2str      &
+snmp_inform_key_t       memcpy          %s              compose         cdb_snmp_inform_val2str         &
+snmp_info_t             memcpy          %s              compose         cdb_snmp_info_val2str           &
+user_t                  memcpy          %s              compose         cdb_user_val2str                &
+mail_t                  memcpy          %s              compose         cdb_cem_mail_val2str            &
+rmon_stats_history_key_t   memcpy       %s              compose         cdb_rmon_stats_history_key_val2str   &
+cdb_reference_list_t    NONE            %s              none
+FLAGS8                  FLAG            %u              uint32
+FLAGS32                 FLAG            %u              uint32
+rsa_keystr_t            memcpy          %s              compose         cdb_rsa_keystr_val2str          &
+mstp_brg_id_t           memcpy          %s              compose         cdb_mstp_brg_id_val2str         &
+binding_key_t           memcpy          %s              compose         cdb_binding_key_val2str         &
+auth_server_key_t       memcpy          %s              compose         cdb_auth_server_key_val2str     &
+auth_session_key_t      memcpy          %s              compose         cdb_auth_session_key_val2str    &
+ns_port_forwarding_key_t memcpy         %s              compose         cdb_ns_port_forwarding_key_val2str &
+mstp_digest_t           memcpy          %s              compose         cdb_mstp_digest_val2str         &
+ptp_default_t           memcpy          %s              compose         cdb_ptp_default_val2str         &
+ptp_current_t           memcpy          %s              compose         cdb_ptp_current_val2str         &
+ptp_parent_t           memcpy          %s              compose         cdb_ptp_parent_val2str         &
+ptp_time_properties_t           memcpy          %s              compose         cdb_ptp_time_properties_val2str         &
+ptp_global_c_t           memcpy          %s              compose         cdb_ptp_global_c_val2str         &
+ptp_port_t           memcpy          %s              compose         cdb_ptp_port_val2str         &
+glb_ptp_port_address_t           memcpy          %s              compose         cdb_glb_ptp_port_address_val2str         &
+glb_ptp_timeinterval_t           memcpy          %s              compose         cdb_glb_ptp_timeinterval_val2str         &
+ptp_vlan_info_t           memcpy          %s              compose         cdb_ptp_vlan_info_val2str         &
+ptp_dump_flag_t           memcpy          %s              compose         cdb_ptp_dump_flag_val2str         &
+ptp_port_p_t           memcpy          %s              compose         cdb_ptp_port_p_val2str         &
+ptp_port_c_t           memcpy          %s              compose         cdb_ptp_port_c_val2str         &
+ptp_port_stats_t           memcpy          %s              compose         cdb_ptp_port_stats_val2str         &
+ptp_msg_proc_ops_t           memcpy          %s              compose         cdb_ptp_msg_proc_ops_val2str         &
+kernel_if_ipv6_addr_t           memcpy          %s              compose         cdb_kernel_if_ipv6_addr_val2str         &
+msti_port_key_t         memcpy          %s              compose         cdb_msti_port_key_val2str       &
+ace_config_key_t        memcpy          %s              compose         cdb_ace_config_key_val2str      &
+lldp_msap_id_t          memcpy          %s              compose         cdb_lldp_msap_id_val2str        &
+ptp_foreign_master_t          memcpy          %s              compose         cdb_ptp_foreign_master_val2str        &
+ptp_residence_time_cache_t          memcpy          %s              compose         cdb_ptp_residence_time_cache_val2str        &
+erps_ring_key_t         memcpy          %s              compose         cdb_erps_ring_key_val2str       &
+class_in_policy_config_key_t  memcpy    %s              compose         cdb_class_in_policy_config_key_val2str      &
+acl_in_class_config_key_t     memcpy    %s              compose         cdb_acl_in_class_config_key_val2str      &
+class_map_action_config_key_t memcpy    %s              compose         cdb_class_map_action_config_key_val2str      &
+lldp_civic_address_t    memcpy          %s              compose         cdb_lldp_civic_address_t_val2str &
+dot1x_radius_key_t      memcpy          %s              compose         cdb_dot1x_radius_key_val2str     &
+dot1x_mac_key_t         memcpy          %s              compose         cdb_dot1x_mac_key_val2str     &
+mirror_mac_escape_key_t memcpy          %s              compose         cdb_mirror_mac_escape_key_val2str &
+ns_route_key_t          memcpy          %s              compose         cdb_ns_route_key_val2str        &
+openflow_manager_key_t  memcpy          %s              compose         cdb_openflow_manager_key_val2str &
+glb_ptp_port_id_t       memcpy          %s              compose         cdb_ptp_port_id_val2str &
+tap_group_ingress_key_t memcpy          %s              compose         cdb_tap_group_ingress_key_val2str & 
+tap_group_ingress_flow_key_t memcpy     %s              compose         cdb_tap_group_ingress_flow_key_val2str & 
+tap_group_egress_key_t  memcpy          %s              compose         cdb_tap_group_egress_key_val2str & 
+tap_five_tuple_key_t    memcpy          %s              compose         cdb_tap_five_tuple_key_val2str  & 
+tap_tuple_acl_entry_id_t    memcpy          %s              compose         cdb_tap_tuple_acl_entry_id_val2str  & 
+inband_snat_key_t       memcpy          %s              compose         cdb_inband_snat_key_val2str      &
+arpace_config_key_t     memcpy          %s              compose         cdb_arpace_config_key_val2str      &
+sflow_collector_key_t   memcpy          %s              compose         cdb_sflow_collector_key_val2str     &
+ipsla_packet_stats_key_t   memcpy       %s              compose         cdb_ipsla_packet_stats_key_val2str    &
+ipsla_test_stats_key_t     memcpy       %s              compose         cdb_ipsla_test_stats_key_val2str      &
+tpoam_dm_t           memcpy          %s              compose         cdb_tpoam_dm_val2str         &
+tpoam_lm_t           memcpy          %s              compose         cdb_tpoam_lm_val2str         &
+tpoam_lb_t           memcpy          %s              compose         cdb_tpoam_lb_val2str         &
+tpoam_event_t           memcpy          %s              compose         cdb_tpoam_event_val2str         &
+tpoam_stats_t           memcpy          %s              compose         cdb_tpoam_stats_val2str         &
+tpoam_list_t           memcpy          %s              compose         cdb_tpoam_list_val2str         &
+tpoam_rc_count_t           memcpy          %s              compose         cdb_tpoam_rc_count_val2str         &
+tpoam_exec_t           memcpy          %s              compose         cdb_tpoam_exec_val2str         &
+tpoam_trap_cache_t           memcpy          %s              compose         cdb_tpoam_trap_cache_val2str         &
+tpoam_ratelimit_t           memcpy          %s              compose         cdb_tpoam_ratelimit_val2str         &
+tpoam_lmm_exec_t           memcpy          %s              compose         cdb_tpoam_lmm_exec_val2str         &
+tpoam_lb_exec_t           memcpy          %s              compose         cdb_tpoam_lb_exec_val2str         &
+tpoam_1dm_dmm_exec_t           memcpy          %s              compose         cdb_tpoam_1dm_dmm_exec_val2str         &
+upload_tpoam_dm_t           memcpy          %s              compose         cdb_upload_tpoam_dm_val2str         &
+upload_tpoam_lm_t           memcpy          %s              compose         cdb_upload_tpoam_lm_val2str         &
+upload_tpoam_ccm_t           memcpy          %s              compose         cdb_upload_tpoam_ccm_val2str         &
+vlan_mapping_entry_key_t   memcpy       %s              compose         cdb_vlan_mapping_entry_key_val2str    &
+egress_mapping_entry_key_t   memcpy       %s              compose       cdb_egress_mapping_entry_key_val2str    &
+mapped_vlan_info_key_t     memcpy       %s              compose         cdb_mapped_vlan_info_key_val2str    &
+nd_prefix_key_t                 memcpy          %s              compose       cdb_nd_prefix_key_val2str     &
+l2pro_if_action_vlan_t			memcpy          %s              compose       cdb_l2pro_if_action_vlan_val2str     &
+glb_qos_color_action_t     memcpy         %s            compose          cdb_qos_color_action_val2str      &
+qos_policer_res_key_t      memcpy        %s             compose          cdb_qos_policer_res_key_val2str       &
+summer_time_t              memcpy        %s             compose          cdb_summer_time_val2str            &
+which_summer_time_t        memcpy        %s             compose          cdb_which_summer_time_val2str            &
+l2edit_key_t               memcpy        %s             compose          cdb_l2edit_key_val2str             &
+ctclib_opb_t               memcpy		 %s             compose          cdb_opb_val2str                 &
+nat_rule_key_t             memcpy        %s             compose          cdb_nat_rule_key_val2str      &
+nat_session_key_t          memcpy        %s             compose          cdb_nat_session_key_val2str      &
+nat_proxy_arp_key_t        memcpy        %s             compose          cdb_nat_proxy_arp_key_val2str      &
+glb_poe_cfg_t        memcpy          %s              compose       cdb_poe_cfg_val2str     &
+nat_session_key_t          memcpy          %s              compose          cdb_nat_session_key_val2str      &
+glb_poe_cfg_t        memcpy          %s              compose       cdb_poe_cfg_val2str     &
+cfm_ma_key_t          memcpy          %s              compose          cdb_cfm_ma_key_val2str      &
+cfm_lmep_key_t          memcpy          %s              compose        cdb_cfm_lmep_key_val2str      &
+cfm_rmep_key_t          memcpy          %s              compose        cdb_cfm_rmep_key_val2str      &
+cfm_time_key_t           memcpy          %s              compose        cdb_cfm_time_key_val2str      &  
+pim_sm_gprefix_t        memcpy          %s              compose         cdb_pim_sm_gprefix_val2str          &
+pim_static_rp_addr_t        memcpy          %s              compose         cdb_pim_static_rp_addr_val2str          &   
+--------------------------------------------------------------------------------
+[DT_MAP]
+#dt_name                        dt_type
+##### INT #####
+uint8                           UINT
+uint16                          UINT
+uint32                          UINT
+uint64                          UINT64
+int8                            INT
+int16                           INT
+int32                           INT
+int64                           INT64
+vid_t                           UINT
+char                            INT
+in4_addr                        UINT
+void                            VOID
+time_range_cb                   VOID
+ctc_task_t                      TASK
+ctclib_slist_t                  VOID
+sal_mutex_t                     VOID
+                                 
+##### DOUBLE #####               
+double                          DOUBLE
+
+##### STRING #####
+char[]                          STRING
+qos_name_t[]                    STRINGARRAY
+ifname_info_t[]                 STRINGARRAY
+
+##### Value Array #####
+int8[]                          INT8ARRAY
+uint8[]                         UINT8ARRAY
+int32[]                         INT32ARRAY
+uint32[]                        UINT32ARRAY
+uint64[]                        UINT64ARRAY
+double[]                        DOUBLEARRAY
+
+##### BITMAP #####
+vlan_bmp_t                      BITMAP
+port_bmp_t                      BITMAP
+port_vlan_bmp_t                 BITMAP
+bmp_32_t                        BITMAP
+bmp_64_t                        BITMAP
+logid_bmp_t                     BITMAP
+vclass_bmp_t					BITMAP
+vrid_bmp_t                      BITMAP
+
+##### FLAGS #####
+FLAGS8                          FLAGS8
+FLAGS32                         FLAGS32
+
+##### Enum #####
+glb_port_speed_t           	    ENUM8
+glb_port_duplex_t               ENUM8
+glb_port_unidir_t               ENUM8
+glb_if_mode_t                   ENUM8
+glb_vlan_port_type_t            ENUM8
+glb_vlan_qinq_type_t            ENUM8
+glb_agg_mode_t                  ENUM8
+glb_if_type_t                   ENUM32
+glb_phy_type_t                  ENUM32
+glb_agg_load_balance_t          ENUM32
+ptp_device_type_t				ENUM8
+ptp_state_t					ENUM8
+ptp_bmc_code_t				ENUM8
+ptp_bmc_expires_t				ENUM8
+lacp_pertx_state_t              ENUM8
+lacp_rx_state_t                 ENUM8
+lacp_mux_state_t                ENUM8
+lacp_selected_t                 ENUM8
+glb_vlan_security_action_t      ENUM32
+boot_mode_t                     ENUM32
+glb_flow_ip_frag_t              ENUM8
+glb_port_isolate_t              ENUM32
+arp_type_t                      ENUM8
+route_type_t                    ENUM8
+as_t                            ENUM8
+ssh_version_t                   ENUM8
+snmp_version_t                  ENUM8
+snmp_view_class_t               ENUM8
+snmp_community_t                ENUM8
+syslog_facility_t               ENUM8
+syslog_severity_t               ENUM8
+syslog_timestamp_t              ENUM8
+login_method_t                  ENUM8
+parity_t                        ENUM8
+mirror_source_type_t            ENUM8
+mirror_direction_type_t         ENUM8
+mirror_dest_type_t              ENUM32
+key_type_t                      ENUM8
+mstp_path_cost_t                ENUM8
+mstp_edgeport_t                 ENUM8
+pim_state_t                     ENUM8
+prs_state_t                     ENUM8
+prt_state_t                     ENUM8
+prx_state_t                     ENUM8
+pst_state_t                     ENUM8
+tcm_state_t                     ENUM8
+ppm_state_t                     ENUM8
+ptx_state_t                     ENUM8
+bdm_state_t                     ENUM8
+pti_state_t                     ENUM8
+mstp_link_t                     ENUM8
+mstp_port_role_t                ENUM8
+mstp_port_state_t	            ENUM8
+mstp_tc_state_t                 ENUM8
+mstp_type_t                     ENUM8
+mstp_info_t                     ENUM8
+mstp_rcvd_info_t                ENUM8
+scheduler_mode_t                ENUM32
+glb_if_pvlan_type_t             ENUM32
+glb_port_media_t                ENUM32
+dhcbinding_state_t              ENUM8
+dhcbinding_type_t               ENUM8
+errdis_rsn_t                    ENUM8
+glb_ppt_numchg_type_t           ENUM8
+glb_port_media_type_t           ENUM8
+glb_card_state_t                ENUM8
+glb_chassis_type_t              ENUM8
+glb_reboot_type_t               ENUM8
+flush_fdb_type_t                ENUM32
+flush_fdb_subtype_t             ENUM32
+flush_fdb_mode_t                ENUM32
+mlag_role_t                     ENUM32
+errdis_flap_rsn_t               ENUM32
+lldp_if_mode_t                  ENUM32
+erps_state_t                    ENUM8
+erps_msg_type_t                 ENUM8
+erps_node_role_t                ENUM8
+erps_edge_node_role_t           ENUM8
+erps_ring_level_t               ENUM8
+auth_server_type_t              ENUM8
+auth_session_status_t           ENUM8
+glb_chip_type_t                 ENUM32
+vlanclss_rule_protocol_type_t   ENUM32
+vlanclss_rule_protocol_action_t ENUM32
+glb_time_sync_type_t            ENUM32
+glb_bhm_action_t                ENUM32
+glb_warmboot_type_t             ENUM32
+ospf_nssa_translate_role_t      ENUM32
+ospf_vlink_auth_type_t          ENUM32
+tpoam_status_t			ENUM32
+tpoam_pw_type_t			ENUM32
+tpoam_mp_type_t			ENUM32
+glb_vty_mode_t 			ENUM32
+
+##### TBL key #####
+tbl_interface_key_t                 STRING
+tbl_vlan_key_t                      UINT
+tbl_fdb_key_t                       fdb_key_t
+tbl_mcfdb_key_t                     fdb_key_t
+tbl_psfdb_key_t                     fdb_key_t
+tbl_fea_fdb_key_t                   fdb_key_t
+tbl_ipsg_s_ip_key_t                 prefix_t
+tbl_ipsg_s_mac_key_t                mac_addr_t
+tbl_ipsg_fib_key_t                  fdb_key_t
+tbl_macfilter_key_t                 mac_addr_t
+tbl_pmap_key_t                      STRING
+tbl_cmap_key_t                      STRING
+tbl_acl_key_t                       STRING
+tbl_card_key_t                      UINT
+tbl_ifname_info_key_t               UINT
+tbl_fan_key_t                       UINT
+tbl_psu_key_t                       UINT
+tbl_led_key_t                       UINT
+tbl_sensor_key_t                    UINT
+tbl_vcm_key_t                       UINT
+tbl_poe_key_t                       UINT
+tbl_sys_spec_key_t                  UINT
+tbl_reboot_info_key_t               UINT
+tbl_mlag_port_key_t                 UINT
+tbl_route_if_key_t                  STRING
+tbl_rif_key_t                       STRING
+tbl_kernel_if_key_t                 UINT
+tbl_fea_port_if_key_t               UINT64
+tbl_fea_lag_key_t                   STRING
+tbl_time_range_key_t                STRING
+tbl_arp_fib_key_t                   addr_ipv4_t
+tbl_arp_key_t                       addr_ipv4_t
+tbl_bgp_key_t						UINT
+tbl_bgp_network_key_t				addr_t
+tbl_bgp_neighbor_key_t				addr_t
+tbl_ospf_key_t						UINT
+tbl_ospf6_key_t						UINT
+tbl_ospf6_interface_key_t			STRING
+tbl_ospf_network_key_t				prefix_t
+tbl_ospf_area_auth_key_t			UINT
+tbl_ospf_area_range_key_t			ospf_area_range_key_t
+tbl_ospf6_area_range_key_t			ospf6_area_range_key_t
+tbl_ospf_area_stub_key_t            UINT
+tbl_ospf6_area_stub_key_t            UINT
+tbl_ospf_area_nssa_key_t            UINT
+tbl_ospf_area_vlink_key_t           ospf_area_vlink_key_t
+tbl_iproute_node_key_t              route_node_key_t
+tbl_iproute_node_add_fail_key_t route_node_key_t
+tbl_iproute_node_add_fail_count_key_t route_node_key_t
+tbl_static_route_cfg_key_t          route_node_key_t
+tbl_static_rt_cnt_key_t             route_node_key_with_ad_t
+tbl_rr_prefix_key_t                 UINT
+tbl_qos_queue_shape_profile_key_t   UINT
+tbl_qos_port_shape_profile_key_t    UINT
+tbl_qos_drop_profile_key_t          UINT
+tbl_qos_policer_action_profile_key_t UINT
+tbl_qos_policer_profile_key_t       UINT
+tbl_qos_policer_res_key_t           qos_policer_res_key_t
+tbl_qos_mpls_domain_key_t           UINT
+tbl_qos_domain_key_t                UINT
+tbl_qos_queue_smart_buffer_key_t    UINT
+tbl_user_key_t                      STRING
+tbl_login_record_key_t                      STRING
+tbl_vty_key_t                       UINT
+tbl_authen_key_t                    STRING
+tbl_login_key_t                     STRING
+tbl_mirror_key_t                    UINT
+tbl_rsa_key_t                       STRING
+tbl_cpu_traffic_key_t               UINT
+tbl_cpu_traffic_group_key_t         UINT
+tbl_ntp_server_key_t                STRING
+tbl_ntp_ace_key_t                   STRING
+tbl_ntp_key_key_t                   UINT
+tbl_cpu_utilization_key_t           STRING
+tbl_cpu_limit_key_t                 STRING
+tbl_snmp_view_key_t                 snmp_view_key_t
+tbl_snmp_community_key_t            STRING
+tbl_snmp_context_key_t              STRING
+tbl_snmp_usm_user_key_t             STRING
+tbl_snmp_group_usm_key_t            snmp_group_usm_key_t
+tbl_snmp_access_usm_key_t           STRING
+tbl_snmp_notify_key_t               STRING
+tbl_snmp_target_addr_key_t          STRING
+tbl_snmp_target_params_key_t        STRING
+tbl_snmp_trap_key_t                 snmp_trap_key_t
+tbl_snmp_inform_key_t               snmp_inform_key_t
+tbl_rmon_event_key_t                UINT
+tbl_rmon_alarm_key_t                UINT
+tbl_rmon_ether_stats_key_t          UINT
+tbl_rmon_history_key_t              UINT
+tbl_rmon_stats_history_key_t        rmon_stats_history_key_t
+tbl_pvlan_key_t                     UINT
+tbl_static_dns_key_t                STRING
+tbl_dynamic_dns_domain_key_t        STRING
+tbl_dynamic_dns_server_key_t        addr_t
+tbl_dhcsrvgrp_key_t                 UINT
+tbl_dhcbinding_key_t                fdb_key_t
+tbl_port_key_t                      UINT
+tbl_fiber_key_t                     UINT
+tbl_mstp_port_key_t                 STRING
+tbl_ptp_port_key_t                  STRING
+tbl_openflow_flow_key_t             UINT
+tbl_openflow_meter_key_t            UINT
+tbl_openflow_group_key_t            UINT
+tbl_errdisable_key_t                ENUM8
+tbl_tap_group_key_t                 STRING
+tbl_tap_group_ingress_key_t         tap_group_ingress_key_t
+tbl_tap_group_ingress_flow_key_t    tap_group_ingress_flow_key_t
+tbl_tap_group_egress_key_t          tap_group_egress_key_t
+tbl_tap_five_tuple_key_t            tap_five_tuple_key_t
+tbl_ns_port_forwarding_key_t        ns_port_forwarding_key_t
+tbl_log_key_t                       UINT
+tbl_cem_key_t                       STRING
+tbl_nexthop_key_t                   nexthop_key_t
+tbl_nexthop_group_key_t             nexthop_ecmp_t
+tbl_nexthop_group_routed_key_t             nexthop_ecmp_routed_t
+tbl_nh_group_key_t                  route_node_key_t
+tbl_fea_nexthop_key_t               nexthop_key_t
+tbl_fea_nh_group_key_t              route_node_key_t
+tbl_fea_nhg_cnt_key_t               UINT64
+tbl_msti_port_key_t                 msti_port_key_t
+tbl_mstp_instance_key_t             UINT
+tbl_clock_key_t                     UINT
+tbl_port_stats_key_t                UINT
+tbl_vlan_stats_key_t                 UINT
+tbl_port_stats_rate_key_t           UINT
+tbl_aclqos_if_key_t                 STRING
+tbl_fea_qos_drop_profile_key_t      UINT
+tbl_fea_qos_domain_key_t            UINT
+tbl_fea_qos_queue_shape_profile_key_t   UINT
+tbl_fea_qos_port_shape_profile_key_t    UINT
+tbl_fea_port_policer_apply_key_t    STRING
+tbl_fea_acl_table_key_t		        UINT64
+tbl_fea_acl_key_t			        UINT64
+tbl_fea_copp_trap_group_key_t       UINT
+tbl_acl_entry_key_t                 UINT
+tbl_acl_entry_action_key_t          UINT
+tbl_acl_nexthop_group_key_t         UINT
+tbl_acl_nexthop_key_t               UINT
+tbl_acl_worm_filter_key_t           UINT
+tbl_acl_config_key_t  		        STRING
+tbl_ace_config_key_t  		        ace_config_key_t
+tbl_aclqos_if_stats_key_t           STRING
+tbl_isolation_key_t                 UINT
+tbl_fea_brg_if_key_t                UINT
+tbl_errdisable_flap_key_t           ENUM8
+tbl_lldp_if_key_t                   UINT
+tbl_erps_ring_key_t                 erps_ring_key_t
+tbl_erps_domain_key_t               UINT
+tbl_policy_map_config_key_t  		STRING
+tbl_class_map_config_key_t  		STRING
+tbl_class_in_policy_config_key_t    class_in_policy_config_key_t
+tbl_acl_in_class_config_key_t       acl_in_class_config_key_t
+tbl_class_map_action_config_key_t   class_map_action_config_key_t
+tbl_fea_acl_policy_action_key_t		UINT64
+tbl_igsp_intf_key_t                 UINT
+tbl_igsp_group_key_t                addr_ipv4_t
+tbl_auth_server_key_t               addr_t
+tbl_auth_session_key_t              auth_session_key_t  
+tbl_fea_g8032_ring_key_t	 fea_g8032_ring_key_t
+tbl_fea_g8032_ring_mc_group_key_t	 UINT
+tbl_igsp_group_key_t	            igsp_group_key_t
+tbl_mrt_key_t                       mrt_key_t
+tbl_ipmc_intf_key_t                 STRING
+tbl_pim_static_rp_key_t             prefix_t
+tbl_dot1x_port_key_t                UINT
+tbl_dot1x_radius_key_t              dot1x_radius_key_t
+tbl_dot1x_mac_key_t                 dot1x_mac_key_t
+tbl_enable_key_t                    UINT
+tbl_author_key_t                    STRING
+tbl_account_key_t                   STRING
+tbl_accountcmd_key_t                STRING
+tbl_vlanclass_rule_key_t            UINT
+tbl_vlanclass_group_key_t           UINT
+tbl_acl_l4_port_range_key_t         UINT
+tbl_acl_udf_group_key_t             UINT
+tbl_acl_udf_entry_key_t             UINT
+tbl_mirror_mac_escape_key_t         mirror_mac_escape_key_t
+tbl_controller_key_t                STRING
+tbl_ns_route_key_t                  ns_route_key_t
+tbl_ns_route_ip_key_t               UINT
+tbl_openflow_interface_key_t                 STRING
+tbl_ptp_foreign_key_t               glb_ptp_port_id_t
+tbl_ptp_residence_time_cache_key_t		ptp_residence_time_cache_t
+tbl_fea_ptp_ts_key_t		UINT
+tbl_openflow_manager_key_t          openflow_manager_key_t
+tbl_tap_group_ingress_key_t         tap_group_ingress_key_t
+tbl_tap_group_ingress_flow_key_t    tap_group_ingress_flow_key_t
+tbl_tap_group_egress_key_t          tap_group_egress_key_t
+tbl_bhm_module_key_t                UINT
+tbl_openflow_tunnel_interface_key_t                 STRING
+tbl_openflow_tunnel_local_ip_cnt_key_t             STRING
+tbl_inband_snat_key_t               inband_snat_key_t
+tbl_arpinsp_key_t              		UINT
+tbl_arpacl_config_key_t				STRING
+tbl_arpace_config_key_t				arpace_config_key_t
+tbl_copp_reason_cfg_key_t        STRING
+tbl_sflow_collector_key_t           sflow_collector_key_t
+tbl_sflow_counter_port_key_t        UINT
+tbl_vrrp_vmac_key_t                 mac_addr_t
+tbl_vrrp_session_key_t              UINT
+tbl_vrrp_vip_key_t                  addr_t
+tbl_ssm_port_key_t					UINT
+tbl_ipsla_entry_key_t               UINT
+tbl_ipsla_packet_stats_key_t        ipsla_packet_stats_key_t
+tbl_ipsla_test_stats_key_t          ipsla_test_stats_key_t
+tbl_track_object_key_t              UINT
+tbl_controller_attr_key_t           ns_route_key_t
+tbl_oam_session_key_t                   UINT
+tbl_oam_session_upload_key_t                   UINT
+tbl_lsp_aps_group_key_t                 UINT
+tbl_pw_aps_group_key_t                 UINT
+tbl_lsp_pe_key_t                            STRING
+tbl_lsp_p_key_t                              STRING
+tbl_pw_tpe_key_t                           STRING
+tbl_section_oam_key_t                   UINT
+tbl_oam_flow_info_key_t                   UINT
+tbl_aps_group_info_key_t                   UINT
+tbl_oam_inlabel_info_key_t                       UINT
+tbl_oam_mpls_aps_check_key_t                       UINT
+tbl_vlan_mapping_table_key_t        STRING
+tbl_vlan_mapping_entry_key_t        vlan_mapping_entry_key_t
+tbl_egress_mapping_entry_key_t      egress_mapping_entry_key_t
+tbl_vlan_group_key_t                UINT
+tbl_evc_entry_key_t                 STRING
+tbl_mapped_vlan_info_key_t          mapped_vlan_info_key_t
+tbl_l2_protocol_key_t               STRING
+tbl_nd_fib_key_t                    nd_prefix_key_t
+tbl_l2edit_key_t                    l2edit_key_t
+tbl_nat_pool_key_t                  STRING
+tbl_nat_rule_key_t                  nat_rule_key_t
+tbl_nat_session_key_t               nat_session_key_t
+tbl_g8032_ring_key_t               UINT
+tbl_hash_field_profile_key_t			STRING 
+tbl_hash_value_profile_key_t			STRING
+tbl_nat_session_limit_key_t         addr_t
+tbl_nat_proxy_arp_key_t             nat_proxy_arp_key_t
+tbl_nat_rtif_inside_key_t           STRING
+tbl_nat_rtif_outside_key_t          STRING
+tbl_cfm_md_key_t                   STRING
+tbl_cfm_ma_key_t                   cfm_ma_key_t
+tbl_cfm_maid_key_t                STRING
+tbl_cfm_lmep_key_t                cfm_lmep_key_t
+tbl_cfm_rmep_key_t                cfm_rmep_key_t
+tbl_cfm_error_key_t                 UINT
+tbl_pim_sm_key_t                    UINT
+tbl_pim_sm_bsr_key_t                UINT
+tbl_pim_sm_rp_key_t                 UINT
+tbl_pim_sm_rp_gp_key_t              UINT
+tbl_pim_dm_key_t                    UINT
+tbl_igmp_intf_key_t                 STRING
+tbl_rip_key_t						UINT 
+tbl_ripng_key_t						UINT 
+tbl_rip_network_key_t				prefix_t 
+tbl_ripng_network_key_t				prefix_t 
+tbl_rip_neighbor_key_t				addr_t 
+tbl_rip_passive_if_key_t			STRING
+tbl_ripng_passive_if_key_t			STRING
+
+##### DS key #####
+ds_pmap_class_key_t                 STRING
+#ds_pmap_if_key_t                   STRING
+ds_mac_ace_key_t                    UINT
+ds_ip_ace_key_t                     UINT
+ds_connected_key_t                  
+ds_connected_v6_key_t
+ds_static_route_dup_ipv4_nh_key_t
+ds_ospf_auth_key_t                  UINT
+ds_rib_key_t                        UINT
+ds_nexthop_key_t                    nexthop_key_t
+ds_tmpr_status_key_t                UINT
+ds_psu_status_key_t                 UINT
+ds_fan_status_key_t                 UINT
+ds_pvlan_community_key_t            UINT
+ds_circuit_id_key_t                 UINT
+ds_lldp_neighbour_key_t             lldp_msap_id_t
+ds_mrouter_port_key_t               STRING
+ds_query_key_t                      addr_ipv4_t
+ds_l2protocol_key_t                 STRING
+ds_nd_prefix_key_t                    nd_prefix_key_t
+ds_join_group_key_t                 addr_ipv4_t
+ds_cfm_error_key_t                  cfm_time_key_t
+
+##### DS #####                  
+ds_brgif_t                          DS_BRGIF
+ds_lag_t                            DS_LAG
+ds_lacp_t                           DS_LACP
+ds_storm_control_t                  DS_STORM_CONTROL
+ds_pmap_class_t                     DS_PMAP_CLASS
+ds_if_stats_t                       DS_IF_STATS
+ds_aclqos_if_t                      DS_ACLQOS_IF
+ds_openflow_if_t                    DS_OPENFLOW_IF
+ds_dhclient_if_t                    DS_DHCLIENT_IF
+ds_tmpr_status_t                    DS_TMPR_STATUS
+ds_psu_status_t                     DS_PSU_STATUS
+ds_fan_status_t                     DS_FAN_STATUS
+ds_circuit_id_t                     DS_CIRCUIT_ID
+ds_fiber_info_t                     DS_FIBER_INFO
+ds_reboot_info_t                    DS_REBOOT_INFO
+ds_flush_fdb_t                      DS_FLUSH_FDB
+                               
+##### DT with val2str #####     
+fdb_key_t
+cdb_reference_list_t
+mac_addr_t
+ssm_clock_id_t
+brg_allowed_vlan_t
+ptp_common_message_header_t
+ptp_msg_announce_t
+aclqos_if_queue_t
+vlan_memberport_t
+addr_ipv4_t
+addr_ipv6_t
+prefix_ipv4_t
+prefix_t
+glb_board_type_t
+time_range_value_t
+time_range_timer_t
+glb_stats_t
+glb_if_stats_t
+glb_flow_l4_port_t
+glb_flow_tcp_flag_t
+sal_time_t
+timestamp_t
+route_node_key_t
+route_node_key_with_ad_t
+ospf_area_range_key_t
+ospf6_area_range_key_t
+ospf_area_vlink_key_t
+rip_timers_t
+nexthop_key_t
+nexthop_ecmp_t
+nexthop_ecmp_routed_t
+addr_t
+rsa_keystr_t
+snmp_trap_key_t
+snmp_view_key_t
+snmp_group_usm_key_t
+snmp_inform_key_t
+snmp_info_t
+user_t
+mail_t
+rmon_stats_history_key_t
+mstp_brg_id_t
+binding_key_t
+auth_server_key_t
+auth_session_key_t
+ns_port_forwarding_key_t
+mstp_digest_t
+ptp_default_t
+ptp_current_t
+ptp_parent_t
+ptp_time_properties_t
+ptp_global_c_t
+ptp_port_t
+glb_ptp_port_address_t
+glb_ptp_timeinterval_t
+ptp_vlan_info_t
+ptp_dump_flag_t
+ptp_port_p_t
+ptp_port_c_t
+ptp_port_stats_t
+ptp_msg_proc_ops_t
+kernel_if_ipv6_addr_t
+msti_port_key_t
+ace_config_key_t
+lldp_msap_id_t
+ptp_foreign_master_t
+ptp_residence_time_cache_t
+erps_ring_key_t
+class_in_policy_config_key_t
+acl_in_class_config_key_t
+class_map_action_config_key_t
+lldp_civic_address_t
+fea_g8032_ring_key_t
+igsp_group_key_t
+mrt_key_t
+dot1x_radius_key_t
+dot1x_mac_key_t
+mirror_mac_escape_key_t
+ns_route_key_t
+glb_ptp_port_id_t
+openflow_manager_key_t
+tap_group_ingress_key_t
+tap_group_ingress_flow_key_t
+tap_group_egress_key_t
+tap_five_tuple_key_t
+tap_tuple_acl_entry_id_t
+inband_snat_key_t
+arpace_config_key_t
+sflow_collector_key_t
+ipsla_packet_stats_key_t
+ipsla_test_stats_key_t
+tpoam_dm_t
+tpoam_lm_t
+tpoam_lb_t
+tpoam_event_t
+tpoam_stats_t
+tpoam_list_t
+tpoam_rc_count_t
+tpoam_exec_t
+tpoam_trap_cache_t
+tpoam_ratelimit_t
+tpoam_lmm_exec_t
+tpoam_lb_exec_t
+tpoam_1dm_dmm_exec_t
+upload_tpoam_dm_t
+upload_tpoam_lm_t
+upload_tpoam_ccm_t
+vlan_mapping_entry_key_t
+egress_mapping_entry_key_t
+mapped_vlan_info_key_t
+nd_prefix_key_t
+l2pro_if_action_vlan_t
+glb_qos_color_action_t
+qos_policer_res_key_t
+summer_time_t
+which_summer_time_t
+l2edit_key_t
+ctclib_opb_t
+nat_rule_key_t
+nat_session_key_t
+nat_proxy_arp_key_t
+glb_poe_cfg_t
+cfm_ma_key_t
+cfm_lmep_key_t
+cfm_rmep_key_t
+cfm_time_key_t
+pim_sm_gprefix_t
+pim_static_rp_addr_t
+--------------------------------------------------------------------------------

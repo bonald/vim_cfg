@@ -1,0 +1,1203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+ACL
+</CTCMODULENAME>
+	
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+
+	<COMMAND name="ip access-list" help="IP access list"
+		view="configure-ip-acl-view"
+		viewid="acl_name=${acl_name}">
+	    <PARAM name="acl_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl create/cdb/l2/acl_config/${_params}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to create IP ACL and then enter IP ACL configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the system already has an IP ACL with the same name, this command will enter the IP ACL configuration mode.  
+When the name is not used by any ACL, this command is to create the IP ACL firstly and then enter the IP ACL configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create an IP ACL named testacl and then enter the IP ACL configuration mode.   
+    Switch(config)# ip access-list testacl   
+    Switch(config-acl-testacl)#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip access-list" help="IP access list">
+	    <PARAM name="acl_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl delete/cdb/l2/acl_config/${_params}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove this IP ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the IP ACL, and should detach IP ACL from the interface which applied this IP ACL.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove an IP ACL named testacl.  
+    Switch(config)# no ip access-list testacl    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+	</COMMAND>
+
+        <!-- time range -->
+        <COMMAND name="time-range" help="Define time range entries" view="Configure-time-range-view" viewid="range_name=${range_name}">
+        
+            <PARAM name="range_name" help="Specify a time range name, up to 40 characters" ptype="NAME_STRING"/>
+            
+            <ACTION>cdbctl create/cdb/acl/time_range/${_params}</ACTION>
+            
+        <CTCDESCRIPTION>
+Use this command to create time range and enter time-range configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+A time range is used to determine a range of time during which a filter is effective.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create a time range with the name 'my-time-range':  
+    Switch(config)# time-range my-time-range     
+    Switch(config-time-range-my-time-range)#     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show time-range
+		</CTCRCMD>            
+        </COMMAND>
+
+        <!-- time range -->
+        <COMMAND name="no time-range" help="Define time range entries">
+            <PARAM name="range_name" help="Specify a time range name, up to 40 characters" ptype="NAME_STRING"/>
+            
+            <ACTION>cdbctl delete/cdb/acl/time_range/${_params}</ACTION>
+            
+        <CTCDESCRIPTION>
+Use this command to delete time range.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete a time range with the name 'my-time-range':  
+    Switch(config)# no time-range my-time-range        
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show time-range
+		</CTCRCMD>  
+            
+        </COMMAND>
+	
+</VIEW>
+
+
+<VIEW name="Configure-time-range-view" prompt="${SYSTEM_NAME}(config-time-range-${range_name})# " depth="1">
+
+<!-- Inheritance -->
+ 	<NAMESPACE ref="Exec" prefix="do" help="true" completion="true"/>
+
+	<COMMAND name="do" help="To run exec commands in config mode"> </COMMAND>
+	
+	<NAMESPACE ref="Configure" help="false" completion="false"/>
+
+    <COMMAND name="exit" help="Exit from time range configuration mode" lock="false">
+        <ACTION builtin="clish_nested_up"/>
+    </COMMAND>
+    <COMMAND name="quit" help="Exit from time range configuration mode" lock="false">
+        <ACTION builtin="clish_nested_up"/>
+    </COMMAND>
+
+    <COMMAND name="absolute" help="Absolute time and date">
+        <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="start" help="Starting time and date" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="start_time" help="Starting time" ptype="ABS_TIME" />
+                <PARAM name="start_month" help="Month of the year" ptype="ABS_MONTH" />
+                <PARAM name="start_day" help="Day of the month" ptype="ABS_DAY" />
+                <PARAM name="start_year" help="Year" ptype="ABS_YEAR" />
+                <PARAM name="end" help="End time and date" ptype="SUBCOMMAND" mode="subcommand" optional="true" >
+                    <PARAM name="end_time" help="Ending time" ptype="ABS_TIME" />
+                    <PARAM name="end_month" help="Month of the year" ptype="ABS_MONTH" />
+                    <PARAM name="end_day" help="Day of the month" ptype="ABS_DAY" />
+                    <PARAM name="end_year" help="Year" ptype="ABS_YEAR" />
+                </PARAM>
+            </PARAM>
+            <PARAM name="end" help="Ending time and date" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="end_time" help="Ending time" ptype="ABS_TIME" />
+                <PARAM name="end_month" help="Month of the year" ptype="ABS_MONTH" />
+                <PARAM name="end_day" help="Day of the month" ptype="ABS_DAY" />
+                <PARAM name="end_year" help="Year" ptype="ABS_YEAR" />
+            </PARAM>
+        </PARAM>
+        
+        <ACTION>cdbctl update/cdb/acl/time_range/${range_name}/time/absolute/${start_time}/${start_month}/${start_day}/${start_year}/${end_time}/${end_month}/${end_day}/${end_year}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to define the absolute time and date in time range.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Comparing with the periodic time, choose an appropriate type.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to define a time range started from 11:20:30 September 28 2016 and ended by 20:30:40 September 30 2016:  
+    Switch(config-time-range-my-time-range)# absolute start 11:20:30 sep 28 2016 end 20:30:40 sep 30 2016          
+		</CTCEXAMPLE>
+		<CTCRCMD>
+periodic
+		</CTCRCMD>  
+    </COMMAND>
+
+    <COMMAND name="periodic" help="Periodic time and date">
+        <PARAM name="start_time" help="Starting time" ptype="PER_TIME" />
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch" >
+            <PARAM name="WEEKDAY" help="Day of the week(At least first three letters of the weekday)" ptype="PER_WEEK" />
+            <PARAM name="weekdays" help="Monday to Friday" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="weekend" help="Saturday and Sunday" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="daily" help="Every day of the week" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        <PARAM name="to" help="Ending day and time" ptype="SUBCOMMAND" mode="subcommand" >
+            <PARAM name="end_time" help="Ending time" ptype="PER_TIME" />
+        </PARAM>
+        <PARAM name="end_day" test='"${type}"="WEEKDAY"' help="Day of the week(At least first three letters of the weekday)" ptype="PER_WEEK" optional="true" />
+
+        <ACTION>cdbctl update/cdb/acl/time_range/${range_name}/time/periodic/${type}/${start_time}/${WEEKDAY}/${end_time}/${end_day}/</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to define the periodic time and date in time range.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Comparing with the absolute time, choose an appropriate type.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to define a time range started from 00:00 Monday and ended by 18:00 Wednesday in weekly period:  
+    Switch(config-time-range-my-time-range)# periodic 00:00 mon to 18:00 wed  
+    This example shows how to define a time range started from 09:00 and ended by 17:00 everyday:  
+    Switch(config-time-range-my-time-range)# periodic 09:00 daily to 17:00      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+absolute
+		</CTCRCMD>          
+    </COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-ip-acl-view"
+	prompt="${SYSTEM_NAME}(config-ip-acl-${acl_name})# "
+	depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from ACL configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from ACL configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+	
+	
+
+    <COMMAND name="remark" help="IP access list description"> 
+        <PARAM name="remark_str" help="Comment up to 100 characters" ptype="NAME_STRING"/>
+		
+        <ACTION>cdbctl update/cdb/l2/acl_config/${acl_name}/remark/add/${remark_str}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to add remarks for the IP ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The remarks are up to 100 characters. The exceed parts will not be stored and will be truncated.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is no remarks of IP ACL.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add a remark to describe the IP ACL.  
+    Switch(config-acl-test)# remark aaaaaa   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no remark
+show ip access-list
+		</CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="no remark" help="IP access list description">
+        <ACTION>cdbctl update/cdb/l2/acl_config/${acl_name}/remark/del</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete remarks for the IP ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is no remarks of IP ACL.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete the remark of the IP ACL.    
+    Switch(config-acl-test)# no remark    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+remark
+show ip access-list
+		</CTCRCMD>
+		
+    </COMMAND>
+	
+	
+
+	<COMMAND name="GACL" help="ACL sequence number (1-65535)">
+<!--	<PARAM name="seq_num" help="Sequence-number" ptype="ACL_SEQ_NUM"/> -->
+	<PARAM name="filter" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    <PARAM name="permit" help="Specify packets to permit" ptype="SUBCOMMAND" mode="subcommand" />
+	    <PARAM name="deny" help="Specify packets to reject" ptype="SUBCOMMAND" mode="subcommand"/>
+	</PARAM>
+
+	<PARAM name="src-mac" help="Source MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_mac" help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_mac_mask" test='"${mac_sub1}"="src_mac"' help="Source wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+		<PARAM name="src_mac" test='"${mac_sub1}"="host"' help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-mac" help="Destination MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_mac" help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dest_mac_mask" test='"${mac_sub2}"="dest_mac"' help="Destination wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+	    <PARAM name="dest_mac" test='"${mac_sub2}"="host"' help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="vlan" help="Vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="vlan_id_mask" test='"${vlan_sub1}"="vlan_id"' help="Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-vlan" help="Inner vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="inner_vlan_id" help="Inner vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_vlan_id_mask" test='"${vlan_sub2}"="inner_vlan_id"' help="Inner Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="cos" help="Configure COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="cos_id" help="An arbitrary COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="cos_id_mask" test='"${cos_sub1}"="cos_id"' help="Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-cos" help="Configure inner-COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="inner_cos_id" help="An arbitrary inner-COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_cos_id_mask" test='"${cos_sub2}"="inner_cos_id"' help="Inner Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+	
+	<PARAM name="untag_mode" help="Untag mode" optional="true" mode="switch" ptype="SUBCOMMAND" default="none">
+		<PARAM name="untag-vlan" help="Without vlan tag" mode="subcommand" ptype="SUBCOMMAND" optional="true"/>
+	</PARAM>
+
+	<PARAM name="src-ip" help="Source IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ip_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_ip" help="Source address" ptype="IP_ADDR"/>
+			<PARAM name="src_ip_addrlen" help="Source IP address with mask length" ptype="IP_ADDR_MASK"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_ip_mask" test='"${ip_sub1}"="src_ip"' help="Source wildcard bits" ptype="IP_ADDR"/>
+        <PARAM name="src_ip" test='"${ip_sub1}"="host"' help="Source host's IP address" ptype="IP_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-ip" help="Destination IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ip_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_ip" help="Destination address" ptype="IP_ADDR"/>
+			<PARAM name="dest_ip_addrlen" help="Destination IP address with mask length" ptype="IP_ADDR_MASK"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dst_ip_mask" test='"${ip_sub2}"="dest_ip"' help="Destination wildcard bits" ptype="IP_ADDR"/>
+		<PARAM name="dest_ip" test='"${ip_sub2}"="host"' help="Destination host's IP address" ptype="IP_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dscp" help="Match packets with given dscp value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="dscp_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dscp_value" help="Differentiated services codepoint value" ptype="DSCP_VALUE"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dscp_mask" test='"${dscp_sub1}"="dscp_value"' help="Dscp Mask(0x0-0x3f)" ptype="DSCP_VALUE_MASK"/>
+	</PARAM>
+
+	<PARAM name="ip-precedence" help="Match packets with given ip-precedencep value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="precedence_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="precedence_value" help="Precedence value" ptype="COS_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="precedence_mask" test='"${precedence_sub1}"="precedence_value"' help="Precedence Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="fragment" help="Fragment" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="frag_sub1" help="fragSub1" mode="switch" ptype="SUBCOMMAND">
+			<PARAM name="first-fragment" help="Match packets with first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-first-fragment" help="Match packets with non first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-fragment" help="Match packets with non fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-or-first-fragment" help="Match packets with non fragment or first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="small-fragment" help="Match packets that fragment offset is 1-3" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	</PARAM>
+
+	<PARAM name="l3-protocol" help="An IP protocol number" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="proto_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="protocol_num" help="An IP protocol number" ptype="PROTOCOL_NUM"/>
+			<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="igmp" help="Internet Group Management Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+        <PARAM name="src-l4-port" test='"${proto_sub1}"="tcp"' help="Source port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="src_port" help="Src Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="src_port_mask" test='"${port_sub1}"="range"' help="Src Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+        <PARAM name="src-l4-port" test='"${proto_sub1}"="udp"' help="Source port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="src_port" help="Src Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="src_port_mask" test='"${port_sub1}"="range"' help="Src Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+		<PARAM name="dest-l4-port" test='"${proto_sub1}"="tcp"' help="Destination port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="dest_port" help="Dest Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="dest_port_mask" test='"${port_sub2}"="range"' help="Dest Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+        <PARAM name="dest-l4-port" test='"${proto_sub1}"="udp"' help="Destination port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="dest_port" help="Dest Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="dest_port_mask" test='"${port_sub2}"="range"' help="Dest Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+
+        <PARAM name="sub9" test='"${proto_sub1}"="igmp"' help="Sub9" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="igmp_type_value" help="IGMP type" ptype="IGMP_TYPE_VALUE"/>
+            <PARAM name="dvmrp" help="Distance vector multicast routing protocol(19)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="mtrace-route" help="Multicast Traceroute(31)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="mtrace-response" help="Multicast Traceroute Response(30)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="host-query" help="IGMP Membership Query(17)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="v1host-report" help="IGMPv1 Membership Report(18)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="v2host-report" help="IGMPv2 Membership Report(22)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="v2leave-group" help="IGMPv2 Leave Group(23)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="v3host-report" help="IGMPv3 Membership Report(34)" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+
+        <PARAM name="tcp-flag" test='"${proto_sub1}"="tcp"' help="Match packets TCP code" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+		 	<PARAM name="sub10" help="Sub10" ptype="SUBCOMMAND" mode="switch">
+		         <PARAM name="match-all" help="Match if all specified flags are present" ptype="SUBCOMMAND" mode="subcommand">
+		             <PARAM name="ack" help="Match on the ACK bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="fin" help="Match on the FIN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="psh" help="Match on the PSH bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="rst" help="Match on the RST bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="syn" help="Match on the SYN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="urg" help="Match on the URG bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		         </PARAM>
+		         <PARAM name="match-any" help="Match if any specified flag is present" ptype="SUBCOMMAND" mode="subcommand">
+		             <PARAM name="ack" help="Match on the ACK bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="fin" help="Match on the FIN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="psh" help="Match on the PSH bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="rst" help="Match on the RST bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="syn" help="Match on the SYN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="urg" help="Match on the URG bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		         </PARAM>
+			</PARAM>
+	    </PARAM>
+
+        <PARAM name="icmp-type" test='"${proto_sub1}"="icmp"' help="ICMP message type" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="icmp_type" help="Specify value of the ICMP type" ptype="ICMP_TYPE_CODE_VALUE"/>
+        </PARAM>
+        <PARAM name="icmp-code" test='"${proto_sub1}"="icmp"' help="ICMP message code" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="icmp_code" help="Specify value of the ICMP code" ptype="ICMP_TYPE_CODE_VALUE"/>
+        </PARAM>
+	</PARAM>
+
+	<PARAM name="time-range" help="Time-range" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="time_range" help="time-range value" ptype="NAME_STRING"/>
+    </PARAM>
+
+	<ACTION>
+	cmd="cdbctl create/cdb/l2/ace_config/${acl_name}/${GACL}/${filter}/src_mac/${mac_sub1}/${src_mac}/${src_mac_mask}/dest_mac/${mac_sub2}/${dest_mac}/${dest_mac_mask}/vlan/${vlan_sub1}/${vlan_id}/${vlan_id_mask}/inner_vlan/${vlan_sub2}/${inner_vlan_id}/${inner_vlan_id_mask}/cos/${cos_sub1}/${cos_id}/${cos_id_mask}/inner_cos/${cos_sub2}/${inner_cos_id}/${inner_cos_id_mask}/untag_vlan/${untag_mode}/src-ip/${ip_sub1}/${src_ip}/${src_ip_addrlen}/${src_ip_mask}/dst-ip/${ip_sub2}/${dest_ip}/${dest_ip_addrlen}/${dst_ip_mask}/dscp/${dscp_sub1}/${dscp_value}/${dscp_mask}/precedence/${precedence_sub1}/${precedence_value}/${precedence_mask}/fragment/${frag_sub1}/l3-protocol/${proto_sub1}/${protocol_num}/src-l4-port/${port_sub1}/${src_port}/${src_port_mask}/dest-l4-port/${port_sub2}/${dest_port}/${dest_port_mask}/igmp_type/${sub9}/${igmp_type_value}/icmp_type/${icmp_type}/icmp_code/${icmp_code}/tcpflag/${sub10}/${ack}/${fin}/${psh}/${rst}/${syn}/${urg}/udf/${udf}/${udf_value}/${udf_mask}/${udf_offset}/timerange/${time_range}/options//truncation//snmp_set//"
+    $cmd
+    </ACTION>
+
+     
+
+        <CTCDESCRIPTION>
+Use this command to permit or deny packets matching the IP filter.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If IP address wildcard bits is provided, the IP address is logically-anded in bitwise with the reverse bits of the wildcard bits. For example, 10.10.10.0 0.0.0.255 means the addresses from 10.10.10.0 to 10.10.10.255 are matched.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete an IP filter with sequence number 10 from an IP ACL.  
+    Switch(config)# ip access-list testacl  
+    Switch(config-acl-testacl)# 10 permit src-ip 10.10.10.0 0.0.0.255  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+no sequence-num
+		</CTCRCMD>
+	</COMMAND>
+	
+	
+<COMMAND name="permit" help="Specify packets to permit">
+	<PARAM name="src-mac" help="Source MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_mac" help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_mac_mask" test='"${mac_sub1}"="src_mac"' help="Source wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+		<PARAM name="src_mac" test='"${mac_sub1}"="host"' help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-mac" help="Destination MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_mac" help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dest_mac_mask" test='"${mac_sub2}"="dest_mac"' help="Destination wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+	    <PARAM name="dest_mac" test='"${mac_sub2}"="host"' help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="vlan" help="Vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="vlan_id_mask" test='"${vlan_sub1}"="vlan_id"' help="Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-vlan" help="Inner vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="inner_vlan_id" help="Inner vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_vlan_id_mask" test='"${vlan_sub2}"="inner_vlan_id"' help="Inner Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="cos" help="Configure COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="cos_id" help="An arbitrary COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="cos_id_mask" test='"${cos_sub1}"="cos_id"' help="Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-cos" help="Configure inner-COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="inner_cos_id" help="An arbitrary inner-COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_cos_id_mask" test='"${cos_sub2}"="inner_cos_id"' help="Inner Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+	
+	<PARAM name="untag_mode" help="Untag mode" optional="true" mode="switch" ptype="SUBCOMMAND" default="none">
+		<PARAM name="untag-vlan" help="Without vlan tag" mode="subcommand" ptype="SUBCOMMAND" optional="true"/>
+	</PARAM>
+	
+	<PARAM name="src-ip" help="Source IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ip_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_ip" help="Source address" ptype="IP_ADDR"/>
+			<PARAM name="src_ip_addrlen" help="Source IP address with mask length" ptype="IP_ADDR_MASK"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_ip_mask" test='"${ip_sub1}"="src_ip"' help="Source wildcard bits" ptype="IP_ADDR"/>
+        <PARAM name="src_ip" test='"${ip_sub1}"="host"' help="Source host's IP address" ptype="IP_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-ip" help="Destination IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ip_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_ip" help="Destination address" ptype="IP_ADDR"/>
+			<PARAM name="dest_ip_addrlen" help="Destination IP address with mask length" ptype="IP_ADDR_MASK"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dst_ip_mask" test='"${ip_sub2}"="dest_ip"' help="Destination wildcard bits" ptype="IP_ADDR"/>
+		<PARAM name="dest_ip" test='"${ip_sub2}"="host"' help="Destination host's IP address" ptype="IP_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dscp" help="Match packets with given dscp value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="dscp_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dscp_value" help="Differentiated services codepoint value" ptype="DSCP_VALUE"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dscp_mask" test='"${dscp_sub1}"="dscp_value"' help="Dscp Mask(0x0-0x3f)" ptype="DSCP_VALUE_MASK"/>
+	</PARAM>
+
+	<PARAM name="ip-precedence" help="Match packets with given ip-precedencep value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="precedence_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="precedence_value" help="Precedence value" ptype="COS_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="precedence_mask" test='"${precedence_sub1}"="precedence_value"' help="Precedence Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="fragment" help="Fragment" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="frag_sub1" help="fragSub1" mode="switch" ptype="SUBCOMMAND">
+			<PARAM name="first-fragment" help="Match packets with first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-first-fragment" help="Match packets with non first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-fragment" help="Match packets with non fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-or-first-fragment" help="Match packets with non fragment or first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="small-fragment" help="Match packets that fragment offset is 1-3" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	</PARAM>
+
+	<PARAM name="l3-protocol" help="An IP protocol number" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="proto_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="protocol_num" help="An IP protocol number" ptype="PROTOCOL_NUM"/>
+			<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="igmp" help="Internet Group Management Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+        <PARAM name="src-l4-port" test='"${proto_sub1}"="tcp"' help="Source port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="src_port" help="Src Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="src_port_mask" test='"${port_sub1}"="range"' help="Src Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+        <PARAM name="src-l4-port" test='"${proto_sub1}"="udp"' help="Source port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="src_port" help="Src Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="src_port_mask" test='"${port_sub1}"="range"' help="Src Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+		<PARAM name="dest-l4-port" test='"${proto_sub1}"="tcp"' help="Destination port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="dest_port" help="Dest Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="dest_port_mask" test='"${port_sub2}"="range"' help="Dest Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+        <PARAM name="dest-l4-port" test='"${proto_sub1}"="udp"' help="Destination port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="dest_port" help="Dest Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="dest_port_mask" test='"${port_sub2}"="range"' help="Dest Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+
+        <PARAM name="sub9" test='"${proto_sub1}"="igmp"' help="Sub9" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="igmp_type_value" help="IGMP type" ptype="IGMP_TYPE_VALUE"/>
+            <PARAM name="dvmrp" help="Distance vector multicast routing protocol(19)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="mtrace-route" help="Multicast Traceroute(31)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="mtrace-response" help="Multicast Traceroute Response(30)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="host-query" help="IGMP Membership Query(17)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="v1host-report" help="IGMPv1 Membership Report(18)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="v2host-report" help="IGMPv2 Membership Report(22)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="v2leave-group" help="IGMPv2 Leave Group(23)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="v3host-report" help="IGMPv3 Membership Report(34)" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+
+        <PARAM name="tcp-flag" test='"${proto_sub1}"="tcp"' help="Match packets TCP code" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+		 	<PARAM name="sub10" help="Sub10" ptype="SUBCOMMAND" mode="switch">
+		         <PARAM name="match-all" help="Match if all specified flags are present" ptype="SUBCOMMAND" mode="subcommand">
+		             <PARAM name="ack" help="Match on the ACK bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="fin" help="Match on the FIN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="psh" help="Match on the PSH bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="rst" help="Match on the RST bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="syn" help="Match on the SYN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="urg" help="Match on the URG bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		         </PARAM>
+		         <PARAM name="match-any" help="Match if any specified flag is present" ptype="SUBCOMMAND" mode="subcommand">
+		             <PARAM name="ack" help="Match on the ACK bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="fin" help="Match on the FIN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="psh" help="Match on the PSH bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="rst" help="Match on the RST bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="syn" help="Match on the SYN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="urg" help="Match on the URG bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		         </PARAM>
+			</PARAM>
+	    </PARAM>
+
+        <PARAM name="icmp-type" test='"${proto_sub1}"="icmp"' help="ICMP message type" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="icmp_type" help="Specify value of the ICMP type" ptype="ICMP_TYPE_CODE_VALUE"/>
+        </PARAM>
+        <PARAM name="icmp-code" test='"${proto_sub1}"="icmp"' help="ICMP message code" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="icmp_code" help="Specify value of the ICMP code" ptype="ICMP_TYPE_CODE_VALUE"/>
+        </PARAM>
+	</PARAM>
+	
+	<PARAM name="time-range" help="Time-range" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="time_range" help="time-range value" ptype="NAME_STRING"/>
+    </PARAM>
+    
+	<ACTION>
+    cmd="cdbctl create/cdb/l2/ace_config/${acl_name}/0/permit/src_mac/${mac_sub1}/${src_mac}/${src_mac_mask}/dest_mac/${mac_sub2}/${dest_mac}/${dest_mac_mask}/vlan/${vlan_sub1}/${vlan_id}/${vlan_id_mask}/inner_vlan/${vlan_sub2}/${inner_vlan_id}/${inner_vlan_id_mask}/cos/${cos_sub1}/${cos_id}/${cos_id_mask}/inner_cos/${cos_sub2}/${inner_cos_id}/${inner_cos_id_mask}/untag_vlan/${untag_mode}/src-ip/${ip_sub1}/${src_ip}/${src_ip_addrlen}/${src_ip_mask}/dst-ip/${ip_sub2}/${dest_ip}/${dest_ip_addrlen}/${dst_ip_mask}/dscp/${dscp_sub1}/${dscp_value}/${dscp_mask}/precedence/${precedence_sub1}/${precedence_value}/${precedence_mask}/fragment/${frag_sub1}/l3-protocol/${proto_sub1}/${protocol_num}/src-l4-port/${port_sub1}/${src_port}/${src_port_mask}/dest-l4-port/${port_sub2}/${dest_port}/${dest_port_mask}/igmp_type/${sub9}/${igmp_type_value}/icmp_type/${icmp_type}/icmp_code/${icmp_code}/tcpflag/${sub10}/${ack}/${fin}/${psh}/${rst}/${syn}/${urg}/udf/${udf}/${udf_value}/${udf_mask}/${udf_offset}/timerange/${time_range}/options//truncation//snmp_set//"
+    $cmd
+	
+    </ACTION>
+	</COMMAND>
+	
+
+	<COMMAND name="deny" help="Specify packets to reject">
+	<PARAM name="src-mac" help="Source MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_mac" help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_mac_mask" test='"${mac_sub1}"="src_mac"' help="Source wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+		<PARAM name="src_mac" test='"${mac_sub1}"="host"' help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-mac" help="Destination MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_mac" help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dest_mac_mask" test='"${mac_sub2}"="dest_mac"' help="Destination wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+	    <PARAM name="dest_mac" test='"${mac_sub2}"="host"' help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="vlan" help="Vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="vlan_id_mask" test='"${vlan_sub1}"="vlan_id"' help="Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-vlan" help="Inner vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="inner_vlan_id" help="Inner vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_vlan_id_mask" test='"${vlan_sub2}"="inner_vlan_id"' help="Inner Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="cos" help="Configure COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="cos_id" help="An arbitrary COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="cos_id_mask" test='"${cos_sub1}"="cos_id"' help="Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-cos" help="Configure inner-COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="inner_cos_id" help="An arbitrary inner-COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_cos_id_mask" test='"${cos_sub2}"="inner_cos_id"' help="Inner Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+	
+	<PARAM name="untag_mode" help="Untag mode" optional="true" mode="switch" ptype="SUBCOMMAND" default="none">
+		<PARAM name="untag-vlan" help="Without vlan tag" mode="subcommand" ptype="SUBCOMMAND" optional="true"/>
+	</PARAM>
+
+	<PARAM name="src-ip" help="Source IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ip_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_ip" help="Source address" ptype="IP_ADDR"/>
+			<PARAM name="src_ip_addrlen" help="Source IP address with mask length" ptype="IP_ADDR_MASK"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_ip_mask" test='"${ip_sub1}"="src_ip"' help="Source wildcard bits" ptype="IP_ADDR"/>
+        <PARAM name="src_ip" test='"${ip_sub1}"="host"' help="Source host's IP address" ptype="IP_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-ip" help="Destination IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ip_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_ip" help="Destination address" ptype="IP_ADDR"/>
+			<PARAM name="dest_ip_addrlen" help="Destination IP address with mask length" ptype="IP_ADDR_MASK"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dst_ip_mask" test='"${ip_sub2}"="dest_ip"' help="Destination wildcard bits" ptype="IP_ADDR"/>
+		<PARAM name="dest_ip" test='"${ip_sub2}"="host"' help="Destination host's IP address" ptype="IP_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dscp" help="Match packets with given dscp value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="dscp_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dscp_value" help="Differentiated services codepoint value" ptype="DSCP_VALUE"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dscp_mask" test='"${dscp_sub1}"="dscp_value"' help="Dscp Mask(0x0-0x3f)" ptype="DSCP_VALUE_MASK"/>
+	</PARAM>
+
+	<PARAM name="ip-precedence" help="Match packets with given ip-precedencep value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="precedence_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="precedence_value" help="Precedence value" ptype="COS_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="precedence_mask" test='"${precedence_sub1}"="precedence_value"' help="Precedence Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="fragment" help="Fragment" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="frag_sub1" help="fragSub1" mode="switch" ptype="SUBCOMMAND">
+			<PARAM name="first-fragment" help="Match packets with first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-first-fragment" help="Match packets with non first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-fragment" help="Match packets with non fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-or-first-fragment" help="Match packets with non fragment or first fragment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="small-fragment" help="Match packets that fragment offset is 1-3" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	</PARAM>
+
+	<PARAM name="l3-protocol" help="An IP protocol number" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="proto_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="protocol_num" help="An IP protocol number" ptype="PROTOCOL_NUM"/>
+			<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="igmp" help="Internet Group Management Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+        <PARAM name="src-l4-port" test='"${proto_sub1}"="tcp"' help="Source port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="src_port" help="Src port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="src_port_mask" test='"${port_sub1}"="range"' help="Src Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+        <PARAM name="src-l4-port" test='"${proto_sub1}"="udp"' help="Source port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="src_port" help="Src port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="src_port_mask" test='"${port_sub1}"="range"' help="Src Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+		<PARAM name="dest-l4-port" test='"${proto_sub1}"="tcp"' help="Destination port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="dest_port" help="Dest Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="dest_port_mask" test='"${port_sub2}"="range"' help="Dest Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+        <PARAM name="dest-l4-port" test='"${proto_sub1}"="udp"' help="Destination port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="port_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="eq" help="Match only packets on a given port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="gt" help="Match only packets with a greater port number" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="lt" help="Match only packets with a lower port number" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="range" help="Match only packets in the range of port number" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="dest_port" help="Dest Port Number" ptype="L4_PORT_NUM"/>
+            <PARAM name="dest_port_mask" test='"${port_sub2}"="range"' help="Dest Port Number" ptype="L4_PORT_NUM"/>
+        </PARAM>
+
+        <PARAM name="sub9" test='"${proto_sub1}"="igmp"' help="Sub9" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="igmp_type_value" help="IGMP type" ptype="IGMP_TYPE_VALUE" />
+			<PARAM name="dvmrp" help="Distance vector multicast routing protocol(19)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="mtrace-route" help="Multicast Traceroute(31)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="mtrace-response" help="Multicast Traceroute Response(30)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host-query" help="IGMP Membership Query(17)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="v1host-report" help="IGMPv1 Membership Report(18)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="v2host-report" help="IGMPv2 Membership Report(22)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="v2leave-group" help="IGMPv2 Leave Group(23)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="v3host-report" help="IGMPv3 Membership Report(34)" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+
+        <PARAM name="tcp-flag" test='"${proto_sub1}"="tcp"' help="Match packets TCP code" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+		 	<PARAM name="sub10" help="Sub10" ptype="SUBCOMMAND" mode="switch">
+		         <PARAM name="match-all" help="Match if all specified flags are present" ptype="SUBCOMMAND" mode="subcommand">
+		             <PARAM name="ack" help="Match on the ACK bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="fin" help="Match on the FIN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="psh" help="Match on the PSH bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="rst" help="Match on the RST bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="syn" help="Match on the SYN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="urg" help="Match on the URG bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		         </PARAM>
+		         <PARAM name="match-any" help="Match if any specified flag is present" ptype="SUBCOMMAND" mode="subcommand">
+		             <PARAM name="ack" help="Match on the ACK bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="fin" help="Match on the FIN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="psh" help="Match on the PSH bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="rst" help="Match on the RST bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="syn" help="Match on the SYN bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		             <PARAM name="urg" help="Match on the URG bit" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		         </PARAM>
+			</PARAM>
+	    </PARAM>
+
+        <PARAM name="icmp-type" test='"${proto_sub1}"="icmp"' help="ICMP message type" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="icmp_type" help="Specify value of the ICMP type" ptype="ICMP_TYPE_CODE_VALUE"/>
+        </PARAM>
+        <PARAM name="icmp-code" test='"${proto_sub1}"="icmp"' help="ICMP message code" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <PARAM name="icmp_code" help="Specify value of the ICMP code" ptype="ICMP_TYPE_CODE_VALUE"/>
+        </PARAM>
+	</PARAM>
+	
+	<PARAM name="time-range" help="Time-range" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="time_range" help="time-range value" ptype="NAME_STRING"/>
+    </PARAM>
+
+	<ACTION>
+    cmd="cdbctl create/cdb/l2/ace_config/${acl_name}/0/deny/src_mac/${mac_sub1}/${src_mac}/${src_mac_mask}/dest_mac/${mac_sub2}/${dest_mac}/${dest_mac_mask}/vlan/${vlan_sub1}/${vlan_id}/${vlan_id_mask}/inner_vlan/${vlan_sub2}/${inner_vlan_id}/${inner_vlan_id_mask}/cos/${cos_sub1}/${cos_id}/${cos_id_mask}/inner_cos/${cos_sub2}/${inner_cos_id}/${inner_cos_id_mask}/untag_vlan/${untag_mode}/src-ip/${ip_sub1}/${src_ip}/${src_ip_addrlen}/${src_ip_mask}/dst-ip/${ip_sub2}/${dest_ip}/${dest_ip_addrlen}/${dst_ip_mask}/dscp/${dscp_sub1}/${dscp_value}/${dscp_mask}/precedence/${precedence_sub1}/${precedence_value}/${precedence_mask}/fragment/${frag_sub1}/l3-protocol/${proto_sub1}/${protocol_num}/src-l4-port/${port_sub1}/${src_port}/${src_port_mask}/dest-l4-port/${port_sub2}/${dest_port}/${dest_port_mask}/igmp_type/${sub9}/${igmp_type_value}/icmp_type/${icmp_type}/icmp_code/${icmp_code}/tcpflag/${sub10}/${ack}/${fin}/${psh}/${rst}/${syn}/${urg}/udf/${udf}/${udf_value}/${udf_mask}/${udf_offset}/timerange/${time_range}/options//truncation//snmp_set//"
+    $cmd
+	
+    </ACTION>
+	</COMMAND>
+	
+
+    <COMMAND name="no sequence-num" help="Specify the sequence-number">
+        <PARAM name="seq_num" help="Sequence-number" ptype="ACL_SEQ_NUM"/>
+		
+        <ACTION>cdbctl delete/cdb/l2/ace_config/${acl_name}/${seq_num}/snmp_set//</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to delete a filter from IP ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete a filter from IP ACL.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete an IP filter with sequence number 10 from an IP ACL.  
+    Switch(config-acl-testacl)# no sequence-num 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ip access-list" help="IP access list">
+	    <PARAM name="acl_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING"/>
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="in" help="Ingress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="out" help="Egress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${direct_sub}" == "in" ]; then
+				cdbctl update/cdb/interface/${iface}/igs_acl/${acl_name}
+			else
+				cdbctl update/cdb/interface/${iface}/egs_acl/${acl_name}
+			fi;
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to apply IP ACL to interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to apply IP ACL to interface, the IP ACL should be created first.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply IP ACL to interface.   
+    Switch(config)# interface eth-0-2    
+    Switch(config-if-eth-0-2)# ip access-list testacl in    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip access-list" help="IP access list">
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="in" help="Ingress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="out" help="Egress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${direct_sub}" == "in" ]; then
+				cdbctl update/cdb/interface/${iface}/igs_acl/""
+			else
+				cdbctl update/cdb/interface/${iface}/egs_acl/""
+			fi;
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove IP ACL from interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove IP ACL to interface, IP ACL need not to be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply IP ACL to interface.  
+    Switch(config)# interface eth-0-2   
+    Switch(config-if-eth-0-2)# no ip access-list in    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Exec">
+
+    <COMMAND name="show time-range" help="Time range list information">
+        <PARAM name="time_range_name" optional="true" help="Name of entry to show" ptype="NAME_STRING"/>
+        
+        <ACTION>cdbctl show/cdb/acl/time_range/${time_range_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show the information of time-range.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If no time range are specified, all time-ranges in the system should be show.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of all the time ranges:     
+    Switch# show time-range   
+    time-range a  
+      absolute start 01:02:03 Sep 28 2016 end 02:03:04 Sep 29 2016   
+    time-range my-time-range  
+      absolute start 11:20:30 Sep 28 2016 end 20:30:40 Sep 30 2016     
+    Switch#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+time-range
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show time-range info" help="Time range detail information">
+        <PARAM name="timerange_name" optional="true" help="Name of time range info to show" ptype="NAME_STRING"/>
+    
+		<ACTION>cdbctl show/cdb/l2/show_timerange_info/${timerange_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show the applied ace on the time range information.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the applied ace on the time range information: 
+    Switch# show time-range info a  
+    time-range a  
+     ip access-list a sequence-num 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="show ip access-list" help="IP Access Control list">
+		<PARAM name="acl_name" help="Specify a IP access-list name, up to 20 characters" optional="true" ptype="NAME_STRING"/>
+
+		<ACTION>cdbctl show/cdb/l2/show_acl/${acl_name}/type/ipv4</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show the configuration of IP ACL .  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The ACL cant be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# show ip access-list
+    ip access-list testacl
+     10 permit src-ip 10.10.10.0 0.0.0.255
+    Switch# show ip access-list testacl
+    ip access-list testacl
+     10 permit src-ip 10.10.10.0 0.0.0.255
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show statistic" help="Show statistic">
+	</COMMAND>
+
+	<COMMAND name="show statistic ip" help="IP statistic">
+	</COMMAND>
+
+	<COMMAND name="show statistic ip access-list" help="IP Access Control list">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch" default="both" optional="true">
+			<PARAM name="in" help="Ingress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="out" help="Egress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+        </PARAM>
+
+		<ACTION>
+		    if [ "${direct_sub}" != "both" ]; then
+				cdbctl show/cdb/l2/show_acl_counter/normal/${iface_name}/${direct_sub}
+			else
+				cdbctl show/cdb/l2/show_acl_counter/normal/${iface_name}
+			fi;
+	        
+	    </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show statistic IP access list.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show statistic IP access list, interface need to be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# show statistic ip access-list eth-0-2
+    ip access-list testacl in    
+     10 permit src-ip 0.10.10.10 255.0.0.0 ( bytes 64 packets 1 )    
+    (total bytes 64 total packets 1 )     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+
+	</COMMAND>
+	
+	<COMMAND name="clear statistic" help="Clear statistic">
+	</COMMAND>
+
+	<COMMAND name="clear statistic ip" help="IP statistic">
+	</COMMAND>
+
+	<COMMAND name="clear statistic ip access-list" help="IP Access Control list">
+	    <PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch" optional="true" default = "both">
+			<PARAM name="both" help="Both" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="in" help="Ingress Access list" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="out" help="Egress Access list" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="iface_name" help="Ethernet interface name" optional="true" ptype="IF_NAME_EA" />
+		
+
+		<ACTION>cdbctl update/cdb/l2/clear_acl_counter/normal/${direction}/${iface_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to clear statistic IP access list.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear statistic IP access list in or out or both.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# clear statistic ip access-list both eth-0-2  
+    Switch# show statistic ip access-list eth-0-2  
+    ip access-list testacl  
+     10 permit src-ip 10.10.10.0 0.0.0.255 ( bytes 64 packets 1 )  
+    (total bytes 64 total packets 1 )   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip access-list
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

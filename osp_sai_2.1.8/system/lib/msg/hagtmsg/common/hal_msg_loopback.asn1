@@ -1,0 +1,37 @@
+HAL-MSG-LOOPBACK DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIpv6addr,
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES 
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+    ;
+
+
+
+HalMsgLoopPortCreatReq ::= SEQUENCE
+{
+    port    INTEGER,
+    type    INTEGER,
+    l3ifid  INTEGER
+}
+
+HalMsgLoopNhAddReq ::= SEQUENCE
+{
+    port         INTEGER,
+    nexthopid    INTEGER,
+    customer     INTEGER,
+    removeWords INTEGER
+}
+
+HalMsgLoopPortModelUpdReq ::= SEQUENCE
+{
+    port         INTEGER,
+    model        INTEGER,
+    type         INTEGER
+}
+
+END

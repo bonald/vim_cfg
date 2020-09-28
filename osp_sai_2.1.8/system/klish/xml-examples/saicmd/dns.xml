@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    
+<VIEW name="Exec">
+
+<COMMAND name="show ip host" help="Static dns host-ip pairs">
+	<ACTION>
+		cdbctl show/cdb/app/static_dns/
+	</ACTION>
+
+	<CTCDESCRIPTION>
+		Use this command to show DNS/Host-IP pairs.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to show DNS/Host-IP pairs: 
+		Switch# show ip host 
+		Current IP host configuration:
+		     Host                             Address
+		----+--------------------------------+------------------------------------------
+		1    host1                            1.1.1.1
+		2    host2                            1.1.1.2
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		ip host
+	</CTCRCMD>
+
+</COMMAND>
+
+<COMMAND name="show dns" help="DNS configuration"/>
+
+<COMMAND name="show dns domain" help="List all name domains">
+	<ACTION>
+		cdbctl show/cdb/app/dynamic_dns_domain/
+	</ACTION>
+	
+	<CTCDESCRIPTION>
+		Use this command to show DNS domains.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to show DNS domains:
+		Switch# show dns domain
+		Current DNS domain configuration:
+		     Domain               Suffix
+		----+--------------------+------------------------------------------------------
+		1    domain               domain1
+		2    domain               domain2
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		dns domain
+	</CTCRCMD>
+
+</COMMAND>
+
+<COMMAND name="show dns server" help="List all name servers">
+	<ACTION>
+		cdbctl show/cdb/app/dynamic_dns_server/
+	</ACTION>
+
+	<CTCDESCRIPTION>
+		Use this command to show DNS server.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to show DNS server:
+		Switch# show dns server
+		Current DNS name server configuration:
+		     Server               IP Address
+		----+--------------------+------------------------------------------------------
+		1    nameserver           10.10.10.1
+		2    nameserver           20.20.20.1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		dns server
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+<COMMAND name="ip host" help="Static host configuration">
+	<PARAM name="host" help="Name of the specific host" ptype="NAME_STRING"/>
+	<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch" >
+        <PARAM name="ipaddr" help="IP address of the specific host" ptype="IP_ADDR"/>
+    </PARAM>
+    <ACTION>
+		cdbctl create/cdb/app/static_dns/${host}/${ipaddr}
+    </ACTION>
+
+	<CTCDESCRIPTION>
+		Use this command to configure DNS/Host-IP pair.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to configure DNS/Host-IP pair:
+		Switch(config)# ip host host1 1.1.1.1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		show ip host
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip host" help="Static host configuration">
+	<PARAM name="host_name" help="Name of the specific host" ptype="DNSNAME"/>
+    <ACTION>
+		cdbctl delete/cdb/app/static_dns/${host_name}/
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+		Use this command to delete DNS/Host-IP pair.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to delete DNS/Host-IP pair:
+		Switch(config)# no ip host host1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		show ip host
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dns" help="DNS configuration"/>
+
+<COMMAND name="dns domain" help="Domain configuration">
+	<PARAM name="domain_name" help="Name of the domain, up to 63 characters" ptype="NAME_STRING"/>
+    <ACTION>
+		cdbctl create/cdb/app/dynamic_dns_domain/${domain_name}/
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+		Use this command to configure DNS domain.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to configure DNS domain:
+		Switch(config)# dns domain domain1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		show dns domain
+	</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="no dns domain" help="Domain configuration">
+	<PARAM name="domain_name" help="Name of the domain" ptype="DNSNAME"/>
+    <ACTION>
+		cdbctl delete/cdb/app/dynamic_dns_domain/${domain_name}/
+    </ACTION>
+
+	<CTCDESCRIPTION>
+		Use this command to delete DNS domain.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to delete DNS domain:
+		Switch(config)# no dns domain domain1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		show dns domain
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dns server" help="Name server configuration">
+	<PARAM name="server_addr" help="IP address of the name server" ptype="IP_ADDR"/>
+    <ACTION>
+		cdbctl create/cdb/app/dynamic_dns_server/${server_addr}/
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+		Use this command to configure DNS server.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to configure DNS server:
+		Switch(config)# dns server 12.1.1.1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		show dns server
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dns" help="DNS configuration"/>
+
+<COMMAND name="no dns server" help="Name server configuration">
+	<PARAM name="server_addr" help="IP address of the name server" ptype="IP_ADDR"/>
+    <ACTION>
+		cdbctl delete/cdb/app/dynamic_dns_server/${server_addr}/
+    </ACTION>
+	
+	<CTCDESCRIPTION>
+		Use this command to delete DNS server.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+		None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+		None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+		In the following example shows how to delete DNS server
+		Switch(config)# no dns server 12.1.1.1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+		show dns server
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

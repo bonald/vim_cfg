@@ -1,0 +1,120 @@
+
+all_targets = libsnmptrapd snmpget snmpset snmpgetnext snmpusm \
+    snmpwalk snmpbulkwalk snmptable snmpvacm \
+    snmpbulkget snmptranslate snmpstatus snmpdelta \
+    snmptest encode_keychange snmpdf snmptrap snmptrapd
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+libsnmptrapd: FORCE
+	make -f Makefile.libsnmptrapd.ctc
+
+clean_libsnmptrapd: FORCE
+	make -f Makefile.libsnmptrapd.ctc clean
+
+snmpget: FORCE
+	export SNMPAPPNAME=snmpget && make -f Makefile.app.ctc
+
+clean_snmpget: FORCE
+	export SNMPAPPNAME=snmpget && make -f Makefile.app.ctc clean
+    
+snmpset: FORCE
+	export SNMPAPPNAME=snmpset && make -f Makefile.app.ctc
+
+clean_snmpset: FORCE
+	export SNMPAPPNAME=snmpset && make -f Makefile.app.ctc clean
+
+snmpgetnext: FORCE
+	export SNMPAPPNAME=snmpgetnext && make -f Makefile.app.ctc
+
+clean_snmpgetnext: FORCE
+	export SNMPAPPNAME=snmpgetnext && make -f Makefile.app.ctc clean
+
+snmpusm: FORCE
+	export SNMPAPPNAME=snmpusm && make -f Makefile.app.ctc
+
+clean_snmpusm: FORCE
+	export SNMPAPPNAME=snmpusm && make -f Makefile.app.ctc clean
+    
+snmpwalk: FORCE
+	export SNMPAPPNAME=snmpwalk && make -f Makefile.app.ctc
+
+clean_snmpwalk: FORCE
+	export SNMPAPPNAME=snmpwalk && make -f Makefile.app.ctc clean
+    
+snmpbulkwalk: FORCE
+	export SNMPAPPNAME=snmpbulkwalk && make -f Makefile.app.ctc
+
+clean_snmpbulkwalk: FORCE
+	export SNMPAPPNAME=snmpbulkwalk && make -f Makefile.app.ctc clean
+
+snmptable: FORCE
+	export SNMPAPPNAME=snmptable && make -f Makefile.app.ctc
+
+clean_snmptable: FORCE
+	export SNMPAPPNAME=snmptable && make -f Makefile.app.ctc clean
+ 
+snmpvacm: FORCE
+	export SNMPAPPNAME=snmpvacm && make -f Makefile.app.ctc
+
+clean_snmpvacm: FORCE
+	export SNMPAPPNAME=snmpvacm && make -f Makefile.app.ctc clean
+ 
+snmpbulkget: FORCE
+	export SNMPAPPNAME=snmpbulkget && make -f Makefile.app.ctc
+
+clean_snmpbulkget: FORCE
+	export SNMPAPPNAME=snmpbulkget && make -f Makefile.app.ctc clean
+
+snmptranslate: FORCE
+	export SNMPAPPNAME=snmptranslate && make -f Makefile.app.ctc
+
+clean_snmptranslate: FORCE
+	export SNMPAPPNAME=snmptranslate && make -f Makefile.app.ctc clean
+    
+snmpstatus: FORCE
+	export SNMPAPPNAME=snmpstatus && make -f Makefile.app.ctc
+
+clean_snmpstatus: FORCE
+	export SNMPAPPNAME=snmpstatus && make -f Makefile.app.ctc clean
+
+snmpdelta: FORCE
+	export SNMPAPPNAME=snmpdelta && make -f Makefile.app.ctc
+
+clean_snmpdelta: FORCE
+	export SNMPAPPNAME=snmpdelta && make -f Makefile.app.ctc clean
+    
+snmptest: FORCE
+	export SNMPAPPNAME=snmptest && make -f Makefile.app.ctc
+
+clean_snmptest: FORCE
+	export SNMPAPPNAME=snmptest && make -f Makefile.app.ctc clean
+
+snmpdf: FORCE
+	export SNMPAPPNAME=snmpdf && make -f Makefile.app.ctc
+
+clean_snmpdf: FORCE
+	export SNMPAPPNAME=snmpdf && make -f Makefile.app.ctc clean
+    
+encode_keychange: FORCE
+	export SNMPAPPNAME=encode_keychange && make -f Makefile.app.ctc
+
+clean_encode_keychange: FORCE
+	export SNMPAPPNAME=encode_keychange && make -f Makefile.app.ctc clean
+
+snmptrap: FORCE
+	export SNMPAPPNAME=snmptrap && make -f Makefile.app.ctc
+
+clean_snmptrap: FORCE
+	export SNMPAPPNAME=snmptrap && make -f Makefile.app.ctc clean
+
+snmptrapd: FORCE
+	export SNMPAPPNAME=snmptrapd && make -f Makefile.app.ctc
+
+clean_snmptrapd: FORCE
+	export SNMPAPPNAME=snmptrapd && make -f Makefile.app.ctc clean
+    
+.PHONY: FORCE
+FORCE:

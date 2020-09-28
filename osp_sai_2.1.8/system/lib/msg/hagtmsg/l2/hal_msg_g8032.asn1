@@ -1,0 +1,68 @@
+HAL-MSG-G8032 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2BrgName,
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+    ;
+
+
+
+HalMsgG8032GroupAddReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    workingport      INTEGER,
+    rapsgroup        INTEGER,
+    protectingen      INTEGER,
+    nhid             INTEGER,
+    nhoffset         INTEGER
+}
+
+HalMsgG8032GroupDelReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    nhid             INTEGER
+}
+
+HalMsgG8032GroupAddRapsGroup ::= SEQUENCE
+{
+    groupid          INTEGER
+}
+
+HalMsgG8032GroupDelRapsGroup ::= SEQUENCE
+{
+    groupid          INTEGER
+}
+
+HalMsgG8032GroupAddMember ::= SEQUENCE
+{
+    groupid          INTEGER,
+    memberport       INTEGER,
+    chipnum          INTEGER,
+    chipbmp          INTEGER
+}
+
+HalMsgG8032GroupDelMember ::= SEQUENCE
+{
+    groupid          INTEGER,
+    memberport       INTEGER,
+    chipnum          INTEGER,
+    chipbmp          INTEGER
+}
+
+
+HalMsgG8032GroupProtectingEnReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    enable           INTEGER
+}
+
+HalMsgG8032ControlVlanReq ::= SEQUENCE
+{
+    vid              INTEGER,
+    fid              INTEGER 
+}
+
+END

@@ -1,0 +1,10 @@
+include $(MK_DIR)/sys.mk
+LIB = ltc2991
+SRCS  = ltc2991_api.c
+SRCS  += ltc2991_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/ltc2991
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

@@ -1,0 +1,20 @@
+PS1='[\u@\h \w]$ '
+PATH=/usr/sbin:/usr/bin:/sbin:/bin:.
+
+alias ldd="/lib/ld.so.1 --list"
+alias mount_nfs="mount -t nfs -o nfsvers=2,nolock"
+
+export PYTHONHOME=/usr
+export PYTHONPATH=/usr/lib/python2.7:/usr/lib/python2.7/site-packages/:/usr/lib/python2.7/lib-dynload/:/usr/lib/python2.7/site-packages/rpc_server/lib/
+export OPENSSL_ppccap=0
+
+# Add openflow utilities to PATH.
+SWITCH_DIR=""
+if [ "$IS_DEBIAN" == "y" ]; then
+    SWITCH_DIR=/switch
+fi
+OVS_DIR=$SWITCH_DIR/usr/local/openvswitch
+PATH=$PATH:$OVS_DIR/bin
+
+export OVS_DIR
+export PATH

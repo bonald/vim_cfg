@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+STORM-CONTROL
+</CTCMODULENAME>
+
+    <!-- show related CLIs -->
+    <VIEW name="Exec">
+
+       <COMMAND name="show storm-control"
+		help="Storm-control">
+		<PARAM name="iface_name" optional="true" help="Ethernet interface name" ptype="IF_NAME_E"/>
+            <ACTION>
+                cdbctl show/cdb/interface/storm_control/${iface_name}
+            </ACTION>
+					
+		<CTCDESCRIPTION>
+Use this command to display storm-control information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to display storm-control ability, mode and level.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display storm-control information:  
+    Switch# show storm-control eth-0-1
+    Port       ucastMode ucastlevel   bcastMode bcastLevel   mcastMode mcastLevel
+    ----------+---------+------------+---------+------------+---------+----------
+    eth-0-1    PPS       1000000000   Disable                Disable              
+
+    Switch# show storm-control   
+    Port       ucastMode ucastlevel   bcastMode bcastLevel   mcastMode mcastLevel
+    ----------+---------+------------+---------+------------+---------+----------
+    eth-0-1    PPS       1000000000   Disable                Disable                
+    eth-0-2    Level     10.00        Disable                Disable    
+    eth-0-3    Disable                Disable                Disable                        
+    eth-0-4    Disable                Disable                Disable 
+    eth-0-5    Disable                Disable                Disable                        
+    eth-0-6    Disable                Disable                Disable                          
+    eth-0-7    Disable                Disable                Disable                        
+    eth-0-8    Disable                Disable                Disable             
+    eth-0-9    Disable                Disable                Disable                        
+    eth-0-10   Disable                Disable                Disable 
+    eth-0-11   Disable                Disable                Disable                        
+    eth-0-12   Disable                Disable                Disable  
+    eth-0-13   Disable                Disable                Disable                        
+    eth-0-14   Disable                Disable                Disable             
+    eth-0-15   Disable                Disable                Disable                        
+    eth-0-16   Disable                Disable                Disable 
+    eth-0-17   Disable                Disable                Disable                        
+    eth-0-18   Disable                Disable                Disable  
+    eth-0-19   Disable                Disable                Disable                        
+    eth-0-20   Disable                Disable                Disable             
+    eth-0-21   Disable                Disable                Disable                        
+    eth-0-22   Disable                Disable                Disable 
+    eth-0-23   Disable                Disable                Disable                        
+    eth-0-24   Disable                Disable                Disable                          	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+    </VIEW>
+
+    <!-- configuration related CLIs -->
+    <VIEW name="Configure">
+	<COMMAND name="ipg" help="Inter-Packet Gap">
+			<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="storm-control" help="Storm control" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+				<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+				<ACTION>
+						cdbctl update/cdb/sys/sys_global/ipg_global/${type}/1
+				</ACTION>
+			
+				<CTCDESCRIPTION>
+Use this command to set ipg storm-control enable in system.
+				</CTCDESCRIPTION>
+				<CTCUSAGE>
+If the ipg storm-control is set enable, the storm-control rate will be more accurate.
+				</CTCUSAGE>
+				<CTCDEFAULT>
+disable
+				</CTCDEFAULT>
+				<CTCEXAMPLE>
+This example shows how to set ipg storm-control enable:  
+Switch(config)# ipg storm-control enable   
+				</CTCEXAMPLE>
+				<CTCRCMD>
+no ipg storm-control
+				</CTCRCMD>
+	    </COMMAND>
+
+	    <COMMAND name="no ipg"
+			help="Inter-Packet Gap">
+			<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="storm-control" help="Storm control" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+				<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+				<ACTION>
+					cdbctl update/cdb/sys/sys_global/ipg_global/${type}/0
+				</ACTION>
+			    <CTCDESCRIPTION>
+Use this command to set ipg storm-control disable.
+				</CTCDESCRIPTION>
+				<CTCUSAGE>
+The no command can set the default ipg storm-control in system, the default is disable. 
+				</CTCUSAGE>
+				<CTCDEFAULT>
+disable
+				</CTCDEFAULT>
+				<CTCEXAMPLE>
+	This example shows how to set ipg storm-control disable:  
+	Switch(config)# no ipg storm-control enable   
+				</CTCEXAMPLE>
+				<CTCRCMD>
+ipg storm-control
+				</CTCRCMD>
+	    </COMMAND>
+    </VIEW>
+    <VIEW name="configure-if-view">
+	
+       <COMMAND name="storm-control"
+             help="Set the switching characteristics of layer2 interface">
+            <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="broadcast" help="Set broadcast rate limiting of layer2 interface" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="multicast" help="Set multicast rate limiting of layer2 interface" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="unicast" help="Set unknown unicast rate limiting of layer2 interface" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="level" help="Threshold percentage" ptype="SUBCOMMAND" mode="subcommand" > 
+                    <PARAM name="value" help="Threshold percentage" ptype="STORMCTL_LEVEL"/> 
+                </PARAM>
+                <PARAM name="pps" help="Threshold packet per second" ptype="SUBCOMMAND" mode="subcommand" > 
+                    <PARAM name="value" help="Threshold packet per second" ptype="STORMCTL_PPS"/> 
+                </PARAM>
+            </PARAM>
+            <ACTION>
+                cdbctl update/cdb/interface/${iface}/storm_control/set/${type}/${mode}/${value}
+            </ACTION>
+					
+		    <CTCDESCRIPTION>
+Use this command to set storm-control broadcast,multicast,unicast function.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The storm-control only can be set on the layer2 interface, the lavel range is 0% to 99.99%, the 100.00% is not allowed to set, the pps range is 0 to 1000000000.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to set storm-control broadcast level on interface:  
+    Switch(config-if-eth-0-1)# storm-control broadcast level 70.5  
+	
+	This example shows how to set storm-control broadcast pps on interface:   
+    Switch(config-if-eth-0-1)# storm-control broadcast pps 10000  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+no storm-control
+		    </CTCRCMD>
+        </COMMAND>
+		
+		
+		 <COMMAND name="no storm-control"
+           help="Set the switching characteristics of layer2 interface">
+            <PARAM name="type" help="Mode" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="broadcast" help="Set broadcast rate limiting of layer2 interface" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="multicast" help="Set multicast rate limiting of layer2 interface" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="unicast" help="Set unknown unicast rate limiting of layer2 interface" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            <ACTION>
+                cdbctl update/cdb/interface/${iface}/storm_control/unset/${type}
+            </ACTION>
+					
+		    <CTCDESCRIPTION>
+Use this command to unset storm-control.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+The no command can remove the storm-control configuration, include the broadcast, unicast, multicast level or pps.
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+None
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to unset storm-control broadcast on interface:  
+    Switch(config-if-eth-0-1)# no storm-control broadcast  
+	
+	This example shows how to unset storm-control unicast on interface:  
+    Switch(config-if-eth-0-1)# no storm-control unicast 
+	
+	This example shows how to unset storm-control multicast on interface:  
+    Switch(config-if-eth-0-1)# no storm-control multicast 
+ 
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+storm-control
+		    </CTCRCMD>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>
+

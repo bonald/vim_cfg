@@ -1,0 +1,13 @@
+include $(MK_DIR)/sys.mk
+LIB = led
+SRCS  = led_api.c
+SRCS  += led_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/led
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/gpio
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

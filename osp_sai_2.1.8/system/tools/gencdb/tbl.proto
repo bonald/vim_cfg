@@ -1,0 +1,6553 @@
+package cdb;
+
+import "common.proto";
+
+// TBL_INTERFACE
+message tbl_interface_key
+{
+    required string name = 1;
+}
+
+message tbl_interface
+{
+    required tbl_interface_key key = 1;
+    optional uint32 ifindex = 2;
+    optional uint64 portid = 3;
+    optional uint64 hostifid = 4;
+    optional string desc = 5;
+    optional uint32 speed = 6;
+    optional uint32 duplex = 7;
+    optional uint32 unidir = 8;
+    optional uint32 flowcontrol_send = 9;
+    optional uint32 flowcontrol_receive = 10;
+    optional uint32 flowcontrol_oper_send = 11;
+    optional uint32 flowcontrol_oper_receive = 12;
+    optional uint32 fec = 13;
+    optional uint32 pfc_admin = 14;
+    optional uint32 pfc_oper = 15;
+    optional uint32 pfc_priority = 16;
+    optional uint32 jumboframe_en = 17;
+    optional uint32 isolate_group_id = 18;
+    optional uint32 dhcp_snooping_trust = 19;
+    optional uint32 phy_status = 20;
+    optional uint32 phy_loopback_mode = 21;
+    optional uint32 internal_lp_ifindex = 22;
+    optional uint32 pvlan_type = 23;
+    optional uint32 private_vlan = 24;
+    optional uint32 community_vlan = 25;
+    optional uint32 ntp_disable = 26;
+    optional uint32 ntp_broadcast_client = 27;
+    optional uint32 pvlan_group_id = 28;
+    optional uint32 support_speed = 29;
+    optional uint32 mode = 30;
+    optional uint32 vlan_type = 31;
+    optional uint32 up = 32;
+    optional uint32 running = 33;
+    optional uint32 mtu = 34;
+    optional uint32 oper_speed = 35;
+    optional uint32 prev_oper_speed = 36;
+    optional uint32 oper_duplex = 37;
+    optional uint32 oper_unidir = 38;
+    optional uint32 oper_fec = 39;
+    optional uint32 oper_loopback = 40;
+    optional uint32 bandwidth = 41;
+    optional uint32 tap_used = 42;
+    optional uint32 tap_ingress_enable = 43;
+    optional string tap = 44;
+    optional uint32 tap_mark_vlan = 45;
+    optional uint32 mirror_enable = 46;
+    optional uint32 mirror_igs_id = 47;
+    optional uint32 mirror_egs_id = 48;
+    optional uint32 mirror_dest_id = 49;
+    optional uint32 admin_up = 50;
+    optional uint32 ip_source_en = 51;
+    optional uint32 ip_source_type = 52;
+    optional uint32 ip_source_item_number = 53;
+    optional uint32 unicast_rpf_en = 54;
+    optional uint32 oper_bandwidth = 55;
+    optional uint32 bandwidth_may_change = 56;
+    optional uint32 errdisable_reason = 57;
+    optional uint32 fdb_loop_occur = 58;
+    optional uint32 link_flap_cnt = 59;
+    optional uint32 static_security_num = 60;
+    optional uint32 sflow_flow_en = 61;
+    optional uint32 sflow_flow_ingress = 62;
+    optional uint32 sflow_flow_egress = 63;
+    optional uint32 sflow_counter_en = 64;
+    optional uint32 sflow_rate = 65;
+    optional uint32 sflow_sequence = 66;
+    optional uint32 sflow_sample_pool = 67;
+    optional compose_mac_addr_t mac_addr = 68;
+    optional compose_mac_addr_t hw_mac_addr = 69;
+    optional uint32 hw_type = 70;
+    optional uint32 phy_type = 71;
+    optional uint32 media = 72;
+    optional uint32 phyport_combo = 73;
+    optional uint32 phyport_loopback = 74;
+    optional uint32 phyport_eee = 75;
+    optional uint32 phyport_poe = 76;
+    optional uint32 phyport_master = 77;
+    optional uint32 phyport_slave = 78;
+    optional uint32 phyport_unidir = 79;
+    optional uint32 support_100m = 80;
+    optional uint32 support_1g = 81;
+    optional uint32 support_10g = 82;
+    optional uint32 support_40g = 83;
+    optional uint32 support_100g = 84;
+    optional uint32 support_2_5g = 85;
+    optional uint32 support_5g = 86;
+    optional uint32 support_25g = 87;
+    optional uint32 support_50g = 88;
+    optional string igs_acl = 89;
+    optional string egs_acl = 90;
+    optional string igs_ipv6_acl = 91;
+    optional string egs_ipv6_acl = 92;
+    optional string igs_mac_acl = 93;
+    optional string egs_mac_acl = 94;
+    optional string igs_policy_map = 95;
+    optional string egs_policy_map = 96;
+    optional uint32 crc_error_check_en = 97;
+    optional uint32 crc_recalculation_en = 98;
+    optional uint32 mlag_id = 99;
+    optional uint32 erps_enable = 100;
+    optional uint32 erps_pdu_action = 101;
+    optional uint32 dot1x_enable = 102;
+    optional uint32 dot1x_unauthorized = 103;
+    optional uint32 dot1x_dir_in = 104;
+    optional uint32 dot1x_dir_out = 105;
+    optional uint32 dot1x_mode_mac = 106;
+    optional uint32 dot1x_guest_vlan = 107;
+    optional uint32 vlanclass_group_id = 108;
+    optional uint32 vlanclass_active_type = 109;
+    optional uint32 vlanclass_default_action = 110;
+    optional uint32 dot1x_cfg_guest_vlan = 111;
+    optional uint32 egs_acl_en = 112;
+    optional uint32 tap_group_igs_ref_cnt = 113;
+    optional uint32 tap_group_egs_ref_cnt = 114;
+    optional uint32 tap_flow_decap_cnt = 115;
+    optional uint32 tap_flow_udf_cnt = 116;
+    optional uint32 metadata_enable = 117;
+    optional uint32 arpinsp_trust_enable = 118;
+    optional uint32 arp_numberlimit_enable = 119;
+    optional uint32 arp_numberlimit_number = 120;
+    optional uint32 arp_numberlimit_violate = 121;
+    optional uint32 arp_numberlimit_occur = 122;
+    optional uint32 arp_rate_limit_errdisable_occur = 123;
+    optional uint32 inband_snat_type = 124;
+    optional uint32 latency_event_high = 125;
+    optional uint32 latency_event_low = 126;
+    optional uint32 latency_event_enable = 127;
+    optional uint32 reflective_bridge_en = 128;
+    optional uint32 support_ssm_en = 129;
+    optional uint32 svlan_tpid = 130;
+    optional compose_l2pro_if_action_vlan_t l2pro_if_action_vlan = 131;
+    optional uint32 l2pro_uplink = 132;
+    optional uint32 static_agg_priority = 133;
+    optional uint32 static_agg_is_active = 134;
+    optional uint32 fec_status = 135;
+    optional uint32 cl73_ability = 136;
+    optional uint32 ifg_stats_en = 137;
+    optional uint32 openflow_en = 138;
+    optional uint32 openflow_operation_agg = 139;
+    optional uint32 openflow_operation_agg_mem_ifindex = 140;
+    optional uint32 carrier_down_holdtime_interval = 141;
+    optional uint32 hash_value_profile_id = 142;
+    optional uint32 hash_value_profile_dir = 143;
+    optional uint32 hash_value_profile_id_agg = 144;
+    optional uint32 hash_value_agg_hash = 145;
+    optional compose_glb_poe_cfg_t poe = 146;
+    optional uint32 current_g8032_ring_count = 147;
+    repeated uint32 g8032_ring_first = 148;
+    optional uint32 cfm_lmep_num = 149;
+    optional uint32 cfm_rmep_num = 150;
+}
+
+// TBL_ROUTE_IF
+message tbl_route_if_key
+{
+    required string name = 1;
+}
+
+message tbl_route_if
+{
+    required tbl_route_if_key key = 1;
+    optional uint32 mtu = 2;
+    optional compose_mac_addr_t mac = 3;
+    optional uint32 mode_set_before = 4;
+    optional uint32 ipv4_enable = 5;
+    optional uint32 ipv6_enable = 6;
+    optional uint32 arp_retrans_time = 7;
+    optional uint32 arp_timeout = 8;
+    optional uint32 ifindex = 9;
+    optional uint32 kernel_ifindex = 10;
+    optional uint32 arp_retry_timeout = 11;
+    optional uint32 rip_recv_version = 12;
+    optional uint32 rip_send_version = 13;
+    optional uint32 rip_v2_broadcast = 14;
+    optional uint32 rip_split_horizon = 15;
+    optional uint32 rip_poisoned_reverse = 16;
+    optional uint32 rip_auth_mode = 17;
+    optional string rip_auth_string = 18;
+    optional uint32 ripng_split_horizon = 19;
+    optional uint32 ripng_poisoned_reverse = 20;
+    optional uint32 ospf_priority = 21;
+    optional uint32 ospf_cost = 22;
+    optional uint32 ospf_mtu_ignore = 23;
+    optional uint32 ospf_timer_hello = 24;
+    optional uint32 ospf_timer_dead = 25;
+    optional uint32 ospf_auth_type = 26;
+    optional string ospf_auth_key = 27;
+    optional uint32 ospf_network_type = 28;
+    optional uint32 ospf6_timer_hello = 29;
+    optional uint32 ospf6_timer_dead = 30;
+    optional uint32 ospf6_mtu_ignore = 31;
+    optional uint32 ospf6_cost = 32;
+    optional uint32 ospf6_priority = 33;
+    optional uint32 ospf6_network_type = 34;
+    optional uint32 arp_proxy_en = 35;
+    optional uint32 local_arp_proxy_en = 36;
+    optional uint32 unicast_rpf_en = 37;
+    optional uint32 unicast_rpf_en_v6 = 38;
+    optional uint32 unicast_en_v6 = 39;
+    optional uint32 is_up_running = 40;
+    optional uint32 ipv6_link_local_had_delete = 41;
+    optional uint32 ip_unreachable_en = 42;
+    optional uint32 ip_redirects_en = 43;
+    optional uint32 dhcp_relay_option_trust = 44;
+    optional uint32 dhcp_server_group = 45;
+    optional uint32 dhcp_pdu_enabled = 46;
+    optional uint32 dhcp_client_flags = 47;
+    optional uint32 dhcp_client_enable = 48;
+    optional string dhcp_client_ipv4 = 49;
+    optional string dhcp_client_ipv4_mask = 50;
+    optional uint32 arp_curr_dynamic = 51;
+    optional uint64 arp_attack_number = 52;
+    optional uint32 arp_rate_limit_en = 53;
+    optional uint32 arp_rate_limit_pkt_max = 54;
+    optional uint32 arp_rate_limit_violation = 55;
+    optional uint32 arp_rate_limit_pkt_curr = 56;
+    optional uint32 arp_rate_limit_port_abnormal_flag = 57;
+    optional compose_mac_addr_t vmac1 = 58;
+    optional compose_mac_addr_t vmac2 = 59;
+    optional compose_mac_addr_t vmac3 = 60;
+    optional uint32 vrrp_session_num = 61;
+    optional uint32 nd_flags = 62;
+    optional uint32 nd_ra_currrent_hop_limit = 63;
+    optional uint32 nd_ra_advertise = 64;
+    optional uint32 nd_ra_advertise_mtu = 65;
+    optional uint32 nd_managed_config = 66;
+    optional uint32 nd_other_config = 67;
+    optional uint32 nd_ra_interval_min = 68;
+    optional uint32 nd_ra_interval_max = 69;
+    optional uint32 nd_ra_interval = 70;
+    optional uint32 nd_ra_min_delay = 71;
+    optional uint32 nd_retransmit_timer = 72;
+    optional uint32 nd_router_lifetime = 73;
+    optional uint32 nd_base_reachable_time = 74;
+    optional uint32 nd_reachable_time = 75;
+    optional uint32 nd_delay_probe_time = 76;
+    optional uint32 nd_dad_attempts = 77;
+    optional compose_addr_t nd_dst = 78;
+    optional uint64 nd_last_ra_solicited = 79;
+    optional uint64 nd_last_ra_unsolicited = 80;
+    optional uint32 nd_ra_ocount = 81;
+    optional uint32 nd_ra_solicited_ocount = 82;
+    optional uint32 nd_ra_init_unsolicited_ocount = 83;
+    optional uint32 nd_ra_solicited_time = 84;
+    optional uint32 nd_ra_prefix_default_vlifetime = 85;
+    optional uint32 nd_ra_prefix_default_plifetime = 86;
+    optional uint32 nd_ra_prefix_default_onlink = 87;
+    optional uint32 nd_ra_prefix_default_auto = 88;
+    optional compose_addr_t nd_rs_dest_addr = 89;
+    optional uint32 dhcpv6_client_flags = 90;
+    optional uint32 dhcpv6_client_enable = 91;
+    optional uint32 nat_enable = 92;
+    optional uint32 nat_category_id = 93;
+    optional uint32 set_mirror_enable = 94;
+    optional uint32 pim_mode = 95;
+    optional uint32 multicast = 96;
+    optional uint32 igmp = 97;
+    optional string igmp_version = 98;
+    optional uint32 igmp_intf_limit_number = 99;
+}
+
+// TBL_KERNEL_IF
+message tbl_kernel_if_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_kernel_if
+{
+    required tbl_kernel_if_key key = 1;
+    optional string name = 2;
+    optional compose_addr_ipv4_t ip_addr = 3;
+    optional uint32 masklen = 4;
+    optional compose_kernel_if_ipv6_addr_t ip_addr_prefix_length_v6 = 5;
+    optional uint32 vrf_id = 6;
+}
+
+// TBL_FEA_PORT_IF
+message tbl_fea_port_if_key
+{
+    required uint64 portid = 1;
+}
+
+message tbl_fea_port_if
+{
+    required tbl_fea_port_if_key key = 1;
+    optional uint32 ifindex = 2;
+    optional string name = 3;
+    optional uint64 lag_member = 4;
+}
+
+// TBL_VLAN
+message tbl_vlan_key
+{
+    required uint32 vid = 1;
+}
+
+message tbl_vlan
+{
+    required tbl_vlan_key key = 1;
+    optional uint32 max_mac_count = 2;
+    optional uint32 cur_mac_count = 3;
+    optional uint32 instance = 4;
+    optional uint32 dhcsnooping = 5;
+    optional uint32 arpsnooping = 6;
+    optional uint32 security_action = 7;
+    optional uint32 enable = 8;
+    optional uint32 mac_learning_en = 9;
+    optional uint64 op_ifindex = 10;
+    optional bytes member_port = 11;
+    optional string name = 12;
+    optional uint32 erps_domain_id = 13;
+    optional uint32 dot1x_guest_vlan_num = 14;
+    optional uint32 stats_en = 15;
+    optional uint32 g8032_ring_id = 16;
+}
+
+// TBL_PVLAN
+message tbl_pvlan_key
+{
+    required uint32 primary_vid = 1;
+}
+
+message tbl_pvlan
+{
+    required tbl_pvlan_key key = 1;
+    optional bytes community_group_id = 2;
+}
+
+// TBL_FDB
+message tbl_fdb
+{
+    required compose_fdb_key_t key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 static = 3;
+    optional uint32 security = 4;
+    optional uint32 hybrid_flow = 5;
+}
+
+// TBL_MCFDB
+message tbl_mcfdb
+{
+    required compose_fdb_key_t key = 1;
+    optional bytes l2mc_port = 2;
+    optional uint32 action_ifindex = 3;
+    optional uint32 manual = 4;
+}
+
+// TBL_MACFILTER
+message tbl_macfilter_key
+{
+    required compose_mac_addr_t mac = 1;
+}
+
+message tbl_macfilter
+{
+    required tbl_macfilter_key key = 1;
+}
+
+// TBL_PSFDB
+message tbl_psfdb
+{
+    required compose_fdb_key_t key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 port_security = 3;
+}
+
+// TBL_IPSG_S_IP
+message tbl_ipsg_s_ip_key
+{
+    required compose_prefix_t ip = 1;
+}
+
+message tbl_ipsg_s_ip
+{
+    required tbl_ipsg_s_ip_key key = 1;
+    optional uint32 vid = 2;
+    optional uint32 ifindex = 3;
+    optional string ifname = 4;
+    optional compose_mac_addr_t mac_addr = 5;
+    optional compose_prefix_t ip_addr = 6;
+}
+
+// TBL_IPSG_S_MAC
+message tbl_ipsg_s_mac_key
+{
+    required compose_mac_addr_t mac = 1;
+}
+
+message tbl_ipsg_s_mac
+{
+    required tbl_ipsg_s_mac_key key = 1;
+    optional uint32 vid = 2;
+    optional uint32 ifindex = 3;
+    optional string ifname = 4;
+    optional compose_mac_addr_t mac_addr = 5;
+    optional compose_prefix_t ip_addr = 6;
+}
+
+// TBL_IPSG_FIB
+message tbl_ipsg_fib
+{
+    required compose_fdb_key_t key = 1;
+    optional uint32 vid = 2;
+    optional uint32 ifindex = 3;
+    optional string ifname = 4;
+    optional compose_mac_addr_t mac_addr = 5;
+    optional compose_prefix_t ip_addr = 6;
+    optional uint32 ipsg_type = 7;
+    optional uint32 set_dhcbinding_ipsg_tbl_exsit = 8;
+}
+
+// TBL_BRG_GLOBAL
+message tbl_brg_global
+{
+    optional uint32 max_static_fdb = 1;
+    optional uint32 max_l2mcast_fdb = 2;
+    optional uint32 fdb_aging_time = 3;
+    optional uint32 oper_fdb_aging_time = 4;
+    optional uint32 hw_learning_enable = 5;
+    optional uint32 ipsg_max_port_binding = 6;
+    optional uint32 cur_ipv4_source_guard = 7;
+    optional uint32 port_isolate_mode = 8;
+    optional bytes instance = 9;
+    optional bytes pvlan_isolate_id = 10;
+    optional uint32 max_instance = 11;
+    optional uint32 max_pvlan_isolate_id = 12;
+    optional uint32 fdb_loop_errdis_en = 13;
+    optional uint32 fdb_loop_max_size = 14;
+    optional uint32 fdb_loop_add_rate = 15;
+    optional uint32 fdb_loop_disc_cnt = 16;
+    optional uint32 fdb_loop_curr_size = 17;
+    optional uint32 trap_delay_up = 18;
+    optional uint32 trap_delay_down = 19;
+    optional uint32 fdb_all_flushing = 20;
+    optional uint32 mac_based_vlan_class = 21;
+    optional uint32 ipv4_based_vlan_class = 22;
+    optional uint32 ipv6_based_vlan_class = 23;
+    optional uint32 max_mirror_mac_escape = 24;
+    optional uint32 l2protocol_cos = 25;
+    optional uint32 vlan_mapping_entry_cnt = 26;
+    optional uint32 vlan_tpid_type1 = 27;
+    optional uint32 tpid_type1_ref_cnt = 28;
+    optional uint32 vlan_tpid_type2 = 29;
+    optional uint32 tpid_type2_ref_cnt = 30;
+}
+
+// TBL_MSTP_PORT
+message tbl_mstp_port_key
+{
+    required string name = 1;
+}
+
+message tbl_mstp_port
+{
+    required tbl_mstp_port_key key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 adminPortPathCost = 3;
+    optional uint32 portPathCost = 4;
+    optional uint32 forward_transitions = 5;
+    optional uint32 tx_bpdu_count = 6;
+    optional uint32 tx_error_count = 7;
+    optional uint32 rx_bpdu_count = 8;
+    optional uint32 rx_error_count = 9;
+    optional uint32 port_enable = 10;
+    optional uint32 bpdu_loop_count = 11;
+    optional uint32 restricted_role = 12;
+    optional uint32 restricted_tcn = 13;
+    optional uint32 admin_bpduguard = 14;
+    optional uint32 oper_bpduguard = 15;
+    optional uint32 admin_bpdufilter = 16;
+    optional uint32 oper_bpdufilter = 17;
+    optional uint32 admin_rootguard = 18;
+    optional uint32 oper_rootguard = 19;
+    optional uint32 admin_loopguard = 20;
+    optional uint32 oper_loopguard = 21;
+    optional uint32 cisco_cfg_format_id = 22;
+    optional uint32 adminP2PMac = 23;
+    optional uint32 operP2PMac = 24;
+    optional uint32 agree = 25;
+    optional uint32 agreed = 26;
+    optional uint32 adminForceVersion = 27;
+    optional uint32 forceVersion = 28;
+    optional compose_mstp_brg_id_t designated_rootId = 29;
+    optional uint32 designated_rootPathCost = 30;
+    optional compose_mstp_brg_id_t designated_regionRootId = 31;
+    optional uint32 designated_intRootPathCost = 32;
+    optional compose_mstp_brg_id_t designated_designatedBridgeId = 33;
+    optional uint32 designated_designatedPortId = 34;
+    optional uint32 designated_bridgePortId = 35;
+    optional uint32 designated_messageAge = 36;
+    optional uint32 designated_fwdDelay = 37;
+    optional uint32 designated_helloTime = 38;
+    optional uint32 designated_maxAge = 39;
+    optional uint32 disputed = 40;
+    optional uint32 fdbFlush = 41;
+    optional uint32 forward = 42;
+    optional uint32 forwarding = 43;
+    optional uint32 infoIs = 44;
+    optional uint32 learn = 45;
+    optional uint32 learning = 46;
+    optional uint32 mcheck = 47;
+    optional uint32 newInfo = 48;
+    optional uint32 newInfoMsti = 49;
+    optional uint32 adminEdge = 50;
+    optional uint32 operEdge = 51;
+    optional uint32 portEnabled = 52;
+    optional uint32 portId = 53;
+    optional uint32 priority = 54;
+    optional compose_mstp_brg_id_t port_rootId = 55;
+    optional uint32 port_rootPathCost = 56;
+    optional compose_mstp_brg_id_t port_regionRootId = 57;
+    optional uint32 port_intRootPathCost = 58;
+    optional compose_mstp_brg_id_t port_designatedBridgeId = 59;
+    optional uint32 port_designatedPortId = 60;
+    optional uint32 port_bridgePortId = 61;
+    optional uint32 port_messageAge = 62;
+    optional uint32 port_fwdDelay = 63;
+    optional uint32 port_helloTime = 64;
+    optional uint32 port_maxAge = 65;
+    optional uint32 proposed = 66;
+    optional uint32 proposing = 67;
+    optional uint32 rcvdBpdu = 68;
+    optional uint32 rcvdInfo = 69;
+    optional uint32 rcvdInfoUpdateTimers = 70;
+    optional uint32 rcvdMsg = 71;
+    optional uint32 rcvdMSTP = 72;
+    optional uint32 rcvdRSTP = 73;
+    optional uint32 rcvdSTP = 74;
+    optional uint32 rcvdTc = 75;
+    optional uint32 rcvdTcAck = 76;
+    optional uint32 rcvdTcn = 77;
+    optional uint32 reRoot = 78;
+    optional uint32 reselect = 79;
+    optional uint32 role = 80;
+    optional uint32 selected = 81;
+    optional uint32 selectedRole = 82;
+    optional uint32 sendRstp = 83;
+    optional uint32 sync = 84;
+    optional uint32 synced = 85;
+    optional uint32 tcAck = 86;
+    optional uint32 tcProp = 87;
+    optional uint32 txCount = 88;
+    optional uint32 updtInfo = 89;
+    optional uint32 reRooted = 90;
+    optional uint32 rstpVersion = 91;
+    optional uint32 stpVersion = 92;
+    optional uint32 rcvdInternal = 93;
+    optional uint32 rcvdInternalChange = 94;
+    optional uint32 hopCount = 95;
+    optional uint32 prx_state = 96;
+    optional uint32 ppm_state = 97;
+    optional uint32 bdm_state = 98;
+    optional uint32 ptx_state = 99;
+    optional uint32 pim_state = 100;
+    optional uint32 prt_state = 101;
+    optional uint32 pst_state = 102;
+    optional uint32 tcm_state = 103;
+    optional uint32 fea_state = 104;
+}
+
+// TBL_MSTI_PORT
+message tbl_msti_port
+{
+    required compose_msti_port_key_t key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 adminPortPathCost = 3;
+    optional uint32 portPathCost = 4;
+    optional uint32 forward_transitions = 5;
+    optional uint32 newInfoMsti = 6;
+    optional uint32 bpdu_loop_count = 7;
+    optional uint32 restricted_role = 8;
+    optional uint32 restricted_tcn = 9;
+    optional uint32 oper_rootguard = 10;
+    optional uint32 oper_loopguard = 11;
+    optional uint32 agree = 12;
+    optional uint32 agreed = 13;
+    optional uint32 adminForceVersion = 14;
+    optional compose_mstp_brg_id_t designated_regionRootId = 15;
+    optional uint32 designated_intRootPathCost = 16;
+    optional compose_mstp_brg_id_t designated_designatedBridgeId = 17;
+    optional uint32 designated_designatedPortId = 18;
+    optional uint32 designated_bridgePortId = 19;
+    optional uint32 designated_messageAge = 20;
+    optional uint32 designated_fwdDelay = 21;
+    optional uint32 designated_helloTime = 22;
+    optional uint32 designated_maxAge = 23;
+    optional uint32 disputed = 24;
+    optional uint32 fdbFlush = 25;
+    optional uint32 forward = 26;
+    optional uint32 forwarding = 27;
+    optional uint32 infoIs = 28;
+    optional uint32 learn = 29;
+    optional uint32 learning = 30;
+    optional uint32 newInfo = 31;
+    optional uint32 portId = 32;
+    optional uint32 priority = 33;
+    optional compose_mstp_brg_id_t port_rootId = 34;
+    optional uint32 port_rootPathCost = 35;
+    optional compose_mstp_brg_id_t port_designatedBridgeId = 36;
+    optional uint32 port_designatedPortId = 37;
+    optional uint32 port_bridgePortId = 38;
+    optional uint32 port_messageAge = 39;
+    optional uint32 port_fwdDelay = 40;
+    optional uint32 port_helloTime = 41;
+    optional uint32 port_maxAge = 42;
+    optional uint32 proposed = 43;
+    optional uint32 proposing = 44;
+    optional uint32 rcvdBpdu = 45;
+    optional uint32 rcvdInfo = 46;
+    optional uint32 rcvdMsg = 47;
+    optional uint32 rcvdRSTP = 48;
+    optional uint32 rcvdSTP = 49;
+    optional uint32 rcvdTc = 50;
+    optional uint32 rcvdTcAck = 51;
+    optional uint32 rcvdTcn = 52;
+    optional uint32 reRoot = 53;
+    optional uint32 reselect = 54;
+    optional uint32 role = 55;
+    optional uint32 selected = 56;
+    optional uint32 selectedRole = 57;
+    optional uint32 sync = 58;
+    optional uint32 synced = 59;
+    optional uint32 tcAck = 60;
+    optional uint32 tcProp = 61;
+    optional uint32 txCount = 62;
+    optional uint32 updtInfo = 63;
+    optional uint32 reRooted = 64;
+    optional uint32 hopCount = 65;
+    optional uint32 ppm_state = 66;
+    optional uint32 pim_state = 67;
+    optional uint32 prt_state = 68;
+    optional uint32 pst_state = 69;
+    optional uint32 tcm_state = 70;
+    optional uint32 fea_state = 71;
+}
+
+// TBL_MSTP_INSTANCE
+message tbl_mstp_instance_key
+{
+    required uint32 instance = 1;
+}
+
+message tbl_mstp_instance
+{
+    required tbl_mstp_instance_key key = 1;
+    optional uint64 instance_oid = 2;
+    optional bytes vlan = 3;
+    optional uint32 bridge_priority = 4;
+    optional compose_mstp_brg_id_t bridge_id = 5;
+    optional uint32 root_portId = 6;
+    optional compose_mstp_brg_id_t root_rootId = 7;
+    optional uint32 root_rootPathCost = 8;
+    optional compose_mstp_brg_id_t root_designatedBridgeId = 9;
+    optional uint32 root_designatedPortId = 10;
+    optional uint32 root_bridgePortId = 11;
+    optional uint32 root_messageAge = 12;
+    optional uint32 root_fwdDelay = 13;
+    optional uint32 root_helloTime = 14;
+    optional uint32 root_maxAge = 15;
+    optional uint32 prs_state = 16;
+    optional uint32 hopCount = 17;
+    optional uint32 g8032_ring_id = 18;
+}
+
+// TBL_MSTP_GLOBAL
+message tbl_mstp_global
+{
+    optional uint32 type = 1;
+    optional uint32 no_mst_config = 2;
+    optional uint32 external_root_path_cost = 3;
+    optional uint32 internal_root_path_cost = 4;
+    optional uint32 root_portId = 5;
+    optional compose_mstp_brg_id_t root_rootId = 6;
+    optional uint32 root_rootPathCost = 7;
+    optional compose_mstp_brg_id_t root_regionRootId = 8;
+    optional uint32 root_intRootPathCost = 9;
+    optional compose_mstp_brg_id_t root_designatedBridgeId = 10;
+    optional uint32 root_designatedPortId = 11;
+    optional uint32 root_bridgePortId = 12;
+    optional uint32 root_messageAge = 13;
+    optional uint32 root_fwdDelay = 14;
+    optional uint32 root_helloTime = 15;
+    optional uint32 root_maxAge = 16;
+    optional uint32 bridge_fwdDelay = 17;
+    optional uint32 bridge_helloTime = 18;
+    optional uint32 bridge_maxAge = 19;
+    optional uint32 bridge_maxHops = 20;
+    optional uint32 bridge_priority = 21;
+    optional compose_mstp_brg_id_t bridge_id = 22;
+    optional compose_sal_time_t last_tc_time = 23;
+    optional uint32 num_topo_changes = 24;
+    optional uint32 mlag_role = 25;
+    optional uint32 mlag_enable = 26;
+    optional uint32 enable = 27;
+    optional uint32 topology_change_detected = 28;
+    optional uint32 bpduguard = 29;
+    optional uint32 bpdufilter = 30;
+    optional uint32 admin_cisco = 31;
+    optional uint32 oper_cisco = 32;
+    optional uint32 txHoldCount = 33;
+    optional uint32 pathcost_standard = 34;
+    optional uint32 tc_protection = 35;
+    optional uint32 hopCount = 36;
+    optional uint32 recv_tcn_threshold = 37;
+    optional uint32 recv_tcn_number = 38;
+    optional uint32 root_port_ifindex = 39;
+    optional uint32 alternate_port_ifndex = 40;
+    optional uint32 prs_state = 41;
+    optional uint32 mstp_format_id = 42;
+    optional uint32 mstp_revision_level = 43;
+    optional string mstp_region_name = 44;
+    optional compose_mstp_digest_t mstp_digest = 45;
+    optional uint32 of_exclude_all_vlan = 46;
+    optional bytes of_include_vlan_bmp = 47;
+}
+
+// TBL_LLDP_GLOBAL
+message tbl_lldp_global
+{
+    optional uint32 enable = 1;
+    optional uint32 system_mac_en = 2;
+    optional uint32 config_flag = 3;
+    optional compose_mac_addr_t system_mac = 4;
+    optional compose_addr_t management_ip = 5;
+    optional uint32 tx_hold = 6;
+    optional uint32 tx_interval = 7;
+    optional uint32 tx_delay = 8;
+    optional uint32 reinit_delay = 9;
+    optional uint32 system_capability = 10;
+    optional string system_name = 11;
+    optional string system_desc = 12;
+    optional string system_desc_default = 13;
+}
+
+// TBL_LLDP_IF
+message tbl_lldp_if_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_lldp_if
+{
+    required tbl_lldp_if_key key = 1;
+    optional uint32 mode = 2;
+    optional uint32 tx_ttl = 3;
+    optional uint32 tx_count = 4;
+    optional uint32 rx_count = 5;
+    optional uint32 rx_error_count = 6;
+    optional uint32 rx_discard_count = 7;
+    optional uint32 tlv_discard_count = 8;
+    optional uint32 tlv_unrecognized_count = 9;
+    optional uint32 aged_count = 10;
+    optional uint32 tlv_enable_basic = 11;
+    optional uint32 tlv_enable_8021 = 12;
+    optional uint32 tlv_enable_8023 = 13;
+    optional uint32 tlv_enable_med = 14;
+    optional uint32 ppvid_flag = 15;
+    optional uint32 ppvid = 16;
+    optional uint32 protocol_id = 17;
+    optional string vlan_name = 18;
+    optional uint32 vlan_name_id = 19;
+    optional uint32 mdi_support = 20;
+    optional uint32 pse_power_pair = 21;
+    optional uint32 power_class = 22;
+    optional uint32 med_capbility = 23;
+    optional uint32 med_dev_type = 24;
+    optional uint32 med_power_flag = 25;
+    optional uint32 med_power_value = 26;
+    optional uint32 med_policy_flag = 27;
+    optional uint32 med_lci_format = 28;
+    optional string med_lci_coordinate = 29;
+    optional string med_lci_elin = 30;
+    optional compose_lldp_civic_address_t med_lci_civic = 31;
+}
+
+// TBL_MLAG
+message tbl_mlag
+{
+    optional uint32 enable = 1;
+    optional compose_addr_t local_addr = 2;
+    optional uint32 reload_delay_interval = 3;
+    optional uint32 reload_delay_auto = 4;
+    optional uint32 role = 5;
+    optional compose_mac_addr_t local_sysid = 6;
+    optional compose_mac_addr_t remote_sysid = 7;
+    optional compose_mac_addr_t mlag_sysid = 8;
+    optional compose_mac_addr_t peer_routemac = 9;
+    optional uint32 local_syspri = 10;
+    optional uint32 remote_syspri = 11;
+    optional uint32 mlag_syspri = 12;
+    optional bytes peer_vlanif_bmp = 13;
+    optional bytes peer_fdb_bmp = 14;
+    optional uint32 peer_link_ifindex = 15;
+    optional uint32 flush_fdb_mi = 16;
+}
+
+// TBL_MLAG_PEER
+message tbl_mlag_peer
+{
+    optional compose_addr_t peer_addr = 1;
+    optional uint32 set_timers = 2;
+    optional uint32 holdtime = 3;
+    optional uint32 keepalive = 4;
+    optional int32 server_sock = 5;
+    optional int32 client_sock = 6;
+    optional uint32 v_auto_start = 7;
+    optional uint32 v_connect = 8;
+    optional uint32 v_holdtime = 9;
+    optional uint32 v_keepalive = 10;
+    optional uint32 open_in = 11;
+    optional uint32 open_out = 12;
+    optional uint32 keepalive_in = 13;
+    optional uint32 keepalive_out = 14;
+    optional uint32 disconnect_in = 15;
+    optional uint32 disconnect_out = 16;
+    optional uint32 fdbsync_in = 17;
+    optional uint32 fdbsync_out = 18;
+    optional uint32 failover_in = 19;
+    optional uint32 failover_out = 20;
+    optional uint32 conf_in = 21;
+    optional uint32 conf_out = 22;
+    optional uint32 syspri_in = 23;
+    optional uint32 syspri_out = 24;
+    optional uint32 peer_fdb_in = 25;
+    optional uint32 peer_fdb_out = 26;
+    optional uint32 stp_in = 27;
+    optional uint32 stp_out = 28;
+    optional uint32 stp_global_in = 29;
+    optional uint32 stp_global_out = 30;
+    optional uint32 stp_port_in = 31;
+    optional uint32 stp_port_out = 32;
+    optional uint32 stp_packet_in = 33;
+    optional uint32 stp_packet_out = 34;
+    optional uint32 stp_instance_in = 35;
+    optional uint32 stp_instance_out = 36;
+    optional uint32 stp_state_in = 37;
+    optional uint32 stp_state_out = 38;
+    optional uint32 established = 39;
+    optional uint32 dropped = 40;
+    optional uint32 ttl = 41;
+    optional compose_sal_time_t uptime = 42;
+    optional compose_sal_time_t lastread = 43;
+    optional uint32 mpf_state = 44;
+}
+
+// TBL_MLAG_PORT
+message tbl_mlag_port_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_mlag_port
+{
+    required tbl_mlag_port_key key = 1;
+    optional uint32 peer_conf = 2;
+    optional uint32 peer_if_up = 3;
+    optional uint32 stp_port_enable = 4;
+    optional uint32 ifindex = 5;
+    optional uint32 protect_en = 6;
+}
+
+// TBL_ISOLATION
+message tbl_isolation_key
+{
+    required uint32 isolation_id = 1;
+}
+
+message tbl_isolation
+{
+    required tbl_isolation_key key = 1;
+    optional uint64 isolation_oid = 2;
+}
+
+// TBL_ROUTE_GLOBAL
+message tbl_route_global
+{
+    optional uint32 gratuitous_arp_learn_en = 1;
+    optional uint32 arp_pkt_rx_count = 2;
+    optional uint32 arp_pkt_tx_count = 3;
+    optional uint32 arp_pkt_discard_count = 4;
+    optional uint32 arp_count = 5;
+    optional uint32 multipath_num = 6;
+    optional uint32 max_static = 7;
+    optional uint32 icmp_error_ratelimit = 8;
+    optional uint32 ip_redirects_global_en = 9;
+    optional uint32 current_static_routes = 10;
+    optional uint32 current_ecmp_routes = 11;
+    optional uint32 current_ecmp_groups = 12;
+    optional uint32 current_remote_routes = 13;
+    optional uint32 current_host_routes = 14;
+    optional uint32 current_indirect_ipv4_route_num = 15;
+    optional uint32 current_static_v6_routes = 16;
+    optional uint32 current_ecmp_v6_routes = 17;
+    optional uint32 current_ecmp_v6_groups = 18;
+    optional uint32 current_remote_v6_routes = 19;
+    optional uint32 current_indirect_ipv6_route_num = 20;
+    optional uint32 active_local = 21;
+    optional uint32 active_static = 22;
+    optional uint32 active_connected = 23;
+    optional uint32 active_rip = 24;
+    optional uint32 active_ospf = 25;
+    optional uint32 active_bgp = 26;
+    optional uint32 arpinsp_logbuf_entrynum = 27;
+    optional uint32 arpinsp_logbuf_curnum = 28;
+    optional uint32 arpinsp_logbuf_lognum = 29;
+    optional uint32 arpinsp_logbuf_logsec = 30;
+    optional uint32 arpinsp_validate_flag = 31;
+    optional uint32 fib_full = 32;
+    optional uint32 ipv6_enable = 33;
+    optional uint32 nd_hop_limit = 34;
+    optional uint32 vty_connected = 35;
+    optional uint32 vty_nonconn_count = 36;
+    optional uint32 vty_mode = 37;
+    optional compose_sal_time_t arpratelimit_timer_start_time_sec = 38;
+    optional compose_sal_time_t arpratelimit_timer_start_time_msec = 39;
+    optional bytes buf = 40;
+    optional uint32 pkt_len = 41;
+    optional uint32 nd_count = 42;
+}
+
+// TBL_BGP
+message tbl_bgp_key
+{
+    required uint32 as_id = 1;
+}
+
+message tbl_bgp
+{
+    required tbl_bgp_key key = 1;
+    optional compose_addr_ipv4_t router_id = 2;
+    optional uint32 redistribute = 3;
+    repeated uint32 red_metric = 4;
+}
+
+// TBL_BGP_NETWORK
+message tbl_bgp_network
+{
+    required compose_addr_t key = 1;
+    optional compose_addr_ipv4_t mask = 2;
+}
+
+// TBL_BGP_NEIGHBOR
+message tbl_bgp_neighbor
+{
+    required compose_addr_t key = 1;
+    optional uint32 remote_as = 2;
+    optional uint32 ebgp_multihop = 3;
+    optional string password = 4;
+    optional string intf_name = 5;
+    optional compose_addr_ipv4_t intf_addr = 6;
+    optional uint32 shutdown = 7;
+    optional uint32 next_hop_self = 8;
+}
+
+// TBL_OSPF
+message tbl_ospf_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_ospf
+{
+    required tbl_ospf_key key = 1;
+    optional compose_addr_ipv4_t router_id = 2;
+    optional uint32 default_originate = 3;
+    optional uint32 redistribute = 4;
+}
+
+// TBL_OSPF6
+message tbl_ospf6_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_ospf6
+{
+    required tbl_ospf6_key key = 1;
+    optional compose_addr_ipv4_t router_id = 2;
+    optional uint32 default_originate = 3;
+    optional uint32 redistribute = 4;
+}
+
+// TBL_OSPF6_INTERFACE
+message tbl_ospf6_interface_key
+{
+    required string name = 1;
+}
+
+message tbl_ospf6_interface
+{
+    required tbl_ospf6_interface_key key = 1;
+    optional string interface = 2;
+    optional compose_addr_ipv4_t area_id = 3;
+}
+
+// TBL_OSPF_NETWORK
+message tbl_ospf_network
+{
+    required compose_prefix_t key = 1;
+    optional uint32 area_id = 2;
+}
+
+// TBL_OSPF_AREA_AUTH
+message tbl_ospf_area_auth_key
+{
+    required uint32 areaid = 1;
+}
+
+message tbl_ospf_area_auth
+{
+    required tbl_ospf_area_auth_key key = 1;
+    optional uint32 auth_type = 2;
+}
+
+// TBL_OSPF_AREA_RANGE
+message tbl_ospf_area_range
+{
+    required compose_ospf_area_range_key_t key = 1;
+    optional uint32 advertise = 2;
+}
+
+// TBL_OSPF6_AREA_RANGE
+message tbl_ospf6_area_range
+{
+    required compose_ospf6_area_range_key_t key = 1;
+    optional uint32 advertise = 2;
+}
+
+// TBL_IPROUTE_NODE
+message tbl_iproute_node
+{
+    required compose_route_node_key_t key = 1;
+    optional uint32 route_type = 2;
+    optional uint32 distance = 3;
+    optional uint32 multipath = 4;
+    optional compose_nexthop_key_t nh_key = 5;
+    optional compose_nexthop_ecmp_t nh_group = 6;
+}
+
+// TBL_IPROUTE_NODE_ADD_FAIL
+message tbl_iproute_node_add_fail
+{
+    required compose_route_node_key_t key = 1;
+    optional uint32 distance = 2;
+    optional uint32 multipath = 3;
+    optional compose_nexthop_key_t nh_key = 4;
+    optional compose_nexthop_ecmp_t nh_group = 5;
+}
+
+// TBL_IPROUTE_NODE_ADD_FAIL_COUNT
+message tbl_iproute_node_add_fail_count
+{
+    required compose_route_node_key_t key = 1;
+    optional uint32 distance = 2;
+    optional uint32 multipath = 3;
+    optional compose_nexthop_key_t nh_key = 4;
+    optional compose_nexthop_ecmp_t nh_group = 5;
+}
+
+// TBL_STATIC_ROUTE_CFG
+message tbl_static_route_cfg
+{
+    required compose_route_node_key_t key = 1;
+    optional uint32 distance = 2;
+    optional uint32 track_id = 3;
+    optional uint32 track_status = 4;
+    optional uint32 nexthop_type_v6 = 5;
+    optional uint32 dhcp_client = 6;
+}
+
+// TBL_STATIC_RT_CNT
+message tbl_static_rt_cnt
+{
+    required compose_route_node_key_with_ad_t key = 1;
+    optional uint32 refer_cnt = 2;
+    optional uint32 has_blackhole = 3;
+    optional compose_nexthop_ecmp_routed_t nh_group = 4;
+}
+
+// TBL_ARP_FIB
+message tbl_arp_fib_key
+{
+    required compose_addr_ipv4_t ip = 1;
+}
+
+message tbl_arp_fib
+{
+    required tbl_arp_fib_key key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 type = 3;
+    optional uint32 vrf_id = 4;
+    optional string ifname = 5;
+    optional uint32 flags = 6;
+    optional compose_mac_addr_t mac_addr = 7;
+    optional uint32 is_router = 8;
+    optional uint32 route_ref = 9;
+}
+
+// TBL_ARP
+message tbl_arp_key
+{
+    required compose_addr_ipv4_t ip = 1;
+}
+
+message tbl_arp
+{
+    required tbl_arp_key key = 1;
+    optional uint32 type = 2;
+    optional string ifname = 3;
+    optional uint32 vrf_id = 4;
+    optional compose_mac_addr_t mac_addr = 5;
+    optional uint64 rif_id = 6;
+    optional uint32 ifindex = 7;
+    optional uint32 flags = 8;
+    optional uint32 status = 9;
+    optional uint32 route_ref = 10;
+    optional compose_sal_time_t uptime = 11;
+    optional uint32 aging_delay = 12;
+    optional uint32 is_gratuitous = 13;
+    optional uint32 is_proxy = 14;
+    optional uint32 is_router = 15;
+    optional uint32 retry_count = 16;
+    optional uint32 is_bfd_ref = 17;
+    optional uint32 is_static_route_dup = 18;
+}
+
+// TBL_NEXTHOP
+message tbl_nexthop
+{
+    required compose_nexthop_key_t key = 1;
+    optional uint32 refcnt = 2;
+}
+
+// TBL_NEXTHOP_GROUP
+message tbl_nexthop_group
+{
+    required compose_nexthop_ecmp_t key = 1;
+    optional compose_nexthop_ecmp_t nh_group = 2;
+    optional uint64 nhg_oid = 3;
+    optional uint32 ref_cnt = 4;
+    optional uint32 ecmp_hash = 5;
+}
+
+// TBL_NEXTHOP_GROUP_ROUTED
+message tbl_nexthop_group_routed
+{
+    required compose_nexthop_ecmp_routed_t key = 1;
+    optional uint64 nhg_oid = 2;
+    optional uint32 ref_cnt = 3;
+    optional uint32 ecmp_hash = 4;
+}
+
+// TBL_FEA_NEXTHOP
+message tbl_fea_nexthop
+{
+    required compose_nexthop_key_t key = 1;
+    optional uint64 nhid = 2;
+}
+
+// TBL_MRT
+message tbl_mrt
+{
+    required compose_mrt_key_t key = 1;
+    optional uint32 rpf_ifindex = 2;
+    optional bytes oif_index_bmp = 3;
+    optional uint64 nhg_oid = 4;
+    optional uint64 packet_match = 5;
+    optional uint64 byte_match = 6;
+    optional uint32 static_mroute = 7;
+}
+
+// TBL_IPMC_GLOBAL
+message tbl_ipmc_global
+{
+    optional uint32 mcast_route_en = 1;
+    optional uint32 register_suppress_time = 2;
+    optional uint32 pim_packet_process = 3;
+    optional uint32 keep_alive_time = 4;
+    optional uint32 rp_keep_alive_time = 5;
+    optional uint32 join_prune_interval = 6;
+    optional uint32 switchover_mode = 7;
+}
+
+// TBL_IPMC_INTF
+message tbl_ipmc_intf_key
+{
+    required string name = 1;
+}
+
+message tbl_ipmc_intf
+{
+    required tbl_ipmc_intf_key key = 1;
+    optional compose_addr_ipv4_t primary_address = 2;
+    optional uint32 igmp_enable = 3;
+    optional uint32 pim_enable = 4;
+    optional int32 igmp_version = 5;
+    optional int32 igmp_query_interval = 6;
+    optional int32 igmp_query_max_response_time = 7;
+    optional int32 pim_hello_period = 8;
+    optional int32 pim_hello_holdtime = 9;
+    optional uint32 pim_generation_id = 10;
+    optional uint32 pim_propagation_delay_msec = 11;
+    optional uint32 pim_override_interval_msec = 12;
+    optional uint32 pim_dr_priority = 13;
+}
+
+// TBL_PIM_STATIC_RP
+message tbl_pim_static_rp_key
+{
+    required compose_prefix_t group_range = 1;
+}
+
+message tbl_pim_static_rp
+{
+    required tbl_pim_static_rp_key key = 1;
+    optional compose_addr_ipv4_t rp_addr = 2;
+}
+
+// TBL_SYS_GLOBAL
+message tbl_sys_global
+{
+    optional string hostname = 1;
+    optional compose_mac_addr_t route_mac = 2;
+    optional uint32 mac_num = 3;
+    optional int32 curr_vlanif_count = 4;
+    optional uint32 init_done = 5;
+    optional uint32 startup_done = 6;
+    optional uint32 max_frame_size = 7;
+    optional uint32 jumbo_frame_size = 8;
+    optional uint32 reboot_type = 9;
+    optional uint32 ipg_shaping_enable = 10;
+    optional uint32 ipg_policing_enable = 11;
+    optional uint32 ipg_storm_control_enable = 12;
+    optional uint32 aaa_new_model = 13;
+    optional uint32 service_password_encryption = 14;
+    optional uint32 max_vty = 15;
+    optional uint32 aaa_privilege1 = 16;
+    optional uint32 aaa_privilege2 = 17;
+    optional uint32 aaa_privilege3 = 18;
+    optional uint32 dhcp_service_enable = 19;
+    optional uint32 dhcp_relay_enable = 20;
+    optional uint32 dhcp_snooping_enable = 21;
+    optional uint32 http_service_enable = 22;
+    optional string http_image_name = 23;
+    optional uint32 errdisable_interval = 24;
+    optional uint32 trunction_length = 25;
+    optional compose_mac_addr_t tap_ts_macda = 26;
+    optional compose_mac_addr_t tap_ts_macsa = 27;
+    optional uint32 ether_type = 28;
+    optional uint32 ptf_port = 29;
+    optional uint32 telnet_disable = 30;
+    optional uint32 telnet_port = 31;
+    optional string telnet_acl = 32;
+    optional string ssh_acl = 33;
+    optional uint32 http_disable = 34;
+    optional uint32 http_port = 35;
+    optional uint32 http_timeout = 36;
+    optional uint32 https_disable = 37;
+    optional uint32 https_port = 38;
+    optional uint32 rpcapi_disable = 39;
+    optional uint32 rpcapi_port = 40;
+    optional uint32 rpcapi_ssl_en = 41;
+    optional uint32 rpcapi_ssl_port = 42;
+    optional uint32 rpcapi_auth_mode = 43;
+    optional uint32 oper_rpcapi_auth_mode = 44;
+    optional uint32 cut_through_enable = 45;
+    optional uint32 protected_vlan_cnt = 46;
+    optional uint32 vlan_stats_cnt = 47;
+    optional uint32 mib_port_stats_read_num = 48;
+    optional uint32 mib_flow_stats_read_num = 49;
+    optional uint32 memory_threshold1 = 50;
+    optional uint32 memory_threshold2 = 51;
+    optional uint32 memory_threshold3 = 52;
+    optional uint32 system_memchk_state = 53;
+    optional uint32 mgmt_if_running = 54;
+    optional uint32 warmboot_type = 55;
+    optional uint32 warmboot_time = 56;
+    optional uint32 warmboot_count = 57;
+    optional uint32 system_time_update = 58;
+    optional uint32 sflow_counter_ifindex = 59;
+    optional uint32 dhcp_server_enable = 60;
+    optional uint32 add_gre_ace_entry_num = 61;
+    optional uint32 add_vxlan_entry_num = 62;
+    optional uint32 system_product = 63;
+}
+
+// TBL_LAG_GLOBAL
+message tbl_lag_global
+{
+    optional uint32 system_priority = 1;
+    optional compose_mac_addr_t system_id = 2;
+    optional uint32 mlag_system_priority = 3;
+    optional compose_mac_addr_t mlag_system_id = 4;
+    optional uint32 load_balance = 5;
+    optional uint32 load_balance_inner_field_en = 6;
+    optional uint32 hash_arithmetic = 7;
+    optional bytes load_balance_mode = 8;
+}
+
+// TBL_ECMP_GLOBAL
+message tbl_ecmp_global
+{
+    optional uint32 hash_key = 1;
+    optional uint32 hash_algorithm = 2;
+    optional uint32 load_balance_mode = 3;
+    optional uint32 dlb_mode_type = 4;
+    optional uint32 rr_prefix_num = 5;
+}
+
+// TBL_RR_PREFIX
+message tbl_rr_prefix_key
+{
+    required uint32 rr_prefix_index = 1;
+}
+
+message tbl_rr_prefix
+{
+    required tbl_rr_prefix_key key = 1;
+    optional compose_prefix_t rr_prefix = 2;
+}
+
+// TBL_MEM_SUMMARY
+message tbl_mem_summary
+{
+    optional uint32 total = 1;
+    optional uint32 used = 2;
+    optional uint32 free = 3;
+    optional uint32 buffer = 4;
+    optional uint32 cached = 5;
+    optional uint32 mem_high = 6;
+    optional uint32 cpu_high = 7;
+    optional uint32 cpu_high_threshold = 8;
+    optional uint32 cpu_low_threshold = 9;
+}
+
+// TBL_CPU_MEM_HISTORY
+message tbl_cpu_mem_history
+{
+    optional uint64 polling_index = 1;
+    optional uint64 saving_index = 2;
+    optional uint32 hour_start = 3;
+    optional uint32 day_start = 4;
+    optional uint64 hour_last_save = 5;
+    optional uint64 day_last_save = 6;
+    optional bytes cpu_polling_save = 7;
+    optional bytes cpu_history_hour = 8;
+    optional bytes cpu_history_day = 9;
+    optional bytes mem_polling_save = 10;
+    optional bytes mem_history_hour = 11;
+    optional bytes mem_history_day = 12;
+}
+
+// TBL_CHSM_DEBUG
+message tbl_chsm_debug
+{
+    optional uint32 chsm_chassis = 1;
+}
+
+// TBL_SWITCH_DEBUG
+message tbl_switch_debug
+{
+    optional uint32 stp_event = 1;
+    optional uint32 stp_packet_tx = 2;
+    optional uint32 stp_packet_rx = 3;
+    optional uint32 stp_protocol_cist = 4;
+    optional uint32 stp_protocol_msti = 5;
+    optional uint32 stp_timer = 6;
+    optional uint32 mlag_event = 7;
+    optional uint32 mlag_packet = 8;
+    optional uint32 mlag_protocol = 9;
+    optional uint32 mlag_timer = 10;
+    optional uint32 lacp_event = 11;
+    optional uint32 lacp_packet = 12;
+    optional uint32 lacp_protocol = 13;
+    optional uint32 lacp_timer = 14;
+    optional uint32 igsp_event = 15;
+    optional uint32 igsp_packet_tx = 16;
+    optional uint32 igsp_packet_rx = 17;
+    optional uint32 igsp_protocol = 18;
+    optional uint32 igsp_timer = 19;
+    optional uint32 ipsg_event = 20;
+    optional uint32 ipsg_error = 21;
+    optional uint32 lldp_event = 22;
+    optional uint32 lldp_packet_tx = 23;
+    optional uint32 lldp_packet_rx = 24;
+    optional uint32 lldp_protocol = 25;
+    optional uint32 lldp_timer = 26;
+    optional uint32 rpcapi_request = 27;
+    optional uint32 rpcapi_command = 28;
+}
+
+// TBL_ROUTE_DEBUG
+message tbl_route_debug
+{
+    optional uint32 route_ipv4 = 1;
+    optional uint32 route_ipv6 = 2;
+    optional uint32 route_netlink = 3;
+    optional uint32 arp_event = 4;
+    optional uint32 arp_packet = 5;
+    optional uint32 arp_protocol = 6;
+    optional uint32 arp_timer = 7;
+    optional uint32 arpinspection_event = 8;
+    optional uint32 arpinspection_packet = 9;
+    optional uint32 arpinspection_protocol = 10;
+    optional uint32 arpinspection_timer = 11;
+    optional uint32 vrrp_all = 12;
+    optional uint32 vrrp_events = 13;
+    optional uint32 vrrp_packet_send = 14;
+    optional uint32 vrrp_packet_recv = 15;
+    optional uint32 vrrp_packet_detail = 16;
+    optional uint32 ipsla_event = 17;
+    optional uint32 ipsla_packet = 18;
+    optional uint32 track_event = 19;
+    optional uint32 nd_event = 20;
+    optional uint32 nd_packet = 21;
+    optional uint32 nd_protocol = 22;
+    optional uint32 nd_timer = 23;
+    optional uint32 nat_event = 24;
+    optional uint32 nat_timer = 25;
+    optional uint32 pimsm_all = 26;
+    optional uint32 pimsm_pim = 27;
+    optional uint32 pimsm_igmp = 28;
+    optional uint32 pimsm_timer = 29;
+}
+
+// TBL_SSM_DEBUG
+message tbl_ssm_debug
+{
+    optional uint32 ssm_event = 1;
+    optional uint32 ssm_packet_tx = 2;
+    optional uint32 ssm_packet_rx = 3;
+    optional uint32 ssm_timer = 4;
+}
+
+// TBL_PTP_DEBUG
+message tbl_ptp_debug
+{
+    optional uint32 ptp_communication_debug = 1;
+    optional uint32 ptp_bmc_debug = 2;
+    optional uint32 ptp_timer_debug = 3;
+    optional uint32 ptp_synchronization_debug = 4;
+    optional uint32 ptp_packet_rx_debug = 5;
+    optional uint32 ptp_packet_tx_debug = 6;
+    optional uint32 ptp_packet_discard_debug = 7;
+}
+
+// TBL_QUAGGA_DEBUG
+message tbl_quagga_debug
+{
+    optional uint32 rip_event = 1;
+    optional uint32 rip_packet = 2;
+    optional uint32 rip_zebra = 3;
+    optional uint32 ospf_event = 4;
+    optional uint32 ospf_ism_events = 5;
+    optional uint32 ospf_ism_status = 6;
+    optional uint32 ospf_ism_timers = 7;
+    optional uint32 ospf_lsa_flooding = 8;
+    optional uint32 ospf_lsa_generate = 9;
+    optional uint32 ospf_lsa_install = 10;
+    optional uint32 ospf_lsa_refresh = 11;
+    optional uint32 ospf_nsm_events = 12;
+    optional uint32 ospf_nsm_status = 13;
+    optional uint32 ospf_nsm_timers = 14;
+    optional uint32 ospf_nssa = 15;
+    optional uint32 ospf_packet_dd = 16;
+    optional uint32 ospf_packet_hello = 17;
+    optional uint32 ospf_packet_ls_ack = 18;
+    optional uint32 ospf_packet_ls_request = 19;
+    optional uint32 ospf_packet_ls_update = 20;
+    optional uint32 ospf_zebra_interface = 21;
+    optional uint32 ospf_zebra_redistribute = 22;
+    optional uint32 ospf_event_abr = 23;
+    optional uint32 ospf_event_ia = 24;
+    optional uint32 ospf_event_route = 25;
+    optional uint32 ospf_event_spf = 26;
+    optional uint32 bgp_as4_segment = 27;
+    optional uint32 bgp_event = 28;
+    optional uint32 bgp_filters = 29;
+    optional uint32 bgp_fsm = 30;
+    optional uint32 bgp_keepalives = 31;
+    optional uint32 bgp_updates_in = 32;
+    optional uint32 bgp_updates_out = 33;
+    optional uint32 bgp_zebra = 34;
+    optional uint32 igmp_event = 35;
+    optional uint32 igmp_packet = 36;
+    optional uint32 igmp_trace = 37;
+    optional uint32 mroute_on = 38;
+    optional uint32 mroute_detail = 39;
+    optional uint32 pim_event = 40;
+    optional uint32 pim_packet = 41;
+    optional uint32 pim_packetdump_send = 42;
+    optional uint32 pim_packetdump_receive = 43;
+    optional uint32 pim_trace = 44;
+    optional uint32 pim_zebra = 45;
+}
+
+// TBL_LSRV_DEBUG
+message tbl_lsrv_debug
+{
+    optional uint32 card = 1;
+    optional uint32 port = 2;
+    optional uint32 fiber = 3;
+    optional uint32 fan = 4;
+    optional uint32 psu = 5;
+    optional uint32 led = 6;
+    optional uint32 thermal = 7;
+    optional uint32 vcm = 8;
+    optional uint32 poe = 9;
+    optional uint32 synce = 10;
+}
+
+// TBL_HSRV_DEBUG
+message tbl_hsrv_debug
+{
+    optional uint32 vswitch = 1;
+    optional uint32 interface_l2if = 2;
+    optional uint32 interface_l3if = 3;
+    optional uint32 interface_ifdb = 4;
+    optional uint32 message_pm2hsrv = 5;
+    optional uint32 message_hsrv2pm = 6;
+    optional uint32 cpu_rx = 7;
+    optional uint32 cpu_tx = 8;
+    optional uint32 cpu_bpdu = 9;
+    optional uint32 cpu_slowproto = 10;
+    optional uint32 cpu_eapol = 11;
+    optional uint32 cpu_lldp = 12;
+    optional uint32 cpu_erps = 13;
+    optional uint32 cpu_macda = 14;
+    optional uint32 cpu_rip = 15;
+    optional uint32 cpu_ospf = 16;
+    optional uint32 cpu_bgp = 17;
+    optional uint32 cpu_arp = 18;
+    optional uint32 cpu_dhcp = 19;
+    optional uint32 cpu_ipda = 20;
+    optional uint32 cpu_igmp = 21;
+    optional uint32 cpu_maclimit = 22;
+    optional uint32 cpu_macmismatch = 23;
+    optional uint32 cpu_l3copycpu = 24;
+    optional uint32 cpu_other = 25;
+    optional uint32 cpu_raw = 26;
+    optional uint32 cpu_ptp = 27;
+    optional uint32 ip_icmp = 28;
+    optional uint32 nexthop = 29;
+    optional uint32 vlan = 30;
+    optional uint32 mirror = 31;
+    optional uint32 fdb = 32;
+    optional uint32 l2mc = 33;
+    optional uint32 agg = 34;
+    optional uint32 ipuc = 35;
+    optional uint32 neighbor = 36;
+    optional uint32 ecmp = 37;
+    optional uint32 acl = 38;
+    optional uint32 stats = 39;
+    optional uint32 qos_class = 40;
+    optional uint32 qos_policer = 41;
+    optional uint32 qos_process = 42;
+    optional uint32 qos_queue = 43;
+    optional uint32 ipsour = 44;
+    optional uint32 dot1x = 45;
+    optional uint32 stp = 46;
+    optional uint32 ptp_pkt_rx = 47;
+    optional uint32 ptp_pkt_tx = 48;
+    optional uint32 ptp_cfg = 49;
+    optional uint32 ptp_interrupt = 50;
+    optional uint32 ipmc = 51;
+    optional uint32 tpoam_common = 52;
+    optional uint32 tpoam_event = 53;
+    optional uint32 tpoam_update = 54;
+    optional uint32 tpoam_pkt_rx = 55;
+    optional uint32 tpoam_pkt_tx = 56;
+    optional uint32 l2protocol_pkt_rx = 57;
+    optional uint32 l2protocol_pkt_tx = 58;
+    optional uint32 nat_rule = 59;
+    optional uint32 nat_session = 60;
+    optional uint32 nat_timer = 61;
+    optional uint32 g8032_event = 62;
+}
+
+// TBL_APP_DEBUG
+message tbl_app_debug
+{
+    optional uint32 snmp_agent = 1;
+    optional uint32 rmon_event = 2;
+    optional uint32 rmon_alarm = 3;
+    optional uint32 rmon_stats = 4;
+    optional uint32 rmon_history = 5;
+    optional uint32 ntp_debug_level = 6;
+    optional uint32 netconf_rpc = 7;
+    optional uint32 netconf_rpc_clear = 8;
+    optional uint32 netconf_debug = 9;
+}
+
+// TBL_OPENFLOW_DEBUG
+message tbl_openflow_debug
+{
+    optional uint32 openflow_vconn = 1;
+    optional uint32 openflow_rconn = 2;
+}
+
+// TBL_RIF
+message tbl_rif_key
+{
+    required string name = 1;
+}
+
+message tbl_rif
+{
+    required tbl_rif_key key = 1;
+    optional uint64 rif_id = 2;
+    optional uint64 hostif_id = 3;
+}
+
+// TBL_FEA_LAG
+message tbl_fea_lag_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_fea_lag
+{
+    required tbl_fea_lag_key key = 1;
+    optional uint64 lag_id = 2;
+}
+
+// TBL_FEA_GLOBAL
+message tbl_fea_global
+{
+    optional uint64 router_id = 1;
+    optional uint32 port_stats_ms = 2;
+}
+
+// TBL_FEA_ACL_TABLE
+message tbl_fea_acl_table_key
+{
+    required uint64 acl_table_id = 1;
+}
+
+message tbl_fea_acl_table
+{
+    required tbl_fea_acl_table_key key = 1;
+    optional uint32 direct_in = 2;
+    optional uint32 priority = 3;
+    optional string table_name = 4;
+    optional uint64 sai_table_id = 5;
+}
+
+// TBL_FEA_ACL
+message tbl_fea_acl_key
+{
+    required uint64 acl_id = 1;
+}
+
+message tbl_fea_acl
+{
+    required tbl_fea_acl_key key = 1;
+    optional uint32 is_mac_acl = 2;
+    optional uint64 sai_acl_id = 3;
+    optional uint64 sai_acl_id_ipv4 = 4;
+    optional uint64 sai_acl_id_ipv6 = 5;
+    optional uint64 counter_id = 6;
+    optional uint64 stats_packet = 7;
+    optional uint64 stats_byte = 8;
+}
+
+// TBL_FEA_FDB
+message tbl_fea_fdb
+{
+    required compose_fdb_key_t key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 mlag_source_ifindex = 3;
+    optional uint64 portid = 4;
+    optional uint32 flags = 5;
+    optional uint32 fea_fail = 6;
+}
+
+// TBL_FEA_BRG_IF
+message tbl_fea_brg_if_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_fea_brg_if
+{
+    required tbl_fea_brg_if_key key = 1;
+    optional uint32 flags = 2;
+    optional uint32 lag_id = 3;
+    optional uint32 mac_learning_en = 4;
+    optional uint32 port_security_en = 5;
+    optional uint32 max_mac = 6;
+    optional int32 curr_mac = 7;
+    optional int32 curr_mac_static = 8;
+    optional uint32 mlag_id = 9;
+    optional uint32 mlag_peer_conf = 10;
+    optional uint32 mlag_peer_if_up = 11;
+    optional uint32 mlag_is_group = 12;
+    optional uint32 is_mirror_dest = 13;
+    optional uint32 hw_type = 14;
+    optional uint64 portid = 15;
+    optional bytes disable_learn = 16;
+}
+
+// TBL_ACL_WORM_FILTER
+message tbl_acl_worm_filter_key
+{
+    required string worm_filter_name = 1;
+}
+
+message tbl_acl_worm_filter
+{
+    required tbl_acl_worm_filter_key key = 1;
+    optional uint32 seq_num = 2;
+    optional uint32 enable = 3;
+    optional uint32 istcp = 4;
+    optional uint32 dstport = 5;
+    optional uint32 isrange = 6;
+    optional uint32 stats_en = 7;
+}
+
+// TBL_ACL_CONFIG
+message tbl_acl_config_key
+{
+    required string name = 1;
+}
+
+message tbl_acl_config
+{
+    required tbl_acl_config_key key = 1;
+    optional uint32 ace_ref = 2;
+    optional uint32 acev6_ref = 3;
+    optional uint32 acemac_ref = 4;
+    optional uint32 intf_ref_in = 5;
+    optional uint32 intf_ref_out = 6;
+    optional uint32 l4_port_ref = 7;
+    optional uint32 tcp_flags_ref = 8;
+    optional string remark = 9;
+    optional uint32 seq_ref = 10;
+    optional uint32 ether_ref = 11;
+    optional uint32 arp_ref = 12;
+    optional uint32 tap_ref = 13;
+    optional uint32 type_identifying = 14;
+    optional uint32 ace_truncation_ref_cnt = 15;
+    optional uint32 decap_en = 16;
+    optional uint32 decap_inner_match_seq_max = 17;
+    optional uint32 decap_normal_seq_min = 18;
+    optional uint32 service_ipt_attached = 19;
+}
+
+// TBL_ACE_CONFIG
+message tbl_ace_config
+{
+    required compose_ace_config_key_t key = 1;
+    optional uint32 key_flags = 2;
+    optional uint32 key_flags2 = 3;
+    optional uint32 key_ipv6_flags = 4;
+    optional uint32 is_ipv6 = 5;
+    optional uint32 acl_type = 6;
+    optional uint32 key_arp_flags = 7;
+    optional uint32 arp_op_code = 8;
+    optional uint32 arp_op_code_mask = 9;
+    optional string time_range = 10;
+    optional uint32 apply_cnt = 11;
+    optional uint32 in_port = 12;
+    optional uint32 out_port = 13;
+    optional uint32 ether_type = 14;
+    optional uint32 ether_type_mask = 15;
+    optional compose_mac_addr_t src_mac = 16;
+    optional compose_mac_addr_t src_mac_mask = 17;
+    optional compose_mac_addr_t dst_mac = 18;
+    optional compose_mac_addr_t dst_mac_mask = 19;
+    optional uint32 svlan = 20;
+    optional uint32 svlan_mask = 21;
+    optional uint32 svlan_cos = 22;
+    optional uint32 svlan_cos_mask = 23;
+    optional uint32 cvlan = 24;
+    optional uint32 cvlan_mask = 25;
+    optional uint32 cvlan_cos = 26;
+    optional uint32 cvlan_cos_mask = 27;
+    optional uint32 untag_vlan = 28;
+    optional uint32 ip_type = 29;
+    optional uint32 ip_type_mask = 30;
+    optional uint32 ip_flags = 31;
+    optional uint32 ip_flags_mask = 32;
+    optional compose_prefix_t src_ip = 33;
+    optional compose_prefix_t src_ip_mask = 34;
+    optional compose_prefix_t dst_ip = 35;
+    optional compose_prefix_t dst_ip_mask = 36;
+    optional uint32 ipv6_flow_label = 37;
+    optional uint32 ipv6_flow_label_mask = 38;
+    optional uint32 dscp = 39;
+    optional uint32 dscp_mask = 40;
+    optional uint32 ip_precedence = 41;
+    optional uint32 ip_precedence_mask = 42;
+    optional uint32 ip_protocol = 43;
+    optional uint32 ip_protocol_mask = 44;
+    optional uint32 l4_src_port_type = 45;
+    optional uint32 l4_src_port = 46;
+    optional uint32 l4_src_port_mask = 47;
+    optional uint32 l4_dst_port_type = 48;
+    optional uint32 l4_dst_port = 49;
+    optional uint32 l4_dst_port_mask = 50;
+    optional uint32 ip_frag = 51;
+    optional uint32 tcp_flags = 52;
+    optional uint32 tcp_flags_mask = 53;
+    optional uint32 igmp_type = 54;
+    optional uint32 icmp_type = 55;
+    optional uint32 icmp_code = 56;
+    optional uint32 udf_id = 57;
+    optional uint32 udf_type = 58;
+    optional uint32 udf_offset = 59;
+    repeated uint32 udf_value = 60;
+    repeated uint32 udf_mask = 61;
+    repeated uint32 udf_value_valid = 62;
+    optional uint32 erspan_id = 63;
+    optional uint32 erspan_id_mask = 64;
+    optional uint32 strip_header_pos = 65;
+    optional uint32 strip_header_offset = 66;
+    optional uint32 l4_vxlan_vni = 67;
+    optional uint32 l4_vxlan_vni_mask = 68;
+    optional uint32 l4_gre_type = 69;
+    optional uint32 l4_gre_key = 70;
+    optional uint32 l4_gre_key_mask = 71;
+    optional uint32 l2gre_add_header = 72;
+    optional compose_addr_t l2gre_src_ip = 73;
+    optional compose_addr_t l2gre_dst_ip = 74;
+    optional compose_mac_addr_t l2gre_dst_mac = 75;
+    optional uint32 l2gre_key_num = 76;
+    optional uint32 l2gre_key_len = 77;
+    optional uint32 l3gre_add_header = 78;
+    optional compose_addr_t l3gre_src_ip = 79;
+    optional compose_addr_t l3gre_dst_ip = 80;
+    optional compose_mac_addr_t l3gre_dst_mac = 81;
+    optional uint32 deny = 82;
+    optional uint32 stats_en = 83;
+    optional uint32 options = 84;
+    optional string flow_match_name = 85;
+    optional uint32 action_strip_header = 86;
+    optional uint32 tap_action_redirect = 87;
+    optional uint32 tap_action_mark_vlan = 88;
+    optional uint32 tap_action_untag = 89;
+    optional uint32 tap_action_trunction = 90;
+    optional uint32 tap_action_edit_dest_mac_en = 91;
+    optional compose_mac_addr_t tap_action_edit_dest_mac = 92;
+    optional uint32 tap_action_edit_src_mac_en = 93;
+    optional compose_mac_addr_t tap_action_edit_src_mac = 94;
+    optional uint32 tap_action_edit_ipda_en = 95;
+    optional compose_addr_t tap_action_edit_ipda = 96;
+    optional uint32 tap_action_edit_ipsa_en = 97;
+    optional compose_addr_t tap_action_edit_ipsa = 98;
+    optional uint32 tap_action_edit_vlan_en = 99;
+    optional uint32 tap_action_edit_vlan = 100;
+    optional uint32 tap_action_edit_vlan_action = 101;
+    optional uint32 tap_snmp_set = 102;
+    optional uint32 add_vxlan_header = 103;
+    optional compose_mac_addr_t vxlan_dst_mac = 104;
+    optional compose_addr_t vxlan_src_ip = 105;
+    optional compose_addr_t vxlan_dst_ip = 106;
+    optional uint32 vxlan_srcport = 107;
+    optional uint32 vxlan_destport = 108;
+    optional uint32 vxlan_vni = 109;
+}
+
+// TBL_ACL_ENTRY
+message tbl_acl_entry_key
+{
+    required uint64 aclid = 1;
+}
+
+message tbl_acl_entry
+{
+    required tbl_acl_entry_key key = 1;
+    optional uint32 tblid = 2;
+    optional uint32 entry_priority = 3;
+    optional string time_range = 4;
+    optional uint32 key_flags = 5;
+    optional uint32 key_flags2 = 6;
+    optional uint32 key_ipv6_flags = 7;
+    optional uint32 is_ipv6 = 8;
+    optional uint32 acl_type = 9;
+    optional uint32 key_arp_flags = 10;
+    optional uint32 arp_op_code = 11;
+    optional uint32 arp_op_code_mask = 12;
+    optional uint32 invalid = 13;
+    optional uint32 is_copp = 14;
+    optional uint64 in_port = 15;
+    optional uint64 out_port = 16;
+    optional uint32 ether_type = 17;
+    optional uint32 ether_type_mask = 18;
+    optional compose_mac_addr_t src_mac = 19;
+    optional compose_mac_addr_t src_mac_mask = 20;
+    optional compose_mac_addr_t dst_mac = 21;
+    optional compose_mac_addr_t dst_mac_mask = 22;
+    optional uint32 svlan = 23;
+    optional uint32 svlan_mask = 24;
+    optional uint32 svlan_cos = 25;
+    optional uint32 svlan_cos_mask = 26;
+    optional uint32 cvlan = 27;
+    optional uint32 cvlan_mask = 28;
+    optional uint32 cvlan_cos = 29;
+    optional uint32 cvlan_cos_mask = 30;
+    optional uint32 untag_vlan = 31;
+    optional uint32 ip_type = 32;
+    optional uint32 ip_type_mask = 33;
+    optional uint32 ip_flags = 34;
+    optional uint32 ip_flags_mask = 35;
+    optional compose_prefix_t src_ip = 36;
+    optional compose_prefix_t src_ip_mask = 37;
+    optional compose_prefix_t dst_ip = 38;
+    optional compose_prefix_t dst_ip_mask = 39;
+    optional uint32 ipv6_flow_label = 40;
+    optional uint32 ipv6_flow_label_mask = 41;
+    optional uint32 dscp = 42;
+    optional uint32 dscp_mask = 43;
+    optional uint32 ip_precedence = 44;
+    optional uint32 ip_precedence_mask = 45;
+    optional uint32 ip_protocol = 46;
+    optional uint32 ip_protocol_mask = 47;
+    optional uint32 l4_src_port_type = 48;
+    optional uint32 l4_src_port = 49;
+    optional uint32 l4_src_port_mask = 50;
+    optional uint32 l4_dst_port_type = 51;
+    optional uint32 l4_dst_port = 52;
+    optional uint32 l4_dst_port_mask = 53;
+    optional uint32 ip_frag = 54;
+    optional uint32 tcp_flags = 55;
+    optional uint32 tcp_flags_mask = 56;
+    optional uint32 igmp_type = 57;
+    optional uint32 icmp_type = 58;
+    optional uint32 icmp_code = 59;
+    optional uint32 udf_id = 60;
+    optional uint32 udf_type = 61;
+    optional uint32 udf_offset = 62;
+    repeated uint32 udf_value = 63;
+    repeated uint32 udf_mask = 64;
+    repeated uint32 udf_value_valid = 65;
+    optional uint32 erspan_id = 66;
+    optional uint32 erspan_id_mask = 67;
+    optional uint32 strip_header_pos = 68;
+    optional uint32 strip_header_offset = 69;
+    optional uint32 l4_vxlan_vni = 70;
+    optional uint32 l4_vxlan_vni_mask = 71;
+    optional uint32 l4_gre_type = 72;
+    optional uint32 l4_gre_key = 73;
+    optional uint32 l4_gre_key_mask = 74;
+    optional uint32 l2gre_add_header = 75;
+    optional compose_addr_t l2gre_src_ip = 76;
+    optional compose_addr_t l2gre_dst_ip = 77;
+    optional compose_mac_addr_t l2gre_dst_mac = 78;
+    optional uint32 l2gre_key_num = 79;
+    optional uint32 l2gre_key_len = 80;
+    optional uint32 l3gre_add_header = 81;
+    optional compose_addr_t l3gre_src_ip = 82;
+    optional compose_addr_t l3gre_dst_ip = 83;
+    optional compose_mac_addr_t l3gre_dst_mac = 84;
+    optional uint32 category_id = 85;
+    optional uint32 deny = 86;
+    optional uint32 stats_en = 87;
+    optional uint32 options = 88;
+    optional uint64 inner_key_flags = 89;
+    optional uint32 inner_key_ipv6_flags = 90;
+    optional uint32 inner_is_ipv6 = 91;
+    optional uint32 inner_ether_type = 92;
+    optional uint32 inner_ether_type_mask = 93;
+    optional compose_mac_addr_t inner_src_mac = 94;
+    optional compose_mac_addr_t inner_src_mac_mask = 95;
+    optional compose_mac_addr_t inner_dst_mac = 96;
+    optional compose_mac_addr_t inner_dst_mac_mask = 97;
+    optional uint32 inner_svlan = 98;
+    optional uint32 inner_svlan_mask = 99;
+    optional uint32 inner_svlan_cos = 100;
+    optional uint32 inner_svlan_cos_mask = 101;
+    optional uint32 inner_cvlan = 102;
+    optional uint32 inner_cvlan_mask = 103;
+    optional uint32 inner_cvlan_cos = 104;
+    optional uint32 inner_cvlan_cos_mask = 105;
+    optional uint32 inner_ip_type = 106;
+    optional uint32 inner_ip_type_mask = 107;
+    optional uint32 inner_ip_flags = 108;
+    optional uint32 inner_ip_flags_mask = 109;
+    optional compose_prefix_t inner_src_ip = 110;
+    optional compose_prefix_t inner_src_ip_mask = 111;
+    optional compose_prefix_t inner_dst_ip = 112;
+    optional compose_prefix_t inner_dst_ip_mask = 113;
+    optional uint32 inner_ipv6_flow_label = 114;
+    optional uint32 inner_ipv6_flow_label_mask = 115;
+    optional uint32 inner_dscp = 116;
+    optional uint32 inner_dscp_mask = 117;
+    optional uint32 inner_ip_precedence = 118;
+    optional uint32 inner_ip_precedence_mask = 119;
+    optional uint32 inner_ip_protocol = 120;
+    optional uint32 inner_ip_protocol_mask = 121;
+    optional uint32 inner_l4_src_port_type = 122;
+    optional uint32 inner_l4_src_port = 123;
+    optional uint32 inner_l4_src_port_mask = 124;
+    optional uint32 inner_l4_dst_port_type = 125;
+    optional uint32 inner_l4_dst_port = 126;
+    optional uint32 inner_l4_dst_port_mask = 127;
+    optional uint32 inner_ip_frag = 128;
+    optional uint32 inner_tcp_flags = 129;
+    optional uint32 inner_tcp_flags_mask = 130;
+    optional uint32 inner_igmp_type = 131;
+    optional uint32 inner_icmp_type = 132;
+    optional uint32 inner_icmp_code = 133;
+    optional uint32 inner_options = 134;
+    optional uint32 action_strip_header = 135;
+    optional uint32 tap_action_redirect = 136;
+    optional uint32 tap_action_mark_vlan = 137;
+    optional uint32 tap_action_untag = 138;
+    optional uint32 tap_action_trunction = 139;
+    optional uint32 tap_action_edit_dest_mac_en = 140;
+    optional compose_mac_addr_t tap_action_edit_dest_mac = 141;
+    optional uint32 tap_action_edit_src_mac_en = 142;
+    optional compose_mac_addr_t tap_action_edit_src_mac = 143;
+    optional uint32 tap_action_edit_ipda_en = 144;
+    optional compose_addr_t tap_action_edit_ipda = 145;
+    optional uint32 tap_action_edit_ipsa_en = 146;
+    optional compose_addr_t tap_action_edit_ipsa = 147;
+    optional uint32 tap_action_edit_vlan_en = 148;
+    optional uint32 tap_action_edit_vlan = 149;
+    optional uint32 tap_action_edit_vlan_action = 150;
+    optional uint64 tap_group_oid = 151;
+    optional uint32 add_vxlan_header = 152;
+    optional compose_mac_addr_t vxlan_dst_mac = 153;
+    optional compose_addr_t vxlan_src_ip = 154;
+    optional compose_addr_t vxlan_dst_ip = 155;
+    optional uint32 vxlan_srcport = 156;
+    optional uint32 vxlan_destport = 157;
+    optional uint32 vxlan_vni = 158;
+}
+
+// TBL_ACL_ENTRY_ACTION
+message tbl_acl_entry_action_key
+{
+    required uint64 aclid = 1;
+}
+
+message tbl_acl_entry_action
+{
+    required tbl_acl_entry_action_key key = 1;
+    optional uint32 action_flag = 2;
+    optional uint32 deny = 3;
+    optional uint32 stats_enale = 4;
+    optional string policer = 5;
+    optional uint32 nexthop_group = 6;
+    optional uint32 logen = 7;
+    optional uint32 tc = 8;
+    optional uint32 color = 9;
+    optional uint32 dscp = 10;
+    optional uint32 snat_cancel = 11;
+    optional uint32 session_id = 12;
+    optional uint32 new_svlan_id = 13;
+    optional uint32 new_cvlan_id = 14;
+    optional uint32 new_scos = 15;
+    optional uint32 new_ccos = 16;
+    optional uint32 redirect_port_ifindex = 17;
+}
+
+// TBL_ACL_NEXTHOP_GROUP
+message tbl_acl_nexthop_group_key
+{
+    required uint32 nexthop_group = 1;
+}
+
+message tbl_acl_nexthop_group
+{
+    required tbl_acl_nexthop_group_key key = 1;
+    repeated uint32 acl_nexthop_key = 2;
+}
+
+// TBL_ACL_NEXTHOP
+message tbl_acl_nexthop_key
+{
+    required uint32 acl_nexthop_id = 1;
+}
+
+message tbl_acl_nexthop
+{
+    required tbl_acl_nexthop_key key = 1;
+    optional uint32 edit_flags = 2;
+    optional uint32 port = 3;
+    optional compose_mac_addr_t src_mac = 4;
+    optional compose_mac_addr_t dst_mac = 5;
+    optional uint32 vlan = 6;
+    optional compose_addr_ipv4_t src_ipv4 = 7;
+    optional compose_addr_ipv4_t dst_ipv4 = 8;
+    optional uint32 dscp = 9;
+    optional uint32 l4_src_port = 10;
+    optional uint32 l4_dst_port = 11;
+    optional uint32 ref = 12;
+}
+
+// TBL_TIME_RANGE
+message tbl_time_range_key
+{
+    required string name = 1;
+}
+
+message tbl_time_range
+{
+    required tbl_time_range_key key = 1;
+    optional compose_time_range_value_t time = 2;
+    optional uint32 ref_cnt = 3;
+    optional compose_time_range_timer_t running_timer = 4;
+}
+
+// TBL_SSH_CFG
+message tbl_ssh_cfg
+{
+    optional uint32 version = 1;
+    optional uint32 enable = 2;
+    optional uint32 auth_retry = 3;
+    optional uint32 auth_timeout = 4;
+    optional uint32 rekey_interval = 5;
+    optional uint32 auth_type = 6;
+    optional uint32 listen_port = 7;
+    optional string hostkey = 8;
+    optional uint32 netconf_port = 9;
+    optional uint32 netconf_service = 10;
+}
+
+// TBL_SNMP_CFG
+message tbl_snmp_cfg
+{
+    optional uint32 enable = 1;
+    optional uint32 server_enable = 2;
+    optional uint32 version = 3;
+    optional string engineid = 4;
+    optional compose_snmp_info_t contact = 5;
+    optional compose_snmp_info_t location = 6;
+    optional uint32 trap_enable_coldstart = 7;
+    optional uint32 trap_enable_warmstart = 8;
+    optional uint32 trap_enable_linkdown = 9;
+    optional uint32 trap_enable_linkup = 10;
+    optional uint32 trap_enable_system = 11;
+    optional uint32 trap_enable_vrrp = 12;
+    optional uint32 trap_enable_ptp_master_change = 13;
+    optional uint32 trap_enable_ptp_state_change = 14;
+    optional uint32 trap_enable_ptp_accuracy_change = 15;
+    optional uint32 trap_enable_all = 16;
+    optional uint32 watch_restart_count = 17;
+    optional uint32 agent_stats = 18;
+}
+
+// TBL_SNMP_VIEW
+message tbl_snmp_view_key
+{
+    required compose_snmp_view_key_t view = 1;
+}
+
+message tbl_snmp_view
+{
+    required tbl_snmp_view_key key = 1;
+    optional uint32 type = 2;
+    optional string mask = 3;
+    optional uint32 access_cnt = 4;
+    optional uint32 refcnt = 5;
+}
+
+// TBL_SNMP_COMMUNITY
+message tbl_snmp_community_key
+{
+    required string name = 1;
+}
+
+message tbl_snmp_community
+{
+    required tbl_snmp_community_key key = 1;
+    optional uint32 type = 2;
+    optional string view = 3;
+    optional uint32 secidx = 4;
+}
+
+// TBL_SNMP_CONTEXT
+message tbl_snmp_context_key
+{
+    required string context_name = 1;
+}
+
+message tbl_snmp_context
+{
+    required tbl_snmp_context_key key = 1;
+    optional uint32 flags = 2;
+}
+
+// TBL_SNMP_USM_USER
+message tbl_snmp_usm_user_key
+{
+    required string usm_user_name = 1;
+}
+
+message tbl_snmp_usm_user
+{
+    required tbl_snmp_usm_user_key key = 1;
+    optional uint32 flags = 2;
+    optional string remo_engid = 3;
+    optional uint32 auth_type = 4;
+    optional string auth_pwd = 5;
+    optional string enc_auth_pwd = 6;
+    optional uint32 priv_type = 7;
+    optional string priv_pwd = 8;
+    optional string enc_priv_pwd = 9;
+}
+
+// TBL_SNMP_GROUP_USM
+message tbl_snmp_group_usm_key
+{
+    required compose_snmp_group_usm_key_t group_usm = 1;
+}
+
+message tbl_snmp_group_usm
+{
+    required tbl_snmp_group_usm_key key = 1;
+    optional uint32 flags = 2;
+    optional string security_name = 3;
+}
+
+// TBL_SNMP_ACCESS_USM
+message tbl_snmp_access_usm_key
+{
+    required string usm_access_name = 1;
+}
+
+message tbl_snmp_access_usm
+{
+    required tbl_snmp_access_usm_key key = 1;
+    optional uint32 flags = 2;
+    optional uint32 usm_level = 3;
+    optional string read_view = 4;
+    optional string write_view = 5;
+    optional string notify_view = 6;
+    optional string context_name = 7;
+    optional uint32 isprefix = 8;
+}
+
+// TBL_SNMP_NOTIFY
+message tbl_snmp_notify_key
+{
+    required string notify_name = 1;
+}
+
+message tbl_snmp_notify
+{
+    required tbl_snmp_notify_key key = 1;
+    optional uint32 flags = 2;
+    optional string tag_name = 3;
+    optional uint32 notify_type = 4;
+}
+
+// TBL_SNMP_TARGET_ADDR
+message tbl_snmp_target_addr_key
+{
+    required string taraddr_name = 1;
+}
+
+message tbl_snmp_target_addr
+{
+    required tbl_snmp_target_addr_key key = 1;
+    optional uint32 flags = 2;
+    optional string para_name = 3;
+    optional compose_addr_t ip_addr = 4;
+    optional uint32 upd_port = 5;
+    optional uint32 timeout = 6;
+    optional uint32 retries = 7;
+    optional uint32 mgmt_if = 8;
+    optional string tag_list = 9;
+}
+
+// TBL_SNMP_TARGET_PARAMS
+message tbl_snmp_target_params_key
+{
+    required string params_name = 1;
+}
+
+message tbl_snmp_target_params
+{
+    required tbl_snmp_target_params_key key = 1;
+    optional uint32 flags = 2;
+    optional string user_name = 3;
+    optional uint32 usm_level = 4;
+}
+
+// TBL_SNMP_TRAP
+message tbl_snmp_trap_key
+{
+    required compose_snmp_trap_key_t trap = 1;
+}
+
+message tbl_snmp_trap
+{
+    required tbl_snmp_trap_key key = 1;
+    optional uint32 is_inband = 2;
+}
+
+// TBL_SNMP_INFORM
+message tbl_snmp_inform_key
+{
+    required compose_snmp_inform_key_t inform = 1;
+}
+
+message tbl_snmp_inform
+{
+    required tbl_snmp_inform_key key = 1;
+    optional uint32 is_inband = 2;
+    optional uint32 timeout = 3;
+    optional uint32 retries = 4;
+}
+
+// TBL_SNMP_TRAP_MSG
+message tbl_snmp_trap_msg
+{
+    optional string msg = 1;
+}
+
+// TBL_RMON_EVENT
+message tbl_rmon_event_key
+{
+    required uint32 index = 1;
+}
+
+message tbl_rmon_event
+{
+    required tbl_rmon_event_key key = 1;
+    optional uint32 conf = 2;
+    optional uint32 type = 3;
+    optional uint32 status = 4;
+    optional uint64 last_sent = 5;
+    optional string desc = 6;
+    optional string community = 7;
+    optional string owner = 8;
+}
+
+// TBL_RMON_ALARM
+message tbl_rmon_alarm_key
+{
+    required uint32 index = 1;
+}
+
+message tbl_rmon_alarm
+{
+    required tbl_rmon_alarm_key key = 1;
+    optional uint32 conf = 2;
+    optional uint32 interval = 3;
+    repeated uint32 variable = 4;
+    optional string variable_word = 5;
+    optional uint32 sample_type = 6;
+    optional int64 value = 7;
+    optional uint32 startup_alarm = 8;
+    optional int32 rising_threshold = 9;
+    optional int32 falling_threshold = 10;
+    optional uint32 rising_event_index = 11;
+    optional uint32 falling_event_index = 12;
+    optional string owner = 13;
+    optional uint32 status = 14;
+    optional uint32 last_event = 15;
+    optional uint64 prev_value = 16;
+    optional uint64 curr_value = 17;
+}
+
+// TBL_RMON_ETHER_STATS
+message tbl_rmon_ether_stats_key
+{
+    required uint32 index = 1;
+}
+
+message tbl_rmon_ether_stats
+{
+    required tbl_rmon_ether_stats_key key = 1;
+    optional uint32 status = 2;
+    optional string owner = 3;
+    repeated uint32 data_source = 4;
+    optional uint32 data_source_ifindex = 5;
+    optional uint64 drop_events = 6;
+    optional uint64 octets = 7;
+    optional uint64 pkts = 8;
+    optional uint64 broadcast_pkts = 9;
+    optional uint64 multicast_pkts = 10;
+    optional uint64 crc_align_errors = 11;
+    optional uint64 undersize_pkts = 12;
+    optional uint64 oversize_pkts = 13;
+    optional uint64 fragments = 14;
+    optional uint64 jabbers = 15;
+    optional uint64 collisions = 16;
+    optional uint64 pkts_64_octets = 17;
+    optional uint64 pkts_65to127_octets = 18;
+    optional uint64 pkts_128to255_octets = 19;
+    optional uint64 pkts_256to511_octets = 20;
+    optional uint64 pkts_512to1023_octets = 21;
+    optional uint64 pkts_1024to1518_octets = 22;
+}
+
+// TBL_RMON_HISTORY
+message tbl_rmon_history_key
+{
+    required uint32 index = 1;
+}
+
+message tbl_rmon_history
+{
+    required tbl_rmon_history_key key = 1;
+    optional uint32 status = 2;
+    optional string owner = 3;
+    repeated uint32 data = 4;
+    optional uint32 data_source = 5;
+    optional uint32 buckets_requested = 6;
+    optional uint32 buckets_granted = 7;
+    optional uint32 interval = 8;
+    optional uint32 current_sample_no = 9;
+}
+
+// TBL_RMON_STATS_HISTORY
+message tbl_rmon_stats_history
+{
+    required compose_rmon_stats_history_key_t key = 1;
+    optional uint64 interval_start = 2;
+    optional uint64 drop_events = 3;
+    optional uint64 octets = 4;
+    optional uint64 pkts = 5;
+    optional uint64 broadcast_pkts = 6;
+    optional uint64 multicast_pkts = 7;
+    optional uint64 crc_align_errors = 8;
+    optional uint64 undersize_pkts = 9;
+    optional uint64 oversize_pkts = 10;
+    optional uint64 fragments = 11;
+    optional uint64 jabbers = 12;
+    optional uint64 collisions = 13;
+    optional uint32 utilization = 14;
+    optional uint64 total_drop_events = 15;
+    optional uint64 total_octets = 16;
+    optional uint64 total_pkts = 17;
+    optional uint64 total_broadcast_pkts = 18;
+    optional uint64 total_multicast_pkts = 19;
+    optional uint64 total_crc_align_errors = 20;
+    optional uint64 total_undersize_pkts = 21;
+    optional uint64 total_oversize_pkts = 22;
+    optional uint64 total_fragments = 23;
+    optional uint64 total_jabbers = 24;
+    optional uint64 total_collisions = 25;
+}
+
+// TBL_SYSLOG_CFG
+message tbl_syslog_cfg
+{
+    optional uint32 enable_to_server = 1;
+    optional uint32 enable_to_file = 2;
+    optional uint32 enable_to_trap = 3;
+    optional uint32 enable_to_diag = 4;
+    optional uint32 logging_lines = 5;
+    optional string server_addr = 6;
+    optional uint32 server_facility = 7;
+    optional uint32 server_severity = 8;
+    optional uint32 trap_facility = 9;
+    optional uint32 trap_severity = 10;
+    optional uint32 timestamp = 11;
+    optional uint32 file_severity = 12;
+    optional uint32 module_severity = 13;
+    optional uint32 enable_merge = 14;
+    optional uint32 enable_operate = 15;
+    optional uint32 merge_timeout = 16;
+    optional uint32 merge_fifosize = 17;
+}
+
+// TBL_NTP_SERVER
+message tbl_ntp_server_key
+{
+    required string host = 1;
+}
+
+message tbl_ntp_server
+{
+    required tbl_ntp_server_key key = 1;
+    optional uint32 keyid = 2;
+    optional uint32 version = 3;
+    optional uint32 prefer = 4;
+    optional uint32 type = 5;
+    optional uint32 is_inband = 6;
+}
+
+// TBL_NTP_ACE
+message tbl_ntp_ace_key
+{
+    required string host = 1;
+    required string mask = 2;
+}
+
+message tbl_ntp_ace
+{
+    required tbl_ntp_ace_key key = 1;
+    optional uint32 option = 2;
+    optional uint32 family = 3;
+    optional uint32 masklen = 4;
+}
+
+// TBL_NTP_KEY
+message tbl_ntp_key_key
+{
+    required uint32 keyid = 1;
+}
+
+message tbl_ntp_key
+{
+    required tbl_ntp_key_key key = 1;
+    optional string value = 2;
+    optional uint32 trusted = 3;
+}
+
+// TBL_NTP_CFG
+message tbl_ntp_cfg
+{
+    optional int32 aclCount = 1;
+    optional int32 ucastServerCount = 2;
+    optional int32 ucastClientCount = 3;
+    optional int32 bcastServerCount = 4;
+    optional int32 mcastClientCount = 5;
+    optional int32 mcastServerCount = 6;
+    optional int32 bcastDelay = 7;
+    optional int32 minimumDistance = 8;
+    optional int32 authentication = 9;
+    optional int32 brefclock = 10;
+    optional int32 refclock_stratum = 11;
+    optional int32 ifreloadCount = 12;
+    optional int32 clearStats = 13;
+    optional int32 debug_level = 14;
+    optional int32 ucastServerCount_inband = 15;
+    optional int32 ucastServerCount_outband = 16;
+}
+
+// TBL_NTP_IF
+message tbl_ntp_if
+{
+    optional int32 disable = 1;
+    optional int32 broadcastClient = 2;
+}
+
+// TBL_NTP_SYNCSTATUS
+message tbl_ntp_syncstatus
+{
+    optional string status = 1;
+    optional string stratum = 2;
+    optional string frequency = 3;
+    optional string precision = 4;
+    optional string reference_time = 5;
+    optional string root_delay = 6;
+    optional string root_dispersion = 7;
+    optional string stability = 8;
+}
+
+// TBL_STATIC_DNS
+message tbl_static_dns_key
+{
+    required string name = 1;
+}
+
+message tbl_static_dns
+{
+    required tbl_static_dns_key key = 1;
+    optional compose_addr_t ip_addr = 2;
+}
+
+// TBL_DYNAMIC_DNS_DOMAIN
+message tbl_dynamic_dns_domain_key
+{
+    required string name = 1;
+}
+
+message tbl_dynamic_dns_domain
+{
+    required tbl_dynamic_dns_domain_key key = 1;
+}
+
+// TBL_DYNAMIC_DNS_SERVER
+message tbl_dynamic_dns_server_key
+{
+    required compose_addr_t ip_addr = 1;
+}
+
+message tbl_dynamic_dns_server
+{
+    required tbl_dynamic_dns_server_key key = 1;
+}
+
+// TBL_QOS_DOMAIN
+message tbl_qos_domain_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_qos_domain
+{
+    required tbl_qos_domain_key key = 1;
+    optional uint32 phb_enable = 2;
+    optional uint32 cfi_enable = 3;
+    repeated uint32 cos2pri = 4;
+    repeated uint32 cos2color = 5;
+    repeated uint32 cos2phb = 6;
+    repeated uint32 dscp2pri = 7;
+    repeated uint32 dscp2color = 8;
+    repeated uint32 dscp2phb = 9;
+    repeated uint32 prec2pri = 10;
+    repeated uint32 prec2color = 11;
+    repeated uint32 prec2phb = 12;
+    repeated uint32 exp2pri = 13;
+    repeated uint32 exp2color = 14;
+    repeated uint32 exp2phb = 15;
+    repeated uint32 pri_color2cos = 16;
+    repeated uint32 pri_color2dscp = 17;
+    repeated uint32 pri_color2exp = 18;
+    repeated uint32 phb2cos = 19;
+    repeated uint32 phb2dscp = 20;
+    repeated uint32 phb2exp = 21;
+    repeated uint32 cos2tc = 22;
+    repeated uint32 dscp2tc = 23;
+    repeated uint32 exp2tc = 24;
+    repeated uint32 tc_color2cos = 25;
+    repeated uint32 tc_color2dscp = 26;
+    repeated uint32 tc_color2exp = 27;
+}
+
+// TBL_QOS_MPLS_DOMAIN
+message tbl_qos_mpls_domain_key
+{
+    required uint32 mpls_label = 1;
+}
+
+message tbl_qos_mpls_domain
+{
+    required tbl_qos_mpls_domain_key key = 1;
+    optional uint32 exp_domain = 2;
+}
+
+// TBL_QOS_POLICER_RES
+message tbl_qos_policer_res
+{
+    required compose_qos_policer_res_key_t key = 1;
+    optional uint32 ref_cnt = 2;
+}
+
+// TBL_QOS_POLICER_ACTION_PROFILE
+message tbl_qos_policer_action_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_qos_policer_action_profile
+{
+    required tbl_qos_policer_action_profile_key key = 1;
+    optional string name = 2;
+    optional compose_glb_qos_color_action_t confirm_action = 3;
+    optional compose_glb_qos_color_action_t exceed_action = 4;
+    optional compose_glb_qos_color_action_t violate_action = 5;
+    optional uint32 ref_cnt = 6;
+}
+
+// TBL_QOS_POLICER_PROFILE
+message tbl_qos_policer_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_qos_policer_profile
+{
+    required tbl_qos_policer_profile_key key = 1;
+    optional string name = 2;
+    optional uint32 flags_policer_agp = 3;
+    optional uint32 flags_algorithm_mode = 4;
+    optional uint32 flags_color_mode = 5;
+    optional uint32 flags_cir = 6;
+    optional uint32 flags_cbs = 7;
+    optional uint32 flags_eir_or_pir = 8;
+    optional uint32 flags_ebs_or_pbs = 9;
+    optional uint32 flags_drop_color = 10;
+    optional uint32 flags_use_l3_legth = 11;
+    optional uint32 flags_stats = 12;
+    optional uint32 flags_dump_stats = 13;
+    optional uint32 algorithm_mode = 14;
+    optional uint32 color_mode = 15;
+    optional uint32 drop_color = 16;
+    optional uint64 cir = 17;
+    optional uint32 cbs = 18;
+    optional uint64 eir_or_pir = 19;
+    optional uint32 ebs_or_pbs = 20;
+    optional uint64 confirm_pkt = 21;
+    optional uint64 confirm_byte = 22;
+    optional uint64 exceed_pkt = 23;
+    optional uint64 exceed_byte = 24;
+    optional uint64 violate_pkt = 25;
+    optional uint64 violate_byte = 26;
+    optional uint32 is_pps = 27;
+    optional string action_profile_name = 28;
+    optional uint32 ref_cnt = 29;
+}
+
+// TBL_QOS_DROP_PROFILE
+message tbl_qos_drop_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_qos_drop_profile
+{
+    required tbl_qos_drop_profile_key key = 1;
+    optional string name = 2;
+    optional uint32 flags_green_max_threshold = 3;
+    optional uint32 flags_green_min_threshold = 4;
+    optional uint32 flags_green_probabilty = 5;
+    optional uint32 flags_yellow_max_threshold = 6;
+    optional uint32 flags_yellow_min_threshold = 7;
+    optional uint32 flags_yellow_probabilty = 8;
+    optional uint32 flags_red_max_threshold = 9;
+    optional uint32 flags_red_min_threshold = 10;
+    optional uint32 flags_red_probabilty = 11;
+    optional uint32 flags_random_detect = 12;
+    optional uint32 green_max_threashold = 13;
+    optional uint32 green_min_threashold = 14;
+    optional uint32 green_probability = 15;
+    optional uint32 yellow_max_threashold = 16;
+    optional uint32 yellow_min_threashold = 17;
+    optional uint32 yellow_probability = 18;
+    optional uint32 red_max_threashold = 19;
+    optional uint32 red_min_threashold = 20;
+    optional uint32 red_probability = 21;
+    optional uint32 ref_cnt = 22;
+}
+
+// TBL_QOS_QUEUE_SHAPE_PROFILE
+message tbl_qos_queue_shape_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_qos_queue_shape_profile
+{
+    required tbl_qos_queue_shape_profile_key key = 1;
+    optional string name = 2;
+    optional uint32 pir = 3;
+    optional uint32 cir = 4;
+    optional uint32 mode = 5;
+    optional uint32 queue_weight = 6;
+    optional uint32 ref_cnt = 7;
+    optional uint32 flags_pir = 8;
+    optional uint32 flags_cir = 9;
+    optional uint32 flags_mode = 10;
+    optional uint32 flags_weight = 11;
+}
+
+// TBL_QOS_PORT_SHAPE_PROFILE
+message tbl_qos_port_shape_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_qos_port_shape_profile
+{
+    required tbl_qos_port_shape_profile_key key = 1;
+    optional string name = 2;
+    optional uint32 pir = 3;
+    optional uint32 ref_cnt = 4;
+    optional uint32 flags_pir = 5;
+}
+
+// TBL_QOS_QUEUE_SMART_BUFFER
+message tbl_qos_queue_smart_buffer_key
+{
+    required uint32 queue_id = 1;
+}
+
+message tbl_qos_queue_smart_buffer
+{
+    required tbl_qos_queue_smart_buffer_key key = 1;
+    optional uint32 smart_buffer_enable = 2;
+}
+
+// TBL_QOS_GLOBAL
+message tbl_qos_global
+{
+    optional uint32 qos_enable = 1;
+    optional uint32 phb_enable = 2;
+    optional uint32 port_policer_first_enable = 3;
+    optional uint32 policer_stats_enable = 4;
+    optional uint32 cur_cpu_rate = 5;
+    optional uint32 def_cpu_rate = 6;
+    repeated uint32 latency_range = 7;
+    optional uint32 buffer_event_enable = 8;
+    optional uint32 buffer_event_high = 9;
+    optional uint32 buffer_event_low = 10;
+    optional uint32 check_qos_enable = 11;
+    optional uint32 qos_ipg_enable = 12;
+    optional uint32 in_port_policer_res_cnt = 13;
+    optional uint32 eg_port_policer_res_cnt = 14;
+    optional uint32 in_flow_policer_res_cnt = 15;
+    optional uint32 eg_flow_policer_res_cnt = 16;
+    optional uint32 queue_shape_enable = 17;
+}
+
+// TBL_MIRROR
+message tbl_mirror_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_mirror
+{
+    required tbl_mirror_key key = 1;
+    optional bytes source_igs_port_bmp = 2;
+    optional bytes source_egs_port_bmp = 3;
+    optional bytes source_igs_vlan_bmp = 4;
+    optional bytes source_egs_vlan_bmp = 5;
+    optional uint32 cpu_source_dir = 6;
+    optional uint32 dest_type = 7;
+    optional bytes dest_port_bmp = 8;
+    optional uint32 dest_port = 9;
+    optional uint32 dest_group = 10;
+    optional uint32 dest_vlan = 11;
+}
+
+// TBL_MIRROR_MAC_ESCAPE
+message tbl_mirror_mac_escape
+{
+    required compose_mirror_mac_escape_key_t key = 1;
+}
+
+// TBL_TAP_GROUP_INGRESS
+message tbl_tap_group_ingress
+{
+    required compose_tap_group_ingress_key_t key = 1;
+    optional uint32 ing_mark_vlan_en = 2;
+    optional uint32 ing_mark_vlan_vid = 3;
+    optional uint32 ing_untag_en = 4;
+    optional uint32 ing_trunction_en = 5;
+    optional uint64 ing_tap_group_member_oid = 6;
+    optional uint32 ing_edit_dest_mac_en = 7;
+    optional compose_mac_addr_t ing_edit_dest_mac = 8;
+    optional uint32 ing_edit_src_mac_en = 9;
+    optional compose_mac_addr_t ing_edit_src_mac = 10;
+    optional uint32 ing_edit_ipda_en = 11;
+    optional compose_addr_t ing_edit_ipda = 12;
+    optional uint32 ing_edit_ipsa_en = 13;
+    optional compose_addr_t ing_edit_ipsa = 14;
+    optional uint32 ing_edit_vlan_en = 15;
+    optional uint32 ing_edit_vlan = 16;
+}
+
+// TBL_TAP_GROUP_INGRESS_FLOW
+message tbl_tap_group_ingress_flow
+{
+    required compose_tap_group_ingress_flow_key_t key = 1;
+    optional uint32 tap_grp_id = 2;
+    optional uint32 if_idx = 3;
+    optional uint32 ing_untag_en = 4;
+    optional uint32 ing_mark_vlan_en = 5;
+    optional uint32 ing_mark_vlan_vid = 6;
+    optional uint64 ing_tap_group_member_oid = 7;
+}
+
+// TBL_TAP_GROUP_EGRESS
+message tbl_tap_group_egress
+{
+    required compose_tap_group_egress_key_t key = 1;
+    optional uint32 timestamp_en = 2;
+    optional uint64 tap_group_member_oid = 3;
+}
+
+// TBL_TAP_GROUP
+message tbl_tap_group_key
+{
+    required string name = 1;
+}
+
+message tbl_tap_group
+{
+    required tbl_tap_group_key key = 1;
+    optional uint32 id = 2;
+    optional uint32 flags = 3;
+    optional string desc = 4;
+    optional uint32 truncation_use = 5;
+    optional uint64 tap_group_oid = 6;
+}
+
+// TBL_TAP_FIVE_TUPLE
+message tbl_tap_five_tuple
+{
+    required compose_tap_five_tuple_key_t key = 1;
+    optional uint32 acl_entry_id = 2;
+    optional uint32 stats_id = 3;
+    optional uint64 packet_count = 4;
+    optional uint64 byte_count = 5;
+}
+
+// TBL_TAP_DPI_GLOBAL
+message tbl_tap_dpi_global
+{
+    optional uint32 dpi_action = 1;
+    optional string redir_if = 2;
+}
+
+// TBL_USER
+message tbl_user_key
+{
+    required string name = 1;
+}
+
+message tbl_user
+{
+    required tbl_user_key key = 1;
+    optional uint32 uid = 2;
+    optional uint32 privilege = 3;
+    optional string enc_passwd = 4;
+    optional string passwd = 5;
+    optional string rsakey = 6;
+    optional uint32 service_type = 7;
+}
+
+// TBL_LOGIN_RECORD
+message tbl_login_record_key
+{
+    required string name = 1;
+}
+
+message tbl_login_record
+{
+    required tbl_login_record_key key = 1;
+    optional uint32 locked = 2;
+    optional uint32 first_fail_ts = 3;
+    optional uint32 lock_ts = 4;
+    optional uint32 fail_count = 5;
+    optional uint32 invalid_user = 6;
+}
+
+// TBL_LOGIN_SECURITY_GLB
+message tbl_login_security_glb
+{
+    optional uint32 enable = 1;
+    optional uint32 max_fail_num = 2;
+    optional uint32 fail_period = 3;
+    optional uint32 lock_duration = 4;
+    optional uint32 curr_invalid_user = 5;
+    optional uint32 max_invalid_user = 6;
+}
+
+// TBL_VTY
+message tbl_vty_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_vty
+{
+    required tbl_vty_key key = 1;
+    optional uint32 timeout_min = 2;
+    optional uint32 timeout_sec = 3;
+    optional string protocol = 4;
+    optional uint32 login = 5;
+    optional uint32 privilege = 6;
+    optional string enc_passwd = 7;
+    optional string passwd = 8;
+    optional string auth_method = 9;
+    optional uint32 inuse = 10;
+    optional string author_method = 11;
+    optional string account_method = 12;
+    optional string accountcmd_method = 13;
+    optional string ipv4_acl = 14;
+    optional string ipv6_acl = 15;
+    optional uint32 aaa_privilege = 16;
+    optional uint32 config_privilege = 17;
+    optional uint32 aaa_start_time = 18;
+    optional bytes cmd_buf = 19;
+    optional bytes old_cmd_buf = 20;
+    optional string acct_stop_ipaddr = 21;
+    optional uint32 acct_stop_pid = 22;
+    optional uint32 acct_stop_privilege = 23;
+    optional uint32 is_not_ssh_key = 24;
+    optional uint32 is_ssh_login = 25;
+}
+
+// TBL_CONSOLE
+message tbl_console
+{
+    optional uint32 timeout_min = 1;
+    optional uint32 timeout_sec = 2;
+    optional uint32 login = 3;
+    optional uint32 privilege = 4;
+    optional string enc_passwd = 5;
+    optional string passwd = 6;
+    optional string auth_method = 7;
+    optional uint32 stopbits = 8;
+    optional uint32 parity = 9;
+    optional uint32 databits = 10;
+    optional uint32 baudrate = 11;
+    optional uint32 inuse = 12;
+}
+
+// TBL_AUTHEN
+message tbl_authen_key
+{
+    required string name = 1;
+}
+
+message tbl_authen
+{
+    required tbl_authen_key key = 1;
+    optional string methods = 2;
+}
+
+// TBL_LOGIN
+message tbl_login_key
+{
+    required string name = 1;
+}
+
+message tbl_login
+{
+    required tbl_login_key key = 1;
+    optional compose_user_t user = 2;
+    optional string vty = 3;
+    optional uint32 privilege = 4;
+    optional string ipaddr = 5;
+    optional string dest_ipaddr = 6;
+    optional uint32 remote_port = 7;
+    optional uint32 dest_port = 8;
+    optional string protocol = 9;
+    optional uint32 expire_time = 10;
+    optional uint32 pid = 11;
+}
+
+// TBL_RSA
+message tbl_rsa_key
+{
+    required string name = 1;
+}
+
+message tbl_rsa
+{
+    required tbl_rsa_key key = 1;
+    optional uint32 type = 2;
+    optional uint32 refcnt = 3;
+    optional compose_rsa_keystr_t pem = 4;
+    optional string enc_passwd = 5;
+    optional string passwd = 6;
+}
+
+// TBL_OPENFLOW
+message tbl_openflow
+{
+    optional uint32 group_hash_key = 1;
+    optional uint32 bond_hash_key = 2;
+    optional uint32 bond_hash_use = 3;
+    optional uint32 lacp_local_proc = 4;
+    optional compose_addr_ipv4_t local_vtep_ip = 5;
+    optional string decap_mode = 6;
+    optional uint32 flow_drop_pkt_to_ingress_port = 7;
+    optional uint32 group_drop_pkt_to_ingress_port = 8;
+    optional uint32 udf_parser = 9;
+    optional uint32 meter_ipg = 10;
+    optional uint32 inband_en = 11;
+    optional uint32 ptp_e2e_en = 12;
+    optional uint32 inband_stag = 13;
+    optional compose_prefix_ipv4_t inband_addr = 14;
+    optional compose_addr_ipv4_t inband_gw = 15;
+    optional uint32 mpls_parser = 16;
+    optional int32 stpid = 17;
+    optional int32 ctpid = 18;
+    optional bytes inband_downlink_port_bmp = 19;
+    optional string inband_uplink_port_name = 20;
+    optional uint32 flow_hash_key = 21;
+    optional uint32 vxlan_hash_merge_en = 22;
+    optional uint32 nvgre_hash_merge_en = 23;
+    optional uint32 efd_tcp_only_enable = 24;
+    optional uint32 efd_granularity = 25;
+    optional uint32 efd_detect_speed = 26;
+    optional uint32 efd_detect_time_interval = 27;
+    optional uint32 efd_aging_timer = 28;
+    optional uint32 efd_flow_traffic_class = 29;
+    optional uint32 efd_flow_color = 30;
+    optional uint32 efd_ipg_enable = 31;
+    optional string dpid = 32;
+    optional uint32 dpid_is_set = 33;
+    optional string private_key = 34;
+    optional string certificate = 35;
+    optional string ca_cert = 36;
+    optional uint32 vxlan_srcport = 37;
+    optional uint32 vxlan_srcport_is_set = 38;
+    optional uint32 vxlan_destport = 39;
+    optional uint32 vxlan_destport_is_set = 40;
+    optional uint32 tp_oam_oam_interval = 41;
+    optional uint32 tp_oam_oam_interval_is_set = 42;
+    optional uint32 tp_oam_oam_cycle_is_disable = 43;
+    optional uint32 tp_oam_aps_interval = 44;
+    optional uint32 tp_oam_aps_interval_is_set = 45;
+    optional uint32 tp_oam_aps_cycle_is_disable = 46;
+    optional uint32 pw_not_standard_mode = 47;
+    optional uint32 check_port_bind_oam = 48;
+    optional uint32 oam_packet_in_cycle_cnt = 49;
+    optional uint32 oam_packet_in_event_ccm_cnt = 50;
+    optional uint32 oam_packet_in_event_lm_cnt = 51;
+    optional uint32 oam_packet_in_event_dm_cnt = 52;
+    optional uint32 aps_packet_in_cycle_cnt = 53;
+    optional uint32 aps_packet_in_event_path_change_cnt = 54;
+    optional uint32 oam_packet_in_cycle_packet_cnt = 55;
+    optional uint32 oam_packet_in_event_packet_ccm_cnt = 56;
+    optional uint32 oam_packet_in_event_packet_lm_cnt = 57;
+    optional uint32 oam_packet_in_event_packet_dm_cnt = 58;
+    optional uint32 aps_packet_in_cycle_packet_cnt = 59;
+    optional uint32 aps_packet_in_event_path_change_packet_cnt = 60;
+    optional uint32 openflow_mac_learning_enable = 61;
+    optional uint32 controller_affect_flow_disable = 62;
+    optional uint32 async_msgid_en = 63;
+    optional uint32 fdb_flow_en = 64;
+    optional uint32 fdb_flow_valid = 65;
+    optional uint32 ffgroup_switchback_en = 66;
+}
+
+// TBL_CPU_TRAFFIC
+message tbl_cpu_traffic_key
+{
+    required uint32 reason_id = 1;
+}
+
+message tbl_cpu_traffic
+{
+    required tbl_cpu_traffic_key key = 1;
+    optional uint64 rate = 2;
+    optional uint32 class_id = 3;
+}
+
+// TBL_CPU_TRAFFIC_GROUP
+message tbl_cpu_traffic_group_key
+{
+    required uint32 class_id = 1;
+}
+
+message tbl_cpu_traffic_group
+{
+    required tbl_cpu_traffic_group_key key = 1;
+    optional uint64 rate = 2;
+}
+
+// TBL_CPU_UTILIZATION
+message tbl_cpu_utilization_key
+{
+    required string name = 1;
+}
+
+message tbl_cpu_utilization
+{
+    required tbl_cpu_utilization_key key = 1;
+    optional double cpu_usage = 2;
+}
+
+// TBL_CPU_LIMIT
+message tbl_cpu_limit_key
+{
+    required string name = 1;
+}
+
+message tbl_cpu_limit
+{
+    required tbl_cpu_limit_key key = 1;
+    optional uint32 percent = 2;
+}
+
+// TBL_DHCRELAY
+message tbl_dhcrelay
+{
+    optional uint32 enable = 1;
+    optional uint32 drop_agent_mismatch = 2;
+    optional uint32 add_agent_options = 3;
+    optional uint32 agent_proc_option = 4;
+    optional uint32 trust_all = 5;
+}
+
+// TBL_DHCSRVGRP
+message tbl_dhcsrvgrp_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_dhcsrvgrp
+{
+    required tbl_dhcsrvgrp_key key = 1;
+    optional uint32 cnt = 2;
+    optional string addrs = 3;
+}
+
+// TBL_DHCP_DEBUG
+message tbl_dhcp_debug
+{
+    optional uint32 relay_error = 1;
+    optional uint32 relay_events = 2;
+    optional uint32 relay_packet = 3;
+    optional uint32 relay_dump = 4;
+    optional uint32 snooping_error = 5;
+    optional uint32 snooping_event = 6;
+    optional uint32 snooping_packet = 7;
+    optional uint32 snooping_dump = 8;
+    optional uint32 snoopingv6_error = 9;
+    optional uint32 snoopingv6_events = 10;
+    optional uint32 snoopingv6_packet = 11;
+    optional uint32 snoopingv6_dump = 12;
+    optional uint32 client_error = 13;
+    optional uint32 client_events = 14;
+    optional uint32 client_packet = 15;
+    optional uint32 client_dump = 16;
+    optional uint32 clientv6_error = 17;
+    optional uint32 clientv6_events = 18;
+    optional uint32 clientv6_packet = 19;
+    optional uint32 clientv6_dump = 20;
+}
+
+// TBL_DHCLIENT
+message tbl_dhclient
+{
+    optional uint32 enable = 1;
+    optional uint32 distance = 2;
+    optional uint32 broadcast = 3;
+}
+
+// TBL_DHCSNOOPING
+message tbl_dhcsnooping
+{
+    optional uint32 verify_mac_address = 1;
+    optional uint32 add_agent_options = 2;
+    optional uint32 allow_untrusted = 3;
+    optional uint32 hostname_as_remote_id = 4;
+    optional string remote_id_string = 5;
+    optional uint32 database_save_interval = 6;
+    optional bytes vlans = 7;
+    optional bytes snooping_acl_applied = 8;
+}
+
+// TBL_DHCBINDING
+message tbl_dhcbinding
+{
+    required compose_binding_key_t key = 1;
+    optional uint32 vid = 2;
+    optional string ifname = 3;
+    optional string ifname_new = 4;
+    optional compose_mac_addr_t client_mac = 5;
+    optional compose_addr_t client_ip = 6;
+    optional uint32 cIpsour = 7;
+    optional uint32 lease = 8;
+    optional uint32 lease_new = 9;
+    optional uint32 transid = 10;
+    optional uint32 ipsg_tbl_exsit = 11;
+    optional uint32 state = 12;
+    optional uint32 type = 13;
+}
+
+// TBL_IPTABLES_PREVENT
+message tbl_iptables_prevent
+{
+    optional uint32 ipt_cfg_icmp = 1;
+    optional uint32 ipt_cfg_smurf = 2;
+    optional uint32 ipt_cfg_fraggle = 3;
+    optional uint32 ipt_cfg_udp = 4;
+    optional uint32 ipt_cfg_tcp = 5;
+    optional uint32 ipt_cfg_small_pkt = 6;
+    optional uint32 ipt_cfg_maceq = 7;
+    optional uint32 ipt_cfg_ipeq = 8;
+    optional uint32 icmp_rate_limit = 9;
+    optional uint32 tcp_rate_limit = 10;
+    optional uint32 udp_rate_limit = 11;
+    optional uint32 small_pkt_length = 12;
+    optional uint32 pkt_statistic_update = 13;
+    optional uint32 small_pkt_static_base = 14;
+    optional uint32 small_pkt_mgmt_static_base = 15;
+    optional uint32 icmp_count = 16;
+    optional uint32 smurf_count = 17;
+    optional uint32 fraggle_count = 18;
+    optional uint32 udp_count = 19;
+    optional uint32 tcp_count = 20;
+    optional uint32 small_pkt_count = 21;
+    optional uint32 icmp_mgmt_count = 22;
+    optional uint32 smurf_mgmt_count = 23;
+    optional uint32 fraggle_mgmt_count = 24;
+    optional uint32 udp_mgmt_count = 25;
+    optional uint32 tcp_mgmt_count = 26;
+    optional uint32 small_pkt_mgmt_count = 27;
+}
+
+// TBL_ERRDISABLE
+message tbl_errdisable_key
+{
+    required uint32 reason = 1;
+}
+
+message tbl_errdisable
+{
+    required tbl_errdisable_key key = 1;
+    optional uint32 errdisable_en = 2;
+    optional uint32 recovery_en = 3;
+}
+
+// TBL_NS_PORT_FORWARDING
+message tbl_ns_port_forwarding
+{
+    required compose_ns_port_forwarding_key_t key = 1;
+    optional compose_addr_ipv4_t ip = 2;
+}
+
+// TBL_LOG_GLOBAL
+message tbl_log_global
+{
+    optional bytes log_to_cdb = 1;
+}
+
+// TBL_LOG
+message tbl_log_key
+{
+    required uint32 sequence_id = 1;
+}
+
+message tbl_log
+{
+    required tbl_log_key key = 1;
+    optional uint32 log_id = 2;
+    optional uint32 severity = 3;
+    optional compose_timestamp_t timestamp = 4;
+    optional string data = 5;
+}
+
+// TBL_SYS_LOAD
+message tbl_sys_load
+{
+    optional uint32 sys_load_en = 1;
+    optional uint32 cli_back_pressure_en = 2;
+    optional uint32 cdb_queue_notice_threshold = 3;
+    optional uint32 cdb_queue_warning_threshold = 4;
+    optional uint32 cdb_queue_depth_switch = 5;
+    optional uint32 cdb_queue_depth_routed = 6;
+    optional uint32 cdb_queue_depth_cds = 7;
+    optional uint32 cdb_queue_depth_fea = 8;
+}
+
+// TBL_CEM
+message tbl_cem_key
+{
+    required string name = 1;
+}
+
+message tbl_cem
+{
+    required tbl_cem_key key = 1;
+    optional string event = 2;
+    optional uint32 threshold = 3;
+    optional uint32 snmptrap = 4;
+    optional string loadpath = 5;
+    optional compose_mail_t mail = 6;
+}
+
+// TBL_CLOCK
+message tbl_clock
+{
+    optional uint32 timezone_positive = 1;
+    optional uint32 timezone_hour = 2;
+    optional uint32 timezone_minute = 3;
+    optional uint32 timezone_second = 4;
+    optional string timezone_name = 5;
+    optional uint32 cp_timezone_positive = 6;
+    optional uint32 cp_timezone_hour = 7;
+    optional uint32 cp_timezone_minute = 8;
+    optional uint32 cp_timezone_second = 9;
+    optional string cp_timezone_name = 10;
+}
+
+// TBL_TAG_SUMMER_CLOCK
+message tbl_tag_summer_clock
+{
+    optional compose_summer_time_t tmstart = 1;
+    optional compose_summer_time_t tmend = 2;
+    optional int32 iDstOffset = 3;
+    optional int32 is_recurring = 4;
+    optional int32 nStartFebDay = 5;
+    optional int32 nEndFebDay = 6;
+    optional string strZoneName = 7;
+    optional int32 is_wday_tm = 8;
+    optional compose_which_summer_time_t wday_tm_start = 9;
+    optional compose_which_summer_time_t wday_tm_end = 10;
+}
+
+// TBL_PORT_STATS
+message tbl_port_stats_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_port_stats
+{
+    required tbl_port_stats_key key = 1;
+    optional uint32 port_id = 2;
+    optional uint64 octets_rcv = 3;
+    optional uint64 pkts_rcv = 4;
+    optional uint64 uc_pkts_rcv = 5;
+    optional uint64 brdc_pkts_rcv = 6;
+    optional uint64 mc_pkts_rcv = 7;
+    optional uint64 oam_pkts_rcv = 8;
+    optional uint64 undersize_pkts = 9;
+    optional uint64 oversize_pkts = 10;
+    optional uint64 jabber_pkts = 11;
+    optional uint64 mac_rcv_error = 12;
+    optional uint64 bad_crc = 13;
+    optional uint64 frame_error = 14;
+    optional uint64 drop_events = 15;
+    optional uint64 pause_rcv = 16;
+    optional uint64 octets_send = 17;
+    optional uint64 pkts_send = 18;
+    optional uint64 uc_pkts_send = 19;
+    optional uint64 brdc_pkts_send = 20;
+    optional uint64 mc_pkts_send = 21;
+    optional uint64 oam_pkts_send = 22;
+    optional uint64 underruns = 23;
+    optional uint64 mac_transmit_err = 24;
+    optional uint64 pause_send = 25;
+    optional uint64 fcs_pkts_rcv = 26;
+    optional uint64 fcs_octets_rcv = 27;
+    optional uint64 fcs_pkts_send = 28;
+    optional uint64 fcs_octets_send = 29;
+    optional uint64 fragments_pkts = 30;
+    optional uint64 bad_pkts_rcv = 31;
+    optional uint64 bad_octets_rcv = 32;
+    optional uint64 pkts_64_rcv = 33;
+    optional uint64 pkts_65_to_127_rcv = 34;
+    optional uint64 pkts_128_to_255_rcv = 35;
+    optional uint64 pkts_256_to_511_rcv = 36;
+    optional uint64 pkts_512_to_1023_rcv = 37;
+    optional uint64 pkts_1024_to_1518_rcv = 38;
+    optional uint32 last_clear_ts = 39;
+}
+
+// TBL_VLAN_STATS
+message tbl_vlan_stats_key
+{
+    required uint32 vid = 1;
+}
+
+message tbl_vlan_stats
+{
+    required tbl_vlan_stats_key key = 1;
+    optional uint64 pktcntl2in = 2;
+    optional uint64 pktcntl2out = 3;
+    optional uint64 pktcntl3in = 4;
+    optional uint64 pktcntl3out = 5;
+    optional uint64 pktcntacl = 6;
+    optional uint64 bytecntl2in = 7;
+    optional uint64 bytecntl2out = 8;
+    optional uint64 bytecntl3in = 9;
+    optional uint64 bytecntl3out = 10;
+    optional uint64 bytecntacl = 11;
+}
+
+// TBL_PORT_STATS_RATE
+message tbl_port_stats_rate_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_port_stats_rate
+{
+    required tbl_port_stats_rate_key key = 1;
+    optional uint32 port_id = 2;
+    optional uint64 octets_rcv_rate = 3;
+    optional uint64 pkts_rcv_rate = 4;
+    optional uint64 octets_send_rate = 5;
+    optional uint64 pkts_send_rate = 6;
+    optional uint32 load_interval = 7;
+    optional uint32 input_rate = 8;
+    optional uint32 input_rate_state = 9;
+    optional uint32 input_rate_threshold = 10;
+    optional uint32 input_rate_resume = 11;
+    optional uint32 output_rate = 12;
+    optional uint32 output_rate_state = 13;
+    optional uint32 output_rate_threshold = 14;
+    optional uint32 output_rate_resume = 15;
+    optional uint64 output_discard_threshold = 16;
+    optional uint32 output_discard_interval = 17;
+    optional uint64 output_discard_packets = 18;
+    optional uint64 output_discard_total_packets = 19;
+    optional uint32 output_discard_state = 20;
+    optional uint32 output_discard_running_interval = 21;
+}
+
+// TBL_ACLQOS_IF
+message tbl_aclqos_if_key
+{
+    required string name = 1;
+}
+
+message tbl_aclqos_if
+{
+    required tbl_aclqos_if_key key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 port_type = 3;
+    optional uint32 flags_domain = 4;
+    optional uint32 flags_port_shape_profile = 5;
+    optional uint32 flags_input_policer = 6;
+    optional uint32 flags_output_policer = 7;
+    optional uint32 flags_queue_shape_profile = 8;
+    optional uint32 flags_queue_drop_profile = 9;
+    optional uint32 flags_queue_drop_mode = 10;
+    optional uint32 flags_replace_dscp = 11;
+    optional uint32 flags_replace_cos = 12;
+    optional uint32 flags_trust = 13;
+    optional uint32 flags_port_tc = 14;
+    optional uint32 domain = 15;
+    optional uint32 cos_domain = 16;
+    optional uint32 dscp_domain = 17;
+    optional string port_shape_profile = 18;
+    optional string input_policy_map = 19;
+    optional string output_policy_map = 20;
+    optional string input_policer = 21;
+    optional string output_policer = 22;
+    repeated string queue_shape_profile = 23;
+    repeated string queue_drop_profile = 24;
+    repeated uint32 queue_drop_mode = 25;
+    optional uint32 replace_dscp = 26;
+    optional uint32 replace_cos = 27;
+    optional uint32 trust = 28;
+    optional uint32 port_tc = 29;
+}
+
+// TBL_L2_ACTION
+message tbl_l2_action
+{
+}
+
+// TBL_FEA_QOS_DROP_PROFILE
+message tbl_fea_qos_drop_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_fea_qos_drop_profile
+{
+    required tbl_fea_qos_drop_profile_key key = 1;
+    optional uint64 sai_drop_id = 2;
+}
+
+// TBL_FEA_QOS_DOMAIN
+message tbl_fea_qos_domain_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_fea_qos_domain
+{
+    required tbl_fea_qos_domain_key key = 1;
+    optional uint64 dot1p_to_tc_color_map_id = 2;
+    optional uint64 dscp_to_tc_color_map_id = 3;
+    optional uint64 exp_to_tc_color_map_id = 4;
+    optional uint64 tc_and_color_to_dot1p_map_id = 5;
+    optional uint64 tc_and_color_to_dscp_map_id = 6;
+    optional uint64 tc_and_color_to_exp_map_id = 7;
+}
+
+// TBL_FEA_G8032_RING
+message tbl_fea_g8032_ring
+{
+    required compose_fea_g8032_ring_key_t key = 1;
+    optional uint32 mc_group_id = 2;
+    optional uint32 aps_group_id = 3;
+    optional uint32 nh_id = 4;
+    optional uint32 nhoffset = 5;
+}
+
+// TBL_FEA_G8032_RING_MC_GROUP
+message tbl_fea_g8032_ring_mc_group_key
+{
+    required uint32 ring_id = 1;
+}
+
+message tbl_fea_g8032_ring_mc_group
+{
+    required tbl_fea_g8032_ring_mc_group_key key = 1;
+    optional uint32 mc_group_id = 2;
+}
+
+// TBL_FEA_QOS_QUEUE_SHAPE_PROFILE
+message tbl_fea_qos_queue_shape_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_fea_qos_queue_shape_profile
+{
+    required tbl_fea_qos_queue_shape_profile_key key = 1;
+    optional uint64 sai_scheduler_id = 2;
+}
+
+// TBL_FEA_QOS_PORT_SHAPE_PROFILE
+message tbl_fea_qos_port_shape_profile_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_fea_qos_port_shape_profile
+{
+    required tbl_fea_qos_port_shape_profile_key key = 1;
+    optional uint64 sai_scheduler_id = 2;
+}
+
+// TBL_FEA_PORT_POLICER_APPLY
+message tbl_fea_port_policer_apply_key
+{
+    required string name = 1;
+}
+
+message tbl_fea_port_policer_apply
+{
+    required tbl_fea_port_policer_apply_key key = 1;
+    optional uint64 in_policer_id = 2;
+    optional uint64 out_policer_id = 3;
+}
+
+// TBL_ACLQOS_IF_STATS
+message tbl_aclqos_if_stats_key
+{
+    required string name = 1;
+}
+
+message tbl_aclqos_if_stats
+{
+    required tbl_aclqos_if_stats_key key = 1;
+    optional uint32 flags_port_get_input_policer_stats = 2;
+    optional uint32 flags_port_get_output_policer_stats = 3;
+    optional uint32 flags_port_clear_input_policer_stats = 4;
+    optional uint32 flags_port_clear_output_policer_stats = 5;
+    optional uint32 flags_get_queue_stats = 6;
+    optional uint32 flags_clear_queue_stats = 7;
+    repeated uint64 queue_transimt_pkt = 8;
+    repeated uint64 queue_transimt_byte = 9;
+    repeated uint64 queue_drop_pkt = 10;
+    repeated uint64 queue_drop_byte = 11;
+    optional uint64 green_packet = 12;
+    optional uint64 green_byte = 13;
+    optional uint64 yellow_packet = 14;
+    optional uint64 yellow_byte = 15;
+    optional uint64 red_packet = 16;
+    optional uint64 red_byte = 17;
+    optional uint64 green_packet_out = 18;
+    optional uint64 green_byte_out = 19;
+    optional uint64 yellow_packet_out = 20;
+    optional uint64 yellow_byte_out = 21;
+    optional uint64 red_packet_out = 22;
+    optional uint64 red_byte_out = 23;
+}
+
+// TBL_VERSION
+message tbl_version
+{
+    optional string version = 1;
+    optional string company = 2;
+    optional string package = 3;
+    optional string product = 4;
+    optional string hw_type = 5;
+    optional uint32 is_cst = 6;
+    optional string cst_company = 7;
+    optional string cst_hw_type = 8;
+    optional string cst_hw_info = 9;
+    optional string cst_hw_ver = 10;
+    optional string cst_sw_ver = 11;
+}
+
+// TBL_MANAGE_IF
+message tbl_manage_if
+{
+    optional compose_prefix_ipv4_t addr = 1;
+    optional compose_addr_ipv4_t gateway = 2;
+    optional uint32 dhclient_enable = 3;
+    optional compose_prefix_ipv4_t dhclient_addr = 4;
+    optional compose_addr_ipv4_t dhclient_gateway = 5;
+    optional compose_prefix_t addr_v6 = 6;
+    optional compose_prefix_t gateway_v6 = 7;
+    optional string link_local_addr_str = 8;
+    optional uint32 dhclientv6_enable = 9;
+    optional compose_prefix_t dhclientv6_addr = 10;
+    optional compose_prefix_t dhclientv6_gateway = 11;
+}
+
+// TBL_BOOTIMAGE
+message tbl_bootimage
+{
+    optional uint32 mode = 1;
+    optional uint32 fast = 2;
+    optional string image = 3;
+    optional string serverip = 4;
+    optional string ipaddr = 5;
+    optional string bootcmd = 6;
+    optional string current_image = 7;
+}
+
+// TBL_CHASSIS
+message tbl_chassis
+{
+    optional int32 type = 1;
+    optional int32 slot_num = 2;
+    optional int32 cur_stm_mode = 3;
+    optional int32 next_stm_mode = 4;
+    optional int32 mac_num = 5;
+    optional compose_mac_addr_t sys_mac = 6;
+    optional uint32 location_led = 7;
+    optional uint32 reset_reboot_info = 8;
+    optional uint32 support_reboot_info = 9;
+    optional uint32 one_minute_reboot_alarm = 10;
+    optional uint32 schedule_reboot = 11;
+}
+
+// TBL_IFNAME_INFO
+message tbl_ifname_info
+{
+    optional int32 connection = 1;
+    optional int32 sub_connection = 2;
+    optional int32 prefix_num = 3;
+    repeated string prefix = 4;
+    repeated string full_prefix = 5;
+}
+
+// TBL_CARD
+message tbl_card_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_card
+{
+    required tbl_card_key key = 1;
+    optional uint32 slot = 2;
+    optional string product_name = 3;
+    optional string hardware_name = 4;
+    optional string company_name = 5;
+    optional string package_name = 6;
+    optional string enterprise_oid = 7;
+    optional string hardware_type = 8;
+    optional string serial_no = 9;
+    optional string bootrom_ver = 10;
+    optional string epld_ver = 11;
+    optional string sw_ver = 12;
+    optional string hardware_ver = 13;
+    optional uint32 board_type = 14;
+    optional uint32 board_series = 15;
+    optional int32 flash_size = 16;
+    optional int32 dram_size = 17;
+    optional int32 port_num = 18;
+    optional int32 uptime_day = 19;
+    optional int32 uptime_hour = 20;
+    optional int32 uptime_min = 21;
+    optional compose_sal_time_t attach_time = 22;
+    optional uint32 attach_count = 23;
+    optional int32 tmpr_low = 24;
+    optional int32 tmpr_high = 25;
+    optional int32 tmpr_critical = 26;
+    optional uint32 status = 27;
+    optional uint32 epld_status = 28;
+    optional uint32 reboot = 29;
+    optional int32 update_phy_firmware_port_idx = 30;
+    optional int32 platform_type = 31;
+    optional int32 bootup_diag_level = 32;
+    optional int32 next_bootup_diag_level = 33;
+    optional int32 fan_speed_bottom = 34;
+    optional int32 fan_speed_low = 35;
+    optional int32 fan_speed_high = 36;
+    optional int32 fan_speed_full = 37;
+    optional string bootcmd = 38;
+    optional string update_epld_name = 39;
+    optional string update_bootrom_name = 40;
+    optional string update_phy_firmware_name = 41;
+    optional int32 glb_poe_enable = 42;
+    optional uint32 glb_poe_power_max = 43;
+}
+
+// TBL_PORT
+message tbl_port_key
+{
+    required int32 port_id = 1;
+}
+
+message tbl_port
+{
+    required tbl_port_key key = 1;
+    optional int32 slot_no = 2;
+    optional int32 panel_port_no = 3;
+    optional int32 panel_sub_port_no = 4;
+    optional int32 phy_type = 5;
+    optional int32 phyinfo_flag = 6;
+    optional int32 speed_capbility = 7;
+    optional int32 logic_port_id = 8;
+    optional int32 media = 9;
+    optional int32 port_media_type = 10;
+    optional int32 support_media_switch = 11;
+    optional int32 split_type = 12;
+    optional int32 bypass = 13;
+    optional int32 bypass_slot = 14;
+    optional int32 training_enable = 15;
+    optional int32 training_status = 16;
+    optional int32 present_status = 17;
+    optional string name = 18;
+    optional compose_mac_addr_t mac = 19;
+}
+
+// TBL_FIBER
+message tbl_fiber_key
+{
+    required int32 port_id = 1;
+}
+
+message tbl_fiber
+{
+    required tbl_fiber_key key = 1;
+    optional string interface_name = 2;
+    optional string fiber_type_name = 3;
+    optional string name = 4;
+    optional bytes oui = 5;
+    optional string pn = 6;
+    optional string rev = 7;
+    optional string sn = 8;
+    optional bytes compliance_code = 9;
+    optional int32 slot = 10;
+    repeated double tmpr = 11;
+    repeated double voltage = 12;
+    repeated double bias = 13;
+    repeated double tx_pwr = 14;
+    repeated double rx_pwr = 15;
+    repeated double tmpr2 = 16;
+    repeated double voltage2 = 17;
+    repeated double bias2 = 18;
+    repeated double tx_pwr2 = 19;
+    repeated double rx_pwr2 = 20;
+    repeated uint32 alarm_flag = 21;
+    repeated uint32 warn_flag = 22;
+    optional uint32 update_cnt = 23;
+    optional uint32 channel_num = 24;
+    optional uint32 channel_idx = 25;
+    optional uint32 is_detail = 26;
+    optional uint32 fiber_type = 27;
+    optional uint32 fiber_flag = 28;
+    optional uint32 is_copper = 29;
+    optional uint32 speed = 30;
+    optional uint32 ddm_support = 31;
+    optional uint32 externally_calibrated = 32;
+    optional bytes wavelength = 33;
+    optional bytes length = 34;
+}
+
+// TBL_SYS_SPEC
+message tbl_sys_spec_key
+{
+    required uint32 type = 1;
+}
+
+message tbl_sys_spec
+{
+    required tbl_sys_spec_key key = 1;
+    optional uint32 ucast_fdb = 2;
+    optional uint32 static_fdb = 3;
+    optional uint32 mstp_instance = 4;
+    optional uint32 vlan_instance = 5;
+    optional uint32 mac_filter = 6;
+    optional uint32 mac_based_vlan_class = 7;
+    optional uint32 ipv4_based_vlan_class = 8;
+    optional uint32 ipv4_source_guard = 9;
+    optional uint32 vlan_mapping_entry_applied_port = 10;
+    optional uint32 dot1x_mac = 11;
+    optional uint32 indirect_routes = 12;
+    optional uint32 static_routes = 13;
+    optional uint32 host_routes = 14;
+    optional uint32 ecmp_routes = 15;
+    optional uint32 ecmp_member_maximum = 16;
+    optional uint32 indirect_v6_routes = 17;
+    optional uint32 static_v6_routes = 18;
+    optional uint32 host_v6_routes = 19;
+    optional uint32 ecmp_v6_routes = 20;
+    optional uint32 ecmp_v6_member_maximum = 21;
+    optional uint32 pbr_entries = 22;
+    optional uint32 l2mc_entries = 23;
+    optional uint32 l3mc_entries = 24;
+    optional uint32 l2mc_member_ports = 25;
+    optional uint32 l3mc_member_ports = 26;
+    optional uint32 vlan_member_ports = 27;
+    optional uint32 voice_vlan = 28;
+    optional uint32 flow_entries_ingress = 29;
+    optional uint32 flow_entries_egress = 30;
+    optional uint32 flow6_entries_ingress = 31;
+    optional uint32 flow6_entries_egress = 32;
+    optional uint32 cfm_local_and_remote_meps = 33;
+    optional uint32 g8031_groups = 34;
+    optional uint32 g8032_rings = 35;
+    optional uint32 g8032_member_ports_per_ring = 36;
+    optional uint32 ftn_entries = 37;
+    optional uint32 ilm_entries = 38;
+    optional uint32 mpls_lables = 39;
+    optional uint32 vpws = 40;
+    optional uint32 lsp_pe = 41;
+    optional uint32 lsp_p = 42;
+    optional uint32 vpls_peer = 43;
+    optional uint32 vpls_ac = 44;
+    optional uint32 vsi = 45;
+    optional uint32 lsp_oam = 46;
+    optional uint32 pw_oam = 47;
+    optional uint32 mpls_aps_tunnel = 48;
+    optional uint32 cfm_lck = 49;
+    optional uint32 ip_tunnel = 50;
+    optional uint32 ivi_peers = 51;
+    optional uint32 pbr_v6_entries = 52;
+    optional uint32 l3mc_v6_entries = 53;
+    optional uint32 l2mc_v6_entries = 54;
+    optional uint32 flow_v6_entries = 55;
+    optional uint32 ipv6_based_vlan_class = 56;
+    optional uint32 ipv6_source_guard = 57;
+    optional uint32 l3mc_v6_member_ports = 58;
+    optional uint32 l2mc_v6_member_ports = 59;
+    optional uint32 vlan_mapping_default_entry = 60;
+    optional uint32 bfd_sessions = 61;
+    optional uint32 nvgre_tunnel_id_mappings = 62;
+    optional uint32 nvgre_peers = 63;
+    optional uint32 nvgre_tunnels = 64;
+    optional uint32 openflow_flow_entries = 65;
+    optional uint32 policer_profile_num = 66;
+    optional uint32 port_shape_profile_num = 67;
+    optional uint32 queue_shape_profile_num = 68;
+    optional uint32 drop_profile_num = 69;
+    optional uint32 lag_group_num = 70;
+    optional uint32 ospf_area_range_num = 71;
+    optional uint32 tap_group_profile_num = 72;
+    optional uint32 tap_flow_num = 73;
+    optional uint32 tap_flow_entry_num = 74;
+    optional uint32 l2protocol_num = 75;
+    optional uint32 openflow_dynamic_tunnel_num = 76;
+    optional uint32 nat_pool_num = 77;
+    optional uint32 nat_rule_num = 78;
+    optional uint32 nat_inside_rtif_num = 79;
+    optional uint32 nat_outside_rtif_num = 80;
+    optional uint32 nat_session_upstream_num = 81;
+    optional uint32 nat_session_dnstream_num = 82;
+    optional uint32 nat_session_fast_path_entry_num = 83;
+    optional uint32 nat_session_limit_node_num = 84;
+}
+
+// TBL_FAN
+message tbl_fan_key
+{
+    required int32 id = 1;
+}
+
+message tbl_fan
+{
+    required tbl_fan_key key = 1;
+    optional int32 slot = 2;
+    optional int32 tray = 3;
+    optional int32 percent = 4;
+    optional int32 absent = 5;
+    optional string name = 6;
+    optional string direction = 7;
+    optional string status = 8;
+    optional string mode = 9;
+}
+
+// TBL_PSU
+message tbl_psu_key
+{
+    required int32 id = 1;
+}
+
+message tbl_psu
+{
+    required tbl_psu_key key = 1;
+    optional int32 slot = 2;
+    optional string name = 3;
+    optional int32 absent = 4;
+    optional string run_status = 5;
+    optional string alert_status = 6;
+    optional string mode = 7;
+    optional uint32 fixed_status = 8;
+    optional uint32 psu_health_status_change = 9;
+    optional uint32 support_pmbus = 10;
+    optional uint32 pmbus_status_byte = 11;
+    optional uint32 pmbus_status_word = 12;
+    optional uint32 pmbus_status_vout = 13;
+    optional uint32 pmbus_status_iout = 14;
+    optional uint32 pmbus_status_input = 15;
+    optional uint32 pmbus_status_temperature = 16;
+    optional uint32 pmbus_status_cml = 17;
+    optional uint32 pmbus_status_other = 18;
+    optional uint32 pmbus_status_mfr_specific = 19;
+    optional uint32 pmbus_status_fans_1_2 = 20;
+    optional uint32 pmbus_status_fans_3_4 = 21;
+}
+
+// TBL_LED
+message tbl_led_key
+{
+    required int32 id = 1;
+}
+
+message tbl_led
+{
+    required tbl_led_key key = 1;
+    optional int32 slot = 2;
+    optional string name = 3;
+    optional string status = 4;
+    optional string mode = 5;
+}
+
+// TBL_SENSOR
+message tbl_sensor_key
+{
+    required int32 id = 1;
+}
+
+message tbl_sensor
+{
+    required tbl_sensor_key key = 1;
+    optional int32 slot = 2;
+    optional int32 temperature = 3;
+    optional string name = 4;
+    optional string position = 5;
+    optional string status = 6;
+    optional int32 tmpr_low = 7;
+    optional int32 tmpr_high = 8;
+    optional int32 tmpr_critical = 9;
+    optional uint32 is_chip = 10;
+}
+
+// TBL_VCM
+message tbl_vcm_key
+{
+    required int32 id = 1;
+}
+
+message tbl_vcm
+{
+    required tbl_vcm_key key = 1;
+    optional int32 slot = 2;
+    optional uint32 vcm_type = 3;
+    optional uint32 vcm_channel_nums = 4;
+    optional string channel_name0 = 5;
+    optional string channel_name1 = 6;
+    optional string channel_name2 = 7;
+    optional string channel_name3 = 8;
+    optional string channel_name4 = 9;
+    optional string channel_name5 = 10;
+    optional string channel_name6 = 11;
+    optional string channel_name7 = 12;
+    optional string channel_name8 = 13;
+    repeated uint32 flag = 14;
+    optional bytes curr_depend_pin = 15;
+    repeated double volt_split_factor = 16;
+    repeated double low = 17;
+    repeated double high = 18;
+    repeated double volt = 19;
+    repeated double curr = 20;
+    repeated double tmpr = 21;
+}
+
+// TBL_POE
+message tbl_poe_key
+{
+    required int32 id = 1;
+}
+
+message tbl_poe
+{
+    required tbl_poe_key key = 1;
+    optional int32 slot = 2;
+    optional uint32 glb_enable = 3;
+    optional uint32 glb_power_limit = 4;
+    optional uint32 glb_status = 5;
+    optional uint32 glb_cur_consump = 6;
+    optional uint32 glb_aver_consump = 7;
+    optional uint32 glb_peak_consump = 8;
+    optional uint32 pse_channel_num = 9;
+    optional uint32 const_power_limit = 10;
+    repeated uint32 pse_channel_id = 11;
+    repeated uint32 panel_slot_no = 12;
+    repeated uint32 panel_port_no = 13;
+    repeated uint32 panel_sub_port_no = 14;
+    repeated uint32 enable = 15;
+    repeated uint32 force_power = 16;
+    repeated uint32 mode = 17;
+    repeated uint32 priority = 18;
+    repeated uint32 power_limit = 19;
+    repeated uint32 class_level = 20;
+    repeated uint32 status = 21;
+    repeated uint32 cur_consump = 22;
+    repeated uint32 aver_consump = 23;
+    repeated uint32 peak_consump = 24;
+    repeated uint32 current = 25;
+    repeated uint32 voltage = 26;
+    repeated uint32 temper = 27;
+}
+
+// TBL_REBOOT_INFO
+message tbl_reboot_info_key
+{
+    required uint32 index = 1;
+}
+
+message tbl_reboot_info
+{
+    required tbl_reboot_info_key key = 1;
+    optional string reboot_type = 2;
+    optional string reboot_time = 3;
+}
+
+// TBL_ERRDISABLE_FLAP
+message tbl_errdisable_flap_key
+{
+    required uint32 flap_rsn = 1;
+}
+
+message tbl_errdisable_flap
+{
+    required tbl_errdisable_flap_key key = 1;
+    optional uint32 errdisable_rsn = 2;
+    optional uint32 flap_cnt_threshold = 3;
+    optional uint32 flap_time_threshold = 4;
+    optional uint32 flap_time_cnt = 5;
+}
+
+// TBL_OPM_GLOBAL
+message tbl_opm_global
+{
+    optional uint32 erps_mode = 1;
+    optional uint32 erps_unreload = 2;
+}
+
+// TBL_ERPS_RING
+message tbl_erps_ring
+{
+    required compose_erps_ring_key_t key = 1;
+    optional uint32 erps_ring_state = 2;
+    optional uint32 erps_ring_level = 3;
+    optional uint32 instance_id_num = 4;
+    repeated uint32 instance_id = 5;
+    optional uint32 node_role = 6;
+    optional uint32 edge_node_role = 7;
+    optional uint32 erps_srpt_enable = 8;
+    optional uint32 primary_port_ifindex = 9;
+    optional uint32 secondary_port_ifindex = 10;
+    optional uint32 edge_port_ifindex = 11;
+    optional uint32 common_port_ifindex = 12;
+    optional uint32 blocked_port_ifindex = 13;
+    optional uint32 blocked = 14;
+    optional uint32 hello_seq = 15;
+    optional uint32 expect_hello_seq = 16;
+    optional uint32 rcv_hello_cnt = 17;
+    optional uint32 rcv_ring_up_flush_fdb_cnt = 18;
+    optional uint32 rcv_ring_down_flush_fdb_cnt = 19;
+    optional uint32 rcv_link_down_cnt = 20;
+    optional uint32 rcv_edge_hello_cnt = 21;
+    optional uint32 rcv_major_fault_cnt = 22;
+    optional uint32 send_hello_cnt = 23;
+    optional uint32 send_ring_up_flush_fdb_cnt = 24;
+    optional uint32 send_ring_down_flush_fdb_cnt = 25;
+    optional uint32 send_link_down_cnt = 26;
+    optional uint32 send_edge_hello_cnt = 27;
+    optional uint32 send_major_fault_cnt = 28;
+}
+
+// TBL_ERPS_DOMAIN
+message tbl_erps_domain_key
+{
+    required uint32 domain_id = 1;
+}
+
+message tbl_erps_domain
+{
+    required tbl_erps_domain_key key = 1;
+    optional string name = 2;
+    optional uint32 instance_id_num = 3;
+    repeated uint32 instance_id = 4;
+    optional uint32 primary_control_vlan_id = 5;
+    optional uint32 sub_control_vlan_id = 6;
+    optional uint32 hello_timer_interval = 7;
+    optional uint32 failure_timer_interval = 8;
+    optional uint32 pre_forwarding_timer_interval = 9;
+    optional uint32 flush_timer_interval = 10;
+    optional uint32 edge_hello_timer_interval = 11;
+    optional uint32 edge_failure_timer_interval = 12;
+    optional uint32 erps_enable = 13;
+}
+
+// TBL_OPM_DEBUG
+message tbl_opm_debug
+{
+    optional uint32 erps_all = 1;
+    optional uint32 erps_packet = 2;
+    optional uint32 erps_timer = 3;
+    optional uint32 erps_protocol = 4;
+    optional uint32 erps_event = 5;
+    optional uint32 g8131_tx = 6;
+    optional uint32 g8131_rx = 7;
+    optional uint32 g8131_event = 8;
+    optional uint32 tpoam_lb_lbm_debug = 9;
+    optional uint32 tpoam_lb_lbr_debug = 10;
+    optional uint32 tpoam_lm_comm_debug = 11;
+    optional uint32 tpoam_lm_lmm_debug = 12;
+    optional uint32 tpoam_lm_lmr_debug = 13;
+    optional uint32 tpoam_dm_comm_debug = 14;
+    optional uint32 tpoam_dm_dmm_debug = 15;
+    optional uint32 tpoam_dm_dmr_debug = 16;
+    optional uint32 tpoam_dm_1dmtx_debug = 17;
+    optional uint32 tpoam_dm_1dmrx_debug = 18;
+    optional uint32 tpoam_packet_rx_debug = 19;
+    optional uint32 tpoam_packet_tx_debug = 20;
+    optional uint32 tpoam_event_debug = 21;
+    optional uint32 g8032_all = 22;
+    optional uint32 g8032_packet_tx = 23;
+    optional uint32 g8032_packet_rx = 24;
+    optional uint32 g8032_event = 25;
+    optional uint32 g8032_timer = 26;
+    optional uint32 cfm_all = 27;
+    optional uint32 cfm_packet = 28;
+    optional uint32 cfm_timer = 29;
+    optional uint32 cfm_event = 30;
+}
+
+// TBL_POLICY_MAP_CONFIG
+message tbl_policy_map_config_key
+{
+    required string name = 1;
+}
+
+message tbl_policy_map_config
+{
+    required tbl_policy_map_config_key key = 1;
+    optional uint32 intf_ref = 2;
+    optional uint32 class_ref = 3;
+    optional uint64 max_class_priority = 4;
+}
+
+// TBL_CLASS_MAP_CONFIG
+message tbl_class_map_config_key
+{
+    required string name = 1;
+}
+
+message tbl_class_map_config
+{
+    required tbl_class_map_config_key key = 1;
+    optional uint32 policy_map_ref = 2;
+    optional uint32 acl_ref = 3;
+    optional uint64 max_acl_priority = 4;
+}
+
+// TBL_CLASS_IN_POLICY_CONFIG
+message tbl_class_in_policy_config
+{
+    required compose_class_in_policy_config_key_t key = 1;
+    optional uint64 class_priority = 2;
+}
+
+// TBL_ACL_IN_CLASS_CONFIG
+message tbl_acl_in_class_config
+{
+    required compose_acl_in_class_config_key_t key = 1;
+    optional uint64 acl_priority = 2;
+}
+
+// TBL_CLASS_MAP_ACTION_CONFIG
+message tbl_class_map_action_config
+{
+    required compose_class_map_action_config_key_t key = 1;
+    optional uint32 action_flag = 2;
+    optional uint32 new_tc = 3;
+    optional int32 new_color = 4;
+    optional uint32 new_dscp = 5;
+    optional uint32 session_id = 6;
+    optional string policer = 7;
+    optional uint32 new_svlan_id = 8;
+    optional uint32 new_cvlan_id = 9;
+    optional uint32 new_scos = 10;
+    optional uint32 new_ccos = 11;
+    optional uint32 redirect_port_ifindex = 12;
+    optional string red_unexist_agg = 13;
+}
+
+// TBL_FEA_ACL_POLICY_ACTION
+message tbl_fea_acl_policy_action_key
+{
+    required uint64 acl_policy_action_id = 1;
+}
+
+message tbl_fea_acl_policy_action
+{
+    required tbl_fea_acl_policy_action_key key = 1;
+    optional uint32 flags_class_get_policer_stats = 2;
+    optional uint32 flags_calss_clear_policer_stats = 3;
+    optional uint64 policer_id = 4;
+    optional string policer_name = 5;
+    optional uint64 policer_id_ref = 6;
+    optional uint64 green_packet = 7;
+    optional uint64 green_byte = 8;
+    optional uint64 yellow_packet = 9;
+    optional uint64 yellow_byte = 10;
+    optional uint64 red_packet = 11;
+    optional uint64 red_byte = 12;
+}
+
+// TBL_IGSP_GLOBAL
+message tbl_igsp_global
+{
+    optional uint32 enable = 1;
+    optional uint32 fast_leave = 2;
+    optional uint32 discard_unknown = 3;
+    optional uint32 report_suppress = 4;
+    optional uint32 version = 5;
+    optional uint32 querier_max_response_time = 6;
+    optional uint32 query_interval = 7;
+    optional uint32 lmqi = 8;
+    optional uint32 lmqc = 9;
+    optional uint32 robustness_var = 10;
+    optional uint32 max_member_number = 11;
+    optional uint32 curr_group_member = 12;
+    optional uint32 tcn_enable = 13;
+    optional uint32 tcn_query_count = 14;
+    optional uint32 tcn_query_interval = 15;
+    optional uint32 tcn_query_current_count = 16;
+    optional uint32 tcn_query_max_response_time = 17;
+    optional uint32 host_join_enable = 18;
+    optional uint32 host_joined_num = 19;
+    optional compose_addr_ipv4_t global_src = 20;
+    optional compose_addr_ipv4_t all_hosts = 21;
+    optional compose_addr_ipv4_t all_routers = 22;
+    optional compose_addr_ipv4_t v3_routers = 23;
+}
+
+// TBL_IGSP_INTF
+message tbl_igsp_intf_key
+{
+    required uint32 vid = 1;
+}
+
+message tbl_igsp_intf
+{
+    required tbl_igsp_intf_key key = 1;
+    optional string acl_name = 2;
+    optional uint32 enable = 3;
+    optional uint32 fast_leave = 4;
+    optional uint32 discard_unknown = 5;
+    optional uint32 discard_unknown_act = 6;
+    optional uint32 report_suppress = 7;
+    optional uint32 version = 8;
+    optional uint32 querier_enable = 9;
+    optional uint32 querier_operate = 10;
+    optional uint32 query_interval = 11;
+    optional uint32 admin_other_query_interval = 12;
+    optional uint32 other_query_interval = 13;
+    optional uint32 querier_max_response_time = 14;
+    optional compose_addr_ipv4_t querier_config_address = 15;
+    optional compose_addr_ipv4_t querier_oper_address = 16;
+    optional compose_addr_ipv4_t other_querier_address = 17;
+    optional compose_addr_ipv4_t vlan_if_address = 18;
+    optional uint32 lmqi = 19;
+    optional uint32 lmqc = 20;
+    optional uint32 max_member_number = 21;
+    optional uint32 curr_group_member = 22;
+    optional uint32 group_member_interval = 23;
+    optional uint32 robustness_var = 24;
+    optional uint32 mrouter_aging_interval = 25;
+    optional uint32 startup_query_count = 26;
+}
+
+// TBL_IGSP_GROUP
+message tbl_igsp_group
+{
+    required compose_igsp_group_key_t key = 1;
+    optional uint32 retx_group_lmqc = 2;
+    optional uint32 retx_group_source_lmqc = 3;
+    optional uint32 liveness = 4;
+    optional uint32 has_rx_leave = 5;
+    optional compose_addr_ipv4_t last_reporter_address = 6;
+    optional compose_sal_time_t uptime = 7;
+    optional compose_sal_time_t update_time = 8;
+    optional compose_sal_time_t v1_update_time = 9;
+    optional uint32 is_v1_host_exist = 10;
+    optional uint32 type = 11;
+    optional uint32 inactive = 12;
+    optional uint32 is_v3_leave = 13;
+}
+
+// TBL_AUTH_CFG
+message tbl_auth_cfg
+{
+    optional string secret = 1;
+    optional string enc_secret = 2;
+    optional uint32 timeout = 3;
+    optional uint32 retries = 4;
+    optional uint32 deadtime = 5;
+}
+
+// TBL_AUTH_SERVER
+message tbl_auth_server
+{
+    required compose_auth_server_key_t key = 1;
+    optional string secret = 2;
+    optional string enc_secret = 3;
+    optional uint32 port = 4;
+    optional uint32 timeout = 5;
+    optional uint32 retries = 6;
+    optional uint32 dead = 7;
+    optional uint32 is_inband = 8;
+    optional uint32 reawake_time = 9;
+}
+
+// TBL_AUTH_SESSION
+message tbl_auth_session
+{
+    required compose_auth_session_key_t key = 1;
+    optional compose_user_t user = 2;
+    optional string passwd = 3;
+    optional uint32 status = 4;
+    optional bytes authenticator = 5;
+    optional bytes oauthenticator = 6;
+    optional uint32 dot1x_mac_ifindex = 7;
+    optional compose_mac_addr_t dot1x_mac_addr = 8;
+    optional uint32 is_auth_bypass = 9;
+    optional uint32 author_start = 10;
+    optional uint32 acct_start = 11;
+    optional uint32 acct_stop = 12;
+    optional uint32 acctcmd_start = 13;
+    optional uint32 next_acct_stop = 14;
+}
+
+// TBL_AUTHD_DEBUG
+message tbl_authd_debug
+{
+    optional uint32 auth_event = 1;
+    optional uint32 auth_packet = 2;
+    optional uint32 auth_protocol = 3;
+    optional uint32 auth_timer = 4;
+}
+
+// TBL_DOT1X_GLOBAL
+message tbl_dot1x_global
+{
+    optional uint32 global_auth_enable = 1;
+    optional compose_mac_addr_t eapol_group_address = 2;
+    optional uint32 radius_default_retry = 3;
+    optional uint32 radius_default_timeout = 4;
+    optional uint32 radius_default_deadtime = 5;
+    optional uint32 mac_user_count_max = 6;
+    optional uint32 mac_user_count_current = 7;
+    optional uint32 mac_user_count_db = 8;
+    optional uint32 mac_port_count_current = 9;
+    optional uint32 radius_default_shared_secret_valid = 10;
+    optional bytes radius_default_shared_secret = 11;
+    optional string radius_default_shared_enc_secret = 12;
+    optional uint32 last_session_id = 13;
+    optional bytes session_id_allocated = 14;
+    optional uint32 dot1x_all = 15;
+    optional uint32 dot1x_packet = 16;
+    optional uint32 dot1x_timer = 17;
+    optional uint32 dot1x_protocol = 18;
+    optional uint32 dot1x_event = 19;
+}
+
+// TBL_DOT1X_PORT
+message tbl_dot1x_port_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_dot1x_port
+{
+    required tbl_dot1x_port_key key = 1;
+    optional uint32 radius_msg_id = 2;
+    optional uint32 retry = 3;
+    optional uint32 sessiontype = 4;
+    optional string name = 5;
+    optional bytes buf = 6;
+    optional compose_mac_addr_t dest_mac = 7;
+    optional compose_mac_addr_t src_mac = 8;
+    optional bytes user_name = 9;
+    optional uint32 authControlledPortControl = 10;
+    optional uint32 protocol_version = 11;
+    optional uint32 guest_vlan_valid = 12;
+    optional uint32 guest_vlan = 13;
+    optional uint32 current_user = 14;
+    optional uint32 current_user_count_db = 15;
+    optional uint32 max_user = 16;
+    optional uint32 auth_mode = 17;
+    optional uint32 mac_auth_bypass = 18;
+    optional uint32 share_reauth = 19;
+    optional uint32 authWhile = 20;
+    optional uint32 aWhile = 21;
+    optional uint32 quietWhile = 22;
+    optional uint32 reAuthWhen = 23;
+    optional uint32 txWhen = 24;
+    optional uint32 authAbort = 25;
+    optional uint32 authFail = 26;
+    optional uint32 authStart = 27;
+    optional uint32 authTimeout = 28;
+    optional uint32 authSuccess = 29;
+    optional uint32 initialize = 30;
+    optional uint32 portEnabled = 31;
+    optional uint32 reAuthenticate = 32;
+    optional uint32 eapNoReq = 33;
+    optional uint32 eaprestart = 34;
+    optional uint32 eapResp = 35;
+    optional uint32 eapReq = 36;
+    optional uint32 eapSuccess = 37;
+    optional uint32 eapFail = 38;
+    optional uint32 retransmit = 39;
+    optional uint32 currentId = 40;
+    optional uint32 portControl = 41;
+    optional uint32 portStatus = 42;
+    optional uint32 auth_pae_eapLogoff = 43;
+    optional uint32 auth_pae_eapStart = 44;
+    optional uint32 auth_pae_portMode = 45;
+    optional uint32 auth_pae_reAuthCount = 46;
+    optional uint32 auth_pae_rxRespId = 47;
+    optional uint32 auth_pae_state = 48;
+    optional uint32 auth_pae_quietPeriod = 49;
+    optional uint32 auth_pae_reAuthMax = 50;
+    optional uint32 auth_pae_txPeriod = 51;
+    optional uint32 auth_pae_enter_connecting = 52;
+    optional uint32 auth_pae_eaplogoff_while_connecting = 53;
+    optional uint32 auth_pae_enter_authenticating = 54;
+    optional uint32 auth_pae_success_while_authenticating = 55;
+    optional uint32 auth_pae_timeout_while_authenticating = 56;
+    optional uint32 auth_pae_fail_while_authenticating = 57;
+    optional uint32 auth_pae_eapstart_while_authenticating = 58;
+    optional uint32 auth_pae_eaplogoff_while_authenticating = 59;
+    optional uint32 auth_pae_reauths_while_authenticated = 60;
+    optional uint32 auth_pae_eapstart_while_authenticated = 61;
+    optional uint32 auth_pae_eaplogoff_while_authenticated = 62;
+    optional uint32 auth_pae_reauths_while_authenticating = 63;
+    optional uint32 auth_key_xmit_keyAvailable = 64;
+    optional uint32 auth_key_xmit_keyTxEnabled = 65;
+    optional uint32 auth_key_xmit_KeyRun = 66;
+    optional uint32 auth_key_xmit_KeyDone = 67;
+    optional uint32 auth_key_xmit_state = 68;
+    optional uint32 reAuthPeriod = 69;
+    optional uint32 reAuthEnabled = 70;
+    optional uint32 auth_be_state = 71;
+    optional uint32 auth_be_reqCount = 72;
+    optional uint32 auth_be_idFromServer = 73;
+    optional uint32 auth_be_suppTimeout = 74;
+    optional uint32 auth_be_serverTimeout = 75;
+    optional uint32 auth_be_maxReq = 76;
+    optional uint32 auth_be_backend_responses = 77;
+    optional uint32 auth_be_backend_access_challenges = 78;
+    optional uint32 auth_be_backend_otherrequest_to_supplicant = 79;
+    optional uint32 auth_be_backend_auth_success = 80;
+    optional uint32 auth_be_backend_auth_fails = 81;
+    optional uint32 auth_be_backend_nonnak_responses_from_supplicant = 82;
+    optional uint32 auth_ctrl_dir_state = 83;
+    optional uint32 auth_ctrl_dir_adminControlledDirections = 84;
+    optional uint32 auth_ctrl_dir_operControlledDirections = 85;
+    optional uint32 auth_ctrl_dir_bridgeDetected = 86;
+    optional uint32 auth_key_recv_rxKey = 87;
+    optional uint32 eapol_frames_rx = 88;
+    optional uint32 eapol_frames_tx = 89;
+    optional uint32 eapol_start_frames_rx = 90;
+    optional uint32 eapol_logoff_frames_rx = 91;
+    optional uint32 eap_respid_frames_rx = 92;
+    optional uint32 eap_resp_frames_rx = 93;
+    optional uint32 eap_reqid_frames_tx = 94;
+    optional uint32 eap_req_frames_tx = 95;
+    optional uint32 eapol_invalid_frames_rx = 96;
+    optional uint32 eap_len_error_frames_rx = 97;
+    optional uint32 eapol_last_frame_version = 98;
+    optional bytes eapol_last_frame_source = 99;
+    optional uint32 session_time = 100;
+    optional uint32 session_authentication_method = 101;
+    optional uint32 session_terminate_cause = 102;
+    optional bytes session_user_name = 103;
+    optional uint32 class_id = 104;
+}
+
+// TBL_DOT1X_RADIUS
+message tbl_dot1x_radius
+{
+    required compose_dot1x_radius_key_t key = 1;
+    optional uint32 identifier = 2;
+    optional bytes server_string = 3;
+    optional compose_addr_ipv4_t server_addr = 4;
+    optional uint32 radius_state_len = 5;
+    optional bytes radius_state = 6;
+    optional uint32 max_retry = 7;
+    optional uint32 radius_defalt_timeout = 8;
+    optional uint32 radius_defalt_retransmit = 9;
+    optional uint32 radius_defalt_key = 10;
+    optional uint32 timeout = 11;
+    optional uint32 shared_secret_valid = 12;
+    optional bytes shared_secret = 13;
+    optional string shared_enc_secret = 14;
+    optional bytes authenticator = 15;
+    optional bytes oauthenticator = 16;
+    optional uint32 session_number = 17;
+    repeated uint32 session_ifindex = 18;
+    optional uint32 reactivate = 19;
+    optional uint32 is_inband = 20;
+}
+
+// TBL_DOT1X_MAC
+message tbl_dot1x_mac
+{
+    required compose_dot1x_mac_key_t key = 1;
+    optional bytes user_name = 2;
+    optional uint32 session_id = 3;
+    optional uint32 entry_id = 4;
+    optional uint32 is_auth_bypass = 5;
+    optional uint32 auth_mac_reject = 6;
+    optional uint32 auth_mac_accept = 7;
+    optional uint32 auth_mac_bypass = 8;
+    optional uint32 auth_mac_reauth_accept = 9;
+    optional uint32 auth_mac_eapol_reauth = 10;
+}
+
+// TBL_ENABLE
+message tbl_enable_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_enable
+{
+    required tbl_enable_key key = 1;
+    optional string enc_passwd = 2;
+    optional string passwd = 3;
+}
+
+// TBL_CHIP
+message tbl_chip
+{
+    optional uint32 type = 1;
+}
+
+// TBL_CLEAR_ACL_POLICY
+message tbl_clear_acl_policy
+{
+    optional uint64 counter_id = 1;
+    optional uint64 acl_id = 2;
+}
+
+// TBL_AUTHOR
+message tbl_author_key
+{
+    required string name = 1;
+}
+
+message tbl_author
+{
+    required tbl_author_key key = 1;
+    optional string methods = 2;
+}
+
+// TBL_ACCOUNT
+message tbl_account_key
+{
+    required string name = 1;
+}
+
+message tbl_account
+{
+    required tbl_account_key key = 1;
+    optional uint32 start_stop = 2;
+    optional uint32 stop_only = 3;
+    optional string methods = 4;
+}
+
+// TBL_ACCOUNTCMD
+message tbl_accountcmd_key
+{
+    required string name = 1;
+}
+
+message tbl_accountcmd
+{
+    required tbl_accountcmd_key key = 1;
+    optional string methods = 2;
+}
+
+// TBL_VLANCLASS_RULE
+message tbl_vlanclass_rule_key
+{
+    required uint32 rule_id = 1;
+}
+
+message tbl_vlanclass_rule
+{
+    required tbl_vlanclass_rule_key key = 1;
+    optional uint32 rule_type = 2;
+    optional uint32 vlan_id = 3;
+    optional compose_mac_addr_t mac = 4;
+    optional compose_addr_t ip_address = 5;
+    optional uint32 protocol_type = 6;
+    optional uint32 protocol_action = 7;
+    optional uint64 rule_oid = 8;
+}
+
+// TBL_VLANCLASS_GROUP
+message tbl_vlanclass_group_key
+{
+    required uint32 group_id = 1;
+}
+
+message tbl_vlanclass_group
+{
+    required tbl_vlanclass_group_key key = 1;
+    optional bytes rule_id = 2;
+    optional uint64 action_rule_id = 3;
+    optional uint64 group_oid = 4;
+}
+
+// TBL_ACL_L4_PORT_RANGE
+message tbl_acl_l4_port_range_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_acl_l4_port_range
+{
+    required tbl_acl_l4_port_range_key key = 1;
+    optional uint32 port_min = 2;
+    optional uint32 port_max = 3;
+    optional uint32 cnt = 4;
+    optional uint32 is_src = 5;
+}
+
+// TBL_ACL_UDF_GROUP
+message tbl_acl_udf_group_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_acl_udf_group
+{
+    required tbl_acl_udf_group_key key = 1;
+    optional uint32 group_type = 2;
+    optional uint32 ip_version = 3;
+    optional uint32 l3_protocol = 4;
+    optional uint32 offset = 5;
+    optional uint64 udf_match_oid = 6;
+    optional uint64 udf_oid = 7;
+    optional uint64 udf_group_oid = 8;
+    optional uint32 cnt = 9;
+}
+
+// TBL_ACL_UDF_ENTRY
+message tbl_acl_udf_entry_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_acl_udf_entry
+{
+    required tbl_acl_udf_entry_key key = 1;
+    optional uint32 acl_ref_cnt = 2;
+    optional uint32 priority = 3;
+    optional uint32 offset_type = 4;
+    optional uint32 offset_num = 5;
+    optional bytes valid = 6;
+    optional bytes offset = 7;
+    optional uint32 key_flags = 8;
+    optional uint32 ethtype = 9;
+    optional uint32 ethtype_mask = 10;
+    optional uint32 vlannum = 11;
+    optional uint32 vlannum_mask = 12;
+    optional uint32 ipproto = 13;
+    optional uint32 ipproto_mask = 14;
+    optional uint32 l4_type = 15;
+    optional uint32 l4_type_mask = 16;
+    optional uint32 srcport = 17;
+    optional uint32 srcport_mask = 18;
+    optional uint32 dstport = 19;
+    optional uint32 dstport_mask = 20;
+    optional uint32 mplsnum = 21;
+    optional uint32 mplsnum_mask = 22;
+}
+
+// TBL_FEA_PCAP
+message tbl_fea_pcap
+{
+    optional uint32 tx_en = 1;
+    optional uint32 rx_en = 2;
+    optional uint32 ifindex = 3;
+}
+
+// TBL_CONTROLLER
+message tbl_controller_key
+{
+    required string name = 1;
+}
+
+message tbl_controller
+{
+    required tbl_controller_key key = 1;
+    optional compose_addr_ipv4_t ip = 2;
+    optional uint32 port = 3;
+}
+
+// TBL_CPU_PACKETS
+message tbl_cpu_packets
+{
+    optional uint64 total = 1;
+    optional uint64 rx = 2;
+    optional uint64 tx = 3;
+    optional uint64 rx_bpdu = 4;
+    optional uint64 rx_slow_proto = 5;
+    optional uint64 rx_eapol = 6;
+    optional uint64 rx_lldp = 7;
+    optional uint64 rx_erps = 8;
+    optional uint64 rx_macda = 9;
+    optional uint64 rx_rip = 10;
+    optional uint64 rx_ospf = 11;
+    optional uint64 rx_bgp = 12;
+    optional uint64 rx_arp = 13;
+    optional uint64 rx_dhcp = 14;
+    optional uint64 rx_ipda = 15;
+    optional uint64 rx_igmp = 16;
+    optional uint64 rx_mac_limit = 17;
+    optional uint64 rx_mac_mismatch = 18;
+    optional uint64 rx_l3copy_cpu = 19;
+    optional uint64 rx_ttl_error = 20;
+    optional uint64 rx_ptp = 21;
+    optional uint64 rx_tpoam = 22;
+    optional uint64 rx_l2pro_protocol_mac = 23;
+    optional uint64 rx_l2pro_group_mac = 24;
+    optional uint64 rx_cpu_mirror = 25;
+    optional uint64 rx_nd = 26;
+    optional uint64 rx_packetin = 27;
+    optional uint64 rx_mtu_fail = 28;
+    optional uint64 rx_g8032 = 29;
+    optional uint64 rx_other = 30;
+    optional uint64 tx_igmp = 31;
+    optional uint64 tx_bpdu = 32;
+    optional uint64 tx_slow_proto = 33;
+    optional uint64 tx_arp = 34;
+    optional uint64 tx_dhcp = 35;
+    optional uint64 tx_lldp = 36;
+    optional uint64 tx_erps = 37;
+    optional uint64 tx_eapol = 38;
+    optional uint64 tx_ptp = 39;
+    optional uint64 tx_tpoam = 40;
+    optional uint64 tx_l2pro_protocol_mac = 41;
+    optional uint64 tx_l2pro_group_mac = 42;
+    optional uint64 tx_cpu_mirror = 43;
+    optional uint64 tx_nd = 44;
+    optional uint64 tx_g8032 = 45;
+    optional uint64 tx_other = 46;
+}
+
+// TBL_NS_ROUTE
+message tbl_ns_route
+{
+    required compose_ns_route_key_t key = 1;
+    optional uint32 flag = 2;
+    optional uint32 is_inband = 3;
+    optional string ifname = 4;
+    optional int32 cnt = 5;
+}
+
+// TBL_NS_ROUTE_IP
+message tbl_ns_route_ip_key
+{
+    required compose_addr_t ip = 1;
+}
+
+message tbl_ns_route_ip
+{
+    required tbl_ns_route_ip_key key = 1;
+    optional uint32 is_inband = 2;
+    optional int32 cnt = 3;
+}
+
+// TBL_OPENFLOW_INTERFACE
+message tbl_openflow_interface_key
+{
+    required string name = 1;
+}
+
+message tbl_openflow_interface
+{
+    required tbl_openflow_interface_key key = 1;
+    optional uint32 openflow_enable = 2;
+    optional uint32 obey_vlan_filter = 3;
+    optional uint32 openflow_instance_enable = 4;
+    optional uint32 is_add_to_br0 = 5;
+    repeated uint32 protected_vlan = 6;
+    optional uint32 protected_vlan_change = 7;
+    optional uint32 protected_vlan_change_is_set = 8;
+    repeated uint32 action = 9;
+    optional uint32 ingress_add_native_vlan_enable = 10;
+    optional uint32 egress_remove_native_vlan_enable = 11;
+    optional uint32 ifindex = 12;
+    optional uint32 bind_tunnel_type = 13;
+    optional uint32 bind_tunnel_cnt = 14;
+    optional uint32 tunnel_mpls_disable = 15;
+    optional uint32 is_bind_tunnel = 16;
+}
+
+// TBL_OPENFLOW_MANAGER
+message tbl_openflow_manager
+{
+    required compose_openflow_manager_key_t key = 1;
+    optional uint32 mode = 2;
+    optional uint32 is_inband = 3;
+}
+
+// TBL_PTP_GLOBAL
+message tbl_ptp_global
+{
+    optional compose_ptp_default_t default_ds = 1;
+    optional compose_ptp_current_t current_ds = 2;
+    optional compose_ptp_parent_t parent_ds = 3;
+    optional compose_ptp_time_properties_t time_prop_ds = 4;
+    optional compose_ptp_time_properties_t time_prop_intern = 5;
+    optional uint32 device_type = 6;
+    optional uint32 global_enable = 7;
+    optional int32 master_min_delay_req_interval = 8;
+    optional compose_ptp_global_c_t c = 9;
+    optional string current_slave_port = 10;
+    optional uint32 set_system_time = 11;
+    optional uint32 masterChangeTrap = 12;
+    optional uint32 stateChangeTrap = 13;
+    optional uint32 accuracyChange = 14;
+    optional uint64 glb_enable_hw_msec_time = 15;
+    optional uint64 glb_enable_pf_msec_time = 16;
+    optional int64 total_offset = 17;
+    optional int64 hsrv_adjust_offset = 18;
+    optional int64 hsrv_adjust_ffo = 19;
+    optional int32 hsrv_update_system_time = 20;
+    optional uint32 hsrv_device_type = 21;
+}
+
+// TBL_PTP_PORT
+message tbl_ptp_port_key
+{
+    required string name = 1;
+}
+
+message tbl_ptp_port
+{
+    required tbl_ptp_port_key key = 1;
+    optional uint32 ifindex = 2;
+    optional int64 hsrv_path_delay = 3;
+    optional compose_ptp_port_t port_ds = 4;
+    optional compose_glb_ptp_port_address_t port_addr = 5;
+    optional compose_glb_ptp_timeinterval_t asymmetry_correction = 6;
+    optional int32 ingress_latency = 7;
+    optional int32 egress_latency = 8;
+    optional compose_ptp_dump_flag_t dump_flag = 9;
+    optional uint32 enable = 10;
+    optional uint32 lag_id = 11;
+    optional uint32 link_up = 12;
+    optional uint32 drop_announce = 13;
+    optional compose_ptp_port_stats_t packet_stats = 14;
+    optional compose_ptp_vlan_info_t vlan_info = 15;
+    optional uint32 recommended_state = 16;
+    optional uint32 bmc_code = 17;
+    optional uint32 bmc_expires = 18;
+    optional uint32 slave_change_master = 19;
+    optional uint32 synchronization_fault = 20;
+    optional uint32 master_clock_selected = 21;
+    optional uint32 ptp_seq_id = 22;
+    optional uint32 uncalibrated_update_offset_times = 23;
+    optional uint32 uncalibrated_update_limit_times = 24;
+    optional compose_ptp_port_p_t p = 25;
+    optional compose_ptp_port_c_t c = 26;
+    optional compose_ptp_msg_proc_ops_t msg_proc_ops = 27;
+}
+
+// TBL_PTP_FOREIGN
+message tbl_ptp_foreign
+{
+    required compose_ptp_foreign_master_t key = 1;
+    optional uint32 foreign_master_announce_messages = 2;
+    optional compose_ptp_common_message_header_t header = 3;
+    optional compose_ptp_msg_announce_t announce = 4;
+    optional uint32 qualified = 5;
+    optional uint32 port_foreign_num = 6;
+}
+
+// TBL_PTP_RESIDENCE_TIME_CACHE
+message tbl_ptp_residence_time_cache
+{
+    required compose_ptp_residence_time_cache_t key = 1;
+    optional uint32 sequence_id = 2;
+    optional uint32 ifindex_port_ingress = 3;
+    optional uint32 domain = 4;
+    optional compose_glb_ptp_timeinterval_t residence_time = 5;
+    optional uint32 outdated = 6;
+}
+
+// TBL_FEA_PTP_GLOBAL
+message tbl_fea_ptp_global
+{
+    optional uint32 global_enable = 1;
+    optional uint32 device_type = 2;
+    optional uint32 retry_cnt = 3;
+    optional uint32 ready = 4;
+    optional uint32 blocked = 5;
+    optional uint32 type = 6;
+    optional uint32 tx_ifindex = 7;
+    optional uint32 tx_seq_id = 8;
+    optional uint32 intr_count = 9;
+    optional uint32 acl_update_time_range = 10;
+}
+
+// TBL_FEA_PTP_TS
+message tbl_fea_ptp_ts_key
+{
+    required uint32 intr_seq_id = 1;
+}
+
+message tbl_fea_ptp_ts
+{
+    required tbl_fea_ptp_ts_key key = 1;
+    optional uint32 intr_ifindex = 2;
+    optional uint32 ns = 3;
+    optional uint32 s_lsb = 4;
+    optional uint32 s_msb = 5;
+}
+
+// TBL_FEA_TIME
+message tbl_fea_time
+{
+    optional uint32 sync_type = 1;
+    optional uint32 sync_count = 2;
+    optional compose_sal_time_t last_sync_time = 3;
+}
+
+// TBL_BHM_GLOBAL
+message tbl_bhm_global
+{
+    optional int32 hw_watchdog_fd = 1;
+    optional uint32 hw_watchdog_feed_en = 2;
+    optional uint32 hw_watchdog_enable = 3;
+    optional uint32 sw_watchdog_enable = 4;
+    optional uint32 reactive = 5;
+    optional uint32 is_reload = 6;
+    optional uint32 is_shutdown = 7;
+    optional uint32 is_warning = 8;
+    optional uint32 reboot = 9;
+}
+
+// TBL_BHM_MODULE
+message tbl_bhm_module_key
+{
+    required uint32 pm_id = 1;
+}
+
+message tbl_bhm_module
+{
+    required tbl_bhm_module_key key = 1;
+    optional uint32 running = 2;
+    optional uint32 pid = 3;
+    optional uint32 death_count = 4;
+}
+
+// TBL_OPENFLOW_TUNNEL_INTERFACE
+message tbl_openflow_tunnel_interface_key
+{
+    required string name = 1;
+}
+
+message tbl_openflow_tunnel_interface
+{
+    required tbl_openflow_tunnel_interface_key key = 1;
+    optional uint32 openflow_enable = 2;
+    optional string source_ip = 3;
+    optional string remote_ip = 4;
+    optional string bind_port_name = 5;
+    optional string bind_mac = 6;
+    optional uint32 bind_vlan = 7;
+    optional uint32 flag = 8;
+    optional uint32 tunnel_status = 9;
+}
+
+// TBL_OPENFLOW_TUNNEL_LOCAL_IP_CNT
+message tbl_openflow_tunnel_local_ip_cnt_key
+{
+    required string local_ip = 1;
+}
+
+message tbl_openflow_tunnel_local_ip_cnt
+{
+    required tbl_openflow_tunnel_local_ip_cnt_key key = 1;
+    optional uint32 local_ip_ref = 2;
+}
+
+// TBL_INBAND_SNAT
+message tbl_inband_snat
+{
+    required compose_inband_snat_key_t key = 1;
+    optional string ifname = 2;
+    optional compose_addr_ipv4_t ip = 3;
+    optional uint32 type = 4;
+    optional uint32 nft_handle = 5;
+}
+
+// TBL_ARPINSP
+message tbl_arpinsp_key
+{
+    required uint32 vlan_id = 1;
+}
+
+message tbl_arpinsp
+{
+    required tbl_arpinsp_key key = 1;
+    optional uint32 acllog_filter = 2;
+    optional uint32 dhcplog_filter = 3;
+    optional uint32 filter_state = 4;
+    optional uint32 enable_state = 5;
+    optional uint64 forwarded = 6;
+    optional uint64 dropped = 7;
+    optional uint64 dhcp_dropped = 8;
+    optional uint64 acl_dropped = 9;
+    optional uint64 dhcp_permit = 10;
+    optional uint64 acl_permit = 11;
+    optional uint64 srcmac_failure = 12;
+    optional uint64 dstmac_failure = 13;
+    optional uint64 ip_failure = 14;
+    optional uint64 invalid_protocol = 15;
+    optional string filter = 16;
+}
+
+// TBL_ARPACL_CONFIG
+message tbl_arpacl_config_key
+{
+    required string name = 1;
+}
+
+message tbl_arpacl_config
+{
+    required tbl_arpacl_config_key key = 1;
+    optional uint32 seq_ref = 2;
+}
+
+// TBL_ARPACE_CONFIG
+message tbl_arpace_config
+{
+    required compose_arpace_config_key_t key = 1;
+    optional uint32 arp_type = 2;
+    optional compose_mac_addr_t src_mac = 3;
+    optional compose_mac_addr_t src_mac_mask = 4;
+    optional compose_addr_ipv4_t src_ip = 5;
+    optional compose_addr_ipv4_t src_ip_mask = 6;
+    optional uint32 arp_deny = 7;
+    optional uint32 arp_log = 8;
+}
+
+// TBL_COPP_CFG
+message tbl_copp_cfg
+{
+    optional string copp_pname = 1;
+    optional uint32 copp_ifidx = 2;
+    optional uint32 copp_total_rate = 3;
+}
+
+// TBL_FEA_COPP_TRAP_GROUP
+message tbl_fea_copp_trap_group_key
+{
+    required uint32 copp_trap_reason_id = 1;
+}
+
+message tbl_fea_copp_trap_group
+{
+    required tbl_fea_copp_trap_group_key key = 1;
+    optional uint64 policer_oid = 2;
+    optional uint64 trap_oid = 3;
+    optional uint32 queue_id = 4;
+    optional uint64 green_packet = 5;
+    optional uint64 green_byte = 6;
+    optional uint64 yellow_packet = 7;
+    optional uint64 yellow_byte = 8;
+    optional uint64 red_packet = 9;
+    optional uint64 red_byte = 10;
+}
+
+// TBL_SFLOW_GLOBAL
+message tbl_sflow_global
+{
+    optional uint32 enable = 1;
+    optional uint32 version = 2;
+    optional compose_addr_t agent = 3;
+    optional compose_addr_t agent_ipv6 = 4;
+    optional uint32 counter_interval = 5;
+    optional uint32 counter_port_num = 6;
+    optional uint32 counter_next_port = 7;
+    optional uint32 sflow_all = 8;
+    optional uint32 sflow_counter = 9;
+    optional uint32 sflow_sample = 10;
+    optional uint32 sflow_packet = 11;
+}
+
+// TBL_SFLOW_COLLECTOR
+message tbl_sflow_collector
+{
+    required compose_sflow_collector_key_t key = 1;
+    optional bytes buf = 2;
+    optional uint32 pkt_len = 3;
+    optional uint32 sendfd = 4;
+    optional uint32 sequence = 5;
+}
+
+// TBL_SFLOW_COUNTER_PORT
+message tbl_sflow_counter_port_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_sflow_counter_port
+{
+    required tbl_sflow_counter_port_key key = 1;
+    optional uint32 left_interval = 2;
+    optional uint32 sequence = 3;
+}
+
+// TBL_VRRP_GLOBAL
+message tbl_vrrp_global
+{
+    optional uint32 vrrp_version = 1;
+    optional uint32 vrrp_session_count = 2;
+    optional uint32 vrrp_msec_session_count = 3;
+    optional bytes buf = 4;
+    optional uint32 pkt_len = 5;
+}
+
+// TBL_VRRP_VMAC
+message tbl_vrrp_vmac_key
+{
+    required compose_mac_addr_t mac = 1;
+}
+
+message tbl_vrrp_vmac
+{
+    required tbl_vrrp_vmac_key key = 1;
+    optional uint32 ifindex = 2;
+}
+
+// TBL_VRRP_VIP
+message tbl_vrrp_vip
+{
+    required compose_addr_t key = 1;
+    optional compose_mac_addr_t vmac = 2;
+    optional compose_mac_addr_t interface_mac = 3;
+}
+
+// TBL_VRRP_SESSION
+message tbl_vrrp_session_key
+{
+    required uint32 vrid = 1;
+}
+
+message tbl_vrrp_session
+{
+    required tbl_vrrp_session_key key = 1;
+    optional uint32 enable = 2;
+    optional uint32 state = 3;
+    optional compose_addr_t vip = 4;
+    optional uint32 owner = 5;
+    optional string ifname = 6;
+    optional uint32 ifindex = 7;
+    optional uint32 priority = 8;
+    optional uint32 config_priority = 9;
+    optional uint32 advt_interval = 10;
+    optional uint32 time_mode = 11;
+    optional uint32 preempt_delay = 12;
+    optional uint32 preempt_mode = 13;
+    optional compose_mac_addr_t vmac = 14;
+    optional uint32 ip_protocol = 15;
+    optional uint32 timer = 16;
+    optional compose_mac_addr_t old_mac = 17;
+    optional uint32 vip_status = 18;
+    optional uint32 ifp_status = 19;
+    optional uint32 shutdown_flag = 20;
+    optional uint32 skew_time = 21;
+    optional uint32 master_down_interval = 22;
+    optional uint32 num_ip_addrs = 23;
+    optional uint32 trackobj_id = 24;
+    optional uint32 trackobj_status = 25;
+    optional uint32 priority_delta = 26;
+    optional compose_sal_time_t vrrp_uptime = 27;
+    optional uint32 admin_state = 28;
+    optional uint32 rowstatus = 29;
+    optional uint32 stats_become_master = 30;
+    optional uint32 stats_advt_rcvd = 31;
+    optional uint32 stats_advt_interval_errors = 32;
+    optional uint32 stats_auth_failures = 33;
+    optional uint32 stats_ip_ttl_errors = 34;
+    optional uint32 stats_priority_zero_pkts_rcvd = 35;
+    optional uint32 stats_priority_zero_pkts_sent = 36;
+    optional uint32 stats_invalid_type_pkts_rcvd = 37;
+    optional uint32 stats_addr_list_errors = 38;
+    optional uint32 stats_invalid_auth_type = 39;
+    optional uint32 stats_auth_type_mismatch = 40;
+    optional uint32 stats_pkt_len_errors = 41;
+    optional uint32 master_ip_status = 42;
+    optional compose_addr_t master_ip = 43;
+    optional uint32 master_priority = 44;
+    optional uint32 master_advt_interval = 45;
+    optional compose_addr_t primary_ip = 46;
+    optional uint32 learn_master = 47;
+    optional uint32 secondaryip_same_vip = 48;
+}
+
+// TBL_SSM_GLOBAL
+message tbl_ssm_global
+{
+    optional compose_ssm_clock_id_t device_clock_id = 1;
+    optional uint32 synce_enable = 2;
+    optional uint32 local_priority = 3;
+    optional uint32 option_mode = 4;
+    optional uint32 system_quality = 5;
+    optional uint32 current_quality = 6;
+    optional uint32 device_role = 7;
+    optional uint32 ssm_enable = 8;
+    optional uint32 ssm_extend_enable = 9;
+    optional uint32 holdover_en = 10;
+    optional uint32 freerun_en = 11;
+    optional uint32 select_ifindex = 12;
+    optional uint32 dpll_selected_ifindex = 13;
+    optional uint32 dpll_current_status = 14;
+    optional uint32 force_quality_option1_cnt = 15;
+    optional uint32 force_quality_option2_cnt = 16;
+    optional uint32 clock_recovery_select = 17;
+    optional uint32 next_selected_ifindex = 18;
+    optional uint32 select_if_linkup_restore_en = 19;
+    optional uint32 select_if_priority_change_en = 20;
+    optional uint32 select_if_quality_change_en = 21;
+    optional uint32 holdoff_time = 22;
+    optional uint32 wtr_time = 23;
+}
+
+// TBL_SSM_PORT
+message tbl_ssm_port_key
+{
+    required string name = 1;
+}
+
+message tbl_ssm_port
+{
+    required tbl_ssm_port_key key = 1;
+    optional uint32 ifindex = 2;
+    optional uint32 synce_enable = 3;
+    optional uint32 ssm_pdu_direct = 4;
+    optional uint32 priority = 5;
+    optional uint32 replace_clockid_en = 6;
+    optional uint32 receive_pdu_enable = 7;
+    optional uint32 send_quality = 8;
+    optional uint32 receive_quality = 9;
+    optional uint32 force_tx_quality = 10;
+    optional uint32 force_rx_quality = 11;
+    optional uint32 dnu_group_id = 12;
+    optional uint32 hop = 13;
+    optional compose_ssm_clock_id_t receive_clock_id = 14;
+}
+
+// TBL_IPSLA_GLOBAL
+message tbl_ipsla_global
+{
+    optional uint32 ipsla_entry_num = 1;
+    optional uint32 trap_test_failure = 2;
+    optional uint32 trap_test_success = 3;
+    optional uint32 trap_pkt_timeout = 4;
+    optional uint32 trap_overthreshold = 5;
+}
+
+// TBL_IPSLA_ENTRY
+message tbl_ipsla_entry_key
+{
+    required uint32 entry_id = 1;
+}
+
+message tbl_ipsla_entry
+{
+    required tbl_ipsla_entry_key key = 1;
+    optional uint32 type = 2;
+    optional uint32 admin_state = 3;
+    optional string desc = 4;
+    optional uint32 frequency = 5;
+    optional uint32 timeout = 6;
+    optional uint32 threshold = 7;
+    optional uint32 interval = 8;
+    optional uint32 packets_per_test = 9;
+    optional uint32 fail_percent = 10;
+    optional uint32 ttl = 11;
+    optional uint32 tos = 12;
+    optional uint32 data_size = 13;
+    optional uint32 data_pattern = 14;
+    optional compose_addr_ipv4_t inaddr = 15;
+    optional compose_addr_ipv4_t src_inaddr = 16;
+    optional string src_ifname = 17;
+    optional int32 sock = 18;
+    optional int32 send_sock = 19;
+    optional int32 sock_flag = 20;
+    optional bytes buf = 21;
+    optional uint32 packet_length = 22;
+    optional uint32 testid = 23;
+    optional uint32 running_frequency = 24;
+    optional uint32 running_timeout = 25;
+    optional uint32 running_interval = 26;
+    optional uint32 running_probe_cnt = 27;
+    optional uint32 sequence = 28;
+    optional uint32 rtt = 29;
+    optional uint64 send_time = 30;
+    optional uint64 last_send_time = 31;
+    optional uint32 send_cnt = 32;
+    optional uint32 receive_cnt = 33;
+    optional uint32 overthreshold_cnt = 34;
+    optional uint32 sendfail_cnt = 35;
+    optional uint32 running_rtt_min = 36;
+    optional uint32 running_rtt_max = 37;
+    optional uint32 running_rtt_sum = 38;
+    optional uint32 running_success = 39;
+    optional uint32 running_fail_percent = 40;
+    optional uint32 returncode = 41;
+    optional uint32 echo_reply = 42;
+    optional uint32 total_receive = 43;
+    optional uint32 total_send = 44;
+    optional uint64 rtt_sum = 45;
+    optional uint32 rtt_max = 46;
+    optional uint32 rtt_min = 47;
+    optional uint32 probe_result_config_cnt = 48;
+    optional uint32 probe_result_index = 49;
+    optional uint32 test_result_config_cnt = 50;
+    optional uint32 test_result_index = 51;
+}
+
+// TBL_IPSLA_PACKET_STATS
+message tbl_ipsla_packet_stats
+{
+    required compose_ipsla_packet_stats_key_t key = 1;
+    optional uint64 send_time = 2;
+    optional uint32 rtt = 3;
+    optional uint32 testid = 4;
+    optional uint32 index = 5;
+    optional uint32 status = 6;
+    optional uint32 timeout = 7;
+    optional uint32 threshold = 8;
+}
+
+// TBL_IPSLA_TEST_STATS
+message tbl_ipsla_test_stats
+{
+    required compose_ipsla_test_stats_key_t key = 1;
+    optional uint64 last_send_time = 2;
+    optional uint32 testid = 3;
+    optional uint32 send_cnt = 4;
+    optional uint32 receive_cnt = 5;
+    optional uint32 overthreshold_cnt = 6;
+    optional uint32 sendfail_cnt = 7;
+    optional uint32 rtt_min = 8;
+    optional uint32 rtt_max = 9;
+    optional uint32 rtt_sum = 10;
+    optional uint32 success = 11;
+    optional uint32 fail_percent = 12;
+    optional uint32 timeout = 13;
+}
+
+// TBL_TRACK_GLOBAL
+message tbl_track_global
+{
+    optional uint32 track_object_num = 1;
+    optional uint32 track_timer_interval = 2;
+}
+
+// TBL_TRACK_OBJECT
+message tbl_track_object_key
+{
+    required uint32 trackobj_id = 1;
+}
+
+message tbl_track_object
+{
+    required tbl_track_object_key key = 1;
+    optional uint32 type = 2;
+    optional uint32 state = 3;
+    optional string track_if = 4;
+    optional uint32 rtr_entryid = 5;
+    optional uint32 delay_up = 6;
+    optional uint32 running_delay_up = 7;
+    optional uint32 delay_down = 8;
+    optional uint32 running_delay_down = 9;
+    optional bytes tracked_vrid_bmp = 10;
+    optional uint32 static_rt_refcnt = 11;
+}
+
+// TBL_CONTROLLER_ATTR
+message tbl_controller_attr
+{
+    required compose_ns_route_key_t key = 1;
+    optional string controller_name = 2;
+    optional uint32 max_backoff = 3;
+    optional uint32 inactivity_probe = 4;
+}
+
+// TBL_OAM_SESSION
+message tbl_oam_session_key
+{
+    required uint32 session_id = 1;
+}
+
+message tbl_oam_session
+{
+    required tbl_oam_session_key key = 1;
+    optional uint32 creat_by_flow = 2;
+    optional uint32 oam_type = 3;
+    optional uint32 pw_type = 4;
+    optional uint32 mp_type = 5;
+    optional uint32 service_ifindex = 6;
+    optional string service_name = 7;
+    optional string megid_str = 8;
+    optional uint32 mepid = 9;
+    optional uint32 rmepid = 10;
+    optional uint32 cc_enable = 11;
+    optional uint32 cc_interval = 12;
+    optional uint32 cc_interval_cfg = 13;
+    optional uint32 lm_enable = 14;
+    optional uint32 dm_enable = 15;
+    optional uint32 exp = 16;
+    optional uint32 level = 17;
+    optional uint32 ttl = 18;
+    optional uint32 bind_oam_flow_id = 19;
+    optional uint32 bind_oam_ifindex = 20;
+    optional uint32 icclen = 21;
+    optional string description = 22;
+    optional compose_tpoam_dm_t oam_dm = 23;
+    optional compose_tpoam_lm_t oam_lm = 24;
+    optional compose_tpoam_lb_t oam_lb = 25;
+    optional compose_tpoam_event_t oam_event = 26;
+    optional uint32 dm_active = 27;
+    optional uint32 oam_status = 28;
+    optional uint32 signal_status = 29;
+    optional compose_tpoam_stats_t oam_stats = 30;
+    optional compose_tpoam_list_t oam_list = 31;
+    optional uint32 aps_group_id = 32;
+    optional uint32 flag_add_flow = 33;
+}
+
+// TBL_OAM_SESSION_UPLOAD
+message tbl_oam_session_upload_key
+{
+    required uint32 session_id = 1;
+}
+
+message tbl_oam_session_upload
+{
+    required tbl_oam_session_upload_key key = 1;
+    optional uint32 bind_oam_flow_id = 2;
+    optional compose_upload_tpoam_dm_t upload_dm = 3;
+    optional compose_upload_tpoam_dm_t upload_dm_event = 4;
+    optional compose_upload_tpoam_lm_t upload_lm = 5;
+    optional compose_upload_tpoam_lm_t upload_lm_event = 6;
+    optional compose_upload_tpoam_ccm_t upload_ccm = 7;
+}
+
+// TBL_LSP_APS_GROUP
+message tbl_lsp_aps_group_key
+{
+    required uint32 group_id = 1;
+}
+
+message tbl_lsp_aps_group
+{
+    required tbl_lsp_aps_group_key key = 1;
+    optional string working_lsp_name = 2;
+    optional string protection_lsp_name = 3;
+    optional uint32 ref_cnt = 4;
+    optional uint32 flow_flag = 5;
+    optional uint32 wait_to_restore_time = 6;
+    optional uint32 hold_off_time = 7;
+    optional uint32 is_revertive = 8;
+    optional uint32 active_path = 9;
+    optional uint32 bridge_permanent = 10;
+    optional uint32 current_state = 11;
+}
+
+// TBL_PW_APS_GROUP
+message tbl_pw_aps_group_key
+{
+    required uint32 group_id = 1;
+}
+
+message tbl_pw_aps_group
+{
+    required tbl_pw_aps_group_key key = 1;
+    optional string working_pw_name = 2;
+    optional string protection_pw_name = 3;
+    optional uint32 ref_cnt = 4;
+    optional uint32 flow_flag = 5;
+    optional uint32 wait_to_restore_time = 6;
+    optional uint32 hold_off_time = 7;
+    optional uint32 is_revertive = 8;
+    optional uint32 active_path = 9;
+    optional uint32 bridge_permanent = 10;
+    optional uint32 current_state = 11;
+}
+
+// TBL_LSP_PE
+message tbl_lsp_pe_key
+{
+    required string name = 1;
+}
+
+message tbl_lsp_pe
+{
+    required tbl_lsp_pe_key key = 1;
+    optional uint32 ref_cnt = 2;
+    optional uint32 inlabel = 3;
+    optional uint32 outlabel = 4;
+    optional uint32 ifindex = 5;
+    optional uint32 vid = 6;
+    optional uint32 outlabel_exp = 7;
+    optional uint32 outlabel_exp_is_set = 8;
+    optional uint32 outlabel_ttl = 9;
+    optional uint32 oam_session_id = 10;
+    optional uint32 lsp_aps_group_id = 11;
+    optional compose_mac_addr_t nexthop_mac = 12;
+}
+
+// TBL_LSP_P
+message tbl_lsp_p_key
+{
+    required string name = 1;
+}
+
+message tbl_lsp_p
+{
+    required tbl_lsp_p_key key = 1;
+    optional uint32 ref_cnt = 2;
+    optional uint32 west_inlabel = 3;
+    optional uint32 west_outlabel = 4;
+    optional uint32 west_ifindex = 5;
+    optional uint32 west_vid = 6;
+    optional compose_mac_addr_t west_nexthop_mac = 7;
+    optional uint32 west_outlabel_exp = 8;
+    optional uint32 west_outlabel_exp_is_set = 9;
+    optional uint32 west_outlabel_ttl = 10;
+    optional uint32 east_inlabel = 11;
+    optional uint32 east_outlabel = 12;
+    optional uint32 east_ifindex = 13;
+    optional uint32 east_vid = 14;
+    optional uint32 east_outlabel_exp = 15;
+    optional uint32 east_outlabel_exp_is_set = 16;
+    optional uint32 east_outlabel_ttl = 17;
+    optional compose_mac_addr_t east_nexthop_mac = 18;
+    optional uint32 oam_session_id = 19;
+}
+
+// TBL_PW_TPE
+message tbl_pw_tpe_key
+{
+    required string name = 1;
+}
+
+message tbl_pw_tpe
+{
+    required tbl_pw_tpe_key key = 1;
+    optional uint32 ref_cnt = 2;
+    optional uint32 inlabel = 3;
+    optional uint32 outlabel = 4;
+    optional uint32 outlabel_exp = 5;
+    optional uint32 outlabel_exp_is_set = 6;
+    optional uint32 outlabel_ttl = 7;
+    optional uint32 tunnel_type = 8;
+    optional string lsp_name = 9;
+    optional uint32 lsp_aps_group_id = 10;
+    optional uint32 pw_aps_group_id = 11;
+    optional uint32 oam_session_id = 12;
+}
+
+// TBL_SECTION_OAM
+message tbl_section_oam_key
+{
+    required uint32 ifindex = 1;
+}
+
+message tbl_section_oam
+{
+    required tbl_section_oam_key key = 1;
+    optional uint32 oam_session_id = 2;
+    optional compose_mac_addr_t nexthop_mac = 3;
+}
+
+// TBL_OAM_FLOW_INFO
+message tbl_oam_flow_info_key
+{
+    required uint32 flow_id = 1;
+}
+
+message tbl_oam_flow_info
+{
+    required tbl_oam_flow_info_key key = 1;
+    optional uint32 type = 2;
+    optional string name = 3;
+    optional uint32 session_id = 4;
+    optional uint32 outlabel_flow_id = 5;
+    optional uint32 inlabel_flow_id = 6;
+    optional uint32 outlabel_group_id = 7;
+    optional uint32 inlabel_group_id = 8;
+    optional uint32 ifindex = 9;
+}
+
+// TBL_TPOAM_GLOBAL
+message tbl_tpoam_global
+{
+    optional uint32 node_id = 1;
+    optional uint32 channel_type = 2;
+    optional uint32 fast_aps_en = 3;
+    optional uint32 rdi_reason = 4;
+    optional uint32 rdi_reason_mask = 5;
+    optional uint32 sf_reason_mask = 6;
+    optional uint32 sd_reason_mask = 7;
+    optional compose_tpoam_rc_count_t resouce_count_max = 8;
+    optional compose_tpoam_rc_count_t resouce_count_curr = 9;
+    repeated uint32 event_rule_map = 10;
+    optional compose_tpoam_stats_t oam_glb_stats = 11;
+    optional compose_tpoam_exec_t exec = 12;
+    optional compose_tpoam_trap_cache_t trap_cache = 13;
+    optional compose_tpoam_ratelimit_t trap = 14;
+    optional compose_tpoam_ratelimit_t log = 15;
+    optional uint32 dm_enable_global = 16;
+    optional uint32 dm_delay_threshold = 17;
+    optional uint32 dm_calc_interval = 18;
+    optional uint32 lm_enable_global = 19;
+    optional uint32 lm_local_threshold = 20;
+    optional uint32 lm_remote_threshold = 21;
+    optional uint32 lm_calc_interval = 22;
+}
+
+// TBL_TPOAM_EXEC_GLOBAL
+message tbl_tpoam_exec_global
+{
+    optional uint32 test_type = 1;
+    optional uint32 oam_session_id = 2;
+    optional uint32 pid = 3;
+    optional uint32 sock = 4;
+    optional compose_tpoam_lmm_exec_t exec_lm = 5;
+    optional compose_tpoam_lb_exec_t exec_lb_rmep = 6;
+    optional compose_tpoam_lb_exec_t exec_lb_mip = 7;
+    optional compose_tpoam_lb_exec_t exec_lb_discovery = 8;
+    optional compose_tpoam_1dm_dmm_exec_t exec_dmm = 9;
+    optional compose_tpoam_1dm_dmm_exec_t exec_1dm = 10;
+}
+
+// TBL_APS_GROUP_INFO
+message tbl_aps_group_info_key
+{
+    required uint32 aps_group_id = 1;
+}
+
+message tbl_aps_group_info
+{
+    required tbl_aps_group_info_key key = 1;
+    optional string working_name = 2;
+    optional string protection_name = 3;
+    optional string select_name = 4;
+    optional int32 aps_group_type = 5;
+    optional uint32 wait_to_restore_time = 6;
+    optional uint32 hold_off_time = 7;
+    optional uint32 is_revertive = 8;
+    optional uint32 active_path = 9;
+    optional uint32 bridge_permanent = 10;
+    optional uint32 current_event = 11;
+    optional uint32 dfop_reason = 12;
+    optional uint32 sc_aps_intervel = 13;
+    optional uint32 fast_aps_en = 14;
+    optional uint32 aps_channel = 15;
+    optional uint32 requested_signal = 16;
+    optional uint32 direction = 17;
+    optional uint32 bridge_type = 18;
+    optional uint32 last_state = 19;
+    optional uint32 current_state = 20;
+    optional uint32 far_end_last_event = 21;
+    optional uint32 sc_aps_out_pdu_count = 22;
+    optional uint32 hold_off_expired = 23;
+}
+
+// TBL_OAM_INLABEL_INFO
+message tbl_oam_inlabel_info_key
+{
+    required uint32 inlabel = 1;
+}
+
+message tbl_oam_inlabel_info
+{
+    required tbl_oam_inlabel_info_key key = 1;
+    optional uint32 ref_cnt = 2;
+}
+
+// TBL_OAM_MPLS_APS_CHECK
+message tbl_oam_mpls_aps_check_key
+{
+    required string name = 1;
+}
+
+message tbl_oam_mpls_aps_check
+{
+    required tbl_oam_mpls_aps_check_key key = 1;
+    optional uint32 lsp_label = 2;
+    optional uint32 is_aps_action = 3;
+    optional uint32 ref_cnt = 4;
+    optional uint32 ifindex = 5;
+    optional compose_mac_addr_t nexthop_mac = 6;
+    optional uint32 vid = 7;
+    optional uint32 outlabel_exp = 8;
+    optional uint32 outlabel_exp_is_set = 9;
+    optional uint32 outlabel_ttl = 10;
+}
+
+// TBL_VLAN_MAPPING_TABLE
+message tbl_vlan_mapping_table_key
+{
+    required string name = 1;
+}
+
+message tbl_vlan_mapping_table
+{
+    required tbl_vlan_mapping_table_key key = 1;
+    optional bytes applied_ports = 2;
+    optional uint32 entry_num = 3;
+    optional uint32 egress_entry_num = 4;
+    optional uint32 group_id = 5;
+    optional uint32 group_mapped_svid = 6;
+    optional string group_evc_entry_name = 7;
+}
+
+// TBL_VLAN_MAPPING_ENTRY
+message tbl_vlan_mapping_entry
+{
+    required compose_vlan_mapping_entry_key_t key = 1;
+    optional uint32 mapped_svid = 2;
+    optional uint32 mapped_cvid = 3;
+    optional string evc_entry = 4;
+}
+
+// TBL_EGRESS_MAPPING_ENTRY
+message tbl_egress_mapping_entry
+{
+    required compose_egress_mapping_entry_key_t key = 1;
+    optional uint32 mapped_vid = 2;
+}
+
+// TBL_VLAN_GROUP
+message tbl_vlan_group_key
+{
+    required uint32 group_id = 1;
+}
+
+message tbl_vlan_group
+{
+    required tbl_vlan_group_key key = 1;
+    repeated uint32 valid = 2;
+    repeated uint32 min_vid = 3;
+    repeated uint32 max_vid = 4;
+}
+
+// TBL_EVC_ENTRY
+message tbl_evc_entry_key
+{
+    required string name = 1;
+}
+
+message tbl_evc_entry
+{
+    required tbl_evc_entry_key key = 1;
+    optional uint32 mapped_svid = 2;
+    optional uint32 mapped_cvid = 3;
+    optional uint32 evc_type = 4;
+    optional uint32 ref_count = 5;
+}
+
+// TBL_MAPPED_VLAN_INFO
+message tbl_mapped_vlan_info
+{
+    required compose_mapped_vlan_info_key_t key = 1;
+    optional uint32 mapped_svid = 2;
+    optional uint32 mapped_cvid = 3;
+    optional bytes raw_vid_bmp = 4;
+}
+
+// TBL_L2_PROTOCOL
+message tbl_l2_protocol_key
+{
+    required string name = 1;
+}
+
+message tbl_l2_protocol
+{
+    required tbl_l2_protocol_key key = 1;
+    optional compose_mac_addr_t protocol_mac = 2;
+    optional compose_mac_addr_t group_mac = 3;
+    optional uint32 is_standard_pro = 4;
+    optional uint32 protocol_index = 5;
+}
+
+// TBL_ND_FIB
+message tbl_nd_fib
+{
+    required compose_nd_prefix_key_t key = 1;
+    optional uint32 ifindex = 2;
+    optional string ifname = 3;
+    optional compose_mac_addr_t mac_addr = 4;
+    optional uint32 state = 5;
+    optional uint32 permanent = 6;
+    optional uint32 dynamic = 7;
+    optional uint32 active = 8;
+    optional uint32 router = 9;
+    optional uint32 fdb_age = 10;
+    optional compose_sal_time_t uptime = 11;
+    optional uint32 probes = 12;
+    optional uint32 ipackets = 13;
+    optional uint32 opackets = 14;
+    optional uint32 route_ref = 15;
+    optional uint32 is_static_route_dup = 16;
+    optional compose_addr_ipv6_t staic_route_dup_ipv6_nh = 17;
+}
+
+// TBL_ND_STATS
+message tbl_nd_stats
+{
+    optional uint64 rcv = 1;
+    optional uint64 rcv_error = 2;
+    optional uint64 rcv_tooshort = 3;
+    optional uint64 rcv_invalid = 4;
+    optional uint64 rcv_inconsistent = 5;
+    optional uint64 rcv_rs = 6;
+    optional uint64 rcv_ra = 7;
+    optional uint64 rcv_ns = 8;
+    optional uint64 rcv_na = 9;
+    optional uint64 rcv_redirect = 10;
+    optional uint64 overflow_failed = 11;
+    optional uint64 rcv_miss = 12;
+    optional uint64 rcv_miss_conflict = 13;
+    optional uint64 rcv_static_conflict = 14;
+    optional uint64 allocs = 15;
+    optional uint64 destroys = 16;
+    optional uint64 error = 17;
+    optional uint64 intf_invalid = 18;
+    optional uint64 res_failed = 19;
+    optional uint64 rcv_probes_mcast = 20;
+    optional uint64 rcv_probes_ucast = 21;
+    optional uint64 snd_solicited_na = 22;
+    optional uint64 snd_unsolicited_na = 23;
+    optional uint64 snd_dad_ns = 24;
+}
+
+// TBL_CPU_MIRROR_GLOBAL
+message tbl_cpu_mirror_global
+{
+    optional uint32 strategy = 1;
+    optional uint32 buf_size = 2;
+    optional uint32 write_file = 3;
+    optional uint64 flash_size_threshold = 4;
+}
+
+// TBL_TAP_SERVER
+message tbl_tap_server
+{
+    optional int32 server_sock = 1;
+    optional int32 client_sock = 2;
+    optional compose_addr_ipv4_t peer_addr = 3;
+    optional compose_sal_time_t lastread = 4;
+    optional uint32 debug = 5;
+    optional compose_addr_ipv4_t client_peer_addr = 6;
+    optional uint32 client_test = 7;
+}
+
+// TBL_DHCPV6_DEBUG
+message tbl_dhcpv6_debug
+{
+    optional uint32 clientv6_error = 1;
+    optional uint32 clientv6_events = 2;
+    optional uint32 clientv6_packet = 3;
+    optional uint32 clientv6_dump = 4;
+}
+
+// TBL_L2EDIT
+message tbl_l2edit
+{
+    required compose_l2edit_key_t key = 1;
+    optional uint32 count = 2;
+}
+
+// TBL_HASH_FIELD_PROFILE
+message tbl_hash_field_profile_key
+{
+    required string name = 1;
+}
+
+message tbl_hash_field_profile
+{
+    required tbl_hash_field_profile_key key = 1;
+    optional string description = 2;
+    optional uint32 bitmap_data = 3;
+    optional uint32 flag = 4;
+    optional uint32 index = 5;
+    optional uint32 l2_set = 6;
+    optional uint32 ip_set = 7;
+    optional uint32 ipv6_set = 8;
+    optional uint32 gre_set = 9;
+    optional uint32 nvgre_set = 10;
+    optional uint32 mpls_set = 11;
+    optional uint32 vpws_set = 12;
+    optional uint32 l3vpn_set = 13;
+    optional uint32 vxlan_set = 14;
+    optional uint32 vpls_set = 15;
+    optional uint32 hash_arithmetic = 16;
+    optional uint32 hash_seed_value = 17;
+    optional uint32 mode_symmetry = 18;
+    optional uint32 bitmap_disable = 19;
+}
+
+// TBL_HASH_VALUE_PROFILE
+message tbl_hash_value_profile_key
+{
+    required string name = 1;
+}
+
+message tbl_hash_value_profile
+{
+    required tbl_hash_value_profile_key key = 1;
+    optional string description = 2;
+    optional uint32 bitmap_data = 3;
+    optional uint32 bitmap_command = 4;
+    optional uint32 index = 5;
+    optional uint32 agg_all = 6;
+    optional uint32 agg_input = 7;
+    optional uint32 agg_static = 8;
+    optional uint32 agg_dynamic = 9;
+    optional uint32 agg_resilient = 10;
+    optional uint32 ecmp_all = 11;
+    optional uint32 ecmp_static = 12;
+    optional uint32 ecmp_static_l3 = 13;
+    optional uint32 ecmp_static_mpls = 14;
+    optional uint32 ecmp_static_nvgre = 15;
+    optional uint32 ecmp_static_vxlan = 16;
+    optional uint32 ecmp_dynamic = 17;
+    optional uint32 ecmp_dynamic_flow_id = 18;
+    optional uint32 ref_cnt = 19;
+}
+
+// TBL_HASH_VALUE_GLOBAL
+message tbl_hash_value_global
+{
+    optional uint32 bitmap_data = 1;
+    optional uint32 bitmap_command = 2;
+    optional uint32 agg_hash = 3;
+    optional uint32 ecmp_all = 4;
+    optional uint32 ecmp_static = 5;
+    optional uint32 ecmp_static_l3 = 6;
+    optional uint32 ecmp_static_mpls = 7;
+    optional uint32 ecmp_static_nvgre = 8;
+    optional uint32 ecmp_static_vxlan = 9;
+    optional uint32 ecmp_dynamic = 10;
+    optional uint32 ecmp_dynamic_flow_id = 11;
+    optional uint32 lbid = 12;
+}
+
+// TBL_NAT_GLOBAL
+message tbl_nat_global
+{
+    optional uint32 timeout = 1;
+    optional uint32 timeout_icmp = 2;
+    optional uint32 timeout_tcp = 3;
+    optional uint32 timeout_udp = 4;
+    optional uint32 session_limit = 5;
+    optional uint32 nft_hdl = 6;
+    optional uint32 nft_hdl_upstream_if = 7;
+    optional uint32 nft_hdl_connlimit_post = 8;
+    optional uint32 nft_hdl_connlimit_pre = 9;
+    optional uint32 nft_hdl_upstream_filter_nat_rule = 10;
+    optional compose_ctclib_opb_t rule_id_opb = 11;
+    optional compose_ctclib_opb_t session_id_opb = 12;
+    optional compose_ctclib_opb_t category_id_opb = 13;
+    optional uint32 timer_mark = 14;
+    optional uint64 rule_cfg_order = 15;
+    optional uint32 session_cnt_upstream = 16;
+    optional uint32 session_cnt_dnstream = 17;
+    optional uint32 session_fast_fwd_cnt_upstream = 18;
+    optional uint32 session_fast_fwd_cnt_dnstream = 19;
+    optional uint32 nfct_kernel_notify_add_cnt = 20;
+    optional uint32 nfct_kernel_notify_del_cnt = 21;
+    optional uint32 nfct_notify_kernel_add_cnt = 22;
+    optional uint32 nfct_notify_kernel_del_cnt = 23;
+    optional uint32 session_aging_del_cnt = 24;
+    optional uint32 session_aging_upd_ttl_cnt = 25;
+}
+
+// TBL_NAT_POOL
+message tbl_nat_pool_key
+{
+    required string name = 1;
+}
+
+message tbl_nat_pool
+{
+    required tbl_nat_pool_key key = 1;
+    optional compose_addr_t ip_lo = 2;
+    optional compose_addr_t ip_hi = 3;
+    optional compose_addr_t ip_mask = 4;
+    optional string refer_oif = 5;
+}
+
+// TBL_NAT_RULE
+message tbl_nat_rule
+{
+    required compose_nat_rule_key_t key = 1;
+    optional uint32 handle_postrouting = 2;
+    optional uint32 handle_prerouting = 3;
+    optional uint32 category_id = 4;
+    optional string refer_iif = 5;
+    optional string refer_oif = 6;
+    optional uint32 nft_chain_id_acl = 7;
+    optional uint32 nft_chain_id_rule_pre = 8;
+    optional uint32 nft_chain_id_rule_post = 9;
+    optional uint64 cfg_order = 10;
+}
+
+// TBL_NAT_SESSION
+message tbl_nat_session
+{
+    required compose_nat_session_key_t key = 1;
+    optional uint32 id = 2;
+    optional compose_sal_time_t timestamp = 3;
+    optional compose_sal_time_t hit = 4;
+    optional compose_sal_time_t upd_kernel_ttl_time = 5;
+    optional uint32 ttl = 6;
+    optional uint32 iif_index = 7;
+    optional uint32 oif_index = 8;
+    optional string helper = 9;
+    optional uint32 slow_path_fwd = 10;
+    optional uint32 creator = 11;
+    optional uint32 set_sai_status = 12;
+}
+
+// TBL_NAT_SESSION_LIMIT
+message tbl_nat_session_limit
+{
+    required compose_addr_t key = 1;
+    optional uint32 limit = 2;
+    optional uint32 count_upstream = 3;
+    optional uint32 count_dnstream = 4;
+    optional uint32 nft_hdl_post = 5;
+    optional uint32 nft_hdl_pre = 6;
+}
+
+// TBL_NAT_PROXY_ARP
+message tbl_nat_proxy_arp
+{
+    required compose_nat_proxy_arp_key_t key = 1;
+    optional uint32 enable = 2;
+}
+
+// TBL_NAT_RTIF_INSIDE
+message tbl_nat_rtif_inside_key
+{
+    required string name = 1;
+}
+
+message tbl_nat_rtif_inside
+{
+    required tbl_nat_rtif_inside_key key = 1;
+}
+
+// TBL_NAT_RTIF_OUTSIDE
+message tbl_nat_rtif_outside_key
+{
+    required string name = 1;
+}
+
+message tbl_nat_rtif_outside
+{
+    required tbl_nat_rtif_outside_key key = 1;
+}
+
+// TBL_G8032_RING
+message tbl_g8032_ring_key
+{
+    required uint32 ring_id = 1;
+}
+
+message tbl_g8032_ring
+{
+    required tbl_g8032_ring_key key = 1;
+    optional uint32 rpl_owner = 2;
+    optional uint32 rpl_neighbor = 3;
+    optional uint32 rpl_next_neighbor = 4;
+    optional uint32 ring_level_id = 5;
+    optional uint32 protection_en = 6;
+    optional uint32 config_sync = 7;
+    optional uint32 aps_protection_en = 8;
+    optional uint32 protection_time = 9;
+    optional uint32 mode_revertive = 10;
+    optional uint32 virtual_channel = 11;
+    optional uint32 g8032_major_ring_id = 12;
+    optional uint32 is_sub_ring = 13;
+    optional uint32 instance_count = 14;
+    repeated uint32 instance = 15;
+    repeated uint32 sub_ring_id = 16;
+    optional uint32 is_local_fs = 17;
+    optional uint32 is_local_ms = 18;
+    optional uint32 east_port_ifindex = 19;
+    optional uint32 east_port_is_rpl = 20;
+    optional uint32 east_port_is_rpl_neighbor = 21;
+    optional uint32 east_port_is_rpl_next_neighbor = 22;
+    optional uint32 east_port_is_force_switch = 23;
+    optional uint32 east_port_is_manual_switch = 24;
+    optional uint32 east_port_is_blocked = 25;
+    optional uint32 east_port_flush_fdb = 26;
+    optional uint32 east_port_is_fail = 27;
+    optional bytes east_port_rec_node_id = 28;
+    optional uint32 east_port_rec_bpr = 29;
+    optional uint32 west_port_ifindex = 30;
+    optional uint32 west_port_is_rpl = 31;
+    optional uint32 west_port_is_rpl_neighbor = 32;
+    optional uint32 west_port_is_rpl_next_neighbor = 33;
+    optional uint32 west_port_is_force_switch = 34;
+    optional uint32 west_port_is_manual_switch = 35;
+    optional uint32 west_port_is_blocked = 36;
+    optional uint32 west_port_flush_fdb = 37;
+    optional uint32 west_port_is_fail = 38;
+    optional bytes west_port_rec_node_id = 39;
+    optional uint32 west_port_rec_bpr = 40;
+    optional uint32 control_vlan = 41;
+    optional uint32 is_sub_control_vlan = 42;
+    optional uint32 is_fwdtocpu = 43;
+    optional uint32 raps_mel = 44;
+    optional uint32 raps_dnf = 45;
+    optional uint32 protection_trigger = 46;
+    optional bytes vlan = 47;
+    optional uint32 primary_vlan = 48;
+    optional uint32 current_node_state = 49;
+    optional uint32 priority_request = 50;
+    optional uint32 hold_off_expired = 51;
+    optional uint32 wtr_timeout_val = 52;
+    optional uint32 wtb_timeout_val = 53;
+    optional uint32 guard_timeout_val = 54;
+    optional uint32 hold_off_timeout_val = 55;
+    optional uint32 flush_fdb_timeout_val = 56;
+    optional string cfm_md_name = 57;
+    optional string cfm_ma_name = 58;
+    optional uint32 level = 59;
+    optional uint32 vlan_id = 60;
+    optional uint32 east_interface_cfm_state = 61;
+    optional uint32 west_interface_cfm_state = 62;
+}
+
+// TBL_CFM_GLOBAL
+message tbl_cfm_global
+{
+    optional uint32 cfm_enable = 1;
+    optional uint32 cfm_mode = 2;
+}
+
+// TBL_CFM_MD
+message tbl_cfm_md_key
+{
+    required string name = 1;
+}
+
+message tbl_cfm_md
+{
+    required tbl_cfm_md_key key = 1;
+    optional uint32 level = 2;
+    optional uint32 name_type = 3;
+    optional string pkt_name = 4;
+    optional uint32 pkt_name_length = 5;
+    optional string pkt_name_input = 6;
+    optional uint32 service_number = 7;
+}
+
+// TBL_CFM_MA
+message tbl_cfm_ma
+{
+    required compose_cfm_ma_key_t key = 1;
+    optional string name = 2;
+    optional uint32 name_type = 3;
+    optional uint32 cci_enabled = 4;
+    optional uint32 ccm_vlan_cos = 5;
+    optional string pkt_name = 6;
+    optional string maid = 7;
+    optional uint32 error_write_disable = 8;
+    optional uint32 error_number = 9;
+}
+
+// TBL_CFM_MAID
+message tbl_cfm_maid_key
+{
+    required string name = 1;
+}
+
+message tbl_cfm_maid
+{
+    required tbl_cfm_maid_key key = 1;
+}
+
+// TBL_CFM_LMEP
+message tbl_cfm_lmep
+{
+    required compose_cfm_lmep_key_t key = 1;
+    optional uint32 mep_id = 2;
+    optional string maid = 3;
+    optional string md_name = 4;
+    optional uint32 direction = 5;
+    optional uint32 d_unexp_mep = 6;
+    optional uint32 d_mismerge = 7;
+    optional uint32 d_meg_lvl = 8;
+    optional uint32 cci_enabled = 9;
+    optional uint32 cci_interval = 10;
+    optional uint32 rdi = 11;
+    optional string ifname = 12;
+    optional compose_mac_addr_t if_mac_addr = 13;
+    optional uint32 ccm_vlan_cos = 14;
+    optional uint32 ring_id = 15;
+    optional uint32 mep_index = 16;
+    optional uint32 rmep_num = 17;
+}
+
+// TBL_CFM_RMEP
+message tbl_cfm_rmep
+{
+    required compose_cfm_rmep_key_t key = 1;
+    optional uint32 ifindex = 2;
+    optional string md_name = 3;
+    optional string maid = 4;
+    optional compose_mac_addr_t mac_addr = 5;
+    optional uint32 first_pkt_rx = 6;
+    optional uint32 d_loc = 7;
+    optional uint32 d_unexp_period = 8;
+    optional uint32 ma_sa_mismatch = 9;
+    optional uint32 rmep_last_rdi = 10;
+    optional string ifname = 11;
+    optional uint32 local_mep_id = 12;
+}
+
+// TBL_PIM_SM
+message tbl_pim_sm_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_pim_sm
+{
+    required tbl_pim_sm_key key = 1;
+    optional compose_pim_static_rp_addr_t rp_addr = 2;
+    optional uint32 hello_time = 3;
+    optional uint32 spt_infinity = 4;
+    optional uint32 jp_timer = 5;
+}
+
+// TBL_PIM_SM_BSR
+message tbl_pim_sm_bsr_key
+{
+    required string name = 1;
+}
+
+message tbl_pim_sm_bsr
+{
+    required tbl_pim_sm_bsr_key key = 1;
+    optional uint32 priority = 2;
+    optional uint32 interval = 3;
+    optional uint32 dr_pri = 4;
+}
+
+// TBL_PIM_SM_RP
+message tbl_pim_sm_rp_key
+{
+    required string name = 1;
+}
+
+message tbl_pim_sm_rp
+{
+    required tbl_pim_sm_rp_key key = 1;
+    optional uint32 priority = 2;
+    optional uint32 interval = 3;
+}
+
+// TBL_PIM_SM_RP_GP
+message tbl_pim_sm_rp_gp_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_pim_sm_rp_gp
+{
+    required tbl_pim_sm_rp_gp_key key = 1;
+    optional compose_pim_sm_gprefix_t group_prefix = 2;
+}
+
+// TBL_PIM_DM
+message tbl_pim_dm_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_pim_dm
+{
+    required tbl_pim_dm_key key = 1;
+}
+
+// TBL_IGMP_INTF
+message tbl_igmp_intf_key
+{
+    required string name = 1;
+}
+
+message tbl_igmp_intf
+{
+    required tbl_igmp_intf_key key = 1;
+    optional uint32 querier_timeout = 2;
+    optional uint32 query_interval = 3;
+    optional uint32 robustness_variable = 4;
+    optional uint32 layer3_protocol_index = 5;
+    optional uint32 layer3_protocol = 6;
+    optional uint32 entry_valid = 7;
+    optional uint32 action_index = 8;
+    optional uint32 last_member_query_count = 9;
+    optional uint32 last_member_query_interval = 10;
+    optional uint32 global_limit_number = 11;
+}
+
+// TBL_RIP
+message tbl_rip_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_rip
+{
+    required tbl_rip_key key = 1;
+    optional uint32 version = 2;
+    optional uint32 allow_ecmp = 3;
+    optional compose_rip_timers_t timers = 4;
+    optional uint32 default_information = 5;
+    optional uint32 redistribute = 6;
+    repeated uint32 red_metric = 7;
+    optional uint32 default_metric = 8;
+    optional uint32 passive_if_default = 9;
+}
+
+// TBL_RIPNG
+message tbl_ripng_key
+{
+    required uint32 id = 1;
+}
+
+message tbl_ripng
+{
+    required tbl_ripng_key key = 1;
+    optional uint32 allow_ecmp = 2;
+    optional compose_rip_timers_t timers = 3;
+    optional uint32 default_information = 4;
+    optional uint32 redistribute = 5;
+    repeated uint32 red_metric = 6;
+    optional uint32 default_metric = 7;
+}
+
+// TBL_RIP_NETWORK
+message tbl_rip_network
+{
+    required compose_prefix_t key = 1;
+}
+
+// TBL_RIPNG_NETWORK
+message tbl_ripng_network
+{
+    required compose_prefix_t key = 1;
+}
+
+// TBL_RIP_NEIGHBOR
+message tbl_rip_neighbor
+{
+    required compose_addr_t key = 1;
+}
+
+// TBL_RIP_PASSIVE_IF
+message tbl_rip_passive_if_key
+{
+    required string name = 1;
+}
+
+message tbl_rip_passive_if
+{
+    required tbl_rip_passive_if_key key = 1;
+}
+
+// TBL_RIPNG_PASSIVE_IF
+message tbl_ripng_passive_if_key
+{
+    required string name = 1;
+}
+
+message tbl_ripng_passive_if
+{
+    required tbl_ripng_passive_if_key key = 1;
+}
+
+// TBL_OSPF_AREA_STUB
+message tbl_ospf_area_stub_key
+{
+    required uint32 areaid = 1;
+}
+
+message tbl_ospf_area_stub
+{
+    required tbl_ospf_area_stub_key key = 1;
+    optional int32 no_summary = 2;
+}
+
+// TBL_OSPF6_AREA_STUB
+message tbl_ospf6_area_stub_key
+{
+    required uint32 areaid = 1;
+}
+
+message tbl_ospf6_area_stub
+{
+    required tbl_ospf6_area_stub_key key = 1;
+    optional int32 no_summary = 2;
+}
+
+// TBL_OSPF_AREA_NSSA
+message tbl_ospf_area_nssa_key
+{
+    required uint32 areaid = 1;
+}
+
+message tbl_ospf_area_nssa
+{
+    required tbl_ospf_area_nssa_key key = 1;
+    optional uint32 nssa_role = 2;
+    optional int32 no_summary = 3;
+}
+
+// TBL_OSPF_AREA_VLINK
+message tbl_ospf_area_vlink
+{
+    required compose_ospf_area_vlink_key_t key = 1;
+    optional int32 auth_flag = 2;
+    optional uint32 auth_type = 3;
+    optional string auth_key = 4;
+    optional uint32 md5_id = 5;
+    optional string md5_key = 6;
+    optional uint32 hello_interval = 7;
+    optional uint32 dead_interval = 8;
+    optional uint32 retransmit_interval = 9;
+    optional uint32 transmit_delay = 10;
+}
+

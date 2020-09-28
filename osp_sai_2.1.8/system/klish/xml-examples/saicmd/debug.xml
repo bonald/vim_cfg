@@ -1,0 +1,3313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+DEBUG
+</CTCMODULENAME>		
+	
+	
+<VIEW name="Exec">
+
+<!-- debug commands -->
+
+    <COMMAND name="debug"
+        help="Set debug configuration" access="4">
+    </COMMAND>
+
+    <COMMAND name="no"
+        help="Negate a command or set its defaults" access="4">
+    </COMMAND>
+
+    <COMMAND name="no debug"
+        help="Unset debug configuration" access="4">
+    </COMMAND>
+    
+    <COMMAND name="no debug all"
+        help="ALL" access="4">
+        <ACTION>
+			cdbctl update/cdb/debug/switch_debug/all/0
+			cdbctl update/cdb/debug/route_debug/all/0
+            cdbctl update/cdb/debug/app_debug/all/0
+			cdbctl update/cdb/debug/ptp_debug/all/0
+			cdbctl update/cdb/debug/ssm_debug/all/0
+			cdbctl update/cdb/debug/quagga_debug/ospf_all/0
+			cdbctl update/cdb/debug/quagga_debug/pim_all/0
+			cdbctl update/cdb/debug/quagga_debug/igmp_all/0
+			cdbctl update/cdb/debug/quagga_debug/mroute_on/0
+			cdbctl update/cdb/debug/dhcp_debug/all/0
+			dhcpv6pid=`pgrep -x dhclient6`
+			if [ $dhcpv6pid ]; then
+			    cdbctl update/cdb/debug/dhcpv6_debug/all/0
+			fi
+			cdbctl update/cdb/debug/authd_debug/all/0
+			cdbctl update/cdb/debug/opm_debug/all/0
+			cdbctl update/cdb/debug/hsrv_debug/cpu_all/0
+			cdbctl update/cdb/debug/hsrv_debug/ip_icmp/0
+			cdbctl update/cdb/l2/dot1x_global/dot1x_packet/0
+			cdbctl update/cdb/l2/dot1x_global/dot1x_protocol/0
+			cdbctl update/cdb/l2/dot1x_global/dot1x_timer/0
+			cdbctl update/cdb/l2/dot1x_global/dot1x_event/0
+			cdbctl update/cdb/l2/sflow_global/sflow_all/0
+			vtysh -c "no debug ospf" -c "no debug pim" -c "no debug pim zebra" -c "no debug igmp" -c "no debug mroute" -c "no debug mroute detail"
+			cdbctl update/cdb/app/ntp_cfg/debug_level/crit
+			pid=`pgrep ovs-vswitchd`
+            if [ $pid ]; then
+                ovs-appctl vlog/set vconn:syslog:err
+                cdbctl update/cdb/debug/openflow_debug/openflow_vconn/0
+                ovs-appctl vlog/set rconn:syslog:err
+                cdbctl update/cdb/debug/openflow_debug/openflow_rconn/0
+            fi
+        </ACTION>
+    </COMMAND>
+	
+	<COMMAND name="debug ntp" help="NTP" access="4">
+		<PARAM name="level" help="Type" ptype="SUBCOMMAND" mode="switch">
+<!--Modify by zhush for bug 52037, 2019-07-17-->
+			<PARAM name="alert" help="Alert" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="crit" help="Crit (default)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="debug" help="Debug" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="emerg" help="Emerg" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="error" help="Error" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="info" help="Info" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="notice" help="Notice" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="warning" help="Warning" ptype="SUBCOMMAND" mode="subcommand" />           
+<!--end zhush-->
+        </PARAM>
+		<ACTION>
+			cdbctl update/cdb/app/ntp_cfg/debug_level/${level}
+			cdbctl update/cdb/debug/app_debug/ntp_debug_level/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for NTP. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for NTP. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set NTP debug on:
+    Switch# debug ntp info
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no debug ntp" help="NTP" access="4">
+		<ACTION>
+			cdbctl update/cdb/app/ntp_cfg/debug_level/crit
+			cdbctl update/cdb/debug/app_debug/ntp_debug_level/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable debugging NTP.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+None
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Default debugging NTP is disable.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set NTP debug on:
+    Switch# debug ntp info
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+	
+    <COMMAND name="debug arp"
+        help="Address Resolution Protocol(ARP)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/arp_event/1
+                cdbctl update/cdb/debug/route_debug/arp_packet/1
+                cdbctl update/cdb/debug/route_debug/arp_protocol/1
+                cdbctl update/cdb/debug/route_debug/arp_timer/1
+            else
+                cdbctl update/cdb/debug/route_debug/arp_${type}/1
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging arp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging arp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging arp all:  
+	        Switch# debug arp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="no debug arp"
+        help="Address Resolution Protocol(ARP)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/arp_event/0
+				cdbctl update/cdb/debug/route_debug/arp_packet/0
+                cdbctl update/cdb/debug/route_debug/arp_protocol/0
+                cdbctl update/cdb/debug/route_debug/arp_timer/0
+            else
+                cdbctl update/cdb/debug/route_debug/arp_${type}/0
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging arp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging arp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging arp all:  
+	        Switch# no debug arp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug route" help="route" access="4" hidden="true">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ipv4" help="ipv4" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ipv6" help="ipv6" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="netlink" help="netlink" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/route_ipv4/1
+                cdbctl update/cdb/debug/route_debug/route_ipv6/1
+                cdbctl update/cdb/debug/route_debug/route_netlink/1
+            else
+                cdbctl update/cdb/debug/route_debug/route_${type}/1
+            fi
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="no debug route" help="route" access="4" hidden="true">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ipv4" help="ipv4" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ipv6" help="ipv6" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="netlink" help="netlink" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/route_ipv4/0
+                cdbctl update/cdb/debug/route_debug/route_ipv6/0
+                cdbctl update/cdb/debug/route_debug/route_netlink/0
+            else
+                cdbctl update/cdb/debug/route_debug/route_${type}/0
+            fi
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="debug ipv6" help="IPv6"/>
+
+    <COMMAND name="debug ipv6 nd"
+        help="Neighbor discovery" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/nd_event/1
+                cdbctl update/cdb/debug/route_debug/nd_packet/1
+                cdbctl update/cdb/debug/route_debug/nd_protocol/1
+                cdbctl update/cdb/debug/route_debug/nd_timer/1
+            else
+                cdbctl update/cdb/debug/route_debug/nd_${type}/1
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging nd.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging nd is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging nd all:  
+	        Switch# debug nd all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug ipv6" help="IPv6"/>
+    
+    <COMMAND name="no debug ipv6 nd"
+        help="Neighbor discovery" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/nd_event/0
+                cdbctl update/cdb/debug/route_debug/nd_packet/0
+                cdbctl update/cdb/debug/route_debug/nd_protocol/0
+                cdbctl update/cdb/debug/route_debug/nd_timer/0
+            else
+                cdbctl update/cdb/debug/route_debug/nd_${type}/0
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging nd.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging nd is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging nd all:  
+	        Switch# no debug nd all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="debug vrrp"
+        help="Virtual Router Redundancy Protocol (VRRP)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="events" help="VRRP events" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="VRRP packets" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="pkt" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true" default="all">
+                    <PARAM name="recv" help="VRRP receive packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="send" help="VRRP send packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="detail" help="VRRP detail" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM> 
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/vrrp_events/1
+                cdbctl update/cdb/debug/route_debug/vrrp_packet_recv/1
+                cdbctl update/cdb/debug/route_debug/vrrp_packet_send/1
+                cdbctl update/cdb/debug/route_debug/vrrp_packet_detail/1
+            else
+                if [ "events" == ${type} ]; then
+                    cdbctl update/cdb/debug/route_debug/vrrp_${type}/1
+                else
+                    if [ "all" == ${pkt} ]; then
+                        cdbctl update/cdb/debug/route_debug/vrrp_packet_recv/1
+                        cdbctl update/cdb/debug/route_debug/vrrp_packet_send/1
+                        cdbctl update/cdb/debug/route_debug/vrrp_packet_detail/1
+                    else 
+                        cdbctl update/cdb/debug/route_debug/vrrp_${type}_${pkt}/1
+                    fi
+                fi
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging vrrp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging vrrp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging vrrp all:  
+	        Switch# debug vrrp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+	
+    <COMMAND name="no debug vrrp"
+        help="Virtual Router Redundancy Protocol (VRRP)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="events" help="VRRP events" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="VRRP packet" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="pkt" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true" default="all">
+                    <PARAM name="recv" help="VRRP receive packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="send" help="VRRP send packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="detail" help="VRRP detail" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>    
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/vrrp_events/0
+				cdbctl update/cdb/debug/route_debug/vrrp_packet_recv/0
+				cdbctl update/cdb/debug/route_debug/vrrp_packet_send/0
+				cdbctl update/cdb/debug/route_debug/vrrp_packet_detail/0
+            else
+                if [ "events" == ${type} ]; then
+                    cdbctl update/cdb/debug/route_debug/vrrp_${type}/0
+                else
+                    if [ "all" == ${pkt} ]; then
+                        cdbctl update/cdb/debug/route_debug/vrrp_packet_recv/0
+                        cdbctl update/cdb/debug/route_debug/vrrp_packet_send/0
+                        cdbctl update/cdb/debug/route_debug/vrrp_packet_detail/0
+                    else 
+                        cdbctl update/cdb/debug/route_debug/vrrp_${type}_${pkt}/0
+                    fi
+                fi
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging vrrp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging vrrp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging vrrp all:  
+	        Switch# no debug vrrp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>
+    
+	<COMMAND name="debug arp-inspection"
+        help="Arp Inspection" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/arpinspection_event/1
+                cdbctl update/cdb/debug/route_debug/arpinspection_packet/1
+                cdbctl update/cdb/debug/route_debug/arpinspection_protocol/1
+                cdbctl update/cdb/debug/route_debug/arpinspection_timer/1
+            else
+                cdbctl update/cdb/debug/route_debug/arpinspection_${type}/1
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging arp inspection.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging arp inspection is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging arp inspection all:  
+	        Switch# debug arpinspection all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug arp-inspection"
+        help="Arp Inspection" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/arpinspection_event/0
+				cdbctl update/cdb/debug/route_debug/arpinspection_packet/0
+                cdbctl update/cdb/debug/route_debug/arpinspection_protocol/0
+                cdbctl update/cdb/debug/route_debug/arpinspection_timer/0
+            else
+                cdbctl update/cdb/debug/route_debug/arpinspection_${type}/0
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging arp inspection.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging arp inspection is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging arp inspection all:  
+	        Switch# no debug arpinspection all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>    
+
+    <COMMAND name="debug ip" help="Internet Protocol (IP)" access="4"/>
+    <COMMAND name="no debug ip" help="Internet Protocol (IP)" access="4"/>
+
+    <COMMAND name="debug ip icmp" help="ICMP transactions" access="4">
+        <ACTION>cdbctl update/cdb/debug/hsrv_debug/ip_icmp/1</ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to enable debugging IP ICMP.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Disabled
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to enable debugging IP ICMP:
+            Switch# debug ip icmp
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging ip
+        </CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="no debug ip icmp" help="ICMP transactions" access="4">
+        <ACTION>cdbctl update/cdb/debug/hsrv_debug/ip_icmp/0</ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to disable debugging IP ICMP.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Disabled
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to disable debugging IP ICMP:
+            Switch# no debug ip icmp
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging ip
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug ipsla"
+        help="IP Service Level Agreement" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/ipsla_event/1
+                cdbctl update/cdb/debug/route_debug/ipsla_packet/1
+            else
+                cdbctl update/cdb/debug/route_debug/ipsla_${type}/1
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to enable debugging IP-SLA.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Default debugging IP-SLA is disable.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to enable debugging IP-SLA all:
+            Switch# debug ipsla all
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug ipsla"
+        help="IP Service Level Agreement" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/ipsla_event/0
+                cdbctl update/cdb/debug/route_debug/ipsla_packet/0
+            else
+                cdbctl update/cdb/debug/route_debug/ipsla_${type}/0
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to disable debugging IP-SLA.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Default debugging IP-SLA is disable.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to disable debugging IP-SLA all:
+            Switch# no debug ipsla all
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug track"
+        help="Tracking" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/route_debug/track_event/1
+        </ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to enable debugging track.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Default debugging track is disable.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to enable debugging track all:
+            Switch# debug track all
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug track"
+        help="Tracking" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/route_debug/track_event/0
+        </ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to disable debugging track.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Default debugging track is disable.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to disable debugging track all:
+            Switch# no debug track all
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging
+        </CTCRCMD>
+    </COMMAND>
+
+
+	<COMMAND name="debug snmp" help="SNMP">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="agent" help="SNMP Agent" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+                cdbctl update/cdb/debug/app_debug/snmp_${type}/1
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="no debug snmp" help="SNMP">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="agent" help="SNMP Agent" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+                cdbctl update/cdb/debug/app_debug/snmp_${type}/0
+        </ACTION>
+	</COMMAND>
+
+    <COMMAND name="debug rmon"
+        help="Remote Monitoring Protocol" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="alarm" help="Alarm" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="stats" help="Statistics" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="history" help="History" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/app_debug/rmon_event/1
+                cdbctl update/cdb/debug/app_debug/rmon_alarm/1
+                cdbctl update/cdb/debug/app_debug/rmon_stats/1
+                cdbctl update/cdb/debug/app_debug/rmon_history/1
+            else
+                cdbctl update/cdb/debug/app_debug/rmon_${type}/1
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to enable debugging RMON.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Default debugging RMON is disable.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to enable debugging RMON all:
+            Switch# debug rmon all
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug rmon"
+        help="Remote Monitoring Protocol" access="4">
+         <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="alarm" help="Alarm" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="stats" help="Statistics" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="history" help="History" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/app_debug/rmon_event/0
+                cdbctl update/cdb/debug/app_debug/rmon_alarm/0
+                cdbctl update/cdb/debug/app_debug/rmon_stats/0
+                cdbctl update/cdb/debug/app_debug/rmon_history/0
+            else
+                cdbctl update/cdb/debug/app_debug/rmon_${type}/0
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+            Use this command to disable debugging RMON.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            Default debugging RMON is disable.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            In the following example shows how to disable debugging RMON all:
+            Switch# no debug rmon all
+        </CTCEXAMPLE>
+        <CTCRCMD>
+            show debugging
+        </CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="debug erps"
+		help="Ethernet Ring Protection Switching(ERPS)" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="ERPS event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"   help="ERPS packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="ERPS protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="ERPS timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/debug/opm_debug/erps_packet/1
+                    cdbctl update/cdb/debug/opm_debug/erps_protocol/1
+                    cdbctl update/cdb/debug/opm_debug/erps_timer/1
+                    cdbctl update/cdb/debug/opm_debug/erps_event/1
+                else
+                    cdbctl update/cdb/debug/opm_debug/erps_${type}/1
+                fi
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging erps.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging erps is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging erps all:  
+	        Switch# debug erps all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+	
+	<COMMAND name="no debug erps"
+		help="Ethernet Ring Protection Switching(ERPS)" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"   help="ERPS event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"   help="ERPS packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="ERPS protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="ERPS timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/debug/opm_debug/erps_packet/0
+                    cdbctl update/cdb/debug/opm_debug/erps_protocol/0
+                    cdbctl update/cdb/debug/opm_debug/erps_timer/0
+                    cdbctl update/cdb/debug/opm_debug/erps_event/0
+                else
+                    cdbctl update/cdb/debug/opm_debug/erps_${type}/0
+                fi
+                </ACTION>
+
+		<CTCDESCRIPTION>
+            Use this command to disable debugging erps.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging erps is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging erps all:  
+	        Switch# no debug erps all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>    
+	</COMMAND>
+	
+	<COMMAND name="debug ssm"
+		help="Synchronous Status Message" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="SSM event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_tx"   help="SSM Tx packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_rx"   help="SSM Rx packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="SSM timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/debug/ssm_debug/ssm_packet_tx/1
+					cdbctl update/cdb/debug/ssm_debug/ssm_packet_rx/1
+                    cdbctl update/cdb/debug/ssm_debug/ssm_timer/1
+                    cdbctl update/cdb/debug/ssm_debug/ssm_event/1
+                else
+                    cdbctl update/cdb/debug/ssm_debug/ssm_${type}/1
+                fi
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging ssm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging ssm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging ssm all:  
+	        Switch# debug ssm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+	
+	<COMMAND name="no debug ssm"
+		help="Synchronous Status Message" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="SSM event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_tx"   help="SSM packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_rx"   help="SSM packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="SSM timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/debug/ssm_debug/ssm_event/0
+					cdbctl update/cdb/debug/ssm_debug/ssm_packet_tx/0
+					cdbctl update/cdb/debug/ssm_debug/ssm_packet_rx/0
+                    cdbctl update/cdb/debug/ssm_debug/ssm_timer/0
+                else
+                    cdbctl update/cdb/debug/ssm_debug/ssm_${type}/0
+                fi
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging ssm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging ssm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging ssm all:  
+	        Switch# no debug ssm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+
+
+<COMMAND name="debug g8032"
+		help="G8032 debug info" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"    help="G8032 info all" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="G8032 event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_tx"   help="G8032 Tx packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_rx"   help="G8032 Rx packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"   help="G8032 Timer" ptype="SUBCOMMAND" mode="subcommand" />		
+		</PARAM>
+
+		<ACTION>
+		         if [ "all" == ${type} ]; then
+	                cdbctl update/cdb/debug/opm_debug/g8032_event/1
+	                cdbctl update/cdb/debug/opm_debug/g8032_packet_tx/1
+	                cdbctl update/cdb/debug/opm_debug/g8032_packet_rx/1
+	                cdbctl update/cdb/debug/opm_debug/g8032_timer/1
+                else
+                    cdbctl update/cdb/debug/opm_debug/g8032_${type}/1
+                fi 
+
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging ssm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging ssm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging ssm all:  
+	        Switch# debug ssm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+	
+	<COMMAND name="no debug g8032"
+		help="G8032 debug info" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"    help="G8032 info all" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="G8032 event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_tx"   help="G8032 Tx packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet_rx"   help="G8032 Rx packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"   help="G8032 Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+               if [ "all" == ${type} ]; then
+	                cdbctl update/cdb/debug/opm_debug/g8032_event/0
+	                cdbctl update/cdb/debug/opm_debug/g8032_packet_tx/0
+	                cdbctl update/cdb/debug/opm_debug/g8032_packet_rx/0
+	                cdbctl update/cdb/debug/opm_debug/g8032_timer/0
+                else
+                    cdbctl update/cdb/debug/opm_debug/g8032_${type}/0
+                fi 
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging ssm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging ssm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging ssm all:  
+	        Switch# no debug ssm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+
+
+
+	
+
+	<COMMAND name="debug ipsg"
+		help="IP Source Guard" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="error"    help="Error ip source guard message" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"   help="IP source guard event" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+	                cdbctl update/cdb/debug/switch_debug/ipsg_event/1
+	                cdbctl update/cdb/debug/switch_debug/ipsg_error/1
+                else
+                    cdbctl update/cdb/debug/switch_debug/ipsg_${type}/1
+                fi
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging IP source guard.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging IP source guard is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging IP source guard all:  
+	        Switch# debug igsp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+	
+	<COMMAND name="no debug ipsg"
+		help="IP Source Guard" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="error"    help="Error ip source guard message" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"   help="IP source guard event" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+	                cdbctl update/cdb/debug/switch_debug/ipsg_event/0
+	                cdbctl update/cdb/debug/switch_debug/ipsg_error/0
+                else
+                    cdbctl update/cdb/debug/switch_debug/ipsg_${type}/0
+                fi
+                </ACTION>
+
+		<CTCDESCRIPTION>
+            Use this command to disable debugging IP source guard.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging IP source guard is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging IP source guard all:  
+	        Switch# no debug ipsg all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>    
+	</COMMAND>
+
+    <COMMAND name="debug lacp"
+        help="Link Aggregation Control Protocol (LACP)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/switch_debug/lacp_event/1
+                cdbctl update/cdb/debug/switch_debug/lacp_packet/1
+                cdbctl update/cdb/debug/switch_debug/lacp_protocol/1
+                cdbctl update/cdb/debug/switch_debug/lacp_timer/1
+            else
+                cdbctl update/cdb/debug/switch_debug/lacp_${type}/1
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging lacp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            You can choose debug lacp type packet, status machine or all these types.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging lacp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+            In the following example shows how to use this command:    
+            Swtich# debug lacp all    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug lacp"
+        help="Link Aggregation Control Protocol (LACP)" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/switch_debug/lacp_event/0
+                cdbctl update/cdb/debug/switch_debug/lacp_packet/0
+                cdbctl update/cdb/debug/switch_debug/lacp_protocol/0
+                cdbctl update/cdb/debug/switch_debug/lacp_timer/0
+            else
+                cdbctl update/cdb/debug/switch_debug/lacp_${type}/0
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging lacp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            You can choose disable debug lacp packet, status machine or all these types.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging lacp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+            In the following example shows how to use this command:    
+            Swtich# no debug lacp all    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>  
+<!--  mlag debug -->
+
+    <COMMAND name="debug mlag"
+        help="Multi-Chassis Link Aggregation" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/switch_debug/mlag_event/1
+                cdbctl update/cdb/debug/switch_debug/mlag_packet/1
+                cdbctl update/cdb/debug/switch_debug/mlag_protocol/1
+                cdbctl update/cdb/debug/switch_debug/mlag_timer/1
+            else
+                cdbctl update/cdb/debug/switch_debug/mlag_${type}/1
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging MLAG.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging MLAG is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging MLAG all:  
+	        Switch# debug mlag all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug mlag"
+        help="Multi-Chassis Link Aggregation" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/switch_debug/mlag_event/0
+                cdbctl update/cdb/debug/switch_debug/mlag_packet/0
+                cdbctl update/cdb/debug/switch_debug/mlag_protocol/0
+                cdbctl update/cdb/debug/switch_debug/mlag_timer/0
+            else
+                cdbctl update/cdb/debug/switch_debug/mlag_${type}/0
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging mlag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging mlag is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging mlag all:  
+	        Switch# no debug mlag all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>
+
+
+<!--  igmp snooping debug -->
+
+    <COMMAND name="debug igmp-snooping" help="IGMP Snooping Protocol" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<PARAM name="packet_dir" help="Direction" test='"${type}"="packet"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/switch_debug/igsp_event/1
+                cdbctl update/cdb/debug/switch_debug/igsp_packet_tx/1
+                cdbctl update/cdb/debug/switch_debug/igsp_packet_rx/1
+                cdbctl update/cdb/debug/switch_debug/igsp_protocol/1
+                cdbctl update/cdb/debug/switch_debug/igsp_timer/1
+			elif [ "packet" == ${type} ]; then
+				if [ "all" == ${packet_dir} ]; then
+					cdbctl update/cdb/debug/switch_debug/igsp_packet_tx/1
+					cdbctl update/cdb/debug/switch_debug/igsp_packet_rx/1
+				else
+					cdbctl update/cdb/debug/switch_debug/igsp_packet_${packet_dir}/1
+				fi
+			else
+                cdbctl update/cdb/debug/switch_debug/igsp_${type}/1
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging IGMP snooping.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging IGMP snooping is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging IGMP snooping all:  
+	        Switch# debug igmp-snooping all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug igmp-snooping"
+        help="IGMP Snooping Protocol" access="4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<PARAM name="packet_dir" help="Direction" test='"${type}"="packet"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/switch_debug/igsp_event/0
+                cdbctl update/cdb/debug/switch_debug/igsp_packet_tx/0
+                cdbctl update/cdb/debug/switch_debug/igsp_packet_rx/0
+                cdbctl update/cdb/debug/switch_debug/igsp_protocol/0
+                cdbctl update/cdb/debug/switch_debug/igsp_timer/0
+			elif [ "packet" == ${type} ]; then
+				if [ "all" == ${packet_dir} ]; then
+					cdbctl update/cdb/debug/switch_debug/igsp_packet_tx/0
+					cdbctl update/cdb/debug/switch_debug/igsp_packet_rx/0
+				else
+					cdbctl update/cdb/debug/switch_debug/igsp_packet_${packet_dir}/0
+				fi
+			else
+                cdbctl update/cdb/debug/switch_debug/igsp_${type}/0
+            fi
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging mlag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging IGMP snooping is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging IGMP snooping all:  
+	        Switch# no debug igmp-snooping all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+    </COMMAND>
+
+
+	<!-- debug stp-->
+	<COMMAND name="debug stp"
+		help="Spanning Tree Protocols" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="packet_dir" help="Direction" test='"${type}"="packet"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="subproto" help="Direction" test='"${type}"="protocol"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="cist" help="Common and Internal Spanning Tree" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="msti" help="Multiple Spanning Tree Instance" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/switch_debug/stp_event/1
+            cdbctl update/cdb/debug/switch_debug/stp_packet_tx/1
+            cdbctl update/cdb/debug/switch_debug/stp_packet_rx/1
+            cdbctl update/cdb/debug/switch_debug/stp_protocol_cist/1
+            cdbctl update/cdb/debug/switch_debug/stp_protocol_msti/1
+            cdbctl update/cdb/debug/switch_debug/stp_timer/1
+        elif [ "packet" == ${type} ]; then
+	        if [ "all" == ${packet_dir} ]; then
+				cdbctl update/cdb/debug/switch_debug/stp_packet_tx/1
+				cdbctl update/cdb/debug/switch_debug/stp_packet_rx/1
+			else
+				cdbctl update/cdb/debug/switch_debug/stp_packet_${packet_dir}/1
+			fi
+        elif [ "protocol" == ${type} ]; then
+	        if [ "all" == ${subproto} ]; then
+				cdbctl update/cdb/debug/switch_debug/stp_protocol_cist/1
+				cdbctl update/cdb/debug/switch_debug/stp_protocol_msti/1
+			else
+				cdbctl update/cdb/debug/switch_debug/stp_protocol_${subproto}/1
+			fi
+		else
+            cdbctl update/cdb/debug/switch_debug/stp_${type}/1
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging stp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging stp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging stp all:  
+	        Switch# debug stp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+  </COMMAND>
+
+	<COMMAND name="no debug stp"
+		help="Spanning Tree Protocols" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="packet_dir" help="Direction" test='"${type}"="packet"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="subproto" help="Direction" test='"${type}"="protocol"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="cist" help="Common and Internal Spanning Tree" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="msti" help="Multiple Spanning Tree Instance" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/switch_debug/stp_event/0
+            cdbctl update/cdb/debug/switch_debug/stp_packet_tx/0
+            cdbctl update/cdb/debug/switch_debug/stp_packet_rx/0
+            cdbctl update/cdb/debug/switch_debug/stp_protocol_cist/0
+            cdbctl update/cdb/debug/switch_debug/stp_protocol_msti/0
+            cdbctl update/cdb/debug/switch_debug/stp_timer/0
+        elif [ "packet" == ${type} ]; then
+	        if [ "all" == ${packet_dir} ]; then
+				cdbctl update/cdb/debug/switch_debug/stp_packet_tx/0
+				cdbctl update/cdb/debug/switch_debug/stp_packet_rx/0
+			else
+				cdbctl update/cdb/debug/switch_debug/stp_packet_${packet_dir}/0
+			fi
+        elif [ "protocol" == ${type} ]; then
+	        if [ "all" == ${subproto} ]; then
+				cdbctl update/cdb/debug/switch_debug/stp_protocol_cist/0
+				cdbctl update/cdb/debug/switch_debug/stp_protocol_msti/0
+			else
+				cdbctl update/cdb/debug/switch_debug/stp_protocol_${subproto}/0
+			fi
+		else
+            cdbctl update/cdb/debug/switch_debug/stp_${type}/0
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to disable debugging stp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging stp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging stp all:  
+	        Switch# no debug stp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+  </COMMAND>
+
+	<COMMAND name="debug aaa"
+		help="Authentication, authorization, and accounting" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/authd_debug/auth_event/1
+            cdbctl update/cdb/debug/authd_debug/auth_packet/1
+            cdbctl update/cdb/debug/authd_debug/auth_protocol/1
+            cdbctl update/cdb/debug/authd_debug/auth_timer/1
+        else
+            cdbctl update/cdb/debug/authd_debug/auth_${type}/1
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging stp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging stp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging stp all:  
+	        Switch# debug stp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+  </COMMAND>
+
+	<COMMAND name="no debug aaa"
+		help="Authentication, authorization, and accounting" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/authd_debug/auth_event/0
+            cdbctl update/cdb/debug/authd_debug/auth_packet/0
+            cdbctl update/cdb/debug/authd_debug/auth_protocol/0
+            cdbctl update/cdb/debug/authd_debug/auth_timer/0
+        else
+            cdbctl update/cdb/debug/authd_debug/auth_${type}/0
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to disable debugging stp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging stp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging stp all:  
+	        Switch# no debug stp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+  </COMMAND> 
+
+	<COMMAND name="debug cpu-packet"
+		help="CPU packet" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="reason" help="Reason" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="traffic_dir" help="Direction" test='"${type}"="direction"' optional="false" ptype="SUBCOMMAND" mode="switch" default="both">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		    <PARAM name="both" help="Both direction" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="traffic_reason" help="Reason" test='"${type}"="reason"' optional="false" ptype="SUBCOMMAND" mode="switch" default="all">
+		    <PARAM name="all" help="All types of packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="arp" help="ARP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="bpdu" help="BPDU packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="bgp" help="BGP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dhcp" help="DHCP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="eapol" help="EAPOL packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="erps" help="ERPS packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="igmp" help="IGMP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ipda" help="IPDA packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="l3copycpu" help="L3 Copy to CPU packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="lldp" help="LLDP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="macda" help="MACDA packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="maclimit" help="Port-Security MacNum Exceeds MaxNum packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="macmismatch" help="Port-Security Mac Mismatch With Other Port packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="other" help="Other packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ospf" help="OSPF packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ptp" help="PTP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="raw" help="RAW packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="slowproto" help="Slow proto packets" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/hsrv_debug/cpu_rx/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_tx/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_bpdu/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_slowproto/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_eapol/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_lldp/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_erps/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_macda/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_ospf/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_bgp/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_arp/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_dhcp/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_ipda/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_igmp/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_maclimit/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_macmismatch/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_l3copycpu/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_raw/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_other/1
+            cdbctl update/cdb/debug/hsrv_debug/cpu_ptp/1
+        elif [ "direction" == ${type} ]; then
+            if [ "both" == ${traffic_dir} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/cpu_rx/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_tx/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/cpu_${traffic_dir}/1
+            fi
+        else
+            if [ "all" == ${traffic_reason} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/cpu_bpdu/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_slowproto/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_eapol/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_lldp/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_erps/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_macda/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_ospf/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_bgp/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_arp/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_dhcp/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_ipda/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_igmp/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_maclimit/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_macmismatch/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_l3copycpu/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_raw/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_other/1
+                cdbctl update/cdb/debug/hsrv_debug/cpu_ptp/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/cpu_${traffic_reason}/1
+            fi
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging cpu.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging cpu is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging stp all:  
+	        Switch# debug cpu all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+  </COMMAND>
+
+	<COMMAND name="no debug cpu-packet"
+		help="CPU packet" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="reason" help="Reason" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="traffic_dir" help="Direction" test='"${type}"="direction"' optional="false" ptype="SUBCOMMAND" mode="switch" default="both">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		    <PARAM name="both" help="Both direction" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="traffic_reason" help="Reason" test='"${type}"="reason"' optional="false" ptype="SUBCOMMAND" mode="switch" default="all">
+		    <PARAM name="all" help="All types of packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="arp" help="ARP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="bpdu" help="BPDU packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="bgp" help="BGP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dhcp" help="DHCP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="eapol" help="EAPOL packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="erps" help="ERPS packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="igmp" help="IGMP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ipda" help="IPDA packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="l3copycpu" help="L3 Copy to CPU packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="lldp" help="LLDP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="macda" help="MACDA packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="maclimit" help="Port-Security MacNum Exceeds MaxNum packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="macmismatch" help="Port-Security Mac Mismatch With Other Port packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="other" help="Other packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ospf" help="OSPF packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ptp" help="PTP packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="raw" help="RAW packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="slowproto" help="Slow proto packets" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/hsrv_debug/cpu_rx/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_tx/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_bpdu/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_slowproto/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_eapol/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_lldp/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_erps/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_macda/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_ospf/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_bgp/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_arp/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_dhcp/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_ipda/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_igmp/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_maclimit/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_macmismatch/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_l3copycpu/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_raw/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_other/0
+            cdbctl update/cdb/debug/hsrv_debug/cpu_ptp/0
+        elif [ "direction" == ${type} ]; then
+            if [ "both" == ${traffic_dir} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/cpu_rx/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_tx/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/cpu_${traffic_dir}/0
+            fi
+        else
+            if [ "all" == ${traffic_reason} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/cpu_bpdu/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_slowproto/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_eapol/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_lldp/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_erps/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_macda/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_ospf/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_bgp/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_arp/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_dhcp/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_ipda/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_igmp/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_maclimit/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_macmismatch/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_l3copycpu/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_raw/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_other/0
+                cdbctl update/cdb/debug/hsrv_debug/cpu_ptp/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/cpu_${traffic_reason}/0
+            fi
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to disable debugging cpu
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging cpu is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging stp all:  
+	        Switch# no debug cpu all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+  </COMMAND> 
+    
+	<COMMAND name="debug lldp"
+		help="Link Layer Discovery Protocol(LLDP)" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="packet_dir" help="Direction" test='"${type}"="packet"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/switch_debug/lldp_event/1
+            cdbctl update/cdb/debug/switch_debug/lldp_packet_tx/1
+            cdbctl update/cdb/debug/switch_debug/lldp_packet_rx/1
+            cdbctl update/cdb/debug/switch_debug/lldp_protocol/1
+            cdbctl update/cdb/debug/switch_debug/lldp_timer/1
+        elif [ "packet" == ${type} ]; then
+	        if [ "all" == ${packet_dir} ]; then
+				cdbctl update/cdb/debug/switch_debug/lldp_packet_tx/1
+				cdbctl update/cdb/debug/switch_debug/lldp_packet_rx/1
+			else
+				cdbctl update/cdb/debug/switch_debug/lldp_packet_${packet_dir}/1
+			fi
+		else
+            cdbctl update/cdb/debug/switch_debug/lldp_${type}/1
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging lldp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging lldp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging lldp all:  
+	        Switch# debug lldp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+    </COMMAND>
+	
+	<COMMAND name="no debug lldp"
+		help="Link Layer Discovery Protocol(LLDP)" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="Event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer" help="Timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="packet_dir" help="Direction" test='"${type}"="packet"' optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+			<PARAM name="tx" help="Transmiting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rx" help="Receiving" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+    <ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/switch_debug/lldp_event/0
+            cdbctl update/cdb/debug/switch_debug/lldp_packet_tx/0
+            cdbctl update/cdb/debug/switch_debug/lldp_packet_rx/0
+            cdbctl update/cdb/debug/switch_debug/lldp_protocol/0
+            cdbctl update/cdb/debug/switch_debug/lldp_timer/0
+        elif [ "packet" == ${type} ]; then
+	        if [ "all" == ${packet_dir} ]; then
+				cdbctl update/cdb/debug/switch_debug/lldp_packet_tx/0
+				cdbctl update/cdb/debug/switch_debug/lldp_packet_rx/0
+			else
+				cdbctl update/cdb/debug/switch_debug/lldp_packet_${packet_dir}/0
+			fi
+		else
+            cdbctl update/cdb/debug/switch_debug/lldp_${type}/0
+        fi
+    </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to disable debugging lldp.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging lldp is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging lldp all:  
+	        Switch# no debug lldp all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="debug rpcapi"
+		help="RPC API" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="request" help="RPC API request" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="command" help="RPC API command" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/switch_debug/rpcapi_request/1
+            cdbctl update/cdb/debug/switch_debug/rpcapi_command/1
+		else
+            cdbctl update/cdb/debug/switch_debug/rpcapi_${type}/1
+        fi
+		</ACTION>
+    </COMMAND>
+
+	<COMMAND name="no debug rpcapi"
+		help="RPC API" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="request" help="RPC API request" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="command" help="RPC API command" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+        if [ "all" == ${type} ]; then
+            cdbctl update/cdb/debug/switch_debug/rpcapi_request/0
+            cdbctl update/cdb/debug/switch_debug/rpcapi_command/0
+		else
+            cdbctl update/cdb/debug/switch_debug/rpcapi_${type}/0
+        fi
+		</ACTION>
+    </COMMAND>
+
+	<COMMAND name="debug dot1x"
+		help="IEEE 802.1X Port-Based Access Control" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"      help="Turn on all debugging" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="802.1X event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"   help="802.1X packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="802.1X protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="802.1X timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_packet/1
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_protocol/1
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_timer/1
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_event/1
+                else
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_${type}/1
+                fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to turn on the debug switches of dot1x module.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to turn on the debug switches of dot1x module.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>                
+		<CTCEXAMPLE> 
+    In the following example shows how to enable debugging dot1x all:  
+    Switch# debug dot1x all   
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show debugging
+        </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug dot1x"
+		help="IEEE 802.1X Port-Based Access Control" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"      help="Turn on all debugging" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="802.1X event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"   help="802.1X packets" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol" help="802.1X protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="802.1X timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_packet/0
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_protocol/0
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_timer/0
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_event/0
+                else
+                    cdbctl update/cdb/l2/dot1x_global/dot1x_${type}/0
+                fi
+        </ACTION>
+                
+        <CTCDESCRIPTION>
+Use this command to turn off the debug switches of dot1x module.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to turn off the debug switches of dot1x module.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>                 
+		<CTCEXAMPLE> 
+    In the following example shows how to enable debugging dot1x all:  
+    Switch# no debug dot1x all   
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show debugging
+        </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug sflow"
+		help="Sampled flow" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"      help="All sFlow debugging" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="counter"   help="Interface counter" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"    help="The sFlow datagram" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="sample"    help="Packet sample" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                cdbctl update/cdb/l2/sflow_global/sflow_${type}/1
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to turn on the debug switches of sflow module.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to turn on the debug switches of sflow module.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>                
+		<CTCEXAMPLE> 
+    In the following example shows how to enable debugging sflow all:  
+    Switch# debug sflow all   
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show debugging
+        </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug sflow"
+		help="Sampled flow" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"      help="All sFlow debugging" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="counter"   help="Interface counter" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"    help="The sFlow datagram" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="sample"    help="Packet sample" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                cdbctl update/cdb/l2/sflow_global/sflow_${type}/0
+        </ACTION>
+                
+        <CTCDESCRIPTION>
+Use this command to turn off the debug switches of sflow module.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to turn off the debug switches of sflow module.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>                 
+		<CTCEXAMPLE> 
+    In the following example shows how to enable debugging sflow all:  
+    Switch# no debug sflow all   
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show debugging
+        </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="debug dhcp" help="Dynamic Host Configuration protocol" access="4"/>
+	<COMMAND name="no debug dhcp" help="Dynamic Host Configuration protocol" access="4"/>
+
+	<COMMAND name="debug dhcp snooping" help="Snooping" access="4">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="error" help="Error DHCP message" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="events" help="Snooping events" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="packet" help="DHCP message fields" ptype="SUBCOMMAND" mode="subcommand" />
+	</PARAM>
+
+	<ACTION>
+	if [ "all" == ${opt} ]; then
+	    cdbctl update/cdb/debug/dhcp_debug/snooping_packet/1/snooping_event/1/snooping_error/1/snooping_dump/1
+	elif [ "events" == ${opt} ]; then
+	    cdbctl update/cdb/debug/dhcp_debug/snooping_event/1
+	else
+	    cdbctl update/cdb/debug/dhcp_debug/snooping_${opt}/1
+	fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use this command to turn on the debug switches of dhcp snooping module. To restore the default, use the no form of this command
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use command "terminal monitor" to make debug messages print on the VTY immediately. Use command "show logging buffer" to check the debug messages in the logging buffer.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+The following is sample to open dhcp snooping debug switches: 
+Switch# debug dhcp snooping all
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show debugging
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no debug dhcp snooping" help="Snooping" access="4">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="error" help="Error DHCP message" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="events" help="Snooping events" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="packet" help="DHCP message fields" ptype="SUBCOMMAND" mode="subcommand" />
+	</PARAM>
+
+	<ACTION>
+		if [ "all" == ${opt} ]; then
+		    cdbctl update/cdb/debug/dhcp_debug/snooping_packet/0/snooping_event/0/snooping_error/0/snooping_dump/0
+		elif [ "events" == ${opt} ]; then
+		    cdbctl update/cdb/debug/dhcp_debug/snooping_event/0
+		else
+		    cdbctl update/cdb/debug/dhcp_debug/snooping_${opt}/0
+		fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use this command to restore the default of the debug switches of dhcp snooping module.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+No default behavior or values. 
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+The following is sample to open dhcp snooping debug switches: 
+Switch# no debug dhcp snooping all
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show debugging
+	</CTCRCMD>
+
+</COMMAND>
+
+	<COMMAND name="debug dhcp client" help="Client" access="4">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="error" help="Error DHCP message" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="events" help="Client events" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="packet" help="DHCP message fields" ptype="SUBCOMMAND" mode="subcommand" />
+	</PARAM>
+
+	<ACTION>
+	if [ "all" == ${opt} ]; then
+	    cdbctl update/cdb/debug/dhcp_debug/client_packet/1/client_events/1/client_error/1/client_dump/1
+	else
+	    cdbctl update/cdb/debug/dhcp_debug/client_${opt}/1
+	fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use this command to turn on the debug switches of dhcp snooping module. To restore the default, use the no form of this command
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use command "terminal monitor" to make debug messages print on the VTY immediately. Use command "show logging buffer" to check the debug messages in the logging buffer.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+The following is sample to open dhcp snooping debug switches: 
+Switch# debug dhcp snooping all
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show debugging
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no debug dhcp client" help="Client" access="4">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="error" help="Error DHCP message" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="events" help="Client events" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="packet" help="DHCP message fields" ptype="SUBCOMMAND" mode="subcommand" />
+	</PARAM>
+
+	<ACTION>
+		if [ "all" == ${opt} ]; then
+		    cdbctl update/cdb/debug/dhcp_debug/client_packet/0/client_events/0/client_error/0/client_dump/0
+		else
+		    cdbctl update/cdb/debug/dhcp_debug/client_${opt}/0
+		fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use this command to restore the default of the debug switches of dhcp snooping module.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+No default behavior or values. 
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+The following is sample to open dhcp snooping debug switches: 
+Switch# no debug dhcp snooping all
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show debugging
+	</CTCRCMD>
+
+</COMMAND>
+
+	<COMMAND name="debug dhcp relay" help="Relay" access="4">
+		<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="error" help="Error DHCP message" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="events" help="Relay events" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="DHCP message fields" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+		if [ "all" == ${opt} ]; then
+			cdbctl update/cdb/debug/dhcp_debug/relay_packet/1/relay_events/1/relay_error/1/relay_dump/1
+		else
+			cdbctl update/cdb/debug/dhcp_debug/relay_${opt}/1
+		fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no debug dhcp relay" help="Relay" access="4">
+		<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="error" help="Error DHCP message" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="events" help="Relay events" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="DHCP message fields" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+		if [ "all" == ${opt} ]; then
+			cdbctl update/cdb/debug/dhcp_debug/relay_packet/0/relay_events/0/relay_error/0/relay_dump/0
+		else
+			cdbctl update/cdb/debug/dhcp_debug/relay_${opt}/0
+		fi
+		</ACTION>
+	</COMMAND>
+
+       	<COMMAND name="debug dhcpv6" help="Dynamic Host Configuration protocol for IPv6" access="4"/>
+	<COMMAND name="no debug dhcpv6" help="Dynamic Host Configuration protocol for IPv6" access="4"/>
+
+	<COMMAND name="debug dhcpv6 client" help="Client" access="4">
+        	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        		<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="error" help="Error DHCPv6 message" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="events" help="DHCPv6 events" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="packet" help="DHCPv6 message fields" ptype="SUBCOMMAND" mode="subcommand" />
+        	</PARAM>
+        
+        	<ACTION>
+        	dhcpv6pid=`pgrep -x dhclient6`
+	       if [ $dhcpv6pid ]; then
+            	    if [ "all" == ${opt} ]; then
+            	        cdbctl update/cdb/debug/dhcpv6_debug/clientv6_packet/1/clientv6_events/1/clientv6_error/1/clientv6_dump/1
+            	    else
+            	        cdbctl update/cdb/debug/dhcpv6_debug/clientv6_${opt}/1
+            	    fi
+        	fi
+        	</ACTION>
+        
+        	<CTCDESCRIPTION>
+        Use this command to turn on the debug switches of dhcpv6 client module. To restore the default, use the no form of this command
+        	</CTCDESCRIPTION>
+        	<CTCUSAGE>
+        Use command "terminal monitor" to make debug messages print on the VTY immediately. Use command "show logging buffer" to check the debug messages in the logging buffer.
+        	</CTCUSAGE>
+        	<CTCDEFAULT>
+        None
+        	</CTCDEFAULT>
+        	<CTCEXAMPLE>
+        The following is sample to open dhcp snooping debug switches: 
+        Switch# debug dhcpv6 client all
+        	</CTCEXAMPLE>
+        	<CTCRCMD>
+        show debugging
+        	</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug dhcpv6 client" help="Client" access="4">
+        	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+        		<PARAM name="all" help="Turn all debug" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="dump" help="Dump message in hex format" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="error" help="Error DHCPv6 message" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="events" help="DHCPv6 events" ptype="SUBCOMMAND" mode="subcommand" />
+        		<PARAM name="packet" help="DHCPv6 message fields" ptype="SUBCOMMAND" mode="subcommand" />
+        	</PARAM>
+        
+        	<ACTION>
+        	       dhcpv6pid=`pgrep -x dhclient6`
+	               if [ $dhcpv6pid ]; then
+           		    if [ "all" == ${opt} ]; then
+           		        cdbctl update/cdb/debug/dhcpv6_debug/clientv6_packet/0/clientv6_events/0/clientv6_error/0/clientv6_dump/0
+           		    else
+           		        cdbctl update/cdb/debug/dhcpv6_debug/clientv6_${opt}/0
+           		    fi
+        		fi
+        	</ACTION>
+        
+        	<CTCDESCRIPTION>
+        Use this command to restore the default of the debug switches of dhcp snooping module.
+        	</CTCDESCRIPTION>
+        	<CTCUSAGE>
+        None
+        	</CTCUSAGE>
+        	<CTCDEFAULT>
+        No default behavior or values. 
+        	</CTCDEFAULT>
+        	<CTCEXAMPLE>
+        The following is sample to open dhcp snooping debug switches: 
+        Switch# no debug dhcpv6 client all
+        	</CTCEXAMPLE>
+        	<CTCRCMD>
+        show debugging
+        	</CTCRCMD>
+        </COMMAND>
+
+<!--  ospf debug -->
+	<COMMAND name="debug ospf" help="Open Shortest Path First(OSPF)" access="4">
+	</COMMAND>
+
+	<COMMAND name="no debug ospf" help="Open Shortest Path First(OSPF)" access="4">
+	</COMMAND>
+
+	<COMMAND name="debug ospf all" help="ALL" access="4">
+        <ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_all/1
+			vtysh -c "debug ospf event"
+			vtysh -c "debug ospf ism"
+			vtysh -c "debug ospf lsa"
+			vtysh -c "debug ospf nsm"
+			vtysh -c "debug ospf nssa"
+			vtysh -c "debug ospf packet all"
+			vtysh -c "debug ospf zebra"
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable debugging OSPF all.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf all command enables the display of debug all information related to OSPF .
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF all debug on:
+    Switch# debug ospf all
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+			
+	</COMMAND>
+
+	<COMMAND name="no debug ospf all" help="ALL" access="4">
+        <ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_all/0
+			vtysh -c "no debug ospf event"
+			vtysh -c "no debug ospf ism"
+			vtysh -c "no debug ospf lsa"
+			vtysh -c "no debug ospf nsm"
+			vtysh -c "no debug ospf nssa"
+			vtysh -c "no debug ospf packet all"
+			vtysh -c "no debug ospf zebra"
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable debugging OSFP all.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf all command disables the display of debug all information related to OSPF .
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF all debug off:
+    Switch# no debug ospf all
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="debug ospf event" help="OSPF event information" access="4">
+	    <PARAM name="detail" help="OSPF event information" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="abr" help="OSPF Area Border Router" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ia" help="OSPF Inter-area Routing" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="route" help="OSPF Route Table" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="spf" help="OSPF Shortest Path First Calculation" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_event_${detail}/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ospf event ${detail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for OSPF event troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use this command to specify debugging options for OSPF event troubleshooting. Use this command without parameters to turn on all the options. Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF event debug on:
+    Switch# debug ospf event
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug ospf event" help="OSPF event information" access="4">
+	    <PARAM name="detail" help="OSPF event information" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="abr" help="OSPF Area Border Router" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ia" help="OSPF Inter-area Routing" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="route" help="OSPF Route Table" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="spf" help="OSPF Shortest Path First Calculation" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_event_${detail}/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ospf event ${detail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no parameter with this command to disable this function.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF event debug off:
+    Switch# no debug ospf event
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug ospf ism" help="OSPF Interface State Machine" access="4">
+		<PARAM name="ismdetail" help="OSPF Interface State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="events" help="ISM Event Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="status" help="ISM Status Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="timers" help="ISM TImer Information" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_ism_${ismdetail}/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ospf ism ${ismdetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for OSPF Interface State Machine (ISM) troubleshooting. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf ism command enables the display of debug information related to the Interface State Machine (ISM).
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF ism event debug on:
+    Switch#debug ospf ism events
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug ospf ism" help="OSPF Interface State Machine" access="4">
+		<PARAM name="ismdetail" help="OSPF Interface State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="events" help="ISM Event Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="status" help="ISM Status Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="timers" help="ISM TImer Information" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_ism_${ismdetail}/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ospf ism ${ismdetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf ism command disables the display of debug information related to the Interface State Machine (ISM).
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF ism event debug off:
+    Switch# no debug ospf ism events
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug ospf lsa" help="OSPF Link State Advertisement" access="4">
+		<PARAM name="lsadetail" help="OSPF Link State Advertisement" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="flooding" help="LSA Flooding" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="generate" help="LSA Generation" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="install" help="LSA Install/Delete" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="refresh" help="LSA Refresh" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_lsa_${lsadetail}/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ospf lsa ${lsadetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for OSPF Link State Advertisements (LSA) troubleshooting. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf lsa command enables the display of debug information related to internal operations of LSAs.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF lsa debug on:
+    Switch# debug ospf lsa
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug ospf lsa" help="OSPF Link State Advertisement" access="4">
+		<PARAM name="lsadetail" help="OSPF Link State Advertisement" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="flooding" help="LSA Flooding" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="generate" help="LSA Generation" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="install" help="LSA Install/Delete" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="refresh" help="LSA Refresh" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_lsa_${lsadetail}/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ospf lsa ${lsadetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf lsa command disables the display of debug information related to internal operations of LSAs.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF lsa debug off:
+    Switch# no debug ospf lsa
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="debug ospf nsm" help="OSPF Neighbor State Machine" access="4">
+		<PARAM name="nsmdetail" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="events" help="NSM Event Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="status" help="NSM Status Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="timers" help="NSM Timer Information" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_nsm_${nsmdetail}/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ospf nsm ${nsmdetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for OSPF Neighbor State Machine (NSM) troubleshooting. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf nfsm command enables the display of debug information related to the Neighbor State Machine (NSM).
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF nsm timers debug on:
+    Switch#debug ospf nsm timers
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no debug ospf nsm" help="OSPF Neighbor State Machine" access="4">
+		<PARAM name="nsmdetail" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="events" help="NSM Event Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="status" help="NSM Status Information" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="timers" help="NSM Timer Information" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_nsm_${nsmdetail}/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ospf nsm ${nsmdetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf nfsm command disables the display of debug information related to the Neighbor State Machine (NSM).
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF nsm timers debug off:
+    Switch# no debug ospf nsm timers
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+debug ospf nsm
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="debug ospf packet" help="OSPF packets" access="4">
+		<PARAM name="packetdetail" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="OSPF all packets" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="dd" help="OSPF Database Description" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="hello" help="OSPF Hello" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ls-ack" help="OSPF Link State Acknowledgment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ls-request" help="OSPF Link State Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ls-update" help="OSPF Link State Update" ptype="SUBCOMMAND" mode="subcommand"/>			
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_packet_${packetdetail}/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ospf packet ${packetdetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to specify debugging options for OSPF packets. Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf packet command enables the display of debug information related to the sending and receiving of packets.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF packet dd debug on:
+    Switch# debug ospf packet dd
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no debug ospf packet
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no debug ospf packet" help="OSPF packets" access="4">
+		<PARAM name="packetdetail" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="OSPF all packets" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="dd" help="OSPF Database Description" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="hello" help="OSPF Hello" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ls-ack" help="OSPF Link State Acknowledgment" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ls-request" help="OSPF Link State Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ls-update" help="OSPF Link State Update" ptype="SUBCOMMAND" mode="subcommand"/>			
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_packet_${packetdetail}/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ospf packet ${packetdetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf packet command disables the display of debug information related to the sending and receiving of packets.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF packet dd debug off:
+    Switch# no debug ospf packet dd
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+debug ospf packet
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="debug ospf zebra" help="OSPF Zebra information" access="4">
+		<PARAM name="zebradetail" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="interface" help="Zebra interface" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="redistribute" help="Zebra redistribute" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>	
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_zebra_${zebradetail}/1
+			if [ "$?" == "0" ]; then
+				vtysh -c "debug ospf zebra ${zebradetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable debugging of ospf zebra.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf zebra command enables the display of debug information related to the ospf interface or redistribute of zebra.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF zebra interface debug on:
+    Switch# debug ospf zebra interface
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no debug ospf zebra
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no debug ospf zebra" help="OSPF Zebra information" access="4">
+		<PARAM name="zebradetail" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="interface" help="Zebra interface" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="redistribute" help="Zebra redistribute" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>	
+		<ACTION>
+			cdbctl update/cdb/debug/quagga_debug/ospf_zebra_${zebradetail}/0
+			if [ "$?" == "0" ]; then
+				vtysh -c "no debug ospf zebra ${zebradetail}"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the no parameter with this command to disable this function.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf zebra command disables the display of debug information related to the ospf interface or redistribute of zebra.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example set OSPF zebra interface debug off:
+    Switch# no debug ospf zebra interface
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+debug ospf zebra
+	   </CTCRCMD>
+
+	</COMMAND>
+
+<!-- ipmc debug -->
+    <COMMAND name="debug igmp" help="IGMP protocol activity" access="4">
+        <PARAM name="mode" help="debug mode" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="event" help="IGMP protocol events" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="packet" help="IGMP protocol packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="trace" help="IGMP internal daemon activity" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        <ACTION>
+            if [ "all" == ${mode} ]; then
+                cdbctl update/cdb/debug/quagga_debug/igmp_event/1
+                cdbctl update/cdb/debug/quagga_debug/igmp_packet/1
+                cdbctl update/cdb/debug/quagga_debug/igmp_trace/1
+                vtysh -c "debug igmp"
+            else
+                cdbctl update/cdb/debug/quagga_debug/igmp_${mode}/1
+                vtysh -c "debug igmp ${mode}"
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to enable debugging igmp switch on.
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf all command enables the display of debug all information related to igmp .
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    The following example set igmp all debug on:
+    Switch# debug igmp
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+            
+    </COMMAND>
+
+    <COMMAND name="no debug igmp" help="IGMP protocol activity" access="4">
+        <PARAM name="mode" help="debug mode" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="event" help="IGMP protocol events" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="packet" help="IGMP protocol packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="trace" help="IGMP internal daemon activity" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        <ACTION>
+            if [ "all" == ${mode} ]; then
+                cdbctl update/cdb/debug/quagga_debug/igmp_event/0
+                cdbctl update/cdb/debug/quagga_debug/igmp_packet/0
+                cdbctl update/cdb/debug/quagga_debug/igmp_trace/0
+                vtysh -c "no debug igmp"
+            else
+                cdbctl update/cdb/debug/quagga_debug/igmp_${mode}/0
+                vtysh -c "no debug igmp ${mode}"
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to disable debugging igmp all.
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug igmp all command disables the display of debug all information related to igmp .
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    The following example set igmp all debug off:
+    Switch# no debug igmp
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug mroute" help="PIM interaction with kernel MFC cache" access="4">
+        <PARAM name="mode" optional="true" help="detailed" ptype="SUBCOMMAND" mode="switch" default="on">
+            <PARAM name="detail" help="detailed" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        <ACTION>
+            cdbctl update/cdb/debug/quagga_debug/mroute_${mode}/1
+            if [ "on" == ${mode} ]; then
+                vtysh -c "debug mroute"
+            else
+                vtysh -c "debug mroute detail"
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to enable debugging mroute interaction with kernel MFC cache switch on.
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf all command enables the display of debug all information related to mroute interaction with kernel MFC .
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    The following example set mroute interaction with kernel MFC debug on:
+    Switch# debug mroute
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+            
+    </COMMAND>
+
+    <COMMAND name="no debug mroute" help="PIM interaction with kernel MFC cache" access="4">
+        <PARAM name="mode" optional="true" help="detailed" ptype="SUBCOMMAND" mode="switch" default="on">
+            <PARAM name="detail" help="detailed" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        <ACTION>
+            cdbctl update/cdb/debug/quagga_debug/mroute_${mode}/0
+            if [ "on" == ${mode} ]; then
+                vtysh -c "no debug mroute"
+            else
+                vtysh -c "no debug mroute detail"
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to disable debugging mroute interaction with kernel MFC.
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug igmp all command disables the display of debug all information related to mroute interaction with kernel MFC .
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    The following example set mroute interaction with kernel MFC debug off:
+    Switch# no debug igmp
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug pim" help="PIM protocol activity" access="4" hidden="true" >
+        <PARAM name="mode" help="debug mode" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="event" help="PIM protocol events" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="packet" help="PIM protocol packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="trace" help="PIM internal daemon activity" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="zebra" help="ZEBRA protocol activity" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="packet-dump" help="PIM packet dump" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="dump_mode" help="debug mode" ptype="SUBCOMMAND" mode="switch">
+                    <PARAM name="receive" help="Dump received packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="send" help="Dump sent packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ "all" == ${mode} ]; then
+                cdbctl update/cdb/debug/quagga_debug/pim_event/1
+                cdbctl update/cdb/debug/quagga_debug/pim_packet/1
+                cdbctl update/cdb/debug/quagga_debug/pim_trace/1
+                cdbctl update/cdb/debug/quagga_debug/pim_packetdump_receive/1
+                cdbctl update/cdb/debug/quagga_debug/pim_packetdump_send/1
+                cdbctl update/cdb/debug/quagga_debug/pim_zebra/1
+                vtysh -c "debug pim event"
+                vtysh -c "debug pim packet" 2 > /dev/null
+                vtysh -c "debug pim trace"
+                vtysh -c "debug pim packet-dump receive"
+                vtysh -c "debug pim packet-dump send"
+                vtysh -c "debug pim zebra"
+            elif [ "packet-dump" == ${mode} ]; then
+                cdbctl update/cdb/debug/quagga_debug/pim_packetdump_${dump_mode}/1
+                vtysh -c "debug pim packet-dump ${dump_mode}"
+            else
+                cdbctl update/cdb/debug/quagga_debug/pim_${mode}/1
+                vtysh -c "debug pim ${mode}" 2 > /dev/null
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to enable debugging pim switch on.
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+The debug ospf all command enables the display of debug all information related to pim .
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    The following example set pim all debug on:
+    Switch# debug pim
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+            
+    </COMMAND>
+
+    <COMMAND name="no debug pim" help="PIM protocol activity" access="4" hidden="true" >
+         <PARAM name="mode" help="debug mode" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="event" help="PIM protocol events" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="packet" help="PIM protocol packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="trace" help="PIM internal daemon activity" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="zebra" help="ZEBRA protocol activity" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="packet-dump" help="PIM packet dump" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="dump_mode" help="debug mode" ptype="SUBCOMMAND" mode="switch">
+                    <PARAM name="receive" help="Dump received packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="send" help="Dump sent packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ "all" == ${mode} ]; then
+                cdbctl update/cdb/debug/quagga_debug/pim_event/0
+                cdbctl update/cdb/debug/quagga_debug/pim_packet/0
+                cdbctl update/cdb/debug/quagga_debug/pim_trace/0
+                cdbctl update/cdb/debug/quagga_debug/pim_zebra/0
+                cdbctl update/cdb/debug/quagga_debug/pim_packetdump_receive/0
+                cdbctl update/cdb/debug/quagga_debug/pim_packetdump_send/0
+                vtysh -c "no debug pim"
+                vtysh -c "no debug pim zebra"
+                vtysh -c "no debug pim packet-dump receive"
+                vtysh -c "no debug pim packet-dump send"
+            elif [ "packet-dump" == ${mode} ]; then
+                cdbctl update/cdb/debug/quagga_debug/pim_packetdump_${dump_mode}/0
+                vtysh -c "no debug pim packet-dump ${dump_mode}"
+            else
+                cdbctl update/cdb/debug/quagga_debug/pim_${mode}/0
+                vtysh -c "no debug pim ${mode}"
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to disable debugging pim all.
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug pim all command disables the display of debug all information related to pim .
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    The following example set pim all debug off:
+    Switch# no debug pim
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="debug nat" help="Network Address Translation(NAT)" access="4" >
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="events" help="NAT events" ptype="SUBCOMMAND" mode="subcommand" />
+<!--Modify by zhush for bug 52832, 2019-07-16-->
+            <PARAM name="timer" help="NAT timer" ptype="SUBCOMMAND" mode="subcommand" />
+<!--end zhush-->
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/nat_event/1
+				cdbctl update/cdb/debug/route_debug/nat_timer/1
+            else
+                cdbctl update/cdb/debug/route_debug/nat_${type}/1
+            fi
+        </ACTION>
+   </COMMAND>
+	
+    <COMMAND name="no debug nat" help="Network Address Translation(NAT)" access="4" >
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event" help="NAT events" ptype="SUBCOMMAND" mode="subcommand" />
+<!--Modify by zhush for bug 52832, 2019-07-16-->
+            <PARAM name="timer" help="NAT timer" ptype="SUBCOMMAND" mode="subcommand" />
+<!--end zhush-->
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/nat_event/0
+				cdbctl update/cdb/debug/route_debug/nat_timer/0
+            else
+                cdbctl update/cdb/debug/route_debug/nat_${type}/0
+            fi
+        </ACTION>
+    </COMMAND>
+    
+<!-- show debugging -->  
+    <COMMAND name="show debugging" help="Debug information">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true" default="all">
+			<PARAM name="aaa" help="Authentication, authorization, and accounting" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="arp" help="Address Resolution Protocol(ARP)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="arp-inspection" help="ARP Inspection" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="cpu-packet" help="CPU packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dhcp" help="Dynamic Host Configuration protocol" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dhcpv6" help="Dynamic Host Configuration protocol for IPv6" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dot1x" help="IEEE 802.1X Port-Based Access Control" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="erps" help="Ethernet Ring Protection Switching(ERPS)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="g8032" help="G8032" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="igmp-snooping" help="IGMP Snooping Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ipsg" help="IP Source Guard" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ipsla" help="IP Service Level Agreement" ptype="SUBCOMMAND" mode="subcommand" />			
+			<PARAM name="lacp" help="Link Aggregation Control Protocol (LACP)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="lldp" help="Link Layer Discovery Protocol(LLDP)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="mlag" help="Multi-Chassis Link Aggregation" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ospf" help="Open Shortest Path First(OSPF)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="igmp" help="IGMP protocol activity" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="mroute" help="PIM interaction with kernel MFC cache" ptype="SUBCOMMAND" mode="subcommand" />
+<!--add by zhush for bug 52833, 2019-07-24 -->
+			<PARAM name="nat" help="Network Address Translation(NAT)" ptype="SUBCOMMAND" mode="subcommand" />
+<!-- end zhush -->
+			<PARAM name="nd" help="Neighbor discovery" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ntp" help="NTP" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="openflow" help="OPENFLOW" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="pim" help="PIM protocol activity" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rmon" help="Remote Monitoring Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="rpcapi" help="RPC API" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="sflow" help="Sampled flow" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="snmp" help="SNMP" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ssm" help="Synchronous Status Message(SSM)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="stp" help="Spanning Tree Protocols (STP/RSTP/MSTP)" ptype="SUBCOMMAND" mode="subcommand" />			
+			<PARAM name="track" help="Tracking" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="vrrp" help="Virtual Router Redundancy Protocol (VRRP)" ptype="SUBCOMMAND" mode="subcommand" />		
+			<PARAM name="cfm" help="Connectivity Fault Management(CFM)" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <PARAM name="detail" help="Detail of debug module" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl show/cdb/debug/switch_debug/${detail}
+                cdbctl show/cdb/debug/route_debug/${detail}
+                cdbctl show/cdb/debug/app_debug/${detail}
+                cdbctl show/cdb/debug/ptp_debug/${detail}
+                cdbctl show/cdb/debug/quagga_debug/${detail}
+                cdbctl show/cdb/debug/dhcp_debug/${detail}
+                dhcpv6pid=`pgrep -x dhclient6`
+	         if [ $dhcpv6pid ]; then
+                    cdbctl show/cdb/debug/dhcpv6_debug/${detail}
+                fi
+                cdbctl show/cdb/debug/authd_debug/aaa/${detail}
+                cdbctl show/cdb/debug/opm_debug/${detail}
+                cdbctl show/cdb/l2/show_dot1x/debugging/${detail}
+                cdbctl show/cdb/l2/show_sflow/debugging/${detail}
+                cdbctl show/cdb/debug/hsrv_debug
+		   cdbctl show/cdb/debug/ssm_debug/${detail}
+		   ovspid=`pgrep ovs-vswitchd`
+	         if [ $ovspid ]; then
+	         	cdbctl show/cdb/debug/openflow_debug/${detail}
+	         fi
+            elif [ "stp" == ${type} -o "lacp" == ${type} -o "mlag" == ${type} -o "igmp-snooping" == ${type} -o "rpcapi" == ${type} ]; then
+                cdbctl show/cdb/debug/switch_debug/${type}/${detail}
+            elif [ "ospf" == ${type} ]; then
+                cdbctl show/cdb/debug/quagga_debug/${type}/${detail}
+            elif [ "igmp" == ${type} ]; then
+                cdbctl show/cdb/debug/quagga_debug/${type}/${detail}
+            elif [ "mroute" == ${type} ]; then
+                cdbctl show/cdb/debug/quagga_debug/${type}/${detail}
+            elif [ "pim" == ${type} ]; then
+                cdbctl show/cdb/debug/quagga_debug/${type}/${detail}
+            elif [ "arp" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "erps" == ${type} ]; then
+                cdbctl show/cdb/debug/opm_debug/${type}/${detail}
+            elif [ "cfm" == ${type} ]; then
+                cdbctl show/cdb/debug/opm_debug/${type}/${detail}
+            elif [ "ipsg" == ${type} ]; then
+                cdbctl show/cdb/debug/switch_debug/${type}/${detail}
+            elif [ "ipsla" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "track" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "lldp" == ${type} ]; then
+                cdbctl show/cdb/debug/switch_debug/${type}/${detail}
+            elif [ "aaa" == ${type} ]; then
+                cdbctl show/cdb/debug/authd_debug/${type}/${detail}
+            elif [ "ntp" == ${type} ]; then
+                cdbctl show/cdb/debug/app_debug/${type}/${detail}
+            elif [ "dhcp" == ${type} ]; then
+                cdbctl show/cdb/debug/dhcp_debug/${detail}
+            elif [ "dhcpv6" == ${type} ]; then
+                dhcpv6pid=`pgrep -x dhclient6`
+	         if [ $dhcpv6pid ]; then
+                    cdbctl show/cdb/debug/dhcpv6_debug/${detail}
+                fi
+            elif [ "cpu-packet" == ${type} ]; then
+                cdbctl show/cdb/debug/hsrv_debug/${type}/${detail}
+            elif [ "arp-inspection" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "sflow" == ${type} ]; then
+                cdbctl show/cdb/l2/show_sflow/debugging/${detail}
+            elif [ "dot1x" == ${type} ]; then
+                cdbctl show/cdb/l2/show_dot1x/debugging/${detail}
+            elif [ "vrrp" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "ssm" == ${type} ]; then
+                cdbctl show/cdb/debug/ssm_debug/${type}/${detail}
+            elif [ "ptp" == ${type} ]; then
+                cdbctl show/cdb/debug/ptp_debug/${type}/${detail}
+            elif [ "tpoam" == ${type} ]; then
+                cdbctl show/cdb/debug/opm_debug/${type}/${detail}
+            elif [ "nd" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "rmon" == ${type} ]; then
+                cdbctl show/cdb/debug/app_debug/${type}/${detail}
+            elif [ "snmp" == ${type} ]; then
+                cdbctl show/cdb/debug/app_debug/${type}/${detail}
+            elif [ "g8032" == ${type} ]; then
+                cdbctl show/cdb/debug/opm_debug/${type}/${detail}
+			elif [ "nat" == ${type} ]; then
+                cdbctl show/cdb/debug/route_debug/${type}/${detail}
+            elif [ "openflow" == ${type} ]; then
+		   ovspid=`pgrep ovs-vswitchd`
+	         if [ $ovspid ]; then
+                  cdbctl show/cdb/debug/openflow_debug/${type}/${detail}
+	         fi
+            fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the debugging status, use the show debugging command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the debugging status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following is sample output from the show debugging command:   
+    DUT1# show debugging stp 
+	Module       SubModule        Type                 Status
+	------------+----------------+--------------------+------
+	switch       stp              event                on    
+				 stp              packet tx            on    
+				 stp              packet rx            on    
+				 stp              proto cist           on    
+				 stp              proto msti           on    
+				 stp              timer                on  
+    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug cfm"
+		help="Connectivity Fault Management(CFM)" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"    help="CFM event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"   help="CFM packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="CFM timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/debug/opm_debug/cfm_all/1
+                else
+                    cdbctl update/cdb/debug/opm_debug/cfm_${type}/1
+                fi
+                </ACTION>
+		<CTCDESCRIPTION>
+            Use this command to enable debugging cfm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging cfm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging cfm all:  
+	        Switch# debug cfm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>    
+	</COMMAND>
+
+	<COMMAND name="no debug cfm"
+		help="Connectivity Fault Management(CFM)" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all"   help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="event"   help="CFM event" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet"   help="CFM packet" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="timer"    help="CFM timer" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+		<ACTION>
+                if [ "all" == ${type} ]; then
+                    cdbctl update/cdb/debug/opm_debug/cfm_packet/0
+                    cdbctl update/cdb/debug/opm_debug/cfm_timer/0
+                    cdbctl update/cdb/debug/opm_debug/cfm_event/0
+                else
+                    cdbctl update/cdb/debug/opm_debug/cfm_${type}/0
+                fi
+                </ACTION>
+
+		<CTCDESCRIPTION>
+            Use this command to disable debugging cfm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging cfm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging cfm all:  
+	        Switch# no debug cfm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>    
+	</COMMAND>
+
+	<!--  add by zhw for pim-sm debug -->
+    <COMMAND name="debug pimsm"
+        help="Protocol Independent Multicast Sparse Mode (PIM SM)" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="pim" help="pim events" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="igmp" help="igmp events" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="timer events" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/pimsm_pim/1
+                cdbctl update/cdb/debug/route_debug/pimsm_igmp/1
+                cdbctl update/cdb/debug/route_debug/pimsm_timer/1
+            else
+                cdbctl update/cdb/debug/route_debug/pimsm_${type}/1				
+            fi
+            sendmsg "debug pimsm enable ${type} "
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to enable debugging pim.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging pim is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to enable debugging pim all:  
+	        Switch# debug pim all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging 
+		</CTCRCMD>
+    </COMMAND>
+    <COMMAND name="no debug pimsm"
+        help="Arp Inspection" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="pim" help="pim events" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="igmp" help="igmp events" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="timer events" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/route_debug/pimsm_pim/0
+				cdbctl update/cdb/debug/route_debug/pimsm_igmp/0
+                cdbctl update/cdb/debug/route_debug/pimsm_timer/0
+            else
+                cdbctl update/cdb/debug/route_debug/pimsm_${type}/0
+            fi
+            sendmsg "debug pimsm disable ${type} "
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+            Use this command to disable debugging pimsm.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+            None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+            Default debugging pimsm is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+	        In the following example shows how to disable debugging pimsm all:  
+	        Switch# no debug pimsm all   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+            show debugging
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

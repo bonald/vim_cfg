@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+LACP
+</CTCMODULENAME>
+	
+	
+<VIEW name="Exec">
+
+
+<!-- Show LACP commands -->
+	<COMMAND name="show lacp"
+		help="LACP">
+		<PARAM name="gid" optional="true" help="Channel group id" ptype="AGG_GID"/>
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="counters" help="LACP counters" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="internal" help="LACP Internal information" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="neighbor" help="LACP Neighbor information" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="detail" help="Detailed information" test='"${type}"!="counters"' ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="detail" help="Detailed information" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>cdbctl show/cdb/interface/lacp/${gid}/type/${type}/${detail}</ACTION>
+				
+		<CTCDESCRIPTION>
+Use show lacp counters command to display the packet traffic on all of the channel groups, or a specified channel group.
+Use show lacp internal command to display internal information of all of the channel groups, or a specified channel group. 
+Use show lacp neighbor command to display detailed neighbor information of all of the channel groups, or a specified channel group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the packet traffic on all of the channel groups:  
+	Switch# show lacp counters  
+	Traffic statistics   
+	Port                       LACPDUs        Pckt err  
+	                        Sent    Recv    Sent    Recv  
+	--------------------------------------------------------  
+	Channel-group agg1  
+	eth-0-11                 231     226     0       0         
+	eth-0-12                 224     219     0       0         
+	
+	Traffic statistics   
+	Port                       LACPDUs        Pckt err  
+	                        Sent    Recv    Sent    Recv  
+	--------------------------------------------------------  
+	Channel-group agg50  
+	eth-0-9                  29      25      0       0         
+	eth-0-10                 24      18      0       0         
+	This example shows how to display the packet traffic on a specified channel group :  
+	Switch# show lacp 1 counters   
+	Traffic statistics   
+	Port                       LACPDUs        Pckt err  
+	                        Sent    Recv    Sent    Recv  
+	--------------------------------------------------------  
+	Channel-group agg1  
+	eth-0-11                 256     251     0       0        
+	eth-0-12                 249     244     0       0     
+	       
+	This example shows how to display detailed internal information of a specified channel group:  
+	Switch# show lacp 1 internal detail  
+	Flags:  S - Device is requesting Slow LACPDUs  
+	        F - Device is requesting Fast LACPDUs  
+	        A - Device is in Active mode       P - Device is in Passive mode  
+	Channel group 1 neighbors  
+	Actor's information:  
+	
+	          Actor                   Actor        Actor  
+	Port      System ID               Port Number  Flags  
+	eth-0-11  32768,ca9c.e21d.a301    0x56         FA  
+	
+	          LACP Actor         Actor         Actor  
+	          Port Priority      Oper Key      Port State  
+	          32768              1             0x3f  
+	
+	          Port State Flags Decode:  
+	          Activity:   Timeout:   Aggregation:   Synchronization:  
+	          Active      Short      Yes            Yes  
+	
+	          Collecting:   Distributing:   Defaulted:   Expired:  
+	          Yes           Yes             No           No  
+	
+	          Actor                   Actor        Actor  
+	Port      System ID               Port Number  Flags  
+	eth-0-12  32768,ca9c.e21d.a301    0x57         FA  
+	
+	          LACP Actor         Actor         Actor  
+	          Port Priority      Oper Key      Port State  
+	          32768              1             0x3f  
+	
+	          Port State Flags Decode:  
+	          Activity:   Timeout:   Aggregation:   Synchronization:  
+	          Active      Short      Yes            Yes  
+	
+	          Collecting:   Distributing:   Defaulted:   Expired:  
+	          Yes           Yes             No           No  
+            
+		This example shows how to display neighbor information of all of the channel groups:  
+		Switch# show lacp neighbor  
+		Flags:  S - Device is requesting Slow LACPDUs  
+		        F - Device is requesting Fast LACPDUs  
+		        A - Device is in Active mode       P - Device is in Passive mode  
+		
+		Channel group 1 neighbors  
+		
+		Partner's information:  
+		
+		                 LACP port                     Admin   Oper    Port        Port  
+		Port      Flags  Priority   Dev ID             key     Key     Number      State  
+		eth-0-11  FA     32768      ca9c.e21d.a301     0       1       0x56        0x3f  
+		eth-0-12  FA     32768      ca9c.e21d.a301     0       1       0x57        0x3f  
+		
+		Channel group 50 neighbors  
+		
+		Partner's information:  
+		
+		                 LACP port                     Admin   Oper    Port        Port  
+		Port      Flags  Priority   Dev ID             key     Key     Number      State  
+		eth-0-9   FA     32768      ca9c.e21d.a301     0       99      0x54        0x3f  
+		eth-0-10  FA     32768      ca9c.e21d.a301     0       99      0x55        0x3f  
+		This example shows how to display neighbor information of a specified channel group:  
+		Switch# show lacp 1 neighbor   
+		Flags:  S - Device is requesting Slow LACPDUs  
+		        F - Device is requesting Fast LACPDUs  
+		        A - Device is in Active mode       P - Device is in Passive mode  
+		
+		Channel group 1 neighbors  
+		
+		Partner's information:  
+		
+		                 LACP port                     Admin   Oper    Port        Port  
+		Port      Flags  Priority   Dev ID             key     Key     Number      State  
+		eth-0-11  FA     32768      ca9c.e21d.a301     0       1       0x56        0x3f  
+		eth-0-12  FA     32768      ca9c.e21d.a301     0       1       0x57        0x3f  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show lacp sys-id" help="System ID">
+		<PARAM name="mlag" help="MLAG sys-id" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		<ACTION>
+		cdbctl show/cdb/sys/lag_global/sysid/${mlag}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to display the LACP system ID.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the LACP system ID:  
+    Switch# show lacp sys-id    
+    System ID: 32768,001e.080a.ace5    	    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show channel-group" help="Channel group">
+		<PARAM name="gid" optional="true" help="Channel group id" ptype="AGG_GID"/>
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="detail" help="Detail information" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="port" help="Port information" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="summary" help="Summary information" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>cdbctl show/cdb/interface/lag/${gid}/type/${type}</ACTION>
+	
+		<CTCDESCRIPTION>
+Use show channel-group summary command to display a summary of all of the channel groups, or a specified channel group. 
+Use show channel-group detail command to display detailed information of all of the channel groups, or a specified channel group. 
+Use show channel-group port command to display port information of all of the channel groups, or a specified channel group.	
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display detailed information of the channel group 10:  
+	Switch# show channel-group 10 detail  
+	                Channel-group listing:  
+	                ---------------------  
+	
+	Group: 10  
+	----------  
+	Group state = L2  
+	Ports: 1   Maxports = 48  
+	Number of ports in bundle: 1 Max Channel-groups = 31  
+	Standby port = NULL   
+	Protocol:   LACP  
+	                Ports in the group:  
+	                ------------------  
+	
+	Port: eth-0-10  
+	------------  
+	
+	Port state     = Up In-Bndl  
+	Channel number = 10          Protocol = LACP          Channel-gorup  = agg10  
+	Port index     = 10          Mode = Active  
+	
+	Flags:  S - Device is sending Slow LACPDUs  F - Device is sending fast LACPDUs  
+	        A - Device is in active mode        P - Device is in passive mode  
+	
+	Local information:  
+	                            LACP port     Admin     Oper    Port        Port  
+	Port      Flags   State     Priority      Key       Key     Number      State  
+	eth-0-10  SA      bndl      32768         10        10      0xa         0x3d  
+	
+	Partner's information:  
+	
+	                  LACP port                     Oper   Port      Port  
+	Port      Flags   Priority   Dev ID             Key    Number    State  
+	eth-0-10  SA      32768      fed3.7914.b000     10     0xa       0x1d  
+	    
+	This example shows how to display a summary of all of the channel groups:  
+	Switch# show channel-group summary  
+	Flags:  s - suspend           T - standby
+	        D - down/admin down   B - in Bundle
+	        R - Layer3            S - Layer2
+	        w - wait              U - in use
+	
+	Aggregator Name   Protocol    Ports
+	----------------+------------+--------------------------------------------
+	agg10(SU)        LACP         eth-0-9(B) eth-0-10(B) 
+	agg20(SU)        LACP         eth-0-11(B) eth-0-12(B) 
+	This example shows how to display a summary of a specified channel group:
+	Switch# show channel-group 10 summary 
+	Flags:  s - suspend           T - standby
+	        D - down/admin down   B - in Bundle
+	        R - Layer3            S - Layer2
+	        w - wait              U - in use
+	
+	Aggregator Name   Protocol    Ports
+	----------------+------------+--------------------------------------------
+	agg10(SU)        LACP         eth-0-9(B) eth-0-10(B) 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show channel-group interface" help="Channel group member port information">
+		<PARAM name="ethifname" help="Interface name" ptype="IF_NAME_E"/>
+		
+		<ACTION>cdbctl show/cdb/interface/lagmember/${ethifname}</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to display details of the LACP port of all of the channel groups, or a specified channel group, or a specified port. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display details of the LACP port of a specified port:  
+	Switch# show channel-group port eth-0-11  
+	Port: eth-0-11  
+	------------  
+	
+	Port state     = Up In-Bndl  
+	Channel number = 50          Protocol = LACP          Channel-gorup  = agg50  
+	Port index     = 90          Mode = Active  
+	
+	Flags:  S - Device is sending Slow LACPDUs  F - Device is sending fast LACPDUs  
+	        A - Device is in active mode        P - Device is in passive mode  
+	
+	Local information:  
+	                            LACP port     Admin     Oper    Port        Port  
+	Port      Flags   State     Priority      Key       Key     Number      State  
+	eth-0-11  FA      bndl      32768         50        50      0x5a        0x3f  
+	
+	Partner's information:  
+	
+	                  LACP port                     Admin  Oper   Port      Port  
+	Port      Flags   Priority   Dev ID             key    Key    Number    State  
+	eth-0-11  FA      32768      381c.9f94.2501     0      90     0x56      0x3f    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show port-channel"
+		help="Link aggregation information">
+	</COMMAND>
+
+	<COMMAND name="show port-channel load-balance" help="Link aggregation load balance information">
+		<ACTION>
+		cdbctl show/cdb/sys/lag_global/load-balance
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to show the load balance type for the Link Aggregation Control Protocol (LACP).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows the load balance type for the Link Aggregation Control Protocol (LACP):  
+	Switch# show port-channel load-balance   
+    Port-channel load-balance hash information:  
+    -------------------------------------------  
+    Port-channel load-balance src-mac         : enable  
+    Port-channel load-balance dst-mac         : enable  
+    Port-channel load-balance src-ip          : enable  
+    Port-channel load-balance dst-ip          : enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+<!-- clear LACP commands -->
+    <COMMAND name="clear lacp" help="LACP">
+		<PARAM name="gid" optional="true" help="Channel group id" ptype="AGG_GID"/>
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="counters" help="LACP counters" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>
+			cdbctl update/cdb/l2/clear_lacp_counters/${gid}
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to clear all counters of all of the channel groups, or a specified channel group. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear all counters of all of the channel groups:   
+    Switch# clear lacp counters    
+       
+    This example shows how to clear a specified channel group:  
+    Switch# clear lacp 10 counters 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="lacp" help="LACP"/>
+	<COMMAND name="no lacp" help="LACP"/>
+
+	<COMMAND name="lacp system-priority" help="Set system priority">
+		<PARAM name="priority" help="Priority Value (default: 32768)" ptype="PRIORITY"/>
+		
+		<ACTION>
+		cdbctl update/cdb/sys/lag_global/system_priority/${priority}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the system priority for the Link Aggregation Control Protocol (LACP).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 32768, range is 1~65535.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the system priority 100 for the Link Aggregation Control Protocol (LACP):  
+    Switch(config)# lacp system-priority 100  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no lacp system-priority" help="Set system priority">
+		<ACTION>
+		cdbctl update/cdb/sys/lag_global/system_priority/32768
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+ Use this command to set the system priority for the Link Aggregation Control Protocol return to the default setting.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 32768.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to return to the default setting:  
+    Switch(config)# no lacp system-priority  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no port-channel" help="No port channel">
+			<PARAM name="channel_group_id" help="Channel-group number"  ptype="AGG_GID" />
+			<PARAM name="load-balance-mode" help="Enable load balance"  ptype="SUBCOMMAND" mode="subcommand" />
+			<ACTION>
+		        cdbctl update/cdb/sys/lag_global/load_balance_mode/${channel_group_id}/static
+		  	</ACTION>
+			
+		<CTCDESCRIPTION>
+Use this command to set port-channel load balance mode to default static mode.   
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Static mode
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-channel load balance mode to the default setting:    
+    Switch(config)# no port-channel 1 load-balance-mode   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+ 	</COMMAND>
+
+	<COMMAND name="port-channel" help="Port channel" >
+		<PARAM name="channel_group_id" help="Channel-group number"  ptype="AGG_GID" />
+		<PARAM name="load-balance-mode" help="Enable load balance"  ptype="SUBCOMMAND" mode="subcommand" />
+		    <PARAM name="channel_type" help="Channel type" ptype="SUBCOMMAND" mode="switch">
+			  <PARAM name="dynamic" help="Dynamic-load-balance-mode"  ptype="SUBCOMMAND" mode="subcommand" />
+			  <PARAM name="round-robin" help="Round-robin-load-balance-mode"  ptype="SUBCOMMAND" mode="subcommand" />
+			  <PARAM name="static" help="Static-load-balance-mode (default mode)"  ptype="SUBCOMMAND" mode="subcommand" />			  
+		    </PARAM>
+		<ACTION>
+	        cdbctl update/cdb/sys/lag_global/load_balance_mode/${channel_group_id}/${channel_type}
+	  	</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set port-channel load balance mode from static to dynamic or round-robin.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Set port-channel load balance mode to dynamic or round-robin.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Static mode
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-channel load balance mode to round-robin :    
+    Switch(config)# port-channel 1 load-balance-mode round-robin   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+	</COMMAND>
+
+
+	<COMMAND name="port-channel load-balance" help="Load balance">
+		<PARAM name="set_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dst-ip" help="Destination IP/IPv6 address based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-mac" help="Destination MAC address based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-port" help="Destination TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-dst-ip" help="Source and Destination IP/IPv6 address based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-dst-mac" help="Source and Destination MAC address based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-dst-port" help="Source and Destination TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-ip" help="Source IP/IPv6 address based load balancing" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="src-mac" help="Source MAC address based load balancing" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="src-port" help="Source TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+
+	   <ACTION>
+		    cdbctl update/cdb/sys/lag_global/load_balance/overwrite/${set_type}
+	   </ACTION>
+	   
+		<CTCDESCRIPTION>
+Use this command to set load balance type for the Link Aggregation Control Protocol (LACP) which is supported at CTC5160(GreatBelt) based switch.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+src-ip
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-channel load-balance to dst-port:  
+    Switch(config)# port-channel load-balance dst-port  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="port-channel load-balance hash-arithmetic" help="Set hash algorithm">
+	   <PARAM name="set_algo" help="algo" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="crc" help="Cyclical redundancy check arithmetic" ptype="SUBCOMMAND" mode="subcommand" /> 
+		<PARAM name="xor" help="exclusive OR arithmetic(default)" ptype="SUBCOMMAND" mode="subcommand" /> 
+	   </PARAM>
+
+	   <ACTION>
+	        cdbctl update/cdb/sys/lag_global/hash_arithmetic/${set_algo}
+	   </ACTION>
+
+	   	<CTCDESCRIPTION>
+Use this command to configure the load balance hash algorithm for the Link Aggregation Control Protocol (LACP).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+xor
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the load balance hash algorithm for Link Aggregation Control Protocol (LACP):
+    Switch(config)# port-channel load-balance hash-arithmetic xor    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no port-channel load-balance hash-arithmetic" help="Set hash algorithm">
+	   <ACTION>
+	        cdbctl update/cdb/sys/lag_global/hash_arithmetic/xor
+	   </ACTION>
+	</COMMAND>
+
+	<COMMAND name="port-channel load-balance set" help="Load balance set">
+		<PARAM name="set_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src-mac" help="Source MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-mac" help="Dest MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-ip" help="Source IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-ip" help="Dest IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="ip-protocol" help="IP/IPv6-protocol based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-port-l4" help="Source TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-port-l4" help="Destination TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="inner-src-mac" help="Inner source MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-dst-mac" help="Inner dest MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-src-ip" help="Inner source IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-dst-ip" help="Inner dest IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-ip-protocol" help="Inner IP/IPv6-protocol" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-src-port-l4" help="Inner source TCP/UDP port" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-dst-port-l4" help="Inner dest TCP/UDP port" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>
+		cdbctl update/cdb/sys/lag_global/load_balance/set/${set_type}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the load balance type for the Link Aggregation Control Protocol (LACP) which is supported at CTC8096(GoldenGate) based switch.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the load balance type for Link Aggregation Control Protocol (LACP):   
+    Switch(config)# port-channel load-balance set src-mac   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no port-channel load-balance set" help="Load balance unset">
+		<PARAM name="unset_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src-mac" help="Source MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-mac" help="Dest MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-ip" help="Source IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-ip" help="Dest IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="ip-protocol" help="IP/IPv6-protocol based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="src-port-l4" help="Source TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="dst-port-l4" help="Destination TCP/UDP port based load balancing" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="inner-src-mac" help="Inner source MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-dst-mac" help="Inner dest MAC" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-src-ip" help="Inner source IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-dst-ip" help="Inner dest IP/IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-ip-protocol" help="Inner IP/IPv6-protocol" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-src-port-l4" help="Inner source TCP/UDP port" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="inner-dst-port-l4" help="Inner dest TCP/UDP port" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>
+		cdbctl update/cdb/sys/lag_global/load_balance/unset/${unset_type}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to unset the load balance type for the Link Aggregation Control Protocol (LACP). 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the load balance type for Link Aggregation Control Protocol (LACP):   
+    Switch(config)# no port-channel load-balance set src-mac 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no port-channel load-balance" help="load balance set to default">
+		<ACTION>
+		cdbctl update/cdb/sys/lag_global/load_balance/set/default
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to set the load balance type for the Link Aggregation Control Protocol (LACP) return to the default setting.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the load balance for Link Aggregation Control Protocol (LACP) to default:   
+    Switch(config)# no port-channel load-balance  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="lacp" help="LACP"/>
+	<COMMAND name="no lacp" help="LACP"/>
+
+	<COMMAND name="lacp port-priority" help="Set port priority">
+		<PARAM name="priority" help="Priority Value (default: 32768)" ptype="PRIORITY"/>
+		
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/lacp/actor_port_priority/${priority}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the port priority for the Link Aggregation Control Protocol (LACP). 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 32768, range is 1 to 65535.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the port priority 100 for the Link Aggregation Control Protocol (LACP) member:  
+    Switch(config-if-eth-0-1)# lacp port-priority 100  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no lacp port-priority" help="Set port priority">
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/lacp/actor_port_priority/32768
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the port priority for the Link Aggregation Control Protocol (LACP) return to the default setting.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 32768, range is 1 to 65535.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to return to the default setting:  
+    Switch(config-if-eth-0-1)# no lacp port-priority 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="lacp timeout" help="Set timeout">
+		<PARAM name="timeout" help="Timeout" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="short" help="Short timeout with 3 seconds" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="long" help="Long timeout with 90 seconds (default is long)" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>
+		if [ "short" == ${timeout} ]; then
+			cdbctl update/cdb/interface/${iface}/lacp/short_timeout/1
+		else
+			cdbctl update/cdb/interface/${iface}/lacp/short_timeout/0
+		fi;
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the port timeout for the Link Aggregation Control Protocol (LACP). 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is long
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the port timeout short for the Link Aggregation Control Protocol (LACP):  
+    Switch(config-if-eth-0-1)# lacp timeout short    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no lacp timeout" help="Set timeout">
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/lacp/short_timeout/0
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the port timeout for the Link Aggregation Control Protocol (LACP) return to the default setting.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is long
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to return to the default setting:  
+    Switch(config-if-eth-0-1)# no lacp timeout 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,11 @@
+ifeq ($(ARCH), mips)
+mychecksum : sendmsg.c 
+	mipsel-linux-gcc-4.4.7 -g -Wall  -o sendmsg sendmsg.c
+endif
+ifeq ($(ARCH), arm64)
+mychecksum : sendmsg.c 
+	aarch64-linux-gnu-gcc -g -Wall  -o sendmsg sendmsg.c
+endif
+clean :
+	rm  sendmsg 
+

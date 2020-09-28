@@ -1,0 +1,10 @@
+#
+# Centec network device configuration
+#
+
+config NET_VENDOR_CENTEC
+        bool "centec cpumac"
+        default n
+        ---help---
+          If you have a network (Ethernet) card belonging to this class, say Y.
+

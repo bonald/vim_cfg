@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+BGP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show ip bgp" help="Show BGP information">
+		<ACTION>
+			vtysh -c "show ip bgp"
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="show ip bgp neighbor" help="Detailed information on TCP and GBP neighbor connections">
+		<ACTION>
+			vtysh -c "show ip bgp neighbor"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip bgp summary" help="Summary of BPG neighbor status">
+		<ACTION>
+			vtysh -c "show ip bgp summary"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip route bgp" help="Show BGP routing table">
+		<ACTION>
+			vtysh -c "show ip route bgp"
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="router bgp" help="Start BGP configuration" view="configure-bgp-view">
+		<PARAM name="ASnum" help="BGP AS number" ptype="BGP_ID"/>
+
+		<ACTION>
+			cdbctl create/cdb/l3/bgp/create_bgp/${ASnum}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router bgp ${ASnum}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no router bgp" help="Stop BGP configuration">
+		<PARAM name="ASnum" help="BGP AS number" ptype="BGP_ID"/>
+
+		<ACTION>
+			cdbctl delete/cdb/l3/bgp/remove_bgp/${ASnum}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "no router bgp ${ASnum}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-bgp-view"
+	prompt="${SYSTEM_NAME}(config-router)# "
+	depth="1">
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from router bgp configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from router bgp configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+	<COMMAND name="bgp" help="BGP interface commands">
+	</COMMAND>
+
+	<COMMAND name="no bgp" help="BGP interface commands">
+	</COMMAND>
+
+	<COMMAND name="bgp router-id" help="router-id for the BGP process">
+		<PARAM name="rid" help="BGP router-id in IP address format" ptype="IP_ADDR"/>
+		<ACTION>
+			vtysh -c "configure terminal" -c "router bgp" -c "bgp router-id ${rid}" -c "end" 
+			if [ "$?" == "0" ]; then
+				cdbctl update/cdb/l3/bgp/router_id/${rid}
+			fi
+		</ACTION>
+
+	</COMMAND>
+	<COMMAND name="no bgp router-id" help="router-id for the BGP process">
+		<ACTION>
+			vtysh -c "configure terminal" -c "router bgp" -c " no bgp router-id" -c "end" 
+			if [ "$?" == "0" ]; then
+				cdbctl update/cdb/l3/bgp/router_id/remove
+			fi
+		</ACTION>
+
+	</COMMAND>
+	<COMMAND name="network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="network prefix" ptype="IP_ADDR"/>
+		<PARAM name="mask" help="Set the BGP network mask" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="sub-mask" help="BGP network mask as a decimal value" ptype="IP_ADDR"/>
+		</PARAM>
+		<ACTION>
+			cdbctl create/cdb/l3/bgp_network/${prefix}/mask/${sub-mask}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router bgp" -c "network ${prefix} mask ${sub-mask}" -c "end"			
+			fi
+		</ACTION>
+		
+	</COMMAND>  
+
+	<COMMAND name="no network" help="Disable routing on an IP network">
+		<PARAM name="prefix" help="network prefix" ptype="IP_ADDR"/>
+		<PARAM name="mask" help="Set the BGP network mask" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="sub-mask" help="BGP network mask as a decimal value" ptype="IP_ADDR"/>
+		</PARAM>
+		<ACTION>
+			cdbctl delete/cdb/l3/bgp_network/${prefix}/mask/${sub-mask}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router bgp" -c "no network ${prefix} mask ${sub-mask}" -c "end"			
+			fi
+		</ACTION>
+		
+	</COMMAND> 
+	
+	<COMMAND name="neighbor" help="Specify a neighbor router">
+		<PARAM name="neighbor-ip" help="neighbor ip address" ptype="IP_ADDR"/>
+		<PARAM name="neighbor-cmd" help="Choose the neighbor command" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="remote-as" help="Specify the BGP neighbor" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="rmt-as" help="BGP network mask as a decimal value" ptype="BGP_ID"/>
+			</PARAM>
+			<PARAM name="ebgp-multihop" help="Alow EBGP neighbors not on directly connected networks" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="mult-num" help="maxmum hop count" optional="true" ptype="EBGP_NUM"/>
+			</PARAM>
+			<PARAM name="password" help="Set the BGP MD5 password between neighbor" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="passwd" help="BGP network MD5 password as a value" ptype="AUTHDKEY"/>
+			</PARAM>
+			<PARAM name="update-source" help="source of routing updates" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="opt" help="source of routing updates" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="interface-name" help="interface name" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="intf-name" help="interface name" ptype="IF_NAME_BGP"/>
+					</PARAM>
+					<PARAM name="interface-ip" help="interface ip" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="intf-ip" help="interface ip" ptype="IP_ADDR"/>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+			<PARAM name="shutdown" help="Administratively shut down this neighbor" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="next-hop-self" help="Disable the next hop calculation for this neighbor" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			if [ "${neighbor-cmd}" == "remote-as" ]; then
+				vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} remote-as ${rmt-as}" -c "end"
+				if [ "$?" == "0" ]; then
+					cdbctl create/cdb/l3/bgp_neighbor/${neighbor-ip}/remote_as/${rmt-as}		
+				fi
+			elif [ "${neighbor-cmd}" == "ebgp-multihop" ]; then
+				if [ "${mult-num}" == "" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} ebgp-multihop" -c "end"
+					if [ "$?" == "0" ]; then
+						cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/ebgp_multihop/256
+					fi
+				else
+					vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} ebgp-multihop ${mult-num}" -c "end"
+					if [ "$?" == "0" ]; then
+						cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/ebgp_multihop/${mult-num}
+					fi
+				fi
+			elif [ "${neighbor-cmd}" == "password" ]; then
+				vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} password ${passwd}" -c "end"
+				if [ "$?" == "0" ]; then
+					cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/password/${passwd}
+				fi
+			elif [ "${neighbor-cmd}" == "update-source" ]; then
+				if [ "${opt}" == "interface-name" ]; then
+					cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/intf_name/${intf-name}
+					vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} update-source ${intf-name}" -c "end"
+				elif [ "${opt}" == "interface-ip" ]; then
+					cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/intf_addr/${intf-ip}
+					vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} update-source ${intf-ip}" -c "end"			
+				fi
+			elif [ "${neighbor-cmd}" == "shutdown" ]; then
+				cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/shutdown/1
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} shutdown" -c "end"			
+				fi
+			elif [ "${neighbor-cmd}" == "next-hop-self" ]; then
+				cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/next_hop_self/1
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "neighbor ${neighbor-ip} next-hop-self" -c "end"			
+				fi
+			fi
+		</ACTION>
+		
+	</COMMAND>	
+
+ 	<COMMAND name="no neighbor" help="Set router rip neighbor">
+		<PARAM name="neighbor-ip" help="neighbor ip address" ptype="IP_ADDR"/>
+		<PARAM name="next-hop-self" help="Disable the next hop calculation for this neighbor" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="password" help="Set the BGP MD5 password between neighbor" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="shutdown" help="Administratively shut down this neighbor" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			if [ "${shutdown}" != "" ]; then
+				cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/shutdown/0
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "no neighbor ${neighbor-ip} shutdown" -c "end"			
+				fi
+			elif [ "${next-hop-self}" != "" ]; then
+				cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/next_hop_self/0
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "no neighbor ${neighbor-ip} next-hop-self" -c "end"			
+				fi
+			elif [ "${password}" != "" ]; then
+				cdbctl update/cdb/l3/bgp_neighbor/${neighbor-ip}/password
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "no neighbor ${neighbor-ip} password" -c "end"			
+				fi
+			else
+				cdbctl delete/cdb/l3/bgp_neighbor/${neighbor-ip}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "no neighbor ${neighbor-ip}" -c "end"			
+				fi
+			fi
+		</ACTION>
+		
+	</COMMAND>	
+	<COMMAND name="redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ospf" help="Open Shortest Path First (OSPFv2)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rip" help="Routing Information Protocal" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="metric" help="Metric" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="met" help="Metric valut" ptype="BGP_METRIC"/>
+		</PARAM>
+		<ACTION>
+			if [ "${metric}" != "" ]; then
+				cdbctl update/cdb/l3/bgp/redistribute/add/${redist}/red_metric/${met}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "redistribute ${redist} metric ${met}" -c "end"
+				fi
+			else
+				cdbctl update/cdb/l3/bgp/redistribute/add/${redist}/
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router bgp" -c "redistribute ${redist}" -c "end"
+				fi
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ospf" help="Open Shortest Path First (OSPFv2)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rip" help="Routing Information Protocal" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/bgp/redistribute/del/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router bgp" -c "no redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>
+

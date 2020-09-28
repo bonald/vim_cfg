@@ -1,0 +1,4 @@
+ACTION!="add",GOTO="farsight"
+KERNEL=="sd[a-z][0-9]",RUN+="/etc/mount.sh %k"
+KERNEL=="mmcblk[0-9]p[0-9]",RUN+="/etc/mount.sh %k"
+LABEL="farsight"

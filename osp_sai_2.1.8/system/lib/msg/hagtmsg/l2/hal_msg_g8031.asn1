@@ -1,0 +1,57 @@
+HAL-MSG-G8031 DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2BrgName,
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+    ;
+
+
+
+HalMsgG8031GroupAddReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    workingport      INTEGER,
+    protectingport   INTEGER,
+    protectingen      INTEGER,
+    nhid             INTEGER,
+    nhoffset         INTEGER
+}
+
+HalMsgG8031GroupDelReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    nhid             INTEGER
+}
+
+HalMsgG8031GroupAddVlanReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    workingport      INTEGER,
+    protectingport   INTEGER,
+    nhid             INTEGER,
+    fid              INTEGER,
+    chipnum          INTEGER,
+    chipbmp          INTEGER
+}
+
+HalMsgG8031GroupDelVlanReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    workingport      INTEGER,
+    protectingport   INTEGER,
+    nhid             INTEGER,
+    fid              INTEGER,
+    chipnum          INTEGER,
+    chipbmp          INTEGER
+}
+
+HalMsgG8031GroupProtectingEnReq ::= SEQUENCE
+{
+    groupid          INTEGER,
+    enable           INTEGER
+}
+
+END

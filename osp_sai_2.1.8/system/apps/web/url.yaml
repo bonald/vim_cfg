@@ -1,0 +1,22 @@
+api_prefix: 'api'
+version: 'v1'       # /api/v1/xxx/
+class_pkg: api_class
+urls:
+  - url: /vlan/
+    method:
+      GET:    get
+      POST:   post
+      DELETE: delete
+      PUT:    put
+    class: vlan.VlanApi
+    auth: false
+    module: VLAN
+    document: doc/API/v1/en/vlan.yaml
+  
+  - url: /test/<string>/
+    method:
+      GET: get
+    class: test.TestApi
+    auth: true
+
+

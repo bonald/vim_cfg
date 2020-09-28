@@ -1,0 +1,65 @@
+include ../../../Makefile.env.inc
+
+include $(MK_DIR)/sys.mk
+include $(APP_TOP_DIR)/snmp/mk/agent_module_list_c.mk
+
+LIB = netsnmpagent
+
+# agent_module_list_c defined in agent_module_list_c.mk
+SRCS=$(addprefix mibgroup/,$(agent_module_list_c))
+SRCS += \
+    agent_handler.c \
+    agent_index.c \
+    agent_read_config.c \
+	agent_sysORTable.c \
+    agent_registry.c \
+    agent_trap.c \
+    kernel.c \
+    snmp_agent.c \
+    snmp_vars.c \
+    mibgroup/util_funcs.c \
+    mibgroup/mibII/vacm_conf.c \
+    mibgroup/utilities/execute.c
+
+SRCS+= mibgroup/util_funcs/header_generic.c
+
+SRCS += \
+	helpers/all_helpers.c \
+	helpers/baby_steps.c \
+	helpers/bulk_to_next.c \
+	helpers/cache_handler.c \
+	helpers/debug_handler.c \
+	helpers/dummy.c \
+	helpers/instance.c \
+	helpers/mode_end_call.c \
+	helpers/multiplexer.c \
+	helpers/null.c \
+	helpers/old_api.c \
+	helpers/read_only.c \
+	helpers/row_merge.c \
+	helpers/scalar.c \
+	helpers/scalar_group.c \
+	helpers/serialize.c \
+	helpers/snmp_get_statistic.c \
+	helpers/stash_cache.c \
+	helpers/stash_to_next.c \
+	helpers/table_array.c \
+	helpers/table.c \
+	helpers/table_container.c \
+	helpers/table_data.c \
+	helpers/table_dataset.c \
+	helpers/table_iterator.c \
+	helpers/table_row.c \
+	helpers/table_tdata.c \
+	helpers/watcher.c
+
+CPPFLAGS += -I$(TOP_DIR)/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/agent
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/include -I$(APP_TOP_DIR)/snmp/agent/mibgroup
+CPPFLAGS+= -DNETSNMP_ENABLE_IPV6 -Ulinux -Dlinux=linux
+
+STATIC_LIBS+=${BLD_DIR}/lib/libnetsnmp.a ${BLD_DIR}/lib/libnetsnmpmibs.a
+#LD_FLAGS+=-export-dynamic
+LD_FLAGS+=-lcrypto -lrt
+
+include $(MK_DIR)/solib.mk

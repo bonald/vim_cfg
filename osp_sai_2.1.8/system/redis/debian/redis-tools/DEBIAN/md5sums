@@ -1,0 +1,12 @@
+0056c46cb23bc0f931fdb3f304937525  usr/bin/redis-benchmark
+356424ad59c5ee007c48c1f36d329d8f  usr/bin/redis-check-aof
+53a98ecdd3e45403311c3e26fb4c60a4  usr/bin/redis-check-rdb
+c01a3f3806eb6517bc71c2b4f98fb208  usr/bin/redis-cli
+848565df7f222dc03c8d5cb34b9e0188  usr/share/bash-completion/completions/bash_completion.d/redis-cli
+8bda3859ed81d068714a34eb393ec3c2  usr/share/doc/redis-tools/changelog.Debian.gz
+6884a8609766598c538c11d3af2d044e  usr/share/doc/redis-tools/copyright
+b18b0821ae2ecf8fa6bdabb46b70e767  usr/share/doc/redis-tools/examples/lru/README
+8438ac94195a75eebceddc8b71b2cc05  usr/share/doc/redis-tools/examples/lru/test-lru.rb
+70b2284c8833a8773e26abe6ba7797c3  usr/share/doc/redis-tools/examples/redis-trib.rb
+bd1e139e18b7e72baf888dd841ab4b1f  usr/share/man/man1/redis-benchmark.1.gz
+a97c81de969b8cf08e2ffc85d558736b  usr/share/man/man1/redis-cli.1.gz

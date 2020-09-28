@@ -1,0 +1,81 @@
+include ../../../Makefile.env.inc
+include $(MK_DIR)/sys.mk
+
+PROG = snmpd
+SRCS = snmpd.c \
+	   agent_sysORTable.c
+
+
+CPPFLAGS += -I$(TOP_DIR)/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/agent
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/snmplib
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/include -I$(APP_TOP_DIR)/snmp/agent/mibgroup
+CPPFLAGS+= -DNETSNMP_ENABLE_IPV6 -Ulinux -Dlinux=linux
+
+DEP_LIBS = $(LIB_DIR)/libnetsnmp.a $(LIB_DIR)/libnetsnmpagent.so
+DEP_LIBS+= $(LIB_DIR)/libnetsnmpmibs.a 
+LD_LIBS= -L$(LIB_DIR) -lnetsnmpmibs -lnetsnmpagent -lnetsnmp -lm -lcrypto
+
+LD_LIBS  += -L$(LIB_DIR) -lpthread -lcrypt -lcrypto -lrt
+
+ETC_DIR?=$(BLD_DIR)/etc
+SNMPD_CFG=snmpd.conf
+
+CFG_FILE=../include/net-snmp/net-snmp-config.h
+
+# V1 Mibs
+MIBS = RFC1155-SMI.txt RFC1213-MIB.txt RFC-1215.txt
+# V2 mibs
+MIBS+= SNMPv2-CONF.txt SNMPv2-SMI.txt SNMPv2-TC.txt SNMPv2-TM.txt SNMPv2-MIB.txt
+# V3 mibs
+MIBS+= SNMP-FRAMEWORK-MIB.txt SNMP-MPD-MIB.txt SNMP-TARGET-MIB.txt \
+    SNMP-NOTIFICATION-MIB.txt SNMP-PROXY-MIB.txt SNMP-USER-BASED-SM-MIB.txt \
+    SNMP-VIEW-BASED-ACM-MIB.txt SNMP-COMMUNITY-MIB.txt TRANSPORT-ADDRESS-MIB.txt
+# Agent mibs
+MIBS+= AGENTX-MIB.txt SMUX-MIB.txt
+# IANA mibs
+MIBS+= IANAifType-MIB.txt IANA-LANGUAGE-MIB.txt IANA-ADDRESS-FAMILY-NUMBERS-MIB.txt
+# RFC mibs
+MIBS+= IF-MIB.txt IF-INVERTED-STACK-MIB.txt EtherLike-MIB.txt \
+    IP-MIB.txt IP-FORWARD-MIB.txt IANA-RTPROTO-MIB.txt \
+    TCP-MIB.txt UDP-MIB.txt INET-ADDRESS-MIB.txt HCNUM-TC.txt \
+    HOST-RESOURCES-MIB.txt HOST-RESOURCES-TYPES.txt \
+    RMON-MIB.txt IPV6-TC.txt IPV6-MIB.txt IPV6-ICMP-MIB.txt IPV6-TCP-MIB.txt \
+    IPV6-UDP-MIB.txt DISMAN-EVENT-MIB.txt DISMAN-SCRIPT-MIB.txt \
+    DISMAN-SCHEDULE-MIB.txt NOTIFICATION-LOG-MIB.txt SNMP-USM-AES-MIB.txt \
+    SNMP-USM-DH-OBJECTS-MIB.txt
+# NETSNMP mibs
+MIBS+= NET-SNMP-TC.txt NET-SNMP-MIB.txt NET-SNMP-AGENT-MIB.txt \
+    NET-SNMP-EXAMPLES-MIB.txt NET-SNMP-EXTEND-MIB.txt
+# UCD mibs
+MIBS+= UCD-SNMP-MIB.txt UCD-DEMO-MIB.txt UCD-IPFWACC-MIB.txt \
+    UCD-DLMOD-MIB.txt UCD-DISKIO-MIB.txt
+
+# Default mibs
+MIBS_DIR?=$(BLD_DIR)/mibs/
+DMIBS_LINE=$(subst :, , $(shell cat $(CFG_FILE) | grep "define NETSNMP_DEFAULT_MIBS" | awk '{print substr($$3, 3, length($$3) - 3)}'))
+DEFAULT_MIBS=$(addsuffix .txt,$(DMIBS_LINE))
+
+MIBS += $(DEFAULT_MIBS)
+#MIBS +=cnStatTrap.mib
+ALL_MIBS=$(addprefix $(MIBS_DIR),$(sort $(MIBS)))
+LOCAL_MIBS=$(addprefix ../mibs/,$(sort $(MIBS)))
+
+all: $(BIN_DIR)/$(PROG) $(ETC_DIR)/$(SNMPD_CFG) $(ALL_MIBS) FORCE
+
+$(ETC_DIR)/$(SNMPD_CFG): $(SNMPD_CFG)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(SNMPD_CFG) $@
+
+$(ALL_MIBS): $(LOCAL_MIBS)    
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(subst $(BLD_DIR),..,$@) $@
+
+EXTRA_CLEANS=$(ETC_DIR)/$(SNMPD_CFG) $(ALL_MIBS)
+            
+include $(MK_DIR)/prog.mk
+
+.PHONY: FORCE
+FORCE:

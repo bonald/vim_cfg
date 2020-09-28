@@ -1,0 +1,49 @@
+HAL-MSG-OPENFLOW-BOND DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgDefL2MacAddr
+	FROM HAL-MSG-L2TYPES
+	;
+	
+------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow bond (BEGIN) {
+------------------------------------
+
+------------------------------------
+--  Message definitions for OpenFlow (BEGIN) {
+------------------------------------
+HalMsgOpenFlowCreateBondReq ::= SEQUENCE
+{
+    tid             INTEGER (1..16),
+    gport           INTEGER,
+    l3ifid          INTEGER
+}
+
+HalMsgOpenFlowDelBondReq ::= SEQUENCE
+{
+    tid             INTEGER (1..16),
+    gport           INTEGER,
+    l3ifid          INTEGER    
+}
+
+HalMsgOpenFlowAddBondSlaveReq ::= SEQUENCE
+{
+    tid             INTEGER (1..16),
+    gport           INTEGER
+}
+
+HalMsgOpenFlowDelBondSlaveReq ::= SEQUENCE
+{
+    tid             INTEGER (0..16),
+    gport           INTEGER
+}
+
+HalMsgOpenFlowBondSetMacReq ::= SEQUENCE
+{
+    mac             HalMsgDefL2MacAddr,
+    gport           INTEGER
+}
+------------------------------------
+--  } Message definitions for OpenFlow bond (END)
+------------------------------------
+END

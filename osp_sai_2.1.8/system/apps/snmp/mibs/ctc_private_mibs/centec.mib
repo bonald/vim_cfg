@@ -1,0 +1,260 @@
+-- Imports declare
+
+CENTEC DEFINITIONS ::= BEGIN
+
+IMPORTS
+      SnmpAdminString
+      FROM SNMP-FRAMEWORK-MIB
+      
+      ifIndex
+      FROM IF-MIB
+      
+      TimeTicks, Counter32, OBJECT-IDENTITY,
+      mib-2, MODULE-IDENTITY, IpAddress, Counter64,
+      Unsigned32, Integer32, Gauge32, OBJECT-TYPE,
+      NOTIFICATION-TYPE
+      FROM SNMPv2-SMI
+
+      OwnerString
+      FROM RMON-MIB
+      
+      NOTIFICATION-GROUP, MODULE-COMPLIANCE, OBJECT-GROUP
+      FROM SNMPv2-CONF
+      
+      InetAddressPrefixLength, InetAddress, InetAddressType
+      FROM INET-ADDRESS-MIB
+      
+      InterfaceIndex, InterfaceIndexOrZero, ifIndex
+      FROM IF-MIB
+      
+      VrId
+      FROM VRRP-MIB      
+      
+      TestAndIncr, TimeStamp, AutonomousType,
+      PhysAddress, TEXTUAL-CONVENTION, TruthValue, DateAndTime,
+      MacAddress, RowStatus
+        FROM SNMPv2-TC
+      
+      enterprises
+        FROM SNMPv2-SMI;
+        
+-- Child OID declare
+
+centec MODULE-IDENTITY
+	LAST-UPDATED "200806260000Z"        -- June 26, 2008 at 00:00 GMT
+	ORGANIZATION
+	   ""
+	CONTACT-INFO
+	   "
+	   "
+	DESCRIPTION
+	       "The System Information of the switch"
+	::= { enterprises 27975 }
+
+------------------------------------------------------------------
+--                      Centec Identifiers                      --
+------------------------------------------------------------------
+
+system                    OBJECT IDENTIFIER ::= { centec 1 }
+syslog                    OBJECT IDENTIFIER ::= { centec 2 }
+mirror                    OBJECT IDENTIFIER ::= { centec 3 }
+portSecurity              OBJECT IDENTIFIER ::= { centec 4 }
+stormControl              OBJECT IDENTIFIER ::= { centec 5 }
+ntp                       OBJECT IDENTIFIER ::= { centec 6 }
+acl                       OBJECT IDENTIFIER ::= { centec 7 }
+qos                       OBJECT IDENTIFIER ::= { centec 8 }
+igsp                      OBJECT IDENTIFIER ::= { centec 9 }
+linkAgg                   OBJECT IDENTIFIER ::= { centec 10 }
+qBridgeExt                OBJECT IDENTIFIER ::= { centec 11 }
+dot1xExt                  OBJECT IDENTIFIER ::= { centec 12 }
+timeRange                 OBJECT IDENTIFIER ::= { centec 13 }
+stpExt                    OBJECT IDENTIFIER ::= { centec 14 }
+igmpExt                   OBJECT IDENTIFIER ::= { centec 16 }
+boardHealthyMonitor       OBJECT IDENTIFIER ::= { centec 17 }
+arpInsp                   OBJECT IDENTIFIER ::= { centec 20 }
+--pimsmExt                  OBJECT IDENTIFIER ::= { centec 21 }
+--ospfExt                   OBJECT IDENTIFIER ::= { centec 22 }
+user                      OBJECT IDENTIFIER ::= { centec 30 }
+snmpExt                   OBJECT IDENTIFIER ::= { centec 32 }
+stm                       OBJECT IDENTIFIER ::= { centec 33 }
+dnsClient                 OBJECT IDENTIFIER ::= { centec 34 }
+ssh                       OBJECT IDENTIFIER ::= { centec 35 }
+dhcp                      OBJECT IDENTIFIER ::= { centec 36 }
+lswdevMMib                OBJECT IDENTIFIER ::= { centec 37 }
+lswTrapMib                OBJECT IDENTIFIER ::= { centec 39 }
+ipSourceGuard             OBJECT IDENTIFIER ::= { centec 40 }
+interface                 OBJECT IDENTIFIER ::= { centec 42 }
+management                OBJECT IDENTIFIER ::= { centec 43 }
+mvr                       OBJECT IDENTIFIER ::= { centec 44 }
+erps                      OBJECT IDENTIFIER ::= { centec 45 }
+prefixList                OBJECT IDENTIFIER ::= { centec 46 }
+ipUnicast                 OBJECT IDENTIFIER ::= { centec 47 }
+--vrf                       OBJECT IDENTIFIER ::= { centec 48 }
+aaa                       OBJECT IDENTIFIER ::= { centec 49 }
+evc                       OBJECT IDENTIFIER ::= { centec 51 }
+qinq                      OBJECT IDENTIFIER ::= { centec 52 }
+rmonExt                   OBJECT IDENTIFIER ::= { centec 53 }
+--routeMap                  OBJECT IDENTIFIER ::= { centec 54 }
+--ripExt                    OBJECT IDENTIFIER ::= { centec 57 }
+ldpExt                    OBJECT IDENTIFIER ::= { centec 60 }
+bgp                       OBJECT IDENTIFIER ::= { centec 68 }
+mpls                      OBJECT IDENTIFIER ::= { centec 69 }
+smartlink                 OBJECT IDENTIFIER ::= { centec 70 }
+flowctrl                  OBJECT IDENTIFIER ::= { centec 71 }
+cputraffic                OBJECT IDENTIFIER ::= { centec 72 }
+portisolate               OBJECT IDENTIFIER ::= { centec 73 }
+phyloopback               OBJECT IDENTIFIER ::= { centec 74 }
+monitorlink               OBJECT IDENTIFIER ::= { centec 75 }
+udld                      OBJECT IDENTIFIER ::= { centec 76 }
+policyBasedRouting        OBJECT IDENTIFIER ::= { centec 77 }
+ddos                      OBJECT IDENTIFIER ::= { centec 78 }
+l2ping                    OBJECT IDENTIFIER ::= { centec 79 }
+--ipg                       OBJECT IDENTIFIER ::= { centec 80 }
+ssm                       OBJECT IDENTIFIER ::= { centec 81 }
+arpConfig                 OBJECT IDENTIFIER ::= { centec 82 }
+--cfm                       OBJECT IDENTIFIER ::= { centec 83 }
+ptp                       OBJECT IDENTIFIER ::= { centec 85 }
+pm                        OBJECT IDENTIFIER ::= { centec 90 }
+alarm                     OBJECT IDENTIFIER ::= { centec 91 }
+rsvpTe                    OBJECT IDENTIFIER ::= { centec 92 }
+--g8031                     OBJECT IDENTIFIER ::= { centec 93 }
+--g8032                     OBJECT IDENTIFIER ::= { centec 94 }
+voiceVlan                 OBJECT IDENTIFIER ::= { centec 95 }
+ivi                       OBJECT IDENTIFIER ::= { centec 96 }
+product                   OBJECT IDENTIFIER ::= { centec 99 }
+l2protocol                OBJECT IDENTIFIER ::= { centec 100 }
+loopbackDetect            OBJECT IDENTIFIER ::= { centec 105 }
+
+
+
+
+-- Module declares
+-- Sub Module: product
+
+	e3008TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,8TS."
+	    ::= { product 3080 } 
+	    
+	e30016TX OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,16TX."
+	    ::= { product 3160 }
+
+	e3508T12X OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E350,8T12X."
+	    ::= { product 3200 }
+	    	
+	e30024TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,24TS."
+	    ::= { product 3240 }
+	
+	e30024ST OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,24ST."
+	    ::= { product 3241 }
+	
+	e30048TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,48TS."
+	    ::= { product 3480 }
+	
+	b30048T OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "B300,48T."
+	    ::= { product 3481 }
+		
+	e33048T OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48T."
+	    ::= { product 3485 }
+
+	e33048SE OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48SE."
+	    ::= { product 3486 }
+
+	e33048S OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48S."
+	    ::= { product 3487 }
+
+	g24eu OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "G24EU,24+4."
+	    ::= { product 3488 }
+
+	e35048T4X OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E350,48T4X."
+	    ::= { product 3520 }
+	    	    		
+	e602 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,2 slots."
+	    ::= { product 6020 }  
+	
+	e606 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,6 slots."
+	    ::= { product 6060 }  
+	
+	e614 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,14 slots."
+	    ::= { product 6140 }  
+	       
+	e802 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,2 slots"
+	    ::= { product 8020 } 
+	
+	e806 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,6 slots"
+	    ::= { product 8060 } 
+	
+	e814 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,14 slots"
+	    ::= { product 8140 } 
+	             
+
+
+
+memory                    OBJECT IDENTIFIER ::= { system 1 }
+systemStats               OBJECT IDENTIFIER ::= { system 2 }
+operate                   OBJECT IDENTIFIER ::= { system 3 }
+--sysImageTable             OBJECT IDENTIFIER ::= { system 4 }
+sysImageTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE  OF SysImageEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The system image management table."
+    ::= { system 4 }
+flash                     OBJECT IDENTIFIER ::= { system 5 }
+cf                        OBJECT IDENTIFIER ::= { system 6 }
+sysTrap                   OBJECT IDENTIFIER ::= { system 7 }
+time                      OBJECT IDENTIFIER ::= { system 8 }
+

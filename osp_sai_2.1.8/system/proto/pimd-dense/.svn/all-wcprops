@@ -1,0 +1,413 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense
+END
+trace.c
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/trace.c
+END
+inet.c
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/inet.c
+END
+main.o
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/main.o
+END
+vif.o
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/vif.o
+END
+pimdd.h
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pimdd.h
+END
+trace.h
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/trace.h
+END
+callout.c
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/callout.c
+END
+VERSION
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/VERSION
+END
+rsrr_var.h
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/rsrr_var.h
+END
+config.c
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/config.c
+END
+igmp.o
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/igmp.o
+END
+trace.o
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/trace.o
+END
+inet.o
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/inet.o
+END
+routesock.c
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/routesock.c
+END
+callout.o
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/callout.o
+END
+config.o
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/config.o
+END
+retNull.log
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/retNull.log
+END
+RELEASE.NOTES
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/RELEASE.NOTES
+END
+debug.c
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/debug.c
+END
+rsrr.c
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/rsrr.c
+END
+pdmd.SearchResults
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pdmd.SearchResults
+END
+debug.h
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/debug.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/Makefile
+END
+rsrr.h
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/rsrr.h
+END
+route.c
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/route.c
+END
+kern.c
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/kern.c
+END
+debug.o
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/debug.o
+END
+rsrr.o
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/rsrr.o
+END
+netlink.c
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/netlink.c
+END
+igmpv2.h
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/igmpv2.h
+END
+route.o
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/route.o
+END
+kern.o
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/kern.o
+END
+pimdd
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pimdd
+END
+netlink.o
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/netlink.o
+END
+possibleRetNull.log
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/possibleRetNull.log
+END
+pim.c
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pim.c
+END
+TESTING
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/TESTING
+END
+pim.o
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pim.o
+END
+ANNOUNCEMENT
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/ANNOUNCEMENT
+END
+vers.c
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/vers.c
+END
+LICENSE.mrouted
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/LICENSE.mrouted
+END
+BUGS.TODO
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/BUGS.TODO
+END
+CHANGES
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/CHANGES
+END
+vers.o
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/vers.o
+END
+pimdd.conf
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pimdd.conf
+END
+LICENSE
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/LICENSE
+END
+mrt.c
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/mrt.c
+END
+pimd-dense.html
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pimd-dense.html
+END
+mrt.h
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/mrt.h
+END
+pim_proto.c
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pim_proto.c
+END
+dvmrp_proto.c
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/dvmrp_proto.c
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/README
+END
+mrt.o
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/mrt.o
+END
+igmp_proto.c
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/igmp_proto.c
+END
+timer.c
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/timer.c
+END
+pim_proto.o
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pim_proto.o
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/main.c
+END
+vif.c
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/vif.c
+END
+pathnames.h
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/pathnames.h
+END
+defs.h
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/defs.h
+END
+dvmrp_proto.o
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/dvmrp_proto.o
+END
+DEVELOPMENT.NOTES
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/DEVELOPMENT.NOTES
+END
+LICENSE.pimd
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/LICENSE.pimd
+END
+vif.h
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/vif.h
+END
+igmp_proto.o
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/igmp_proto.o
+END
+timer.o
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/timer.o
+END
+igmp.c
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/igmp.c
+END
+dvmrp.h
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-dense/dvmrp.h
+END

@@ -1,0 +1,62 @@
+# contents below built automatically by configure; do not edit by hand
+module_list_ft= \
+	mibII/vacm_vars.ft \
+	ucd-snmp/memory.ft \
+	ucd-snmp/vmstat.ft \
+	ucd-snmp/loadave.ft \
+	mibII/tcp.ft \
+	mibII/udp.ft \
+	mibII/icmp.ft \
+	mibII/snmp_mib.ft \
+	smux/smux.ft \
+	agentx/master.ft \
+	agentx/subagent.ft \
+	notification/snmpNotifyTable.ft \
+	notification/snmpNotifyFilterProfileTable.ft \
+	target/target_counters_5_5.ft \
+	target/snmpTargetAddrEntry.ft \
+	target/snmpTargetParamsEntry.ft \
+	target/target.ft \
+	util_funcs/header_generic.ft \
+	mibII/vacm_context.ft \
+	mibII/vacm_conf.ft \
+	snmpv3/snmpMPDStats_5_5.ft \
+	snmpv3/usmStats_5_5.ft \
+	snmpv3/snmpEngine.ft \
+	snmpv3/usmConf.ft \
+	snmpv3/usmUser.ft \
+	util_funcs/header_simple_table.ft \
+	mibII/kernel_linux.ft \
+	mibII/tcpTable.ft \
+	mibII/udpTable.ft \
+	mibII/updates.ft \
+	agentx/protocol.ft \
+	agentx/client.ft \
+	agentx/master_admin.ft \
+	agentx/agentx_config.ft \
+	header_complex.ft \
+	snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable.ft \
+	hardware/memory/hw_mem.ft \
+	hardware/memory/memory_linux.ft \
+	hardware/cpu/cpu.ft \
+	hardware/cpu/cpu_linux.ft \
+	mibII/ip.ft \
+	notification-log-mib/notification_log.ft \
+	snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable_interface.ft \
+	snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable_data_access.ft \
+	mibII/ipAddr.ft \
+	mibII/at.ft \
+	mibII/var_route.ft \
+	mibII/route_write.ft \
+	if-mib/ifTable/ifTable.ft \
+	if-mib/data_access/interface.ft \
+	if-mib/ifTable/ifTable_interface.ft \
+	if-mib/ifTable/ifTable_data_access.ft \
+	util_funcs.ft \
+	if-mib/data_access/interface_linux.ft \
+	if-mib/data_access/interface_ioctl.ft \
+	ip-mib/data_access/ipaddress_common.ft \
+	ip-mib/data_access/ipaddress_linux.ft \
+	ip-mib/data_access/ipaddress_ioctl.ft
+
+# end configure generated code

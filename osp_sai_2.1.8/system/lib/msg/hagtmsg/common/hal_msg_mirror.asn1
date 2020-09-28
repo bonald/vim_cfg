@@ -1,0 +1,51 @@
+HAL-MSG-MIRROR DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIntList
+	FROM HAL-MSG-TYPES
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+
+HalMsgMirrorCfgSrcItem ::= SEQUENCE
+{
+    sessionId      INTEGER,
+    portidOrVid    INTEGER,
+    direction      INTEGER
+}
+
+HalMsgMirrorCfgSrcReq ::= SEQUENCE
+{
+    srcLists      SEQUENCE OF HalMsgMirrorCfgSrcItem
+}
+
+HalMsgMirrorCfgDestReq ::= SEQUENCE
+{
+    sessionId    INTEGER,
+    portId       INTEGER,
+    remotevid    INTEGER,
+    nhid         INTEGER,
+    erspan         INTEGER,
+    nhoffset     INTEGER,
+	memPortid   HalMsgIntList
+}
+
+HalMsgMirrorCfgMacEscapeEnReq ::= SEQUENCE
+{
+    enable INTEGER
+}
+
+HalMsgMirrorCfgMacEscapeReq ::= SEQUENCE
+{
+    index      INTEGER,
+    escapemac  HalMsgDefL2MacAddr,
+    escapemask HalMsgDefL2MacAddr 
+}
+
+HalMsgMirrorCfgDiscardEnReq ::= SEQUENCE
+{
+    dir    INTEGER,
+    enable INTEGER
+}
+
+END

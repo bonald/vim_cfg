@@ -1,0 +1,338 @@
+<!-- global conf -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <dl>
+            <dt>{{ 'Load Balance Hash Field' | translate }}</dt>
+
+            <dd class="row" ng-repeat="(key, val) in state" style="margin-top: 10px;" ng-show="System_product != 'Tap-350' && System_product != 'Tap-530'">
+                <div class="col-md-2">{{ key }}</div>
+                <div class="col-md-2">
+                    <btn-switch switch-state="val" switch-on-change="changeState(key)" switch-disabled="stateLoading[key]"></btn-switch>
+                </div>
+            </dd>
+
+<!--Tap530_hash_field_page_new start-->
+        <div style="width:120px;" ng-show="System_product == 'Tap-530'">
+            <select class="form-control" ng-model="module" ng-options="m for m in module_all">
+            </select>
+        </div>
+
+        <div class="col-md-2" ng-show="System_product == 'Tap-530'">
+
+
+
+            <div style="width:200px; height:300px; margin:5px; " ng-if= "module == 'l2'">
+                <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;float:none;" ng-if="key.substr(0,3) == 'l2-'">
+                    <div>
+                        <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                        <label>{{ key | switchPort }}</label>
+                    </div>
+                </dd>
+                <button style="margin-left:-18px;" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setl2field()">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+            </div>
+
+            <div style="width:200px; height:300px; margin:5px; " ng-if= "module == 'mpls'">
+                <div style="height:20px;"></div>
+                <div style="float:left;  text-align:left;margin-left:-15px;">
+                    <label style="font-size:16px;">{{'Mpls-Enable'}}&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                </div>
+                <div style="float:left;">
+                    <btn-switch switch-state="setmpls_enable" switch-on-change="setmplsenable()"></btn-switch>
+                </div>
+                <div style="height:30px;"></div>
+                <div>
+                    <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,5) == 'mpls-'">
+                        <div>
+                            <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                            <label>{{ key | switchPort }}</label>
+                        </div>
+                    </dd>
+                    <button style="margin-left:-18px;" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setmplsfield()">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                    </button>
+                </div>
+            </div>
+
+            <div style="width:200px; height:300px; margin:5px; " ng-if= "module == 'ip'">
+                <div style="height:20px;"></div>
+                <div style="float:left;  text-align:left;margin-left:-15px;">
+                    <label style="font-size:16px;">{{'IP-Enable'}}&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                </div>
+                <div style="float:left;">
+                    <btn-switch switch-state="setip_enable" switch-on-change="setipenable()"></btn-switch>
+                </div>
+                <div style="height:30px;"></div>
+                <div>
+                    <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,3) == 'ip-'">
+                        <div>
+                            <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                            <label>{{ key | switchPort }}</label>
+                        </div>
+                    </dd>
+                    <button style="margin-left:-18px;" type="button " class="btn btn-primary" data-dismiss="modal" ng-click="setipfield()">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                    </button>
+                </div>
+            </div>
+
+            <div style="width:200px; height:300px; margin:5px; " ng-if= "module == 'ipv6'">
+                <div style="height:20px;"></div>
+                <div style="float:left;  text-align:left;margin-left:-15px;">
+                    <label style="font-size:16px;">{{'IPv6-Enable'}}&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                </div>
+                <div style="float:left;">
+                    <btn-switch switch-state="setipv6_enable" switch-on-change="setipv6enable()"></btn-switch>
+                </div>
+                <div style="height:30px;"></div>
+                <div>
+                    <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,5) == 'ipv6-'">
+                        <div>
+                            <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                            <label>{{ key | switchPort }}</label>
+                        </div>
+                    </dd>
+                    <button style="margin-left:-18px;" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setipv6field()">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                    </button>
+                </div>
+            </div>
+
+            <div style="width:200px; height:300px; margin:5px;" ng-if= "module == '--gre'">
+                <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,4) == 'gre-'">
+                    <div>
+                        <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                        <label>{{ key | switchPort }}</label>
+                    </div>
+                </dd>
+                <button style="margin-left:-18px;" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setgrefield()">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+            </div>
+
+            <div style="width:200px; margin:5px; " ng-if= "module == '--nvgre'">
+                <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,11) == nvgreval||key.substr(0,12) == nvgreval">
+                    <div>
+                        <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                        <label>{{ key | switchPort }}</label>
+                    </div>
+                </dd>
+                <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,11) == 'nvgre-vsid'||key.substr(0,19) == 'nvgre-src-interface'">
+                    <div>
+                        <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                        <label>{{ key | switchPort }}</label>
+                    </div>
+                </dd>
+                <button style="margin-left:-18px;" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setnvgrefield()">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+                <dt style="margin-left:-18px;margin-top:10px;">{{ 'Load Balance Tunnel Hash Mode' | translate }}</dt>
+                <dd class="row" style="margin-top: 10px;">
+                    <div style="margin-left:-3px;" class="btn-group" data-toggle="buttons">
+                        <button type="button" class="btn btn-primary" ng-click="nvgrehashmode('outer')" >outer
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="nvgrehashmode('layer2')" >layer2
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="nvgrehashmode('layer3')" >layer3
+                        </button>
+                    </div>
+                </dd>
+            </div>
+
+            <div style="width:200px; margin:5px; " ng-if= "module == '--vxlan'">
+                <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,11) == vxlanval||key.substr(0,12) == vxlanval">
+                    <div>
+                        <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                        <label>{{ key | switchPort }}</label>
+                    </div>
+                </dd>
+                <dd class="row" ng-repeat="(key, val) in state_tap530" style="margin-top: 10px;" ng-if="key.substr(0,10) == 'vxlan-vni'||key.substr(0,19) == 'vxlan-src-interface'">
+                    <div>
+                        <input type="CHECKBOX" ng-model="state_tap530[key]"/>
+                        <label>{{ key | switchPort }}</label>
+                    </div>
+                </dd>
+                <button style="margin-left:-18px;" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setvxlanfield()">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+                <dt style="margin-left:-18px;margin-top:10px;">{{ 'Load Balance Tunnel Hash Mode' | translate }}</dt>
+                <dd class="row" style="margin-top: 10px;">
+                    <div  style="margin-left:-3px;" class="btn-group" data-toggle="buttons">
+                        <button type="button" class="btn btn-primary" ng-click="vxlanhashmode('outer')" >outer
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="vxlanhashmode('layer2')" >layer2
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="vxlanhashmode('layer3')" >layer3
+                        </button>
+                    </div>
+                </dd>
+            </div>
+        </div>
+<!--Tap530_hash_field_page_new end!-->
+
+
+        <dd class="row" ng-repeat="(key, val) in state" style="margin-top: 10px;top:200px;" ng-show="System_product == 'Tap-350'">
+            <div class="col-md-2">{{ key }}</div>
+            <div class="col-md-2">
+                <btn-switch switch-state="val" switch-on-change="changeState(key)" switch-disabled="stateLoading[key]"></btn-switch>
+            </div>
+        </dd>
+        </dl>
+        <!--removed "|| System_product == 'Tap-530'"-->
+        <dl ng-show="System_product == 'Tap-580' || System_product == 'Tap-550'">
+            <dt>{{ 'Load Balance Tunnel Hash Mode' | translate }}</dt>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'mode' | translate }} </div>
+                <div class="btn-group" data-toggle="buttons-radio">
+				    <button class="btn btn-primary" ng-click="cfgTunnelHashFun('both')" ng-disabled="tunnleHashMode=='both'">both
+                    </button>    
+                    <button class="btn btn-primary" ng-click="cfgTunnelHashFun('outer')" ng-disabled="tunnleHashMode=='outer'">outer
+                    </button>
+                    <button class="btn btn-primary" ng-click="cfgTunnelHashFun('inner')" ng-disabled="tunnleHashMode=='inner'">inner
+                    </button>
+                </div>					
+            </dd>          
+        </dl>
+    </div>
+</div>
+
+<!-- port conf -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Port Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- options -->
+        <button type="button" class="btn btn-default" ng-click="addChannelGroupShow=!addChannelGroupShow; modifyChannelGroupFlag=false; newAggNum=''; multiSelIf=[]; ignoreDisableIf=[];" ng-hide="addChannelGroupShow" ng-disabled="multiSel.indexOf(true) != -1">
+            <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+        </button>
+        <button type="button" class="btn btn-default" ng-click="addChannelGroupShow=!addChannelGroupShow; modifyChannelGroupFlag=false;" ng-show="addChannelGroupShow">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+        </button>
+        
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#load_Balance_Mode"  ng-hide="addChannelGroupShow">
+            <span class="glyphicon glyphicon-cog"></span>&nbsp;{{ 'Load Balance Mode' | translate }}
+        </button>
+        
+        <button class="btn btn-default" ng-hide="multiSel.indexOf(true) == -1" ng-click="deleteChannelGroupMulti()">
+            <span class="glyphicon glyphicon-trash"></span>&nbsp;{{ 'Delete' | translate }}
+        </button>
+        <!-- options end -->
+        <hr />
+
+        <!-- add channel group -->
+        <form id="addChannelGroupForm" name="addChannelGroupForm" class="form" ng-show="addChannelGroupShow" novalidate>
+            <div class="form-group row" ng-class="{true: 'has-success', false: 'has-error'}[addChannelGroupForm.aggNum.$valid]">
+                <label>{{ 'Agg mode select' | translate }}</label>&nbsp;
+                <select style="height:35px"  ng-model="selected_mode" ng-options="x for x in aggmode_select">
+                </select>
+                <label>{{ 'Link Aggregation Name' | translate }}</label>&nbsp;&nbsp;&nbsp;
+                <span>agg</span>
+                <input type="text" ng-show="System_product != 'Tap-350'&& System_product != 'Tap-580'&&System_product != 'Tap-550'&&System_product != 'Tap-530'" class="form-control" name="aggNum" ng-model="newAggNum" placeholder="<1-55>" ng-pattern="/(^[1-9]$)|(^[0-4]\d$)|(^5[0-5]$)/" ng-disabled="modifyChannelGroupFlag" required/>
+
+
+                <input type="text" ng-show="System_product == 'Tap-580'|| System_product == 'Tap-550'|| System_product == 'Tap-530'" class="form-control" name="aggNum" ng-model="newAggNum" placeholder="<1-16>" ng-pattern="/(^[1-9]$)|(^1[0-6]$)/" ng-disabled="modifyChannelGroupFlag" required/>
+                <input type="text" ng-show="System_product == 'Tap-350'" class="form-control" name="aggNum" ng-model="newAggNum" placeholder="<1-31>" ng-pattern="/(^[1-9]$)|(^[0-2]\d$)|(^3[0-1]$)/" ng-disabled="modifyChannelGroupFlag" required/>
+
+                <label ng-if="selected_mode=='channel-group'">{{ 'Channel-group mode' | translate }}</label>&nbsp;
+                <select ng-if="selected_mode=='channel-group'" style="height:35px"  ng-model="$parent.channel_group_select" ng-options="y for y in channel_group_mode">
+                </select>
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="if in interface">
+                    <input type="CHECKBOX" ng-model="multiSelIf[interface.indexOf(if)]" ng-disabled="allAggIf.indexOf(if.key) != -1 && ignoreDisableIf.indexOf(if.key) == -1"/>
+                    <label>{{ if.sort_name | switchPort }}</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" ng-click="addChannelGroup()" ng-disabled="addChannelGroupForm.$invalid || multiSelIf.indexOf(true) == -1">{{ 'Submit' | translate }}</button>
+        </form>
+        <!-- add channel group end -->
+
+
+        <!-- channel group table -->
+        <table class="table table-hover" ng-hide="addChannelGroupShow">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-model="SELCTLALL" ng-click="setCheckboxAll(SELCTLALL)" /></th>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center">{{ 'Link Aggregation Name' | translate }}</th>
+                    <th class="text-center">{{ 'Load Balance Mode' | translate }}</th>
+                    <th class="text-center">{{ 'Protocol' | translate }}</th>
+                    <th class="text-center">{{ 'Group State' | translate }}</th>
+                    <th class="text-center">{{ 'Ports in Bundle' | translate }}</th>
+                    <th class="text-center">{{ 'Member Ports' | translate }}</th>
+                    <th class="text-center">{{ 'Max Ports' | translate }}</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in channelGroup">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSel[channelGroup.indexOf(x)]"/></td>
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td class="text-center"><a href="javascript:;" ng-click="modifyChannelGroup(x.lag_name, x.member_ports)">{{ x.lag_name }}</a></td>
+                    <td class="text-center">{{ (x.mode==0) ? 'static':((x.mode==1) ? 'dynamic':'round-robin') }}</td>
+                    <td class="text-center">{{ x.protocol }}</td>
+                    <td class="text-center">{{ x.group_state }}</td>
+                    <td class="text-center">{{ x.ports_in_bundle }}</td>
+                    <td class="text-center">
+                        <span style="display: inline-block;" ng-repeat="p in x.member_ports">{{ p | switchPort }}&nbsp;&nbsp;&nbsp;</span>
+                    </td>
+                    <td class="text-center">{{ x.max_ports_count }}</td>
+
+                </tr>
+            </tbody>
+        </table>
+        <!-- channel group table end -->
+    </div>
+</div>
+
+<!--Global Configuration | Truncation   -->
+<div class="modal fade" id="load_Balance_Mode">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Load Balance Mode' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="loadBalanceModeForm" name="loadBalanceModeForm" class="form"  novalidate>
+                  <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Agg' | translate }}</th>
+                        <td class="text-left col-md-6">
+                        <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[loadBalanceModeForm.modeAggID.$valid]" >
+                          <input name="modeAggID" type="text" class="form-control" name="aggNum" ng-model="AggID" placeholder="<1-55>" ng-pattern="/(^[1-9]$)|(^[0-4]\d$)|(^5[0-5]$)/" ng-disabled="modifyChannelGroupFlag" required/>
+                        </div>
+                    </tr>  
+                    
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Mode' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="aggMode" ng-options="m for m in lbMode">
+                            </select>   
+                        </td>
+                    </tr>                    
+                  </table>
+                </form>
+                
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setAggMode()" ng-disabled=" timestamp.timeStampEn && (loadBalanceMode.macDa.$invalid || tapTruncationConfForm.macSa.$invalid || loadBalanceMode.tsType.$invalid )"  ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

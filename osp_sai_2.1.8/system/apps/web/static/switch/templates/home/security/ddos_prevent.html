@@ -1,0 +1,224 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'DDoS Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+      <dd class="row" style="margin-top: 10px;">
+        <form name="addSmlpktForm" class="form-inline padding-15px"  novalidate>
+            <div class="col-md-2" > 
+                <label for="smlpktLen">{{ 'Small-packet Attack Intercept' | translate }}</label>
+            </div>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addSmlpktForm.smlpktLen.$valid]">
+            <input name="smlpktLen" type="number" class="form-control" id="add-smlpkt-len" placeholder="Specify length value 28 ~ 65535" ng-maxlength="5" ng-pattern="/^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{3}|[1-9][0-9]{2}|[3-9][0-9]{1}|2[8-9])$/" ng-model="new_pre.smallpkt" required />
+            </div>
+            <div class="col-md-1">
+            <button type="submit" class="btn btn-submit" ng-click="ddosenable('smpkt')" ng-disabled="addSmlpktForm.smlpktLen.$invalid">{{ 'Enable' | translate }}</button>
+            </div>
+            <div class="col-md-1">
+            <button type="button" class="btn btn-default" ng-click="ddosdisable('smpkt')">{{ 'Disable' | translate }}</button>
+            </div>
+
+        </form>
+      </dd>     
+      <dd class="row" style="margin-top: 10px;">      
+        <form name="addIcmpForm" class="form-inline padding-15px"  novalidate>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addIcmpForm.icmpMaxcnt.$valid]"> 
+                <label for="icmpMaxcnt">{{ 'ICMP Flood Intercept' | translate }}</label>
+            </div>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addIcmpForm.icmpMaxcnt.$valid]">
+                <input name="icmpMaxcnt" type="number" class="form-control" id="add-icmp-maxcnt" placeholder="Specify pps value 0 ~ 1000" ng-pattern="/^((\d{1,3})|(1000))$/" ng-model="new_pre.icmpmaxcnt" required />
+            </div>
+            <div class="col-md-1">
+            <button type="submit" class="btn btn-submit" ng-click="ddosenable('icmp')" ng-disabled="addIcmpForm.icmpMaxcnt.$invalid">{{ 'Enable' | translate }}</button>
+            </div>   
+            <div class="col-md-1">
+            <button type="button" class="btn btn-default" ng-click="ddosdisable('icmp')">{{ 'Disable' | translate }}</button>
+            </div>    
+
+        </form>
+      </dd>     
+      
+      <dd class="row" style="margin-top: 10px;">          
+        <form name="addUdpForm" class="form-inline padding-15px"  novalidate>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addUdpForm.udpMaxcnt.$valid]"> 
+                <label for="udpMaxcnt">{{ 'UDP Flood Intercept' | translate }}</label>
+            </div>
+             <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addUdpForm.udpMaxcnt.$valid]">
+                <input name="udpMaxcnt" type="number" class="form-control" id="add-udp-maxcnt" placeholder="Specify pps value 0 ~ 1000" ng-pattern="/^((\d{1,3})|(1000))$/" ng-model="new_pre.udpmaxcnt" required />
+            </div>
+            <div class="col-md-1">
+            <button type="submit" class="btn btn-submit" ng-click="ddosenable('udp')" ng-disabled="addUdpForm.udpMaxcnt.$invalid">{{ 'Enable' | translate }}</button>
+            </div>   
+            <div class="col-md-1">
+            <button type="button" class="btn btn-default" ng-click="ddosdisable('udp')">{{ 'Disable' | translate }}</button>
+            </div>   
+
+        </form>
+      </dd>      
+
+      <dd class="row" style="margin-top: 10px;">          
+        <form name="addSYNForm" class="form-inline padding-15px"  novalidate>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addSYNForm.tcpMaxcnt.$valid]"> 
+                <label for="tcpMaxcnt">{{ 'SYN Flood Intercept' | translate }}</label>
+            </div>
+            <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[addSYNForm.tcpMaxcnt.$valid]">
+                <input name="tcpMaxcnt" type="number" class="form-control" id="add-tcp-maxcnt" placeholder="Specify pps value 0~1000" ng-pattern="/^((\d{1,3})|(1000))$/" ng-model="new_pre.tcpmaxcnt" required />
+            </div>
+            <div class="col-md-1">       
+            <button type="submit" class="btn btn-submit" ng-click="ddosenable('tcp')" ng-disabled="addSYNForm.tcpMaxcnt.$invalid">{{ 'Enable' | translate }}</button>
+            </div>   
+            <div class="col-md-1">
+            <button type="button" class="btn btn-default" ng-click="ddosdisable('tcp')">{{ 'Disable' | translate }}</button>
+            </div>  
+
+        </form>
+      </dd>     
+      
+      <dd class="row" style="margin-top: 10px;">          
+        <form name="addTcpForm" class="form-inline padding-15px"  novalidate>
+        <label class="form-inline col-md-2">{{ 'Smurf Attack Intercept' | translate }}</label>
+ 
+        <div class="col-md-1">
+          <btn-switch switch-state="prevent_arr.ipt_cfg_smurf!=0" switch-on-change="changeDDosState('smurf')"></btn-switch>
+        </div>  
+        </form>        
+      </dd>     
+      
+      <dd class="row" style="margin-top: 10px;">          
+         <form name="addTcpForm" class="form-inline padding-15px"  novalidate>       
+        <label class="form-inline col-md-2">{{ 'Fraggle Attack Intercept' | translate }}</label>
+ 
+        <div class="col-md-1">
+          <btn-switch switch-state="prevent_arr.ipt_cfg_fraggle!=0" switch-on-change="changeDDosState('fraggle')"></btn-switch>
+        </div>        
+        </form>          
+       </dd>     
+       
+      <dd class="row" style="margin-top: 10px;">     
+         <form name="addTcpForm" class="form-inline padding-15px"  novalidate>          
+        <label class="form-inline  col-md-2">{{ 'MAC Equal Intercept' | translate }}</label>
+ 
+        <div class="col-md-1">
+          <btn-switch switch-state="prevent_arr.ipt_cfg_maceq!=0" switch-on-change="changeDDosState('maceq')"></btn-switch>
+        </div>          
+        </form>           
+      </dd>     
+      
+      <dd class="row" style="margin-top: 10px;">          
+         <form name="addTcpForm" class="form-inline padding-15px"  novalidate>              
+        <label class="form-inline  col-md-2">{{ 'IP Equal Intercept' | translate }}</label>
+ 
+        <div class="col-md-1">
+          <btn-switch switch-state="prevent_arr.ipt_cfg_ipeq!=0" switch-on-change="changeDDosState('ipeq')"></btn-switch>
+        </div>         
+        <br/>
+        </form>    
+      </dd>     
+      <dd class="row col-md-2" style="margin-top: 10px;">    
+        <button class="btn btn-primary" ng-click="clear()">{{ 'Clear DDoS Prevnent Statistics' | translate }}</button>      
+      </dd>    
+    </div>
+</div>
+
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'DDoS Prevent information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>{{ 'Current DDoS Prevent configuration' | translate }}</th>
+                        <th>{{ 'Current State' | translate }}</th>
+                        <th>{{ 'Config Value' | translate }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{ 'Small-packet Attack Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.smlpkt_state | translate }}</td>
+                        <td>{{ 'Packet Length' | translate}}:{{ prevent_arr.smlpkt_value }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'ICMP Flood Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.icmp_state | translate }}</td>
+                        <td>{{ 'Maxcount' | translate}}:{{ prevent_arr.icmp_value }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'UDP Flood Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.udp_state | translate }}</td>
+                        <td>{{ 'Maxcount' | translate}}:{{ prevent_arr.udp_value }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'SYN Flood Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.tcp_state | translate }}</td>
+                        <td>{{ 'Maxcount' | translate}}:{{ prevent_arr.tcp_value }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Smurf Attack Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.smurf_state | translate }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Fraggle Attack Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.fraggle_state | translate }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'MAC Equal Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.maceq_state | translate }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'IP Equal Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.ipeq_state | translate }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>{{ 'Current DDoS Prevent Statistic' | translate }}</th>
+                        <th>{{ 'Resist packets number' | translate }}</th>
+                        <th>{{ 'Mgmt-if Resist packets number' | translate }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{ 'Small-packet Attack Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.small_pkt_count }}</td>
+                        <td>{{ prevent_arr.small_pkt_mgmt_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'ICMP Flood Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.icmp_count }}</td>
+                        <td>{{ prevent_arr.icmp_mgmt_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'UDP Flood Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.udp_count }}</td>
+                        <td>{{ prevent_arr.udp_mgmt_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'SYN Flood Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.tcp_count }}</td>
+                        <td>{{ prevent_arr.tcp_mgmt_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Smurf Attack Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.smurf_count }}</td>
+                        <td>{{ prevent_arr.smurf_mgmt_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'Fraggle Attack Intercept' | translate }}</td>
+                        <td>{{ prevent_arr.fraggle_count }}</td>
+                        <td>{{ prevent_arr.fraggle_mgmt_count }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+    </div>
+</div>

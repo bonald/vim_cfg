@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+OSPF6
+</CTCMODULENAME>
+
+
+	
+<VIEW name="Exec">
+
+	<COMMAND name="clear ipv6 ospf6" help="OSPF6 information">
+	</COMMAND>
+
+	<COMMAND name="clear ipv6 ospf6 interface" help="Interface information">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL" optional="true"/>	
+
+		<ACTION>
+			IFACE=`echo ${iface_name} | sed 's/\//_/'`
+			vtysh -c "clear ipv6 ospf6 interface $IFACE"
+		</ACTION>
+	
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6" help="OSPF6 information">
+		<ACTION>
+			vtysh -c "show ipv6 ospf6"
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6 area" help="Area information">
+		<PARAM name="prefix" help="Area ID (as an IPv4 notation)" ptype="IP_ADDR"/>
+		<PARAM name="spf" help="Shorttest Path First caculation" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="tree" help="Show SPF tree" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+            vtysh -c "show ipv6 ospf6 area ${prefix} spf tree"
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6 border-routers" help="for this area">
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 border-routers"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6 database" help="Database summary">
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 database"
+		</ACTION>
+	</COMMAND>
+
+    
+
+	<COMMAND name="show ipv6 ospf6 interface" help="Interface information">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL" optional="true"/>	
+		<ACTION>
+			IFACE=`echo ${iface_name} | sed 's/\//_/'`
+			vtysh -c "show ipv6 ospf6 interface $IFACE"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6 neighbor" help="Neighbor list">
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 neighbor"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6 route" help="OSPFv6 routing table">
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 route"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ipv6 ospf6 redistribute" help="redistributing External information">
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 redistribute"
+		</ACTION>
+	</COMMAND>
+
+    <COMMAND name="show ipv6 ospf6 linkstate" help="Display linkstate routing table">
+        <PARAM name="detail" help="Display detailed information" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 linkstate detail"
+		</ACTION>
+	</COMMAND>
+
+    <COMMAND name="show ipv6 ospf6 spf" help="Shortest Path First caculation">
+        <PARAM name="tree" help="Show SPF tree" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			vtysh -c "show ipv6 ospf6 spf tree"
+		</ACTION>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="router ospf6" help="Open Shortest Path First (OSPF) for IPv6" view="configure-ospf6-view">
+
+		<ACTION>
+            ps -ef | grep ospf6d | grep -v grep 1>/dev/null
+            if [ "$?" != "0" ]; then
+                ospf6d -d
+            fi
+
+            cdbctl create/cdb/l3/ospf6/create_ospf6
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no router ospf6" help="Open Shortest Path First (OSPF) for IPv6">
+		<ACTION>
+            cdbctl delete/cdb/l3/ospf6/remove_ospf6
+            if [ "$?" == "0" ]; then
+                vtysh -c "configure terminal" -c "no router ospf6" -c "end"
+            fi
+
+            ps -ef | grep ospf6d | grep -v grep | awk -F " " '{printf $2}' | xargs kill -9 1>/dev/null
+		</ACTION>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ipv6 ospf6" help="OSPF6 interface commands">
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6" help="OSPF6 interface commands">
+	</COMMAND>
+
+	<COMMAND name="ipv6 ospf6 hello-interval" help="Time between HELLO packets">
+		<PARAM name="hellotime" help=" Seconds" ptype="OSPF_INTERVAL"/>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_timer_hello/${hellotime}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ospf6 hello-interval ${hellotime}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6 hello-interval" help="Time between HELLO packets">
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_timer_hello/10
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ospf6 hello-interval" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ipv6 ospf6 dead-interval" help="Interval after which a neighbor is declared dead">
+		<PARAM name="deadtime" help=" Seconds" ptype="OSPF_INTERVAL"/>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_timer_dead/${deadtime}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ospf6 dead-interval ${deadtime}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6 dead-interval" help="Interval after which a neighbor is declared dead">
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_timer_dead/40
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ospf6 dead-interval" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ipv6 ospf6 mtu-ignore" help="Disable mtu mismatch detection">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_mtu_ignore/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ospf6 mtu-ignore" -c "end"
+			fi	
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6 mtu-ignore" help="Disable mtu mismatch detection">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_mtu_ignore/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ospf6 mtu-ignore" -c "end"
+			fi	
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ipv6 ospf6 cost" help="Interface cost">
+		<PARAM name="ospf6_cost" help=" Cost" ptype="OSPF_COST"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_cost/${ospf6_cost}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ospf6 cost ${ospf6_cost}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6 cost" help="Interface cost">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_cost/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ospf6 cost" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ipv6 ospf6 priority" help="Router priority">
+		<PARAM name="ospf6_priority" help="Priority" ptype="OSPF_PRIORITY"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_priority/${ospf6_priority}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ospf6 priority ${ospf6_priority}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6 priority" help="Router priority">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_priority/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ospf6 priority" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ipv6 ospf6 network" help="Network type">
+		<PARAM name="network_type" help="Network type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="broadcast" help="Specify OSPF6 broadcast multi-access network" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="point-to-point" help="Specify OSPF6 point-to-point network" ptype="SUBCOMMAND" mode="subcommand"/>		
+		</PARAM>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_network_type/add/${network_type}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ipv6 ospf6 network ${network_type}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ipv6 ospf6 network" help="Router priority">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf6_network_type/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ipv6 ospf6 network" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-ospf6-view"
+	prompt="${SYSTEM_NAME}(config-router)# "
+	depth="1">
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from router ospf configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from router ospf configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+	<COMMAND name="router-id" help="router-id for the OSPF6 process">
+		<PARAM name="rid" help="OSPF6 router-id in IP address format" ptype="IP_ADDR"/>
+		<ACTION>
+			vtysh -c "configure terminal" -c "router ospf6" -c "router-id ${rid}" -c "end" 
+			if [ "$?" == "0" ]; then
+				cdbctl update/cdb/l3/ospf6/router_id/${rid}
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="area" help="OSPF area parameters">
+		<PARAM name="areaid" help="OSPF area ID as a decimal value" ptype="OSPF_ID"/>
+		<PARAM name="opt" help="Choose area command"  ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="range" help="Enable range"  ptype="SUBCOMMAND" mode="subcommand">
+			    <PARAM name="prefix" help="OSPF6 range prefix" ptype="IPV6_ADDR_MASK"/>
+			    <PARAM name="advert" help="Network type" ptype="SUBCOMMAND" mode="switch" optional="true">
+			    	<PARAM name="advertise" help="OSPF advertise"  ptype="SUBCOMMAND" mode="subcommand"/>
+			    	<PARAM name="not-advertise" help="OSPF advertise"  ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="stub" help="Configure OSPF area as stub"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="summary_option" help="Summary option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="no-summary" help="Do not inject inter-area routes into stub" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "${opt}" == "range" ]; then
+				if [ "${advert}" == "" ]; then
+					cdbctl create/cdb/l3/ospf6_area_range/${prefix}/${areaid}
+				else
+					cdbctl create/cdb/l3/ospf6_area_range/${prefix}/${areaid}/${advert}
+				fi
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ospf6" -c "area ${areaid} range ${prefix} ${advert}" -c "end"
+				fi
+			elif [ "${opt}" == "stub" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "area ${areaid} stub ${summary_option}" -c "end"
+				if [ "$?" == "0" ]; then
+					cdbctl create/cdb/l3/ospf6_area_stub/${areaid}
+					if [ "${summary_option}" != "" ]; then
+						cdbctl update/cdb/l3/ospf6_area_stub/${areaid}/no_summary/1
+					fi
+				fi
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no area" help="OSPF area parameters">
+		<PARAM name="areaid" help="OSPF area ID as a decimal value" ptype="OSPF_ID"/>
+		<PARAM name="opt" help="Choose area command"  ptype="SUBCOMMAND" mode="switch">
+	    	<PARAM name="range" help="Enable range"  ptype="SUBCOMMAND" mode="subcommand">
+	    		<PARAM name="prefix" help="OSPF range prefix" ptype="IPV6_ADDR_MASK"/>
+	    	</PARAM>
+			<PARAM name="stub" help="Configure OSPF area as stub"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="summary_option" help="Summary option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="no-summary" help="Do not inject inter-area routes into stub" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "${opt}" == "range" ]; then
+				cdbctl delete/cdb/l3/ospf6_area_range/${prefix}/${areaid}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ospf6" -c "no area ${areaid} range ${prefix}" -c "end"
+				fi
+			elif [ "${opt}" == "stub" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "no area ${areaid} stub ${summary_option}" -c "end"
+				if [ "$?" == "0" ]; then
+					if [ "${summary_option}" != "" ]; then
+						cdbctl update/cdb/l3/ospf6_area_stub/${areaid}/no_summary/0
+					else
+						cdbctl delete/cdb/l3/ospf6_area_stub/${areaid}
+					fi
+				fi
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ripng" help="Routing Information Protocol (RIPng)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/ospf6/redistribute/add/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ripng" help="Routing Information Protocol (RIPng)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/ospf6/redistribute/del/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "no redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+	
+	 <COMMAND name="interface" help="Select an interface to configure">
+        <PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+        <PARAM name="area" help="Specify the OSPF6 area ID" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="area_id" help="OSPF6 router-id in IP address format" ptype="IP_ADDR"/>
+		</PARAM>
+        <ACTION>
+				cdbctl create/cdb/l3/ospf6_interface/${iface_name}/area/${area_id}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "interface ${iface_name} area ${area_id}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	 <COMMAND name="no interface" help="Select an interface to configure">
+        <PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+        <PARAM name="area" help="Specify the OSPF6 area ID" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="area_id" help="OSPF6 router-id in IP address format" ptype="IP_ADDR"/>
+		</PARAM>
+        <ACTION>
+				cdbctl delete/cdb/l3/ospf6_interface/${iface_name}/area/${area_id}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf6" -c "no interface ${iface_name} area ${area_id}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

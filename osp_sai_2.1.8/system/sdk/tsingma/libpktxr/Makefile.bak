@@ -1,0 +1,129 @@
+#
+# Copyright (c) 2005 Centec Networks, Inc.  All rights reserved.
+#
+# Modify History :
+# Revision       :       0.01
+# Author         :       ychen
+# Date           :       2007-8-28
+# Reason         :       init version
+
+# Path define
+CURRENT_WORKING_DIR:=$(shell pwd)
+DEV_ROOT=$(CURRENT_WORKING_DIR)
+
+PKT_XR_SRCROOT=$(DEV_ROOT)
+PKT_XR_BUILD_DIR=$(DEV_ROOT)/build
+PKT_XR_LIB_DIR=$(PKT_XR_BUILD_DIR)/lib
+PKT_XR_DEP_DIR = $(PKT_XR_BUILD_DIR)/deps
+PKT_XR_OBJ_DIR=$(PKT_XR_BUILD_DIR)/obj
+
+#define source file
+SRCS = $(wildcard $(DEV_ROOT)/*.c)
+DELFILES = $(DEV_ROOT)/ctp_gen_header.c 
+PKT_XR_SRC = $(filter-out $(DELFILES), $(SRCS))
+PKT_XR_OBJ = $(patsubst $(PKT_XR_SRCROOT)/%.c,$(PKT_XR_OBJ_DIR)/%.o,$(PKT_XR_SRC))
+PKT_XR_PROGRAM=pktxr
+
+PKT_XR_LIB_INSTALL_DIR=$(strip $(PKT_XR_LIB_DIR))
+
+TCL_INC_DIR = /usr/include
+TCL_LIB_DIR = /usr/lib
+
+
+DBG_OPTS = -g
+CFLAGS = -Wall $(DBG_OPTS)
+
+# cross-compile settings
+#
+ifeq ($(ARCH), ppc)
+CC = $(CROSS_COMPILE)gcc
+AR = $(CROSS_COMPILE)ar
+LD = $(CROSS_COMPILE)ld
+RANLIB = $(CROSS_COMPILE)ranlib
+else
+RANLIB = ranlib
+CFLAGS += -DHOST_IS_LE=1
+endif
+
+MYARCH=$(shell uname -p)
+ifeq ($(MYARCH),x86_64)
+PCAP_LIB_PATH= libpcap-1.3.0
+PTHREAD_LIB_PATH=/usr/lib64
+EXTRA_LDFLAGS=
+EXTRA_CFLAGS= -DIS_64BIT_ENV
+PKT_XR_LIBRARY=libpktxr_64.so
+else
+PCAP_LIB_PATH=/usr/local/lib
+PTHREAD_LIB_PATH=/usr/lib
+EXTRA_LDFLAGS=-m32
+EXTRA_CFLAGS=-m32
+PKT_XR_LIBRARY=libpktxr.so
+endif
+
+CFLAGS += -Werror \
+	  -I$(TCL_INC_DIR) \
+	  -Wno-unused-function -fPIC $(EXTRA_CFLAGS)
+
+LDFLAGS += -L$(PCAP_LIB_PATH) -lpcap -L$(PTHREAD_LIB_PATH) -lpthread \
+           -lm -lssl $(EXTRA_LDFLAGS)
+
+all: $(PKT_XR_DEP_DIR) $(PKT_XR_LIB_DIR) gen_file $(PKT_XR_PROGRAM)
+
+$(PKT_XR_DEP_DIR):
+	@mkdir -p $@
+	@mkdir -p $(PKT_XR_OBJ_DIR)
+
+$(PKT_XR_LIB_DIR):
+	@mkdir -p $@
+
+gen_file:
+	@$(CC) $(DEV_ROOT)/ctp_gen_header.c -o ctp_gen
+	@./ctp_gen
+
+ctp_header_format.o: $(DEV_ROOT)/ctp_header_format.c
+	$(COMPILE.c) -o $(PKT_XR_OBJ_DIR)/new_ctp/$@ $?
+
+$(PKT_XR_LIBRARY): $(PKT_XR_OBJ)
+	$(CC) -shared -Wl,-soname,$(@F) -o $(PKT_XR_LIB_DIR)/$@ $^ $(LDFLAGS)
+	@cp $(PKT_XR_LIB_DIR)/$(PKT_XR_LIBRARY) $(PKT_XR_SRCROOT)/../platform
+
+
+$(PKT_XR_PROGRAM): $(PKT_XR_LIBRARY)
+	$(CC) -Wl,-rpath,$(PKT_XR_LIB_INSTALL_DIR) \
+	    -o $(PKT_XR_BUILD_DIR)/$@ $(patsubst %, $(PKT_XR_LIB_DIR)/%, $^) $(CFLAGS) $(LDFLAGS)
+
+#
+# dependency
+#
+df = $(PKT_XR_DEP_DIR)/$(*F)
+
+MAKEDEPEND = gcc -MM $(CFLAGS) -o $(df).d $<
+
+.SUFFIXES:
+$(PKT_XR_OBJ_DIR)/%.o:$(PKT_XR_SRCROOT)/%.c
+	@$(MAKEDEPEND); \
+          cp $(df).d $(df).P; \
+          sed -e 's/#.*//' -e 's/^.*\.o://' -e 's/ *\\$$//' \
+              -e '/^$$/d' -e 's/$$/ :/' < $(df).d >> $(df).P; \
+          rm -f $(df).d
+	@mkdir -p $(dir $@)
+	$(COMPILE.c) -o $@ $^
+
+#
+# cleanup
+#
+clean:
+	rm -fr $(PKT_XR_BUILD_DIR)/$(PKT_XR_PROGRAM) 
+	rm -rr $(PKT_XR_OBJ_DIR)
+	rm -rr $(PKT_XR_DEP_DIR)
+	rm -rr $(PKT_XR_LIB_DIR)
+	rm -fr $(DEV_ROOT)/ctp_gen
+	rm -fr $(DEV_ROOT)/ctp_header_format.h $(DEV_ROOT)/ctp_header_format.c
+	rm -fr $(PKT_XR_BUILD_DIR)
+
+LDCONFIG=/sbin/ldconfig
+install:
+	$(LDCONFIG) -n $(PKT_XR_LIB_INSTALL_DIR)/$(PKT_XR_LIBRARY)
+
+.PHONY: all $(PKT_XR_DEP_DIR) $(PKT_XR_LIB_DIR) clean install
+

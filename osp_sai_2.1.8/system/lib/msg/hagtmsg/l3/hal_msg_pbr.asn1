@@ -1,0 +1,107 @@
+HAL-MSG-PBR DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgFlowRule
+    FROM HAL-MSG-FLOW
+    ;
+
+HalMsgPBRPendPolicyRmapEntry ::= SEQUENCE
+{
+    label       INTEGER,
+    ruleId     INTEGER
+}
+
+HalMsgPBRPendPolicyRmapEntryResp ::= SEQUENCE
+{
+    pbrPendList     SEQUENCE OF HalMsgPBRPendPolicyRmapEntry
+}
+
+-------------------------------------
+--  Type definitions for PBR (BEGIN) {
+-------------------------------------
+HalMsgPBRLabelOp ::= ENUMERATED
+{
+    create,
+    remove,
+    set,
+    unset
+}
+
+HalMsgPBRValidEntryOp ::= ENUMERATED
+{
+    valid,
+    invalid
+}
+
+HalMsgPBRDelEntryOp ::= ENUMERATED
+{
+    removefromlabel,
+    removefromentryid
+}
+
+HalMsgPBRIntfOp ::= ENUMERATED
+{
+    enable,
+    disable
+}
+
+HalMsgPBREntryId ::= SEQUENCE
+{
+    ruleType        INTEGER, 
+    ruleId            INTEGER
+}
+
+HalMsgPBRAction ::= SEQUENCE
+{
+    flag		   INTEGER,
+    nhid              INTEGER
+}
+
+HalMsgPolicyRmapEntry ::= SEQUENCE
+{
+    prevRuleId	 INTEGER,
+    ruleId          INTEGER,
+    rule             HalMsgFlowRule,
+    action          HalMsgPBRAction
+}
+
+HalMsgPBRPolicyRmapLabelOpReq ::= SEQUENCE
+{
+    labelOp    		      HalMsgPBRLabelOp,
+    label                       INTEGER,
+    l3ifid                       INTEGER
+}
+
+HalMsgPBRIntfOpReq ::= SEQUENCE
+{
+   intfOp             HalMsgPBRIntfOp,
+   l3ifid               INTEGER
+}
+
+HalMsgPBRAddPolicyRmapEntryReq ::= SEQUENCE
+{
+    label                       INTEGER,
+    pbrEntryList	      SEQUENCE OF HalMsgPolicyRmapEntry
+}
+
+HalMsgPBRValidPolicyRmapEntryReq ::= SEQUENCE
+{
+    validOp                          HalMsgPBRValidEntryOp,
+    label                              INTEGER,
+    pbrValidEntryIdList          SEQUENCE OF HalMsgPBREntryId
+}
+
+HalMsgPBRDelPolicyRmapEntryReq ::= SEQUENCE
+{
+    delOp		                     HalMsgPBRDelEntryOp,
+    label                               INTEGER,
+    pbrDelEntryIdList		SEQUENCE OF HalMsgPBREntryId
+}
+
+HalMsgPBRUpdatePolicyRmapActionReq ::= SEQUENCE
+{
+    label                               INTEGER,
+    pbrUpdateEntryIdList        SEQUENCE OF HalMsgPBREntryId,
+    action                              HalMsgPBRAction
+}
+END

@@ -1,0 +1,8 @@
+include $(MK_DIR)/sys.mk
+LIB = bootrom
+SRCS  = bootrom_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/bootrom
+
+include $(MK_DIR)/lib.mk

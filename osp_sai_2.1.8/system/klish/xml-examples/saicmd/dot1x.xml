@@ -1,0 +1,1201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+DOT1X
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+       <COMMAND name="dot1x" help="IEEE 802.1X Port-Based Access Control"/>
+       
+       <COMMAND name="dot1x initialize" help="Initialize the port to attempt reauthentication">
+	        <PARAM name="interface" help="Select an interface to initialize" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="if_id" help="Physical interface" ptype="IF_NAME_E"/>
+                </PARAM>
+                
+		<ACTION>cdbctl update/cdb/l2/dot1x_port/${if_id}/initialize/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the dot1x initialize privileged EXEC command on the switch to manually return the 
+specified IEEE 802.1x-enabled port to an unauthorized state before initiating a new 
+authentication session on the port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to initialize the IEEE 802.1x state machines and to set up a fresh 
+environment for authentication. After you enter this command, the port status becomes 
+unauthorized.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to initialize interface:
+    Switch# dot1x initialize interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="dot1x re-authenticate" help="Reauthenticate the interface">
+	        <PARAM name="interface" help="Select an interface to reauthenticate" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="if_id" help="Physical interface" ptype="IF_NAME_E"/>
+                </PARAM>
+                
+		<ACTION>cdbctl update/cdb/l2/dot1x_port/${if_id}/reAuthenticate/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the dot1x re-authenticate privileged EXEC command on the switch stack to manually 
+initiate a re-authentication of the specified IEEE 802.1x-enabled port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+You can use this command to re-authenticate a client without waiting for the configured 
+number of seconds between re-authentication attempts (re-authperiod) and automatic 
+re-authentication.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to reauthenticate interface:
+    Switch# dot1x re-authenticate interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+		</CTCRCMD>
+	</COMMAND>
+	
+        <COMMAND name="dot1x clear" help="Reset functions">
+		<PARAM name="interface" help="Specify an interface to clear" ptype="SUBCOMMAND" mode="subcommand">
+		    <PARAM name="if_id" help="Physical interface" ptype="IF_NAME_E"/>
+		</PARAM>
+		<PARAM name="user" help="dot1x mac based users" optional="true" ptype="SUBCOMMAND" mode="subcommand"> 
+                    <PARAM name="mac_addr" help="MAC address" ptype="MAC_ADDR"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l2/clear_dot1x/interface/${if_id}/user/${mac_addr}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the "dot1x clear" command to force devices which pass the 802.1x authentication off line
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the "dot1x clear" command to force devices which pass the 802.1x authentication off line
+If the user mac address is not specified, all user on the interface should be off line.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to dot1x clear interface:
+    Switch# dot1x clear interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x mac
+		</CTCRCMD>		
+        </COMMAND>   
+	
+	<COMMAND name="show dot1x" help="IEEE 802.1X Port-Based Access Control">
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x</ACTION>
+                
+                <CTCDESCRIPTION>
+Use this command to display dot1x global information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display dot1x global information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show dot1x:
+    Switch# show dot1x
+		</CTCEXAMPLE>
+                <CTCRCMD>
+dot1x system-auth-ctrl
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x all" help="All">
+	
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/all</ACTION>
+	        
+                <CTCDESCRIPTION>
+Use this command to display dot1x all information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display dot1x all information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	        
+		<CTCEXAMPLE>
+    This example shows how to show dot1x all:
+    Switch# show dot1x all
+		</CTCEXAMPLE>
+                <CTCRCMD> 
+dot1x system-auth-ctrl
+                </CTCRCMD>
+        </COMMAND>
+			
+	<COMMAND name="show dot1x interface" help="Specify an interface to show">
+	        <PARAM name="if_id" help="Ethernet interface name" ptype="IF_NAME_E"/>
+	        
+                <ACTION>cdbctl show/cdb/l2/show_dot1x/interface/${if_id}</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to display dot1x information for specified interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display dot1x information for specified interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	 		
+		<CTCEXAMPLE>
+    This example shows how to show dot1x interface:
+    Switch# show dot1x interface eth-0-1
+		</CTCEXAMPLE>
+                <CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x statistics" help="Statistics">
+	        <PARAM name="all" help="All" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/statistics</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to display statistics of EAPOL packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display statistics of EAPOL packets.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	 		
+		<CTCEXAMPLE>
+    This example shows how to show dot1x statistics:
+    Switch# show dot1x statistics
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x statistics interface" help="Specify an interface to show">
+	        <PARAM name="if_id" help="Ethernet interface name" ptype="IF_NAME_E"/>
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/statistics/interface/${if_id}</ACTION>
+		
+                <CTCDESCRIPTION>
+Use this command to display statistics of EAPOL packets for specified interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display statistics of EAPOL packets for specified interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+    This example shows how to show dot1x statistics interface:
+    Switch# show dot1x statistics interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x diagnostics" help="Diagnostics">
+	        <PARAM name="all" help="All" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/diagnostics</ACTION>
+		
+                <CTCDESCRIPTION>
+Use this command to display diagnostics of IEEE 802.1x status.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display diagnostics of IEEE 802.1x status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>			
+		<CTCEXAMPLE>
+    This example shows how to show dot1x diagnostics:
+    Switch# show dot1x diagnostics
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x diagnostics interface" help="Specify an interface to show">
+	        <PARAM name="if_id" help="Ethernet interface name" ptype="IF_NAME_E"/>
+	      
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/diagnostics/interface/${if_id}</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to display diagnostics of IEEE 802.1x status for specified interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display diagnostics of IEEE 802.1x status for specified interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+    This example shows how to show dot1x diagnostics interface:
+    Switch# show dot1x diagnostics interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x session-statistics" help="Session statistics">
+	        <PARAM name="all" help="All" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/session-statistics</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to display session statistics of IEEE 802.1x clients.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display session statistics of IEEE 802.1x clients.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show dot1x session-statistics:
+    Switch# show dot1x session-statistics
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x session-statistics interface" help="Specify an interface to show">
+	        <PARAM name="if_id" help="Ethernet interface name" ptype="IF_NAME_E"/>
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/session-statistics/interface/${if_id}</ACTION>
+		
+                <CTCDESCRIPTION>
+Use this command to display session statistics of IEEE 802.1x clients for specified interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display session statistics of IEEE 802.1x clients for specified interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show dot1x session-statistics interface:
+    Switch# show dot1x session-statistics interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x mac" help="show dot1x mac">
+	        <PARAM name="all" help="All" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/mac</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to display the mac address of devices which pass the 802.1x authentication.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the mac address of clients which pass the 802.1x authentication.
+If the interface is not specified, all the clients will be shown.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show dot1x mac:
+    Switch# show dot1x mac
+    MAC based dot1x port count:3
+    System user count (hardware accept or reject entries): 3/256
+    System user count (include waiting entries): 3/512
+    --------------------------------------------------------------------------------
+    interface  mac address    state    bypass   timer  in guest vlan
+    eth-0-1    0123.4567.890a ACCEPT   TRUE     48     N/A          
+    eth-0-22   521d.03cb.f083 ACCEPT   FALSE    36     N/A          
+    eth-0-22   9215.f042.aa26 REAUTH   FALSE    33     N/A          
+    --------------------------------------------------------------------------------
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show dot1x mac interface" help="Specify an interface to show">
+	        <PARAM name="if_id" help="Ethernet interface name" ptype="IF_NAME_E"/>
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/mac/interface/${if_id}</ACTION>
+		
+                <CTCDESCRIPTION>
+Use this command to display the mac address of devices which pass the 802.1x authentication.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the mac address of clients which pass the 802.1x authentication.
+If the interface is not specified, all the clients will be shown.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to show dot1x mac interface:
+    Switch# show dot1x mac interface eth-0-1
+    Port user count (hardware accept or reject entries): 1/255
+    Port user count (include waiting entries): 1/510
+    --------------------------------------------------------------------------------
+    interface  mac address    state    bypass   timer  in guest vlan
+    eth-0-9    6639.95f4.d6f4 ACCEPT   FALSE    0      N/A          
+    --------------------------------------------------------------------------------
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+dot1x port-control
+                </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show dot1x timers" help="Timers" hidden="true">
+	        
+	        <ACTION>cdbctl show/cdb/l2/show_dot1x/timers</ACTION>
+                
+                <CTCDESCRIPTION>
+Use this command to display dot1x timer information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display dot1x timer information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show dot1x timers:
+    Switch# show dot1x timers
+		</CTCEXAMPLE>
+        <CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear dot1x" help="IEEE 802.1X Port-Based Access Control"/>
+	
+	<COMMAND name="clear dot1x statistics" help="Statistics">
+	        <PARAM name="all" help="All" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+	        
+	        <ACTION>cdbctl update/cdb/l2/clear_dot1x/statistics</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to clear statistics of EAPOL packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear statistics of EAPOL packets.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>  		
+		<CTCEXAMPLE>
+    This example shows how to clear dot1x:
+    Switch# clear dot1x statistics
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x statistics
+                </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clear dot1x session-statistics" help="Session statistics">
+	        <PARAM name="all" help="All" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+	        
+	        <ACTION>cdbctl update/cdb/l2/clear_dot1x/session-statistics</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to clear session statistics of IEEE 802.1x clients.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear session statistics of IEEE 802.1x clients.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to clear dot1x:
+    Switch# clear dot1x session-statistics
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x statistics interface
+                </CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+
+        <COMMAND name="dot1x" help="IEEE 802.1X Port-Based Access Control"/>
+        
+        <COMMAND name="dot1x system-auth-ctrl" help="Enable global port authentication">
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/global_auth_enable/1</ACTION>
+		
+                <CTCDESCRIPTION>
+Use this command to start the dot1x authenticate control feature globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to start the dot1x authenticate control feature globally.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to enable global port authentication:
+    Switch(config)# dot1x system-auth-ctrl
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+dot1x port-control
+                </CTCRCMD>				
+        </COMMAND>
+ 
+        <COMMAND name="no dot1x" help="Disable IEEE 802.1X Port-Based Access Control"/>
+        
+	<COMMAND name="no dot1x system-auth-ctrl" help="Disable global port authentication">
+
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/global_auth_enable/0</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to stop the dot1x authenticate control feature globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to stop the dot1x authenticate control feature globally.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable global port authentication:
+    Switch(config)# no dot1x system-auth-ctrl
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+dot1x port-control
+                </CTCRCMD>	
+        </COMMAND>  
+         
+</VIEW>
+
+<VIEW name="configure-if-view">
+       <COMMAND name="dot1x" help="IEEE 802.1X Port-Based Access Control"/>
+       <COMMAND name="no dot1x" help="Disable IEEE 802.1X Port-Based Access Control"/>
+       
+       	<COMMAND name="dot1x port-control" help="Port control commands">		
+		<PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch">
+                	<PARAM name="auto" help="Allow port client to negotiate authentication" ptype="SUBCOMMAND" mode="subcommand" />
+                	<PARAM name="force-unauthorized" help="Force port state to unauthorized" ptype="SUBCOMMAND" mode="subcommand" />
+                	<PARAM name="force-authorized" help="Force port state to authorized" ptype="SUBCOMMAND" mode="subcommand" />
+                	<PARAM name="dir" help="Specify packet control direction" ptype="SUBCOMMAND" mode="subcommand" >
+                	    <PARAM name="dir_value" help="Type" ptype="SUBCOMMAND" mode="switch" default="none">
+                		<PARAM name="in" help="Discard receive packets from supplicant (default)" ptype="SUBCOMMAND" mode="subcommand" />
+                		<PARAM name="both" help="Discard receive and transmit packets from supplicant" ptype="SUBCOMMAND" mode="subcommand" />
+            		    </PARAM>
+                	</PARAM>
+            	</PARAM>
+            	
+		<ACTION>
+		        if [ "dir" == ${value} ]; then
+		            if [ "in" == ${dir_value} ]; then
+			        cdbctl update/cdb/l2/dot1x_port/${iface}/auth_ctrl_dir_adminControlledDirections/1
+			    else
+			        cdbctl update/cdb/l2/dot1x_port/${iface}/auth_ctrl_dir_adminControlledDirections/0
+			    fi;
+			else
+			    cdbctl create/cdb/l2/dot1x_port/${iface}/authControlledPortControl/${value}
+			fi;
+		</ACTION>
+
+	        <CTCDESCRIPTION>
+Use this command to enable manual control of the authorization state of the port. 
+Configure dot1x in routed port or access port, while can't configure dot1x in a logical 
+port such as agg, and so on.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+You must globally enable IEEE 802.1x authentication on the switch by using the dot1x 
+system-auth-control global configuration command before enabling IEEE 802.1x 
+authentication on a specific port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>			
+		<CTCEXAMPLE>
+    This example shows how to set port control:
+    Switch(config-if)# dot1x port-control auto
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+                </CTCRCMD>
+       </COMMAND>       
+
+       	<COMMAND name="no dot1x port-control" help="Port control commands">		
+		<ACTION>
+			cdbctl delete/cdb/l2/dot1x_port/${iface}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable manual control of the authorization state of the port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable manual control of the authorization state of the port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port control:
+    Switch(config-if)# no dot1x port-control
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+                </CTCRCMD>
+       </COMMAND>    
+          
+       <COMMAND name="dot1x max-req" help="Set number of reauthentication attempts">
+		<PARAM name="number" help="Count(default 2)" ptype="DOT1X_MAX_REAUTH_REQ"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_pae_reAuthMax/${number}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the number of times that the switch sends an EAP-request/identity 
+frame to the client before restarting the authentication process.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+You should change the default value of this command only to adjust for unusual circumstances 
+such as unreliable links or specific behavioral problems with certain clients and 
+authentication servers.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2 times
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the number of reauthentication attempts:
+    Switch(config-if)# dot1x max-req 1
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+                </CTCRCMD>
+       </COMMAND>  
+       
+       <COMMAND name="no dot1x max-req" help="Set number of reauthentication attempts">
+		
+		<ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_pae_reAuthMax/2
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default number of times that the switch sends an EAP-request/identity 
+frame to the client before restarting the authentication process.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default number of times that the switch sends an EAP-request/identity 
+frame to the client before restarting the authentication process.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default number of reauthentication attempts:
+    Switch(config-if)# no dot1x max-req
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+                </CTCRCMD>
+	</COMMAND>
+       
+       <COMMAND name="dot1x protocol-version" help="Set the protocol version">
+	        <PARAM name="version" help="EAPOL version (default 2)" ptype="DOT1X_PROTOCOL_VERSION"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/protocol_version/${version}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the version of EAPOL packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+You must specify the control of the authorization state of the port by the dot1x 
+port-control command before setting the EAPOL version.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default value of EAPOL version is 2.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set protocol version:
+    Switch(config-if)# dot1x protocol-version 1
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+show dot1x
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x protocol-version" help="Set the protocol version">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/protocol_version/2
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default version of EAPOL packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default version of EAPOL packets.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset protocol version:
+    Switch(config-if)# no dot1x protocol-version
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND>
+        
+        <COMMAND name="dot1x reauthentication" help="Enable reauthentication on a port">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/reAuthEnabled/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable periodic re-authentication of the client.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The default setting of dot1x re-authentication is disabled. When the re-authentication 
+is disabled, the configuration of the re-authenticate timeout should not take effect.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to set dot1x reauthentication:
+    Switch(config-if)# dot1x reauthentication
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+dot1x timeout
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x reauthentication" help="Disable reauthentication on a port">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/reAuthEnabled/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable periodic re-authentication of the client.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable periodic re-authentication of the client.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>			
+		<CTCEXAMPLE>
+    This example shows how to unset dot1x reauthentication:
+    Switch(config-if)# no dot1x reauthentication
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+dot1x timeout
+                </CTCRCMD>	
+        </COMMAND> 
+        
+        <COMMAND name="dot1x timeout" help="Set various timeouts"/>
+        <COMMAND name="no dot1x timeout" help="Set default various timeouts"/>
+        
+        <COMMAND name="dot1x timeout quiet-period" help="Set quiet period in the HELD state">
+	        <PARAM name="seconds" help="Quiet period (default 60 seconds)" ptype="DOT1X_QUIET_PERIOD"/>
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_pae_quietPeriod/${seconds}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the time interval (in seconds) between the retrial of authentication.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+During the quiet period, the switch does not accept or initiate any authentication requests. 
+If you want to provide a faster response time to the user, enter a number smaller than the
+default.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+60 seconds
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to set dot1x quiet period:
+    Switch(config-if)# dot1x timeout quiet-period 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x timeout quiet-period" help="Set default quiet period in the HELD state">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_pae_quietPeriod/60
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default interval (in seconds) between the retrial of authentication.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default interval (in seconds) between the retrial of authentication.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default quiet period:
+    Switch(config-if)# no dot1x timeout quiet-period
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="dot1x timeout tx-period" help="Set interval between successive request ID attempts">
+	        <PARAM name="seconds" help="Transmit period (default 30  seconds)" ptype="DOT1X_TX_PERIOD"/>
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_pae_txPeriod/${seconds}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the number of seconds that the switch waits for a response to an 
+EAP-request/identity frame from the client before retransmitting the request.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the number of seconds that the switch waits for a response to an 
+EAP-request/identity frame from the client before retransmitting the request.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+30 seconds
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set tx-period:
+    Switch(config-if)# dot1x timeout tx-period 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x timeout tx-period" help="Set default interval between successive request ID attempts">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_pae_txPeriod/30
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default number of seconds that the switch waits for a response to an 
+EAP-request/identity frame from the client before retransmitting the request.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default number of seconds that the switch waits for a response to an 
+EAP-request/identity frame from the client before retransmitting the request.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to set default tx-period:
+    Switch(config-if)# no dot1x timeout tx-period
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="dot1x timeout re-authperiod" help="Set interval between reauthorization attempts">
+	        <PARAM name="seconds" help="Reauthentication period (default 3600  seconds)" ptype="DOT1X_RE_AUTH_PERIOD"/>
+
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/reAuthPeriod/${seconds}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the number of seconds between reauthentication attempts.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The dot1x timeout re-authperiod interface configuration command affects the behavior of 
+the switch only if you have enabled periodic re-authentication by using the dot1x 
+reauthentication interface configuration command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3600 seconds
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set re-authperiod:
+    Switch(config-if)# dot1x timeout re-authperiod 100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x timeout re-authperiod" help="Set default interval between reauthorization attempts">
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/reAuthPeriod/3600
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default number of seconds between reauthentication attempts.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default number of seconds between reauthentication attempts.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to set default re-authperiod:
+    Switch(config-if)# no dot1x timeout re-authperiod
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="dot1x timeout supp-timeout" help="Set supplicant response timeout">
+	        <PARAM name="seconds" help="Supplicant response timeout (default 30  seconds)" ptype="DOT1X_SUPP_PERIOD"/>
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_be_suppTimeout/${seconds}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the number of seconds that the switch waits for the retransmission 
+of packets by the switch to the IEEE 802.1x client.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the number of seconds that the switch waits for the retransmission 
+of packets by the switch to the IEEE 802.1x client.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+30 seconds
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set supplicant timeout:
+    Switch(config-if)# dot1x timeout supp-timeout 100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x timeout supp-timeout" help="Set default interval between reauthorization attempts">
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_be_suppTimeout/30
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default number of seconds that the switch waits for the retransmission 
+of packets by the switch to the IEEE 802.1x client.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default number of seconds that the switch waits for the retransmission 
+of packets by the switch to the IEEE 802.1x client.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default supplicant timeout:
+    Switch(config-if)# no dot1x timeout supp-timeout
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND>
+        
+        <COMMAND name="dot1x timeout server-timeout" help="Set authentication server response timeout">
+	        <PARAM name="seconds" help="Authentication server response timeout (default 30  seconds)" ptype="DOT1X_SERVER_PERIOD"/>
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_be_serverTimeout/${seconds}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the number of seconds that the switch waits for the retransmission 
+of packets by the switch to the authentication server.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the number of seconds that the switch waits for the retransmission 
+of packets by the switch to the authentication server.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set server response timeout:
+    Switch(config-if)# dot1x timeout server-timeout 100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x timeout server-timeout" help="Set default authentication server response timeout">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_be_serverTimeout/30
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default number of seconds that the switch waits for the retransmission 
+of packets by the switch to the authentication server.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default number of seconds that the switch waits for the retransmission 
+of packets by the switch to the authentication server.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set server response timeout:
+    Switch(config-if)# no dot1x timeout server-timeout
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>		
+        </COMMAND>
+        
+        <COMMAND name="dot1x guest-vlan" help="Set guest VLAN commands">
+	        <PARAM name="vlanid" help="Guest vlan id" ptype="DOT1X_GUEST_VLAN"/>
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/guest_vlan/${vlanid}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to specify an active VLAN as an 802.1x guest VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When you configure a guest VLAN, clients that are not 802.1x-capable are put into the 
+guest VLAN when the server does not receive a response to its Extensible Authentication 
+Protocol over LAN (EAPOL) request/identity frame. Clients that are 802.1x-capable but 
+fail authentication are not granted access to the network.
+The guest VLAN feature is not supported on internal VLANs (routed ports) or trunk ports; 
+it is supported only on access ports.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set guest vlan:
+    Switch(config-if)# dot1x guest-vlan 2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x guest-vlan" help="Unset guest VLAN commands">
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/guest_vlan/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to unset guest VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to unset guest VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset guest vlan:
+    Switch(config-if)# no dot1x guest-vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show dot1x
+                </CTCRCMD>
+        </COMMAND>
+        
+        <COMMAND name="dot1x port-mode" help="Set dot1x mode">
+	        <PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch">
+                	<PARAM name="port" help="Set dot1x port based" ptype="SUBCOMMAND" mode="subcommand" />
+                	<PARAM name="mac" help="Set dot1x mac based" ptype="SUBCOMMAND" mode="subcommand" />
+            	</PARAM>
+	        
+	        <ACTION>
+			if [ "port" == ${value} ]; then
+		            cdbctl update/cdb/l2/dot1x_port/${iface}/auth_mode/0
+			else
+			    cdbctl update/cdb/l2/dot1x_port/${iface}/auth_mode/1
+			fi;
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set control mode of the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set control mode of the interface.
+dot1x port-control must be enabled before set the control mode.
+The control mode cannot be changed if there are users on line.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default the mode is port based.
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to set port mode:
+    Switch(config-if)# dot1x port-mode mac
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1x port-control
+                </CTCRCMD>		
+        </COMMAND>   
+        
+        <COMMAND name="no dot1x port-mode" help="Unset dot1x mode">
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/auth_mode/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default port control mode of the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set default port control mode of the interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port mode:
+    Switch(config-if)# no dot1x port-mode
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1x port-control
+                </CTCRCMD>		
+        </COMMAND>
+        
+        <COMMAND name="dot1x mac-auth-bypass" help="Enable MAC auth bypass">
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/mac_auth_bypass/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable mac auth by pass feature.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to enable mac auth by pass feature.
+dot1x port-control must be enabled and dot1x port-mode must set as mac mode before 
+enable this feature.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default this feature is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set mac auth bypass:
+    Switch(config-if)# dot1x mac-auth-bypass
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1x port-control
+                </CTCRCMD>		
+        </COMMAND> 
+        
+        <COMMAND name="no dot1x mac-auth-bypass" help="Disable MAC auth bypass">
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/mac_auth_bypass/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable mac auth by pass feature.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable mac auth by pass feature.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset mac auth bypass:
+    Switch(config-if)# no dot1x mac-auth-bypass
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1x port-control
+                </CTCRCMD>		
+        </COMMAND>   
+        
+        <COMMAND name="dot1x max-user" help="Set max user number of the port">
+                <PARAM name="value" help="Max user number of the port, default is system profile limit" ptype="DOT1X_MAX_USER"/>
+	        
+	        <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/max_user/${value}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set max user of the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set max user of the interface.
+dot1x port-control must be enabled before set the max value. 
+If there are users online, the set value should be larger than or at least be same as the 
+users count.
+The set value cannot be larger than the hardware resource count.
+This count should limit the number of dot1x mac based user in state "accept" , "reject" 
+and "reauth", which should use hardware table for forwarding or discarding. The total 
+number of users include "waiting" states should be 2 times as this configuration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default the user number is uncontrolled on port. The max number is according to the 
+system hardware profile.
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to set max user:
+    Switch(config-if)# dot1x max-user 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1x port-control
+                </CTCRCMD>
+        </COMMAND>   
+        
+        <COMMAND name="no dot1x max-user" help="Set max user number of the port">
+                <ACTION>
+			cdbctl update/cdb/l2/dot1x_port/${iface}/max_user/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to unset max user of the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to unset max user of the interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset max user:
+    Switch(config-if)# no dot1x max-user
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1x port-control
+                </CTCRCMD>
+        </COMMAND>     
+</VIEW>
+
+
+</CLISH_MODULE>

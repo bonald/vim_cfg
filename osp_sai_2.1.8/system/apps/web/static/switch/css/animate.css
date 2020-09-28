@@ -1,0 +1,29 @@
+/* alert */
+.alert-fade {
+    transition: 0.3s linear all;
+}
+.alert-fade.ng-show {
+    opacity: 1;
+}
+.alert-fade.ng-hide {
+    opacity: 0;
+}
+
+
+/* filter */
+.filter-fade {
+    transition: 0.3s linear all;
+}
+.filter-fade.ng-leave{
+    opacity: 1;
+}
+.filter-fade.ng-leave-active{
+    opacity: 0;
+}
+.filter-fade.ng-enter{
+    opacity: 0;
+}
+.filter-fade.ng-enter-active{
+    opacity: 1;
+}
+

@@ -1,0 +1,1549 @@
+-- Imports declare
+
+CENTEC DEFINITIONS ::= BEGIN
+
+IMPORTS
+      SnmpAdminString
+      FROM SNMP-FRAMEWORK-MIB
+      
+      ifIndex
+      FROM IF-MIB
+      
+      TimeTicks, Counter32, OBJECT-IDENTITY,
+      mib-2, MODULE-IDENTITY, IpAddress, Counter64,
+      Unsigned32, Integer32, Gauge32, OBJECT-TYPE,
+      NOTIFICATION-TYPE
+      FROM SNMPv2-SMI
+
+      OwnerString
+      FROM RMON-MIB
+      
+      NOTIFICATION-GROUP, MODULE-COMPLIANCE, OBJECT-GROUP
+      FROM SNMPv2-CONF
+      
+      InetAddressPrefixLength, InetAddress, InetAddressType
+      FROM INET-ADDRESS-MIB
+      
+      InterfaceIndex, InterfaceIndexOrZero, ifIndex
+      FROM IF-MIB
+      
+      VrId
+      FROM VRRP-MIB      
+      
+      TestAndIncr, TimeStamp, AutonomousType,
+      PhysAddress, TEXTUAL-CONVENTION, TruthValue, DateAndTime,
+      MacAddress, RowStatus
+        FROM SNMPv2-TC
+      
+      enterprises
+        FROM SNMPv2-SMI;
+        
+-- Child OID declare
+
+centec MODULE-IDENTITY
+	LAST-UPDATED "200806260000Z"        -- June 26, 2008 at 00:00 GMT
+	ORGANIZATION
+	   ""
+	CONTACT-INFO
+	   "
+	   "
+	DESCRIPTION
+	       "The System Information of the switch"
+	::= { enterprises 27975 }
+
+------------------------------------------------------------------
+--                      Centec Identifiers                      --
+------------------------------------------------------------------
+system                    OBJECT IDENTIFIER ::= { centec 1 }
+user                      OBJECT IDENTIFIER ::= { centec 30 }
+lswdevMMib                OBJECT IDENTIFIER ::= { centec 37 }
+lswTrapMib                OBJECT IDENTIFIER ::= { centec 39 }
+interface                  OBJECT IDENTIFIER ::= { centec 42 }
+management                 OBJECT IDENTIFIER ::= { centec 43 }
+product                   OBJECT IDENTIFIER ::= { centec 99 }
+
+		
+-- Module declares
+-- Sub Module: product
+
+	e3008TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,8TS."
+	    ::= { product 3080 } 
+	    
+	e30016TX OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,16TX."
+	    ::= { product 3160 }
+
+	e3508T12X OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E350,8T12X."
+	    ::= { product 3200 }
+	    	
+	e30024TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,24TS."
+	    ::= { product 3240 }
+	
+	e30024ST OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,24ST."
+	    ::= { product 3241 }
+	
+	e30048TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,48TS."
+	    ::= { product 3480 }
+	
+	b30048T OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "B300,48T."
+	    ::= { product 3481 }
+		
+	e33048T OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48T."
+	    ::= { product 3485 }
+
+	e33048SE OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48SE."
+	    ::= { product 3486 }
+
+	e33048S OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48S."
+	    ::= { product 3487 }
+
+	g24eu OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "G24EU,24+4."
+	    ::= { product 3488 }
+
+	e35048T4X OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E350,48T4X."
+	    ::= { product 3520 }
+		
+	e58024Q OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E580,24Q."
+	    ::= { product 5801 }
+		
+	e58048X2Q4Z OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E580,48X2Q4Z."
+	    ::= { product 5802 }
+		
+	e58048X6Q OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E580,48X6Q."
+	    ::= { product 5803 }
+		
+	e58032X2Q OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E580,32X2Q."
+	    ::= { product 5804 }
+
+    e55024T16X OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E550,24T16X."
+        ::= { product 5501 }
+
+    e55024T16Y OBJECT-IDENTITY
+        STATUS  current
+        DESCRIPTION
+            "E550,24T16Y."
+        ::= { product 5502 }
+	    	    		
+	e602 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,2 slots."
+	    ::= { product 6020 }  
+	
+	e606 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,6 slots."
+	    ::= { product 6060 }  
+	
+	e614 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,14 slots."
+	    ::= { product 6140 }  
+	       
+	e802 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,2 slots"
+	    ::= { product 8020 } 
+	
+	e806 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,6 slots"
+	    ::= { product 8060 } 
+	
+	e814 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,14 slots"
+	    ::= { product 8140 } 
+	             
+
+
+
+-- Sub Module:  SYSTEM
+memory                    OBJECT IDENTIFIER ::= { system 1 }
+systemStats               OBJECT IDENTIFIER ::= { system 2 }
+operate                   OBJECT IDENTIFIER ::= { system 3 }
+sysTrap                   OBJECT IDENTIFIER ::= { system 7 }
+time                      OBJECT IDENTIFIER ::= { system 8 }
+
+memIndex OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      	read-only
+    STATUS          current
+    DESCRIPTION  
+        "Bogus Index.  This should always return the integer 0."
+    ::= { memory 1 } 
+    
+memTotalReal          OBJECT-TYPE
+    SYNTAX          Integer32
+    UNITS             "kB"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The total amount of real/physical memory installed on this host."
+    ::= { memory 5 }
+
+memTotalFree         OBJECT-TYPE
+    SYNTAX          Integer32
+    UNITS             "kB"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The total amount of memory free or available for use on
+        this host.This value typically covers both real memory
+        and swap space or virtual memory."
+    ::= { memory 11 }
+
+memUsed         OBJECT-TYPE
+    SYNTAX          Integer32
+    UNITS             "kB"
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The total amount of memory used on
+        this host.This value typically covers both real memory
+        and swap space or virtual memory."
+    ::= { memory 12 }
+
+memUsage         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The total amount of memory usage on
+        this host.This value typically covers both real memory
+        and swap space or virtual memory."
+    ::= { memory 13 }
+	
+-- systemStats OBJECT IDENTIFIER    ::= { system 2 }    
+ssIndex         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Bogus Index.This should always return the integer 1."
+    ::= { systemStats 1 }
+	
+ssCpuIdle             OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The percentage of processor time spent idle, calculated over the last
+         minute."
+    ::= { systemStats 11 }
+  
+ssCpuUsage          OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "CPU usage"
+    ::= { systemStats 12 }
+	
+--time OBJECT IDENTIFIER    ::= { system 8 }
+    
+timeSet OBJECT IDENTIFIER    ::= { time 1 }
+timeSetClock          OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..256))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+	        "current time. format HH:MM:SS."
+    ::= { timeSet 1 }
+    
+timeSetMonth          OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Month of the year. range is [1, 12]."
+    ::= { timeSet 2 }
+        
+timeSetDay             OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Day of the month. range is [1, 31]."
+    ::= { timeSet 3 }
+    
+timeSetYear            OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Year of the date. range is [2000, 2037]."
+    ::= { timeSet 4 }
+	
+
+systemFiberTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE  OF SystemFiberEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The system Fiber info table."
+    ::= { system 11 }
+
+systemFiberEntry          OBJECT-TYPE
+    SYNTAX          SystemFiberEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "A transceiver info entry.Each entry consists of information of transceiver .
+        The systemFiberIndex exclusively defines an index of transceiver port."
+    INDEX  { systemFiberIndex }
+    ::= { systemFiberTable 1 }
+    
+SystemFiberEntry    ::=
+    SEQUENCE 
+    {
+        systemFiberIndex
+            Integer32,
+        systemFiberOptTransPower
+            OCTET STRING,
+        systemFiberOptRecevPower
+            OCTET STRING,
+        systemFiberOptTransHighAlarmThr
+            OCTET STRING,
+        systemFiberOptRecevHighAlarmThr
+            OCTET STRING,
+        systemFiberOptTransHighWarnThr
+            OCTET STRING,
+        systemFiberOptRecevHighWarnThr
+            OCTET STRING,
+        systemFiberOptTransLowAlarmThr
+            OCTET STRING,
+        systemFiberOptRecevLowAlarmThr
+            OCTET STRING,
+        systemFiberOptTransLowWarnThr
+            OCTET STRING,
+        systemFiberOptRecevLowWarnThr
+            OCTET STRING
+     }
+    
+systemFiberIndex         OBJECT-TYPE
+    SYNTAX          Integer32 (1..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION 
+        "The index of transceiver port."
+    ::= { systemFiberEntry 1 }
+ 
+systemFiberOptTransPower          OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Optical Transmit Power of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Transmit Power of the transceiver"
+    ::= { systemFiberEntry 2 }
+    
+systemFiberOptRecevPower    OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "The Optical Receive Power of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Receive Power of the transceiver"
+    ::= { systemFiberEntry 3 }
+	
+systemFiberOptTransHighAlarmThr          OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Optical Transmit High Alarm Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Transmit High Alarm Threshold of the transceiver"
+    ::= { systemFiberEntry 4 }
+    
+systemFiberOptRecevHighAlarmThr    OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "The Optical Receive High Alarm Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Receive High Alarm Threshold of the transceiver"
+    ::= { systemFiberEntry 5 }
+	
+systemFiberOptTransHighWarnThr          OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Optical Transmit High Warn Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Transmit High Warn Threshold of the transceiver"
+    ::= { systemFiberEntry 6 }
+    
+systemFiberOptRecevHighWarnThr    OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "The Optical Receive High Warn Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Receive High Warn Threshold of the transceiver"
+    ::= { systemFiberEntry 7 }
+    
+systemFiberOptTransLowAlarmThr          OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Optical Transmit Low Alarm Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Transmit Low Alarm Threshold of the transceiver"
+    ::= { systemFiberEntry 8 }
+    
+systemFiberOptRecevLowAlarmThr    OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "The Optical Receive Low Alarm Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Receive Low Alarm Threshold of the transceiver"
+    ::= { systemFiberEntry 9 }
+	
+systemFiberOptTransLowWarnThr          OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Optical Transmit Low Warn Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Transmit Low Warn Threshold of the transceiver"
+    ::= { systemFiberEntry 10 }
+    
+systemFiberOptRecevLowWarnThr    OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "The Optical Receive Low Warn Threshold of the transceiver. 
+		The node get value is x, than x/100 dBm is the Optical Receive Low Warn Threshold of the transceiver"
+    ::= { systemFiberEntry 11 }
+	
+-- operate OBJECT IDENTIFIER    ::= { system 3 }
+configSave         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "This should always write running-config to startup-config.And the 
+        valid value is 1."
+    ::= { operate 1 }
+    
+reload         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        rebootWithoutSave(1),
+        saveAndReboot(2)
+    }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+	    "This should allow to reboot the switch.The valid input value is 1 and 2.
+        Value 1 means the switch will reboot without saving current configuration.
+        Value 2 means the switch will save current configuration before reboot the switch."
+    ::= { operate 2 }
+
+rebootAt         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..256))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Specify auto reboot parameters at the special time. The format defined like 'HH:MM,YYYY/MM/DD'. 0 is mean clear."
+    ::= { operate 3 }
+        
+resetToFactory         OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        reset(1)
+    }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "This should allow to restore default configuration and reset to factory.
+        The valid input value is 1."
+    ::= { operate 20 }
+		
+		
+-- Sub Module: LSWDEVMMIB
+
+-- ==================================================================
+
+
+lswdevMMibObject OBJECT-IDENTITY
+        STATUS current
+        DESCRIPTION
+            "Description."
+        ::= { lswdevMMib 1 }
+		
+
+devMPowerStatusTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DevMPowerStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION 
+        "Power status description table."
+    ::= { lswdevMMibObject  2 }
+    
+    
+devMPowerStatusEntry OBJECT-TYPE
+    SYNTAX          DevMPowerStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION 
+        "Power status description table entry."
+    INDEX   { devMPowerIndex }
+    ::= { devMPowerStatusTable 1 }
+    
+DevMPowerStatusEntry    ::=
+    SEQUENCE 
+    {
+        devMPowerIndex          
+           INTEGER,
+        devMPowerStatus
+           INTEGER,
+        devMPowerWorkStatus
+           INTEGER,
+        devMPowerType
+           INTEGER,
+        devMPowerAlertStatus
+           INTEGER
+    }
+
+devMPowerIndex          OBJECT-TYPE
+    SYNTAX          INTEGER (0..65535)
+    MAX-ACCESS        not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Power number."
+    ::= { devMPowerStatusEntry 1 }
+  
+  devMPowerStatus    OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        present      (1),
+        absent       (2),
+        unsupport    (3)
+        
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION " Power whole device status: present (1), absent (2), unsupport (3)."
+    ::= { devMPowerStatusEntry 2 }
+    
+  devMPowerWorkStatus   OBJECT-TYPE
+      SYNTAX          INTEGER
+    {
+        active     (1),
+        deactive   (2),
+        notInstall (3),
+        unsupport    (4)
+        
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION "Power status: active (1), deactive (2) not installed (3) and unsupported (4). "
+    ::= { devMPowerStatusEntry 3 }
+   
+   devMPowerType     OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        ac (1),
+        dc (2),
+        notInstall   (3),
+        unsupport    (4) 
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION " Power status: AC (1), DC (2), notInstall (3) and unsupported (4)."
+    ::= { devMPowerStatusEntry 4 }
+	
+   devMPowerAlertStatus OBJECT-TYPE
+   SYNTAX          INTEGER
+    {
+        noAlert       (1),
+        alert         (2),
+        unsupported    (3) 
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION " Power status: noAlert (1), alert (2), unsupported(3)."
+    ::= { devMPowerStatusEntry 7 }
+	
+	
+	
+lswSlotTable            OBJECT-TYPE
+    SYNTAX          SEQUENCE OF LswSlotEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Slot description table."
+    ::= {lswdevMMibObject 5}
+
+lswSlotEntry            OBJECT-TYPE
+    SYNTAX          LswSlotEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Slot description table entry."
+    INDEX        { lswSlotFrameIndex, lswSlotIndex }
+    ::= {lswSlotTable 1}
+
+LswSlotEntry    ::=    
+    SEQUENCE
+    {
+        lswSlotFrameIndex           Integer32,
+        lswSlotIndex                Integer32,
+        lswSlotConfigType           OCTET STRING,
+        lswSlotCurrentType          OCTET STRING,
+        lswSlotStatus               OCTET STRING,
+        lswSlotSupStatus            OCTET STRING,
+        lswSlotPortNumber           Integer32,
+        lswSlotHwVer                OCTET STRING,
+        lswSlotRom                  OCTET STRING,
+        lswSlotSerialNo             OCTET STRING
+   }
+
+lswSlotFrameIndex            OBJECT-TYPE
+    SYNTAX          Integer32 (1..16)
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Frame index. Now we only support 1."
+    ::= {lswSlotEntry 1}
+        
+lswSlotIndex            OBJECT-TYPE
+    SYNTAX          Integer32 (1..128)
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Slot index."
+    ::= {lswSlotEntry 2}
+
+lswSlotConfigType            OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The configed Slot type. Include SUP-1, LC-24S, LC-24T, LC-2X8S, LC-2X8ST."
+    ::= {lswSlotEntry 3}
+
+lswSlotCurrentType            OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The current Slot type. Include SUP-1, LC-24S, LC-24T, LC-2X8S, LC-2X8ST."
+    ::= {lswSlotEntry 4}
+
+lswSlotStatus         OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Slot status. Include absent, creating, initing, syncing, fail, ready, uninit, conflict."
+    ::= {lswSlotEntry 5}
+
+lswSlotSupStatus         OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The supervisor card status. This node is just for supervisor card. Include Active and Standby."
+    ::= {lswSlotEntry 6}
+
+lswSlotPortNumber            OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "Number of the ports on the card in this slot. On supervisor the number is 0."
+    ::= {lswSlotEntry 7}
+    
+lswSlotHwVer            OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The hardware version of the card in this slot. If the line card is absent, none info will be printed."
+    ::= {lswSlotEntry 8}
+    
+lswSlotRom            OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..16))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The bootrom version of the card in this slot. If the line card is absent, none info will be printed."
+    ::= {lswSlotEntry 9}
+    
+lswSlotSerialNo            OBJECT-TYPE
+    SYNTAX          OCTET STRING  (SIZE(0..64))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The serial number of the card in this Slot. If the line card is absent, none info will be printed."
+    ::= {lswSlotEntry 10}	
+		
+		
+transinformation OBJECT-IDENTITY
+    STATUS current
+    DESCRIPTION
+        "Transceiver information description."
+    ::= { lswdevMMibObject 10 }
+    
+transbasicinformationTable    OBJECT-TYPE
+    SYNTAX     SEQUENCE OF TransbasicinformationEntry
+    MAX-ACCESS     not-accessible
+    STATUS     current
+    DESCRIPTION
+        "Show the basic information for transceiver."
+    ::= {transinformation 1}
+
+transbasicinformationEntry    OBJECT-TYPE
+    SYNTAX         TransbasicinformationEntry
+    MAX-ACCESS     not-accessible
+    STATUS         current
+    DESCRIPTION
+        "Show the basic information for transceiver."
+    INDEX {ifIndex}
+    ::= {transbasicinformationTable 1}
+
+TransbasicinformationEntry ::= 
+   SEQUENCE{
+        transceiveType                 
+            OCTET STRING,
+        transceiveVender               
+            OCTET STRING,
+        transceivePartNumber           
+            OCTET STRING,
+        transceiveSerialNumber         
+            OCTET STRING,
+        transceiveWaveLength           
+            Integer32,
+        link9SinglemodeLengthKm        
+            Integer32,
+        link9SinglemodeLengthM         
+            Integer32,
+        link50MultimodeLength          
+            Integer32,
+        link62MultimodeLength          
+            Integer32,
+        linkCopperLength               
+            Integer32,
+        transceiveStatus               
+            OCTET STRING,
+        transceiveMointorStatus               
+            OCTET STRING
+   }
+transceiveType      OBJECT-TYPE
+    SYNTAX         OCTET STRING (SIZE(0..256))
+    MAX-ACCESS     read-only
+    STATUS         current
+    DESCRIPTION
+        "Transceiver type. For example: 1000BASE-LX, 1000BASE-SX, 10GBASE-SR and so on."
+    ::= {transbasicinformationEntry 1}
+
+transceiveVender      OBJECT-TYPE
+    SYNTAX         OCTET STRING (SIZE(0..256))
+    MAX-ACCESS     read-only
+    STATUS         current
+    DESCRIPTION
+        "Transceiver vender name."
+    ::= {transbasicinformationEntry 2}
+
+transceivePartNumber   OBJECT-TYPE
+    SYNTAX         OCTET STRING (SIZE(0..256))
+    MAX-ACCESS     read-only
+    STATUS         current
+    DESCRIPTION
+        "Transceiver PN information"
+    ::= {transbasicinformationEntry 3}
+
+
+transceiveSerialNumber    OBJECT-TYPE
+    SYNTAX              OCTET STRING (SIZE(0..256))
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Transceiver serial number information."
+    ::= {transbasicinformationEntry 4}
+        
+transceiveWaveLength    OBJECT-TYPE
+    SYNTAX              Integer32 (0..65535)
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Transceiver Wavelength ,unit is nm(nanometer)."
+    ::= {transbasicinformationEntry 5} 
+           
+link9SinglemodeLengthKm    OBJECT-TYPE
+    SYNTAX              Integer32 (0..65535)
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Link Length for 9/125um single mode fiber,unit is km(kilometer)."
+    ::= {transbasicinformationEntry 6}  
+          
+link9SinglemodeLengthM   OBJECT-TYPE
+    SYNTAX              Integer32 (0..65535)
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Link Length for 9/125um single mode fiber,unit is m(meter)."
+    ::= {transbasicinformationEntry 7}    
+           
+link50MultimodeLength   OBJECT-TYPE
+    SYNTAX              Integer32 (0..65535)
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Link Length for 50/125um multi-mode fiber,unit is m(meter)."
+    ::= {transbasicinformationEntry 8} 
+           
+link62MultimodeLength  OBJECT-TYPE
+    SYNTAX              Integer32 (0..65535)
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Link Length for 62.5/125um multi-mode fiber,unit is m(meter)."
+    ::= {transbasicinformationEntry 9}    
+           
+linkCopperLength   OBJECT-TYPE
+    SYNTAX              Integer32 (0..65535)
+    MAX-ACCESS          read-only
+    STATUS              current
+    DESCRIPTION
+        "Link Length for copper,unit is m(meter)."
+    ::= {transbasicinformationEntry 10} 
+    
+transceiveStatus      OBJECT-TYPE
+    SYNTAX         OCTET STRING (SIZE(0..256))
+    MAX-ACCESS     read-only
+    STATUS         current
+    DESCRIPTION
+        "Transceiver current status."
+    ::= {transbasicinformationEntry 11}    
+
+transceiveMointorStatus      OBJECT-TYPE
+    SYNTAX         OCTET STRING (SIZE(0..256))
+    MAX-ACCESS     read-only
+    STATUS         current
+    DESCRIPTION
+        "Transceiver current mointor status."
+    ::= {transbasicinformationEntry 12}  
+    
+devMFanStatusTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DevMFanStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION "Fan status description table"
+    ::= { lswdevMMib  2 }
+    
+devMFanStatusEntry         OBJECT-TYPE
+    SYNTAX          DevMFanStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Fan status description table entry"
+    INDEX     {devMFanIndex }
+    ::= { devMFanStatusTable 1 }
+    
+DevMFanStatusEntry    ::=
+    SEQUENCE 
+    {
+	devMFanIndex
+	    INTEGER,
+    devMFanModuleId
+        INTEGER,
+    devMFanStatus 
+        INTEGER,
+    devMFanSpeed
+        INTEGER
+    }
+    
+devMFanIndex          OBJECT-TYPE
+    SYNTAX          INTEGER (0..65535)
+    MAX-ACCESS        not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Fan Index."
+    ::= { devMFanStatusEntry 1 }	
+
+devMFanModuleId  OBJECT-TYPE
+    SYNTAX          INTEGER
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "Fan Module id."
+    ::= { devMFanStatusEntry 3 }    
+        
+devMFanStatus       OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        active     (1),
+        deactive   (2),
+        notInstall  (3),
+        unsupport    (4)
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        
+        "FanStatus : active (1), deactive (2) not installed (3) and unsupported (4)."
+    ::= { devMFanStatusEntry 4 }
+    
+devMFanSpeed  OBJECT-TYPE
+    SYNTAX          INTEGER
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "Fan speed(RPM)"
+    ::= { devMFanStatusEntry 5 }  
+    
+devMTemperatureTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DevMTemperatureEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+            DESCRIPTION "Fan temperature description table"
+    ::= { lswdevMMib  4 }
+    
+    
+devMTemperatureEntry         OBJECT-TYPE
+    SYNTAX          DevMTemperatureEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        "Fan temperature description entry"
+    INDEX     {devMTemperatureIndex}
+    ::= { devMTemperatureTable 1 }
+    
+    
+DevMTemperatureEntry    ::=
+    SEQUENCE 
+    {
+        devMTemperatureIndex              Integer32,
+        devMTemperatureValue              Integer32,
+        devMTemperatureLow                Integer32,
+        devMTemperatureHigh               INTEGER,
+		devMTemperatureCritical           INTEGER,
+        devMTemperatureLocation           INTEGER
+    }    
+   
+devMTemperatureIndex         OBJECT-TYPE
+    SYNTAX          Integer32   (1..16)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        "Fan sensor number"
+    ::= { devMTemperatureEntry 1 }
+    
+devMTemperatureValue         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature"
+    ::= { devMTemperatureEntry 2 }
+   
+devMTemperatureLow         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature low"
+    ::= { devMTemperatureEntry 3 }
+    
+devMTemperatureHigh          OBJECT-TYPE
+    SYNTAX          INTEGER 
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature high"
+    ::= { devMTemperatureEntry 4 }
+
+	devMTemperatureCritical        OBJECT-TYPE
+    SYNTAX          INTEGER 
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature Critical"
+    ::= { devMTemperatureEntry 5 }
+	
+devMTemperatureLocation          OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        cpu(1),
+        before_chip(2),
+		behind_chip(3),
+		fan(4),
+		psu(5),
+		chip0(6),
+		chip1(7),
+        around_chip(8)
+    }
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Fan sensor position type: 1-CPU, 2-Before Chip, 3-Befind Chip, 4-FAN, 5-PSU, 6-CHIP0, 7-CHIP1, 8-Around Chip"
+    ::= { devMTemperatureEntry 6 }
+	
+
+	
+-- Sub Module: INTERFACE
+
+interfaceTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF InterfaceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Table of interface entry."
+    ::= { interface 1 }
+            
+interfaceEntry         OBJECT-TYPE
+    SYNTAX          InterfaceEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "interface entry        "
+    INDEX     { interfaceIndex }
+    ::= { interfaceTable 1 }
+            
+InterfaceEntry    ::=
+    SEQUENCE
+    {
+        interfaceIndex
+            Integer32,
+        interfaceName
+            OCTET STRING,
+        interfaceSpeed
+            INTEGER,
+        interfaceDuplex
+            INTEGER,
+        interfaceResetCnt
+            INTEGER,
+        interfaceBandwidth
+            INTEGER,
+        interfaceUnidirectional
+            INTEGER,    
+        interfaceLinkStatus
+            INTEGER,    
+        interface5minInputBitsRate
+            Counter64,
+        interface5minInputPacketRate
+            Counter64,
+        interface5minOutputBitsRate 
+            Counter64,
+        interface5minOutputPacketRate
+            Counter64
+    }
+
+interfaceIndex         OBJECT-TYPE
+    SYNTAX          Integer32 (1..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "Interface index. physical interface:0x1~0x3FF,
+  agg interface: 0x400~0x7FF, vlan interface:0x1000~0x1FFF,
+  lookback interface:0x3000~0x3FFF"
+    ::= { interfaceEntry 1 }
+
+interfaceName         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (1..16))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Interface name."
+    ::= { interfaceEntry 2 }
+
+interfaceSpeed         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            auto(0),
+            speed10M(1),
+            speed100M(2),
+            speed1000M(3),
+            speed10G(4),
+            speed40G(5),
+            speed100G(6),
+            speed5G(7),
+            speed2_5G(8)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Specifies the port speed.0:auto 1:10M 2:100M 3:1000M 4:10G 5:40G 6:100G 7:5G 8 2.5G."
+    ::= { interfaceEntry 7 }
+
+interfaceDuplex         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            auto(0),
+            half(1),
+            full(2)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        "Specifies the port duplexStatus .0:auto 1:half 2:full."
+    ::= { interfaceEntry 8 }
+
+interfaceResetCnt         OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            noUse(0),
+            resetCount(1)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Reset interface counters; 0: noUse, 1: resetCount."
+    ::= { interfaceEntry 9 }
+
+interfaceBandwidth OBJECT-TYPE
+    SYNTAX  INTEGER(0..10000000)
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+    "Set bandwidth informational parameter(bandwidth in kilobits). Use 0 to set default value.
+    The default value of 10M port is 10000.
+    The default value of 100M port is 100000.
+    The default value of 1000M port is 1000000."
+    ::= { interfaceEntry 15 }
+    
+interfaceUnidirectional          OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            enable(1),
+            disable(2),
+            rx-only(3),
+            tx-only(4)
+        }
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION
+        "Enable/Disable unidirectional; 1: enable, 2: disable, 3: rx-only, 4: tx-only."
+    ::= { interfaceEntry 31 }
+    
+    
+interfaceLinkStatus          OBJECT-TYPE
+    SYNTAX          INTEGER
+        {
+            up(1),
+            down(2)
+        }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The selected interface link status; 1: up, 2: down."
+    ::= { interfaceEntry 33 }
+    
+interface5minInputBitsRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min input rate of bits, bits/sec."
+    ::= { interfaceEntry 41 }
+    
+interface5minInputPacketRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min input rate of packet, packets/sec."
+    ::= { interfaceEntry 42 }
+    
+interface5minOutputBitsRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min output rate of bits, bits/sec."
+    ::= { interfaceEntry 43 }
+    
+interface5minOutputPacketRate         OBJECT-TYPE
+    SYNTAX          Counter64
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "5 min output rate of packet, packets/sec."
+    ::= { interfaceEntry 44 }
+
+-- Sub Module: MANAGEMENTIP
+
+managementIpAddress         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE(0..256))
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        
+        "IP addresses with masklen. The format is like 'xxx.xxx.xxx.xxx/xx'."
+    ::= { management 100 }           
+ 
+managementIpGateway         OBJECT-TYPE
+    SYNTAX          IpAddress
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION        
+        "Management ip gateway."
+    ::= { management 101 }
+        
+
+	
+-- Sub Module: USER
+
+--
+-- Textual conventions 
+--
+LoginType    ::= TEXTUAL-CONVENTION
+    STATUS          current
+    DESCRIPTION
+        "Specify severity level of message."
+    SYNTAX          INTEGER
+    {
+        nologin(1),
+        login(2),
+        loginlocal(3)
+    }
+--
+-- Node definitions
+--
+--
+--  Users table
+--
+usersTable         OBJECT-TYPE 
+    SYNTAX          SEQUENCE OF UsersEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The table of users."
+    ::= { user 6 }
+
+usersEntry         OBJECT-TYPE
+    SYNTAX          UsersEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The entry of users."
+    INDEX         { usersLineType, usersLineIndex }
+    ::= { usersTable 1 }
+
+UsersEntry    ::=
+    SEQUENCE {
+        usersLineType
+            Integer32,
+        usersLineIndex
+            Integer32,
+        usersname
+            OCTET STRING,
+        usersIdleTime
+            OCTET STRING,
+        usersLocation
+            OCTET STRING 
+     }
+
+usersLineType         OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The Users line Type. 0 means console,and 1 means vty."
+    ::= { usersEntry 1 }
+    
+usersLineIndex         OBJECT-TYPE
+    SYNTAX          Integer32 (0..65535)
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The Users line index."
+    ::= { usersEntry 2 }
+
+usersname         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..255))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The Users name."
+    ::= { usersEntry 3 }
+
+usersIdleTime         OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The idle time."
+    ::= { usersEntry 4 }
+     
+usersLocation         OBJECT-TYPE
+    SYNTAX          OCTET STRING (SIZE (0..255))
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION
+        "The user location."
+    ::= { usersEntry 5 }
+	
+	
+---- Sub Module: sysTrap
+    writeSuccessTrap NOTIFICATION-TYPE
+      OBJECTS { configSave }
+      STATUS  current
+      DESCRIPTION
+              "Config write success"
+      ::= { sysTrap 1 }
+
+    writeFailureTrap NOTIFICATION-TYPE
+      OBJECTS { configSave }
+      STATUS  current
+      DESCRIPTION
+              "Config write failure"
+      ::= { sysTrap 2 }
+
+    rebootSendTrap NOTIFICATION-TYPE
+      OBJECTS { reload }
+      STATUS  current
+      DESCRIPTION
+              "Reload send trap"
+      ::= { sysTrap 3 }
+
+
+    memUsageHigher NOTIFICATION-TYPE
+      OBJECTS { memTotalFree }
+      STATUS  current
+      DESCRIPTION
+              "Memory usage higher"
+      ::= { sysTrap 4 }
+
+    memUsageFormHigherToNormal NOTIFICATION-TYPE
+      OBJECTS { memTotalFree }
+      STATUS  current
+      DESCRIPTION
+              "Memory usage from higher to normal"
+      ::= { sysTrap 5 }
+
+
+    vtySessionStartTrap NOTIFICATION-TYPE
+      OBJECTS { usersLineIndex, usersname, usersLocation }
+      STATUS  current
+      DESCRIPTION
+              "Virtual terminal session start"
+      ::= { sysTrap 6 }
+
+    vtySessionStopTrap NOTIFICATION-TYPE
+      OBJECTS { usersLineIndex, usersname, usersLocation }
+      STATUS  current
+      DESCRIPTION
+              "Virtual terminal session stop"
+      ::= { sysTrap 7 }
+
+    timeChangeTrap NOTIFICATION-TYPE
+      OBJECTS { timeSetClock, timeSetMonth, timeSetDay, timeSetYear }
+      STATUS  current
+      DESCRIPTION
+              "Time Change Trap"
+      ::= { sysTrap 8 }
+
+    cpuUsageHigher NOTIFICATION-TYPE
+      OBJECTS { ssCpuIdle }
+      STATUS  current
+      DESCRIPTION
+              "Cpu Usage higher"
+      ::= { sysTrap 9 }
+
+    cpuUsageFormHigherToNormal NOTIFICATION-TYPE
+      OBJECTS { ssCpuIdle }
+      STATUS  current
+      DESCRIPTION
+              "Cpu Usage from higher to normal"
+      ::= { sysTrap 10 }
+
+-----    lastCommandTrap NOTIFICATION-TYPE
+-----      OBJECTS { lastCommand }
+-----      STATUS  current
+-----      DESCRIPTION
+-----              "The trap of the last command line and time."
+-----      ::= { sysTrap 11 }
+-----    loginFailTrap NOTIFICATION-TYPE
+-----      OBJECTS { loginFail }
+-----      STATUS  current
+-----      DESCRIPTION
+-----              "Login fail for three times."
+-----      ::= { sysTrap 14 }
+
+
+
+
+
+-- Sub Module: LSWTRAPMIB
+        
+        
+        
+lswTRAPMibObject OBJECT IDENTIFIER ::= {  lswTrapMib 1  }    
+            
+powerAbsent NOTIFICATION-TYPE
+    OBJECTS      { devMPowerIndex }
+    STATUS          current
+    DESCRIPTION
+        "Power supply absent."
+    ::= { lswTRAPMibObject 1 }
+    
+powerFailure NOTIFICATION-TYPE
+    OBJECTS      { devMPowerIndex }
+    STATUS          current
+    DESCRIPTION
+        "Power supply failure."
+    ::= { lswTRAPMibObject 2 }
+       
+powerNormal NOTIFICATION-TYPE
+    OBJECTS       { devMPowerIndex }
+    STATUS          current
+    DESCRIPTION
+        "Power supply normal."
+    ::= { lswTRAPMibObject 3 }       
+
+powerFanFailure NOTIFICATION-TYPE
+    OBJECTS      { devMPowerIndex }
+    STATUS          current
+    DESCRIPTION
+        "The fan of power supply failure."
+    ::= { lswTRAPMibObject 4 }
+
+fanFailure NOTIFICATION-TYPE
+    OBJECTS       { devMFanIndex }
+    STATUS          current
+    DESCRIPTION
+        "Fan failure."
+    ::= { lswTRAPMibObject 5 }
+      
+fanNormal NOTIFICATION-TYPE
+    OBJECTS      { devMFanIndex }
+    STATUS          current
+    DESCRIPTION
+        "Fan normal."
+    ::= { lswTRAPMibObject 6 }
+      
+boardTemperatureAlarm NOTIFICATION-TYPE
+    OBJECTS    { lswSlotFrameIndex,lswSlotIndex,devMTemperatureValue }
+    STATUS          current
+    DESCRIPTION
+        "Board temperature high."
+    ::= { lswTRAPMibObject 13 } 
+      
+boardTemperatureReturnNormal NOTIFICATION-TYPE
+    OBJECTS        { lswSlotFrameIndex,lswSlotIndex,devMTemperatureValue }
+    STATUS          current
+    DESCRIPTION
+        "Board temperature from higher to normal."
+    ::= { lswTRAPMibObject 14 }      
+
+loadFailure NOTIFICATION-TYPE
+    OBJECTS    { lswSlotFrameIndex,lswSlotIndex }
+    STATUS          current
+    DESCRIPTION
+        "Board load failure."
+    ::= { lswTRAPMibObject 15 } 
+
+loadFinished NOTIFICATION-TYPE
+    OBJECTS  { lswSlotFrameIndex,lswSlotIndex }
+    STATUS          current
+    DESCRIPTION
+        "Board load finished."
+    ::= { lswTRAPMibObject 16 }  
+    
+transceiverInsert NOTIFICATION-TYPE
+    OBJECTS  { transceiveStatus }
+    STATUS          current
+    DESCRIPTION
+        "Transceiver inserted."
+    ::= { lswTRAPMibObject 18 }
+      
+transceiverRemove NOTIFICATION-TYPE
+    OBJECTS  { transceiveStatus }
+    STATUS          current
+    DESCRIPTION
+        "Transceiver removed."
+    ::= { lswTRAPMibObject 19 }
+    
+transceiverSfpMonitor NOTIFICATION-TYPE
+    OBJECTS    { transceiveMointorStatus }
+    STATUS          current
+    DESCRIPTION
+        "Transceiver Sfp Monitor has detected warning or alarm."
+    ::= { lswTRAPMibObject 20}   
+
+
+fanAbsent NOTIFICATION-TYPE
+    OBJECTS       { devMFanIndex }
+    STATUS          current
+    DESCRIPTION
+        "Fan absent."
+    ::= { lswTRAPMibObject 25 }
+
+
+fanPresent NOTIFICATION-TYPE
+    OBJECTS      { devMFanIndex }
+    STATUS          current
+    DESCRIPTION
+        "Fan present."
+    ::= { lswTRAPMibObject 26 }
+	
+    
+powerAlert NOTIFICATION-TYPE
+    OBJECTS       { devMPowerIndex }
+    STATUS          current
+    DESCRIPTION
+        "Power alert."
+    ::= { lswTRAPMibObject 27 }       
+
+powerNoAlert NOTIFICATION-TYPE
+    OBJECTS       { devMPowerIndex }
+    STATUS          current
+    DESCRIPTION
+        "Power no alert."
+    ::= { lswTRAPMibObject 28 }       
+	
+	
+END

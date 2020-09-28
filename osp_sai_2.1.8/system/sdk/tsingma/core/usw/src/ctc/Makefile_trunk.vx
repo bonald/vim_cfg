@@ -1,0 +1,95 @@
+all_targets = aclqos interface interrupt l2 l3 misc nexthop stats usrid vlan security oam mpls ptp wlan
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+aclqos: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/aclqos -f Makefile.vx
+
+clean_aclqos: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/aclqos -f Makefile.vx  clean
+
+oam: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/oam -f Makefile.vx
+
+clean_oam: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/oam -f Makefile.vx clean
+
+mpls: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/mpls -f Makefile.vx
+clean_mpls: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/mpls -f Makefile.vx clean
+
+ptp: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/ptp -f Makefile.vx
+clean_ptp: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/ptp -f Makefile.vx clean
+
+interface: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/interface -f Makefile.vx
+
+clean_interface: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/interface -f Makefile.vx  clean
+
+interrupt: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/interrupt -f Makefile.vx
+
+clean_interrupt: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/interrupt -f Makefile.vx  clean
+
+l2: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/l2 -f Makefile.vx
+
+clean_l2: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/l2 -f Makefile.vx  clean
+
+l3: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/l3 -f Makefile.vx
+
+clean_l3: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/l3 -f Makefile.vx  clean
+
+misc: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/misc -f Makefile.vx
+
+clean_misc: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/misc -f Makefile.vx  clean
+
+nexthop: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/nexthop -f Makefile.vx
+
+clean_nexthop: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/nexthop -f Makefile.vx  clean
+
+stats: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/stats -f Makefile.vx
+
+clean_stats: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/stats -f Makefile.vx  clean
+
+usrid: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/usrid -f Makefile.vx
+
+clean_usrid: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/usrid -f Makefile.vx  clean
+
+vlan: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/vlan -f Makefile.vx
+
+clean_vlan: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/vlan -f Makefile.vx  clean
+
+security: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/security -f Makefile.vx
+
+clean_security: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/security -f Makefile.vx  clean
+
+wlan: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/wlan -f Makefile.vx
+
+clean_wlan: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/duet2/src/ctc/wlan -f Makefile.vx  clean
+
+.PHONY: FORCE
+FORCE:

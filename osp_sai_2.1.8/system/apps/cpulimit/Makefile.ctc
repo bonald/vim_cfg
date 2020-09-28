@@ -1,0 +1,11 @@
+include $(MK_DIR)/sys.mk
+
+PROG = cpulimit
+SRCS = $(wildcard *.c)
+
+CPPFLAGS += -DLINUX
+
+DEP_LIBS = 
+LD_LIBS  += -lrt
+
+include $(MK_DIR)/prog.mk

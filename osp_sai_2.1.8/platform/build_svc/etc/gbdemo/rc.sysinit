@@ -1,0 +1,486 @@
+#!/bin/sh
+
+COMM_VRF=65
+MANG_VRF=64
+ZERO_VRF=0
+NTP_PORT=124
+STARTUP_LOG=/mnt/flash/cold/log/startup_log
+
+mount -t proc none /proc
+mount -t sysfs sysfs /sys
+
+busybox --install -s
+
+mknod /dev/null c 1 3
+
+/usr/sbin/udevd --daemon 
+/usr/sbin/udevstart 
+
+mknod /dev/ctc_allctrl c 99 0
+mknod /dev/ctc_hw c 100 0
+mknod /dev/linux_dal c 199 0
+mknod /dev/board_hw c 100 0
+mknod /dev/ctc_asic_normal c 101 0
+mknod /dev/ctc_asic_fatal c 103 0
+mknod /dev/rtc c 254 0
+mknod /dev/ctc_cpm c 105 0
+mknod /dev/ctc_foam_normal c 104 0
+mknod /dev/ctc_board_ctl c 200 0
+mknod /dev/ctc_gpio c 106 0
+mknod /dev/ctc_shm c 110 0
+mknod /dev/ctc_memchk_one_page_shm c 111 0
+
+mkdir /dev/pts
+mount -t devpts none /dev/pts
+
+# Run startup monitor prog
+monitor &
+
+echo -n "Mounting /dev/mtdblock2... "
+ubiattach /dev/ubi_ctrl -m 2 
+sleep 1		
+if ! mount -t ubifs -o sync ubi0:system /mnt/flash > /dev/null 2>&1; then
+    echo "failed!"
+
+    echo "Formatting /dev/mtdblock2 ..."
+    flash_eraseall  /dev/mtd2
+    ubiattach /dev/ubi_ctrl -m 2 
+    sleep 1
+    ubimkvol  /dev/ubi0 -N system -s 200MiB 
+    sleep 1
+    echo -n "Mounting /dev/mtdblock2... "
+    mount -t ubifs -o sync ubi0:system /mnt/flash 
+else
+    echo "OK!"
+fi
+
+echo -n "Mounting /dev/mtdblock3... "
+ubiattach /dev/ubi_ctrl -m 3 
+sleep 1		
+
+if ! mount -t ubifs -o sync ubi1:user /mnt/data > /dev/null 2>&1; then
+    echo "failed!"
+
+    echo "Formatting /dev/mtdblock3 ..."
+    flash_eraseall  /dev/mtd3
+    ubiattach /dev/ubi_ctrl -m 3 
+    sleep 1
+    ubimkvol  /dev/ubi1 -N user -s 200MiB 
+    sleep 1
+    echo -n "Mounting /dev/mtdblock3... "
+    mount -t ubifs -o sync ubi1:user /mnt/data
+else
+    echo "OK!"
+fi
+
+if [ -f /mnt/flash/.zone.conf ]; then
+    source /mnt/flash/.zone.conf
+fi
+
+touch /var/run/utmp
+
+if [ ! -d /mnt/flash/info ]; then
+    mkdir /mnt/flash/info
+fi
+
+if [ ! -d /mnt/flash/log ]; then
+    mkdir /mnt/flash/log
+fi
+
+if [ ! -f /mnt/flash/log/lastlog ]; then
+    touch /mnt/flash/log/lastlog
+fi
+
+if [ ! -f /mnt/flash/log/wtmp ]; then
+    touch /mnt/flash/log/wtmp
+fi
+
+if [ ! -d /mnt/flash/boot ]; then
+    mkdir /mnt/flash/boot
+fi
+
+if [ ! -d /mnt/flash/conf ]; then
+    mkdir /mnt/flash/conf
+fi
+
+#for bug 45620, disable cold log
+#prepare for cold
+if [ ! -d /mnt/flash/cold ]; then
+    mkdir /mnt/flash/cold
+fi
+
+#startup_log use this dir for back up
+if [ ! -d /mnt/flash/cold/bak ]; then
+    mkdir /mnt/flash/cold/bak
+fi
+
+if [ ! -d /mnt/flash/cold/log ]; then
+    mkdir /mnt/flash/cold/log
+fi
+
+#if [ ! -d /mnt/flash/cold/running ]; then
+#    mkdir /mnt/flash/cold/running
+#fi
+
+#if [ ! -d /mnt/flash/cold/cmd ]; then
+#    mkdir /mnt/flash/cold/cmd
+#fi
+
+if [ -f $STARTUP_LOG ]; then
+    touch $STARTUP_LOG
+fi
+
+echo "Cold dir prepare done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+if [ ! -h /mnt/flash/conf/.profile ]; then
+    ln -s /etc/memory_profile /mnt/flash/conf/.profile
+fi
+
+insmod /lib/dal.ko
+insmod /lib/ctc_hw.ko
+#insmod /lib/ctc_asic_io.ko
+insmod /lib/peth_km.ko
+#insmod /lib/ctc_cpm.ko
+insmod /lib/ctc_gpio.ko
+echo "Insmod kernel modules done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+pizza_box=y
+#boardtype=`board_type_detect board_type`
+fea_shm_init &
+hwclock --hctosys
+#
+#manip=`board_type_detect ip`
+macaddr=`board_type_detect mac`
+mgtmac=`board_type_detect mgtmac`
+ifconfig eth1 hw ether $mgtmac 
+ifconfig eth0 hw ether $macaddr
+ifconfig eth2 hw ether FE:FD:00:00:00:09
+if [ "$pizza_box" == "n" ]; then
+    ifconfig eth0 $manip netmask 255.255.0.0 up
+fi
+ifconfig eth0 up mtu 9500
+ifconfig eth2 up mtu 9500
+
+lictl -p /mnt/flash 2>&1 > /dev/null
+
+# Configure loopback interface
+ifconfig lo 127.0.0.1
+
+# Configure VM
+sysctl -w vm.overcommit_memory=2 2>&1 > /dev/null
+sysctl -w vm.overcommit_ratio=95 2>&1 > /dev/null
+
+# Configure coredump
+sysctl -w kernel.core_pattern='|/usr/bin/core_helper %e' 2>&1 > /dev/null
+
+# Configure socket
+sysctl -w net.core.rmem_max=8000000 2>&1 > /dev/null
+sysctl -w net.core.rmem_default=1000000 2>&1 > /dev/null
+sysctl -w net.core.wmem_max=8000000 2>&1 > /dev/null
+sysctl -w net.core.wmem_default=1000000 2>&1 > /dev/null
+
+#Configure default IGMP version=2
+sysctl -w net.ipv4.conf.default.force_igmp_version=2 2>&1 > /dev/null
+
+#Configure socket max memberships
+sysctl -w net.ipv4.igmp_max_memberships=1000 2>&1 > /dev/null
+
+# Configure TCP/IP stack
+sysctl -w net.ipv4.conf.all.accept_source_route=1 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.autoconf=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.autoconf=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.dad_transmits=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.dad_transmits=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.router_solicitations=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.router_solicitations=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.router_solicitation_delay=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.router_solicitation_delay=0 2>&1 > /dev/null
+sysctl -w net.ipv4.route.max_size=65536 2>&1 > /dev/null
+sysctl -w net.ipv4.route.gc_thresh=4096 2>&1 > /dev/null
+sysctl -w net.ipv6.route.max_size=65536 2>&1 > /dev/null
+sysctl -w net.ipv6.route.gc_thresh=4096 2>&1 > /dev/null
+
+# For nsm/uarp
+sysctl -w net.ipv4.neigh.default.ucast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.mcast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.app_solicit=1 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.retrans_time_ms=3000 2>&1 > /dev/null
+
+#for icmp redirect, for bug 13190
+sysctl -w net.ipv4.conf.all.send_redirects=0 2>&1 > /dev/null
+# For nsm/ndp
+sysctl -w net.ipv6.neigh.default.ucast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.mcast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.app_solicit=1 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.retrans_time_ms=3000 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh1=256 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh2=1024 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh3=2048 2>&1 > /dev/null
+
+# enlarge kernel neigh number
+echo 3072  > /proc/sys/net/ipv4/neigh/default/gc_thresh1
+echo 12288 > /proc/sys/net/ipv4/neigh/default/gc_thresh2
+echo 24576 > /proc/sys/net/ipv4/neigh/default/gc_thresh3
+
+# Enable TCP Syncookies
+#echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+# MPLS Forwarder
+insmod /lib/mpls.ko
+echo "Insmod mpls kernel module done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+# remove running status file
+rm -fr /tmp/nsm_done
+rm -fr /tmp/imi_done
+rm -fr /tmp/glb_hsrv_done
+rm -fr /tmp/startup_cfg_done
+rm -fr /tmp/active_done
+rm -fr /tmp/standby_done
+
+hostname Switch
+#echo "Starting SYSLOGD..."
+rm -fr /etc/syslog-ng.conf
+init-syslog-ng.sh
+angel syslog-ng -Ff /etc/syslog-ng.conf >/dev/null
+echo "Syslog init done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+#echo "Starting CROND..."
+crond -c /etc/crontabs -L /dev/null &
+
+#For stacking
+stack="`grep "stack enable" /mnt/flash/startup-config.conf | grep -v banner | grep -v password | grep -v description |awk '{print $2}'`"
+slot="`grep "stack member" /mnt/flash/startup-config.conf | grep -v banner | grep -v password | grep -v description |awk '{print $3}'`"
+master="`grep "stack master" /mnt/flash/startup-config.conf | grep -v banner | grep -v password | grep -v description |awk '{print $3}'`"
+if [ "$stack" == "enable" ]; then
+    touch /tmp/stack_enable
+    if [ "$slot" == "" ]; then
+        echo "1" > /etc/slot_no
+    else
+        echo "$slot" > /etc/slot_no
+    fi
+    if [ "$master" == "" ]; then
+        echo "1" > /tmp/stack_master_slot
+    else
+        echo "$master" > /tmp/stack_master_slot
+    fi
+fi
+                
+#echo "Starting NTPD..."
+# initialize drift file for ntp
+echo "0.000" > /etc/ntp/drift >/dev/null 2>&1 
+ntpd -c /etc/ntp.conf -p /var/run/ntpd.pid -g &
+echo "Ntpd init done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+ip vrf add $MANG_VRF MANG_VRF
+ip link set eth1 vrf $MANG_VRF
+chvrf $MANG_VRF ifconfig eth1 up
+
+#echo "instruct ctc_cmodel ..."    
+    mknod /dev/ctc_cmodel c 121 0
+
+if [ ! -d /conf/ssh ]; then
+    mkdir /conf/ssh
+fi
+#echo "Starting hal server..."
+hsrvd -d
+echo "Hsrvd init done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+#sleep 1s, then start chsm, else may result to chsm socket connect error, see bug 9181
+sleep 1
+ 
+#echo "Starting CHSM/NSM..."
+chsm -n /usr/sbin/nsm &
+echo "Chsm init done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+while true; do
+    if [ -f /tmp/oem_info ] ; then
+        break;
+    fi
+    sleep 1;
+done
+
+echo "Get oem info done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+#echo "Starting SSHD..."
+/usr/sbin/sshd -6
+#dropbear -r /conf/ssh/rsa_host_key -d /conf/ssh/dss_host_key &
+
+#echo "Starting ONMD..."
+onmd -d &
+
+#echo "Starting MSTPD..."
+mstpd -d &
+
+#echo "Starting LACPD..."
+lacpd -d &
+
+#echo "Starting RIPD..."
+ripd -d &
+ 
+#echo "Starting RIPNGD..."
+ripngd -d &
+
+#echo "Starting LDPD..."
+ldpd -d &
+
+#echo "Starting OSPFD..."
+ospfd -d &
+
+#echo "Starting OSPF6D..."
+ospf6d -d &
+
+#echo "Starting BGPD..."
+bgpd -d &
+
+#echo "Starting AUTHD"
+authd -d &
+
+#echo "Starting PIMD..."
+pimd -d &
+
+#echo "Starting PDMD..."
+pdmd -d &
+
+#echo "Starting PIM6D..."
+pim6d -d &
+
+#echo "Starting OAMD..."
+oamd -d &
+
+#echo "Starting RSVP..."
+rsvpd -d &
+#echo "Starting PTPD..."
+ptpd -d &
+
+#echo "Starting SSMD..."
+ssmd -d &
+
+#echo "Starting DHCRELAY..."
+dhcrelay6 -4 -d -q &
+dhcrelay6 -d -q &
+
+#echo "Starting DHCLIENT..."
+echo "" > /etc/dhclient.conf
+dhclient &
+
+#echo "Starting DHCPD..."
+dhcpd6 -4 -q
+
+#echo "Starting SNMP..."
+snmpd -c /etc/snmpd.conf
+
+#echo "Starting RMON..."
+rmond -d &
+
+#echo "Starting BHM..."
+bhm -d &  
+
+echo "Ready to start imi" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+#echo "Starting IMI..."
+echo -n "Waiting the system initialize..."
+imi &
+
+# waiting imi done
+while true; do
+    if [ -f /tmp/imi_done ] ; then
+        break;
+    fi
+    echo -n "."
+    sleep 1;
+done
+
+echo "Done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+echo "Done!"
+
+# dispatch configuration
+scfg_detect /mnt/flash/startup-config.conf /tmp/glb_scfg_file >/dev/null 2>&1
+scfg_enable=$?
+if [ "$scfg_enable" == "0" ]; then
+    cat > /mnt/flash/startup-config.conf <<EOF
+!
+management  ip address  dhcp
+!
+hostname Switch
+!
+interface vlan1
+ ip address dhcp
+!
+line con 0
+  no line-password
+  no login
+line vty 0 7
+ exec-timeout 35791 0
+ privilege level 4
+ no line-password
+ no login
+!
+end
+EOF
+    echo "SmartConfig enabled..."
+    touch /tmp/glb_empty_startup_cfg
+fi
+echo -n "Loading startup configuration file."
+if [ ! -f /mnt/flash/startup-config.conf ] ; then
+    touch /mnt/flash/startup-config.conf
+fi
+
+if grep nopass1 /proc/cmdline 2>&1 >/dev/null; then
+    mv /mnt/flash/startup-config.conf /mnt/flash/startup-config.conf.old
+    touch /mnt/flash/startup-config.conf
+fi
+if grep nopass2 /proc/cmdline 2>&1 >/dev/null; then
+    #so "Starting PTPD..."
+ptpd -d &d -i '/line con 0/{n;s/.*/ no line-password/}' /mnt/flash/startup-config.conf
+    #sed -i '/line con 0/{n;n;s/.*/ no login/}' /mnt/flash/startup-config.conf
+    #replase the /mnt/flash/startup_config.conf line con 0's login with no login
+    nopassword /mnt/flash/startup-config.conf
+fi
+
+
+touch /tmp/startup.log
+echo "Load startup-config.conf" >> $STARTUP_LOG && date >> $STARTUP_LOG
+imish -s -f /mnt/flash/startup-config.conf >/tmp/startup.log 2>&1 &
+
+while true; do
+    echo -n "."
+    if [ -f /tmp/startup_cfg_done ] ; then
+        break;
+    elif [ -f /tmp/standby_startup_cfg_done ] ; then
+        break;
+    fi
+    sleep 1;
+done
+echo "Done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+echo " Done!"
+cat /tmp/startup.log
+rm -fr /tmp/startup.log
+
+ret="`grep telnet /mnt/flash/startup-config.conf | grep service | grep -v banner | grep -v password | grep -v description |awk '{print $3}'`"
+if [ "$ret" == "disable" ]; then
+    echo "Telnetd disabled..."
+else
+#    echo "Starting telnetd..."
+    telnetd -b :: -l /usr/bin/imish
+fi
+
+cp /tmp/imi_done /tmp/imish_console_hello
+
+if [ -f /tmp/active_done ] ; then
+date
+touch /tmp/system_done
+rm -f $STARTUP_LOG
+fi
+
+if [ "$scfg_enable" == "0" ]; then
+    scfgd &
+fi
+
+#Modified for bug 13134.
+echo "         "  > /dev/null
+
+echo -n "Ready to service!"
+
+# just change the console's st_atime
+touch /dev/console
+if [ "$scfg_enable" == "0" ]; then
+    rm -fr /mnt/flash/startup-config.conf
+fi

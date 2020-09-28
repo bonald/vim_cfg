@@ -1,0 +1,129 @@
+<!-- global swith -->
+<div class="row">
+<div class="col-md-12">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+      <!-- add static route item -->
+      <form id="ipv4PortCfgForm" name="ipv4PortCfgForm" class="form">
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'ip address '  | translate }}</div>
+                <div class="col-md-2">
+                   <select  class="form-control" ng-options="if.name |switchPort for if in l3_port_name" ng-model="interface_ip_address.iface"></select>
+                </div> 
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[ipv4PortCfgForm.ipaddr.$valid]">
+                    <input type="text" name="ipaddr" class="form-control" placeholder="A.B.C.D    IP destination prefix" title="{{ 'Please fill out this field' | translate }}" ng-model="interface_ip_address.ipaddr" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                </div>
+                <div class="col-md-2">
+                   <select  class="form-control" ng-options="x for x in mask" ng-model="interface_ip_address.ipmask">{{ x }}</select>
+                 </div> 
+        
+                <div class="col-md-1">
+                   <select  class="form-control" ng-options="x for x in secondary" ng-model="interface_ip_address.secondary">{{ x }}</select>
+                 </div>                    
+                <div class="col-md-2 pull-right">
+                    <button type="submit" class="btn btn-submit" ng-click="IPAddress()" 
+                    ng-disabled="interface_ip_address.iface=='' || ipv4PortCfgForm.ipaddr.$invalid || interface_ip_address.ipmask=='' ">{{ 'Submit' | translate }}</button>
+                </div>                  
+            </dd>   
+            
+            <dd class="row" style="margin-top: 10px;" >
+                <div class="col-md-2">{{ 'ip redirects'  | translate }}</div>
+                <div class="col-md-2">
+                   <select  class="form-control" ng-options="if.name |switchPort for if in l3_port_name" ng-model="interface_ip_redirects.iface"></select>
+                </div>  
+                <div class="col-md-2">
+                   <select  class="form-control" ng-options="x for x in enable" ng-model="interface_ip_redirects.enable">{{ x }}</select>
+                 </div>                  
+                <div class="col-md-2 pull-right">
+                    <button type="submit" class="btn btn-submit" ng-click="ipRedirect()" ng-disabled="interface_ip_redirects.iface=='' || interface_ip_redirects.enable=='' ">{{ 'Submit' | translate }}</button>
+                </div> 
+                
+            </dd>     
+
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'ip verify unicast reverse-path'  | translate }}</div>
+                <div class="col-md-2">
+                   <select  class="form-control" ng-options="if.name |switchPort for if in l3_port_name" ng-model="interface_ip_verify_unicast_reverse.iface"></select>
+                </div>  
+                <div class="col-md-2">
+                   <select  class="form-control" ng-options="x for x in enable" ng-model="interface_ip_verify_unicast_reverse.enable">{{ x }}</select>
+                 </div>                  
+                <div class="col-md-2 pull-right">
+                    <button type="submit" class="btn btn-submit" ng-click="ipVerifyUnicastReversePath()" ng-disabled="interface_ip_verify_unicast_reverse.iface=='' || interface_ip_verify_unicast_reverse.enable==''">{{ 'Submit' | translate }}</button>
+                </div>                 
+            </dd>     
+
+        </dl>
+      </form>        
+    </div>
+</div>
+</div>
+
+
+</div>
+
+<!----------------------------------------------------------------- PART 2 --------------------------------------------------------------------------------------->
+
+<!-- info -->
+
+<div class="row">
+<div ng-class="{true: 'col-md-8', false: 'col-md-12'}[setif==true]">
+
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Port' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        
+                        <th>{{'Port' | translate}}</th>                        
+                        <th>{{'IP address' | translate}}</th>
+                        <th>{{'mask' | translate}}</th>
+                        <th>{{'secondary' | translate}}</th>
+                        <th>{{'ip redirects' | translate}}</th>
+                        <th>{{'ip verify unicast reverse-path' | translate}}</th>
+                        <th>{{'Options' | translate}}</th>                      
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr ng-repeat="port in l3_port_ip | limitTo:pgItemNumEachPage:(pgCurrent - 1) * pgItemNumEachPage">
+                            
+                            <td>{{ port.name |switchPort}}</td>
+                            <td>{{ port.ip }}</td>
+                            <td>{{ port.mask }}</td>
+                            <td>{{ (port.flags_secondary=='1')?'Yes':'No' }}</td>
+                            <td>{{ (port.ip_redirects_en=='1')?'Enable':'Disable' }}</td>
+                            <td>{{ (port.unicast_rpf_en=='1')?'Enable':'Disable' }}</td>
+                            <td >
+                                <div class="btn-group btn-group-xs">
+
+                                    <button type="button" class="btn btn-default" ng-click="deleteIp(port)" title="{{ 'Delete' | translate }}" data-toggle="tooltip" data-placement="bottom">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </td>                            
+                        </tr>
+                </tbody>
+            </table>
+            <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+            <p class="text-center"><b ng-show="l3_port_ip.length == 0">N/A</b></p>              
+        </div>
+
+    <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+        <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+    </div>      
+</div>
+
+</div>
+
+
+
+
+
+
+    

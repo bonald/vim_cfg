@@ -1,0 +1,17 @@
+include $(MK_DIR)/sys.mk
+
+LIB = cpupci
+SRCS = ctc_pci.c 
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_hw
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_watchdog
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_reset
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_power
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_phy
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_gpio
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/ctc_dpll
+CPPFLAGS += -I$(DRV_TOP_DIR)/drvio/${MY_CPU_DIR}/kernel_monitor
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/pci
+
+include $(MK_DIR)/lib.mk

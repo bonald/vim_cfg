@@ -1,0 +1,91 @@
+<!-- port conf -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'IPv4 Static Route Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- options -->
+        <button type="button" class="btn btn-default" ng-click="addStaticRouteItemShow=!addStaticRouteItemShow; modifyChannelGroupFlag=false; newAggNum=''; multiSelIf=[]; ignoreDisableIf=[];" ng-hide="addStaticRouteItemShow" ng-disabled="multiSel.indexOf(true) != -1" >
+            <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+        </button>
+        <button type="button" class="btn btn-default" ng-click="addStaticRouteItemShow=!addStaticRouteItemShow; modifyChannelGroupFlag=false;" ng-show="addStaticRouteItemShow">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+        </button>
+
+        <button class="btn btn-default" ng-click="deleteRouteItemMulti()" ng-disabled="multiSel.indexOf(true) == -1"  ng-hide="addStaticRouteItemShow">
+            <span class="glyphicon glyphicon-trash"></span>&nbsp;{{ 'Delete' | translate }}
+        </button>
+        <!-- options end -->
+        <hr />
+
+        <!-- add static route item -->
+        <form id="addStaticRouteItemForm" name="addStaticRouteItemForm" class="form" ng-show="addStaticRouteItemShow" novalidate>
+            <dl>
+                <dd class="row" style="margin-top: 10px;">
+                    <div class="col-md-3">{{ 'Destination:'  | translate }}</div>
+                    <div class="col-md-3" ng-class="{true: 'has-success', false: 'has-error'}[addStaticRouteItemForm.dest.$valid]">
+                        <input type="text" name="dest" class="form-control" placeholder="A.B.C.D    IP destination prefix" ng-model="addRoute.dest" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                    </div>
+                </dd>    
+                <dd class="row" style="margin-top: 10px;">
+                    <div class="col-md-3">{{ 'Mask: '  | translate }}</div>
+                    <div class="col-md-3">
+                       <select  class="form-control" name="mask" ng-options="x for x in mask" ng-model="mask_default.select">{{ x }}</select>
+                     </div> 
+                </dd>    
+                <dd class="row" style="margin-top: 10px;">
+                    <div class="col-md-3">{{ 'Nexthop:'  | translate }}</div>
+                    <div class="col-md-3" ng-class="{true: 'has-success', false: 'has-error'}[addStaticRouteItemForm.nexthop.$valid]">
+                        <input type="text" name="nexthop" class="form-control" placeholder="A.B.C.D  IP gateway address" ng-model="addRoute.nexthop" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                    </div>
+                </dd>    
+                <dd class="row" style="margin-top: 10px;">
+                    <div class="col-md-3">{{ 'Distance:'  | translate }}</div>
+                    <div class="col-md-3" ng-class="{true: 'has-success', false: 'has-error'}[addStaticRouteItemForm.distance.$valid]">
+                        <input type="number" name="distance" class="form-control" placeholder="Distance value (1..255)" min="1" max="255" ng-model="addRoute.distance" />
+                    </div>
+                </dd>                
+            </dl>
+
+            <button class="btn btn-primary" ng-click="addStaticRouteItemShow=!addStaticRouteItemShow; addStaticRouteItem()" ng-disabled="addStaticRouteItemForm.dest.$invalid || addStaticRouteItemForm.mask.$invalid || addStaticRouteItemForm.nexthop.$invalid || addStaticRouteItemForm.distance.$invalid"  >{{ 'Submit' | translate }}</button>
+        </form>
+        <!-- add static route item end -->
+
+
+        <!-- static route item table -->
+        <table class="table table-hover" ng-hide="addStaticRouteItemShow">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-model="SELCTLALL" ng-click="setCheckboxAll(SELCTLALL)" /></th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ 'Protocol Type' | translate }}</th>
+                    <th class="text-center">{{ 'IP/Mask' | translate }}</th>
+                    <th class="text-center">{{ 'Distance/Metric' | translate }}</th>    
+                    <th class="text-center">{{ 'Nexthop' | translate }}</th>
+                    <th class="text-center">{{ 'select' | translate }}</th>    
+                    <th class="text-center">{{ 'fib' | translate }}</th>                    
+                    <th class="text-center">{{ 'Interface' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in routing | limitTo:pgItemNumEachPage:(pgCurrent - 1) * pgItemNumEachPage">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSel[routing.indexOf(x)]"/></td>
+                    <td class="text-center">{{ $index }}</td>
+                    <td class="text-center"><a href="javascript:;" ng-click="modifyChannelGroup(x.lag_name, x.member_ports)">{{ x.type }}</a></td>
+                    <td class="text-center">{{ x.ip }}</td>
+                    <td class="text-center">{{ x.distance }}</td>
+                    <td class="text-center">{{ x.nexthop }}</td>
+                    <td class="text-center">{{ x.selected }}</td>
+                    <td class="text-center">{{ x.fib }}</td>                    
+                    <td class="text-center">{{ x.active }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- static route item table end -->
+        <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+        <p class="text-center"><b ng-show="routing.length == 0">N/A</b></p>
+    </div>
+    <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+        <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+    </div>       
+</div>

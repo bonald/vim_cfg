@@ -1,0 +1,1304 @@
+HSRV2AGT-MSG DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    -- Common define
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+
+    -- Common IF define
+    HalMsgIFSetSystemMac,
+    HalMsgIFSetRMACPrefix,
+    HalMsgIFSetFrameSize,
+    HalMsgIFSetJumboFrame,
+    HalMsgIFSetFlowCtrlDir,
+    HalMsgIFSetFlowCtrlEnable,
+    HalMsgIFSetPhyProp,
+    HalMsgIFSetPOEProp,
+    HalMsgIFSetSerDesMode,
+    HalMsgIFCreatePort,
+    HalMsgIFSetPortFlag,
+    HalMsgIFSetPortRouted,
+    HalMsgIFGetLinkStatus,
+    HalMsgIFSetHagtDbMedia,
+    HalMsgIFSetStatsIntval,
+    HalMsgIFSetStackPort,
+    --vlan related
+    HalMsgIFSetPortUntagPvid,
+    HalMsgIFSetDefaultPvid,
+    HalMsgIFSetVlanFilter,
+    HalMsgIFSetVlanPortType,
+    HalMsgIFSetTpidValue,
+    HalMsgIFSetTpidType,
+    --sync related
+    HalMsgIFSyncSystemAttri,
+    HalMsgIFPhySync,
+    HalMsgIFAttriSync,
+    HalMsgStackPortSync,
+    --only for bridge uc
+    HalMsgCOMMIfFDBBucketReq,
+    HalMsgCOMMIfSetEnReq,
+    HalMsgCOMMIfSetMacSecExceptReq,
+    HalMsgCOMMIfSetMacSecDiscReq,
+    HalMsgCOMMIfSetMacSecConfigListReq,
+    HalMsgCOMMIfSetMacSecConfigReq,
+    HalMsgCOMMIfSetPortIsolateGroupReq,
+    HalMsgCOMMIfSetPortIsolateModeReq,
+	HalMsgCOMMIfSetPVlanReq,
+    HalMsgIfSetVlanRangeEn,
+    HalMsgIfSetCrcCheckEn,
+    HalMsgIfSetCrcRecalcEn
+    FROM HAL-MSG-COMM-IF
+
+    -- Common stats define
+    HalMsgStatsGetReq,
+    HalMsgStatsClearReq,
+    HalMsgRstIlmStatsReq,
+    HalMsgRstNhStatsReq
+    FROM HAL-MSG-STATS
+
+    -- L2 define
+    -- L2 VLAN define
+    HalMsgL2VlanAddReq,
+    HalMsgL2VlanUpdateReq,
+    HalMsgL2VlanUpdateReq,
+    HalMsgL2VlanDelReq,
+    HalMsgL2VlanSetStateReq,
+    HalMsgL2VoiceVlanEnableReq,
+    HalMsgL2VoiceVlanIfEnableReq,
+    HalMsgL2VoiceVlanEntrySetReq,
+    HalMsgL2VlanAddVidToPortReq,
+    HalMsgL2VlanDeleteVidFromPortReq,
+    HalMsgBrgVlanSetStpidReq,
+    HalMsgL2VlanSetReplaceDscpReq,
+    HalMsgL2VlanSetDhcpExcpTypeReq,
+    HalMsgL2VlanSetArpExcpTypeReq,
+    HalMsgL2VlanSetLearningEnableReq,
+    HalMsgL2VlanSetBridgeEnableReq,
+    HalMsgL2VlanPropertySyncReq,
+    HalMsgL2VlanPortSyncReq,
+    HalMsgL2VlanSetRsvReq
+    FROM HAL-MSG-L2-VLAN
+
+    -- L2 Bridge define
+    HalMsgBrgFdbOpReq,
+    HalMsgBrgLearnEnReq,
+    HalMsgBrgHwLearnEnReq,
+    HalMsgBrgQueryHwDB,
+    HalMsgBrgIfLearnEnReq,
+    HalMsgBrgSystemEntryReq,
+    HalMsgBrgCpuPacketReq,
+    HalMsgBrgFilterToCpuReq,
+    HalMsgBrgFdbFlushByVlanPortReq,
+    HalMsgBrgFdbFlushByVlanMacReq,
+    HalMsgBrgFdbFlushByLabelReq,
+    HalMsgBrgLearnEntryListReq,
+    HalMsgBrgFdbFlushFdbReq,
+    HalMsgBrgLearnRawReq,
+    HalMsgBrgAgingRawReq,
+    HalMsgBrgAgingEntryListReq,
+    HalMsgBrgFdbEntryListReq,
+    HalMsgBrgFdbEntryListRawReq,
+    HalMsgBrgSystemEntryListReq,
+    HalMsgBrgCpuPacketListReq,
+    HalMsgBrgFilterToCpuListReq,
+    HalMsgBrgSetPortStateReq,
+    HalMsgBrgSetFdbLookupTypeReq,
+    HalMsgBrgChangeMacLearningAbilityReq,
+    HalMsgBrgAgingScanEnReq,
+    HalMsgBrgSetDiscardReq
+    FROM HAL-MSG-L2-BRG
+
+    --L2 LACP define
+    HalMsgAggReq,
+    HalMsgAggPropSyncReq,
+    HalMsgMemportPropSyncReq,
+    HalMsgAttachAggReq,
+    HalMsgSetPortFlagReq,
+    HalMsgDebugLacp,
+    HalMsgAggSetLoadBalance,
+	HalMsgAggSetLoadBalanceMode,
+    HalMsgAggSyncReq
+    FROM HAL-MSG-L2-LACP
+
+    --L2 VLAN MAPPING define
+    HalMsgL2VlanMappingProReq,
+    HalMsgL2VlanMappingProListReq,
+    HalMsgL2VlanMappingEntryListReq,
+    HalMsgL2VlanMappingDefVidListReq,
+    HalMsgL2VlanMappingDefEntryListReq,
+    HalMsgL2VlanMappingL2DefEntryListReq,
+    HalMsgL2VlanMappingSelectUpdateUntagReq,
+    HalMsgL2VlanMappingSelectGroupSetReq
+    FROM HAL-MSG-L2-VLAN-MAPPING
+
+    --L2 VLAN CLASSIFICATION define
+    HalMsgL2VlanClassifierEntryListReq,
+    HalMsgL2VlanClassifierEnListReq
+    FROM HAL-MSG-L2-VLAN-CLASSIFIER
+
+    --L2 IP BINDING define
+    HalMsgL2IPBindingListReq,
+    HalMsgL2IPBindingEnReq
+    FROM HAL-MSG-L2-IP-BINDING
+
+    -- L2MC define
+    HalMsgL2mcEntryReq,
+    HalMsgL2mcPortReq,
+    HalMsgL2mcNhReq,
+    HalMsgL2mcVlanReq,
+    HalMsgL2mcDiscardUnknownReq,
+    HalMsgL2mcL3ifidReq
+    FROM HAL-MSG-L2MC
+
+    -- RateLimit define
+    HalMsgL2RatelimitSetEnReq,
+    HalMsgL2RatelimitSetThreshReq,
+    HalMsgL2RatelimitSetIpgEnReq,
+    HalMsgL2SyncRatelimitReq
+    FROM HAL-MSG-RATELIMIT
+
+    -- L2MEF define
+    HalMsgMefVlanTpIdReq,
+    HalMsgMefPduProcReq,
+    HalMsgMefPduProcListReq,
+    HalMsgMefpduTunnelEnableReq,
+    HalMsgMefBpduTunnelDmacReq
+    FROM HAL-MSG-L2-MEF
+
+    -- OAM EFM define
+    HalMsgOamEFMSetParMuxStatusReq,
+    HalMsgOamEFMTestPKTReq,
+    HalMsgOamEFMSetLinkMomitorReq
+    FROM HAL-MSG-OAM-EFM
+
+    -- OAM CFM define
+    HalMsgEthOamCfmModeReq,
+    HalMsgEthOamCfmEnableReq,
+    HalMsgEthOamCfmPortEnableReq,
+    HalMsgEthOamCfmMaidReq,
+    HalMsgEthOamCfmAddLMepReq,
+    HalMsgEthOamCfmDelLMepReq,
+    HalMsgEthOamCfmRMepReq,
+    HalMsgEthOamCfmMipReq,
+    HalMsgEthOamCfmSetCCEnableReq,
+    HalMsgEthOamCfmSetCCMIntervalReq,
+    HalMsgEthOamCfmSetCCMVlanCosReq,
+    HalMsgEthOamCfmClearRdiReq,
+    HalMsgEthOamCfmAddDelPortToUpMepMCReq,
+    HalMsgEthOamCfmLearningEnableReq,
+    HalMsgEthOamCfmClearErrorsReq,
+    HalMsgEthOamCfmPortLevelReq,
+    HalMsgEthOamCfmSetLmEnableReq,
+    HalMsgEthOamCfmSetLmSDEnableReq,
+    HalMsgEthOamCfmSetTrptEnableReq,
+    HalMsgEthOamCfmGetTstCountersReq
+    FROM HAL-MSG-ETH-OAM
+
+    --L2 Dot1x define
+    HalMsgDot1xAuth,
+    HalMsgDot1xSetPethAuth,
+    HalMsgDot1xSetStatus
+    FROM HAL-MSG-L2-DOT1X
+
+	--l2 Vlan Security define
+    HalMsgVlanSecuritySetLimitReq
+    FROM HAL-MSG-VLAN-SECURITY
+
+    --l2 phy loopback define
+    HalMsgPhyLoopbackSetEnableReq
+    FROM HAL-MSG-PHY-LPBK
+
+    -- L3 define
+    -- ECMP define
+    HalMsgECMPGroupAddReq,
+    HalMsgECMPGroupDelReq
+    FROM HAL-MSG-ECMP
+
+    -- L3 IPUC define
+    HalMsgIPucAddDefRoute,
+    HalMsgIpucAddDelVrf,
+    HalMsgIPucEnIPv6,
+    HalMsgIPucRouteAddDel,
+    HalMsgIPucAddNexthop,
+    HalMsgIPucDelNexthop,
+    HalMsgIPucNhToUnrov,
+    HalMsgIPucNhToFwd,
+    HalMsgIPucNhUpdate
+    FROM HAL-MSG-IPUC
+
+    -- Tunnel define
+    HalMsgTunnelDecapRt,
+    HalMsgTunnelPortScl,
+    HalMsgTunnelEncapNhAdd,
+    HalMsgTunnelEncapNhDel,
+    HalMsgTunnelInit
+    FROM HAL-MSG-TUNNEL
+
+    -- L3 MPLS define
+    HalMsgMplsNhAddReq,
+    HalMsgMplsApsNhAddReq,
+    HalMsgMplsApsNhDelReq,
+    HalMsgMplsNhToSpecReq,
+    HalMsgMplsNhToFwdReq,
+    HalMsgMplsNhDelReq,
+    HalMsgMplsNhUpdateAttrReq,
+    HalMsgMplsNhSyncReq,
+    HalMsgMplsIntfEnReq,
+    HalMsgMplsIlmAddReq,
+    HalMsgMplsIlmUpdReq,
+    HalMsgMplsIlmDelReq,
+    HalMsgMplsLabelSpaceAddReq,
+    HalMsgMplsL2vpnEnReq,
+    HalMsgMplsL2vpnAcNhAddReq,
+    HalMsgMplsL2vpnAcNhDelReq,
+    HalMsgMplsL2vpnBindReq,
+    HalMsgMplsL2vpnUnBindReq,
+    HalMsgMplsPWBindReq,
+    HalMsgMplsPWUnBindReq,
+    HalMsgMplsVSIAddReq,
+    HalMsgMplsVSIDelReq,
+    HalMsgMplsVSIMacLrnDisReq,
+    HalMsgMplsTunnelAddPortReq,
+    HalMsgMplsTunnelLoadApsReq,
+    HalMsgMplsTunnelunLoadApsReq,
+    HalMsgMplsApsProtectingEnReq,
+    HalMsgMplsApsGroupWorkAdd,
+    HalMsgMplsApsGroupProtectAdd,
+    HalMsgMplsAddTunnelLabelReq
+    FROM HAL-MSG-MPLS
+
+    -- L3MC define
+    HalMsgL3mcGroupInfoReq,
+    HalMsgL3mcIPv6GroupInfoReq,
+    HalMsgL3mcEntryStatPollReq,
+    HalMsgL3mcIPv6EntryStatPollReq,
+    HalMsgMvrVlanMcEnReq,
+    HalMsgMvrVlanMcRpfEnReq,
+    HalMsgMvrNoMacLkpEnReq,
+    HalMsgL3mcAddDefaultEntryReq
+    FROM HAL-MSG-L3MC
+
+    -- L3 L3if define
+    HalMsgL3IFCreate,
+    HalMsgL3IFSetProp,
+    HalMsgL3IFSetIPFlag,
+    HalMsgL3IFAggAddMemberCB,
+    HalMsgL3IFDhcpExcpType,
+    HalMsgL3IFAttriSync
+    FROM HAL-MSG-L3IF
+
+    -- L3 VRRP define
+    HalMsgVRRPSetEnable,
+    HalMsgVRRPAddGroup,
+    HalMsgVRRPSync
+    FROM HAL-MSG-VRRP
+
+    -- IVI define
+    HalMsgIVIEnableReq,
+    HalMsgIVIRouteAddReq,
+    HalMsgIVIRouteDelReq,
+    HalMsgIVINexthopAddReq,
+    HalMsgIVINexthopDelReq
+    FROM HAL-MSG-IVI
+
+    -- L3 PBR define
+    HalMsgPBRAddPolicyRmapEntryReq,
+    HalMsgPBRValidPolicyRmapEntryReq,
+    HalMsgPBRDelPolicyRmapEntryReq,
+    HalMsgPBRUpdatePolicyRmapActionReq,
+    HalMsgPBRPolicyRmapLabelOpReq,
+    HalMsgPBRIntfOpReq
+    FROM HAL-MSG-PBR
+
+    -- Misc define
+
+	--Misc EFD define 
+	HalMsgEfdGlobalControlSetReq,
+    HalMsgEfdGlobalConfigSetReq,
+	HalMsgEfdPortSetReq,
+	HalMsgVmawareEnableReq,
+	HalMsgFlowColorSetReq,
+	HalMsgFlowTrafficClassSetReq,
+	HalMsgFlowHashModeSetReq,
+	HalMsgTunnelParserMergerSetReq
+    FROM HAL-MSG-EFD
+
+    -- Misc PTP define
+    HalMsgPtpSetBITSClockOutputReq,
+    HalMsgPtpAdjustOffsetReq,
+    HalMsgPtpAdjustFractionalFrequencyOffsetReq,
+    HalMsgPtpResetFractionalFrequencyOffsetReq,
+    HalMsgPtpSetGlobalEnableReq,
+    HalMsgPtpGetTaiTimeReq
+    FROM HAL-MSG-PTP
+
+    -- Misc SyncE define
+    HalMsgSyncESetEnableReq,
+    HalMsgSyncESelectPortReq
+    FROM HAL-MSG-SYNCE
+
+    -- Misc CPU Traffic deine
+    HalMsgCpuTrafficLimitIndRateListReq,
+    HalMsgCpuTrafficLimitTotalRateReq,
+    HalMsgCpuTrafficSetReasonClassListReq,
+    HalMsgCpuTrafficSyncReasonInfoListReq,
+    HalMsgPduFlexL2PduKeyReq,           -- for supporting flex l2pdu
+    HalMsgPduSetL2PduGlbActionListReq,
+    HalMsgPduSetFlexL2PduGlbActionListReq,  -- for supporting flex l2pdu
+    HalMsgPduSetL2PduPortActionListReq,
+    HalMsgPduSetFlexL2PduPortActionListReq,     -- for supporting flex l2pdu
+    HalMsgPduSetL3PduGlbActionListReq,
+    HalMsgPduSetL3PduL3ifActionListReq
+    FROM HAL-MSG-CPU-TRAFFIC
+
+    -- AclQoS define
+    -- Acl define
+    HalMsgAclLabelOpReq,
+    HalMsgApplyAclLabelReq,
+    HalMsgUnapplyAclLabelReq,
+    HalMsgAddAccessGroupReq,
+    HalMsgDelAccessGroupReq,
+    HalMsgAddAceReq,
+    HalMsgDelAceReq,
+    HalMsgSetAclEnableReq,
+    HalMsgSetAceInvalidReq,
+    HalMsgSetAclProcFlagReq,
+    HalMsgSetAclCpuRandomLogReq,
+    HalMsgUnsetAclCpuRandomLogReq,
+    HalMsgAddGlobalAceReq,
+    HalMsgAclUsePacketVlanReq
+    FROM HAL-MSG-ACL
+
+    -- QoS define
+    HalMsgQosSetGlobalEnableFlagsReq,
+    HalMsgQosSetPriColorMapTableReq,
+    HalMsgQosSetCfiEnableReq,
+    HalMsgQosSetPortAttributeReq,
+    HalMsgQosSetPortPolicerReq,
+    HalMsgQosUnsetPortPolicerReq,
+    HalMsgQosFlowPolicerOpReq,
+    HalMsgQosLabelOpReq,
+    HalMsgQosSetFlowProcFlagReq,
+    HalMsgQosAddFlowEntryReq,
+    HalMsgQosDelFlowEntryReq,
+    HalMsgQosInvalidFlowEntryReq,
+    HalMsgQosDelAllFlowEntryReq,
+    HalMsgQosDelAllFlowStatsReq,
+    HalMsgQosSetQosEnableReq,
+    HalMsgQosUpdateFlowActionReq,
+    HalMsgQosSetPortQueueClassReq,
+    HalMsgQosSetPortQueueShapeReq,
+    HalMsgQosUnsetPortQueueShapeReq,
+    HalMsgQosSetPortShapeReq,
+    HalMsgQosGetPortQueueDepthReq,
+    HalMsgQosUnsetPortShapeReq,
+    HalMsgQosSetPortQueueDropReq,
+    HalMsgQosSetPortQueueStatsReq,
+    HalMsgQosSetPortQueueWdrrWeightReq,
+    HalMsgQosSetPortQueueWdrrWeightMtuReq,
+    HalMsgQosInitPortCfgReq,
+    HalMsgQosSyncPortCfgReq,
+    HalMsgQosAclUpdateRulePriorityReq,
+    HalMsgQosDeinitPortCfgReq
+    FROM HAL-MSG-QOS
+
+	--SFlow define
+--  HalMsgSflowSetEnableReq,
+--	HalMsgSflowSetWeightReq,
+	HalMsgSflowSetSampleReq
+	FROM HAL-MSG-SFLOW
+
+    --IPT define
+    HalMsgIptSetMacEqualReq,
+	HalMsgIptSetIpEqualReq
+	FROM HAL-MSG-IPT
+
+
+    --Mirror define
+    HalMsgMirrorCfgSrcReq,
+    HalMsgMirrorCfgDestReq,
+    HalMsgMirrorCfgMacEscapeEnReq,
+    HalMsgMirrorCfgMacEscapeReq,
+    HalMsgMirrorCfgDiscardEnReq
+    FROM HAL-MSG-MIRROR
+
+	--Tap define
+	HalMsgTapGroupReq,
+	HalMsgTapGroupIngressGportReq,
+	HalMsgTapGroupEgressGportReq,
+    HalMsgTapTSEtherReq
+	FROM HAL-MSG-TAP
+
+    --Loopback define
+    HalMsgLoopPortCreatReq,
+    HalMsgLoopNhAddReq,
+    HalMsgLoopPortModelUpdReq
+    FROM HAL-MSG-LOOPBACK
+
+    --Debug define
+    HalMsgDebugReq,
+    HalMsgLCSwitchReq,
+    HalMsgDebugCtrlReq
+    FROM HAL-MSG-DEBUG
+
+    --L2 BFD define
+    HalMsgBFDSessionAdd,
+    HalMsgBFDSessionDel,
+    HalMsgBFDSessionGet,
+    HalMsgBFDNexthopAdd,
+    HalMsgBFDNexthopDel
+    FROM HAL-MSG-BFD
+
+    --MPLS-TP OAM define
+    HalMsgTpoamMegidReq,
+    HalMsgTpoamAddLMepReq,
+    HalMsgTpoamDelLMepReq,
+    HalMsgTpoamEnableCcReq,
+    HalMsgTpoamClearRdiReq,
+    HalMsgTpoamRdiReasonReq,
+    HalMsgTpoamChannelTypeReq,
+    HalMsgTpoamUpdateNhReq,
+    HalMsgTpoamAddRMepReq,
+    HalMsgTpoamDelRMepReq,
+	HalMsgTpoamAddOamReq,
+	HalMsgTpoamDelOamReq,
+	HalMsgTpoamUpdateExpReq,
+	HalMsgTpoamSetRdiReq,
+	HalMsgTpoamSetLmEnableReq,
+	HalMsgTpoamSetLmSDEnableReq,
+	HalMsgTpoamSFReasonReq,
+	HalMsgTpoamHagtAPSReq,
+	HalMsgTpoamSetPwModeReq
+    FROM HAL-MSG-TPOAM
+
+    --G8031 define
+    HalMsgG8031GroupAddReq,
+    HalMsgG8031GroupDelReq,
+    HalMsgG8031GroupProtectingEnReq,
+    HalMsgG8031GroupAddVlanReq,
+    HalMsgG8031GroupDelVlanReq
+    FROM HAL-MSG-G8031
+
+    --G8032 define
+    HalMsgG8032GroupAddReq,
+    HalMsgG8032GroupDelReq,
+    HalMsgG8032GroupAddMember,
+    HalMsgG8032GroupDelMember,
+    HalMsgG8032GroupAddRapsGroup,
+    HalMsgG8032GroupDelRapsGroup,
+    HalMsgG8032GroupProtectingEnReq,
+    HalMsgG8032ControlVlanReq
+    FROM HAL-MSG-G8032
+
+    --OpenFlow define
+    HalMsgOpenFlowPortEnableReq,
+	HalMsgOpenFlowPortSetProtectedVlanReq,
+	HalMsgOpenFlowPortIgnoreVlanFilterCtlReq,
+    HalMsgOpenFlowPortTunnelMplsDisableReq,
+	HalMsgOpenFlowPortNativeVlanConfigReq,
+	HalMsgOpenFlowPortSetPacketActionReq,
+    HalMsgOpenFlowPortSetConfigReq,
+    HalMsgOpenFlowPortSetLabelReq
+    FROM HAL-MSG-OPENFLOW-PORT
+
+    HalMsgOpenFlowAddFlowReq,
+    HalMsgOpenFlowUpdateFlowReq,
+    HalMsgOpenFlowDelFlowReq,
+    HalMsgOpenFlowOpLabelReq,
+    HalMsgOpenFlowSetUdfReq,
+	HalMsgOpenFlowSetE2eReq,
+	HalMsgOpenFlowSetStpidReq,
+	HalMsgOpenFlowSetCtpidReq
+    FROM HAL-MSG-OPENFLOW-FLOW
+
+    HalMsgOpenFlowAddMcastNhReq,
+    HalMsgOpenFlowDelMcastNhReq,
+    HalMsgOpenFlowAddMcastMemberNhReq,
+    HalMsgOpenFlowDelMcastMemberNhReq,
+    HalMsgOpenFlowAddECMPNhReq,
+    HalMsgOpenFlowDelECMPNhReq,
+    HalMsgOpenFlowAddECMPMemberNhReq,
+    HalMsgOpenFlowDelECMPMemberNhReq,
+    HalMsgOpenFlowAddFlexNhReq,
+    HalMsgOpenFlowAddFlexCpuNhReq,
+    HalMsgOpenFlowDelFlexNhReq,
+    HalMsgOpenFlowAddTunnelNhReq,
+    HalMsgOpenFlowDelTunnelNhReq,
+    HalMsgOpenFlowAddMplsTunnelReq,
+    HalMsgOpenFlowDelMplsTunnelReq,
+    HalMsgOpenFlowAddPushL2vpnNhReq,
+    HalMsgOpenFlowDelPushL2vpnNhReq,    
+    HalMsgOpenFlowAddPushL3vpnNhReq,
+    HalMsgOpenFlowDelPushL3vpnNhReq,
+    HalMsgOpenFlowAddSwapMplsNhReq,
+    HalMsgOpenFlowDelSwapMplsNhReq,
+    HalMsgOpenFlowAddPopPHPNhReq,
+    HalMsgOpenFlowDelPopPHPNhReq,
+    HalMsgOpenFlowAddIpucNhReq,
+    HalMsgOpenFlowDelIpucNhReq,
+    HalMsgOpenFlowAddXlateNhReq,
+    HalMsgOpenFlowDelXlateNhReq,
+    HalMsgOpenFlowSectionNh,
+	HalMsgOpenFlowAddApsPushL2vpnNhReq
+    FROM HAL-MSG-OPENFLOW-NEXTHOP
+
+    HalMsgOpenFlowAddStatsReq,
+    HalMsgOpenFlowDelStatsReq,
+    HalMsgOpenFlowGetStatsReq,
+    HalMsgOpenFlowClearStatsReq
+    FROM HAL-MSG-OPENFLOW-STATS
+
+    HalMsgOpenFlowSetEcmpHashKeyReq,
+    HalMsgOpenFlowSetLinkAggHashKeyReq,
+    HalMsgOpenFlowSetMplsParserReq	
+    FROM HAL-MSG-OPENFLOW-PARSER
+
+    HalMsgOpenFlowCreateLinkAggReq,
+    HalMsgOpenFlowDelLinkAggReq,
+    HalMsgOpenFlowAddLinkAggMemberReq,
+    HalMsgOpenFlowDelLinkAggMemberReq
+    FROM HAL-MSG-OPENFLOW-LINKAGG
+
+    HalMsgOpenFlowCreateBondReq,
+    HalMsgOpenFlowDelBondReq,
+    HalMsgOpenFlowAddBondSlaveReq,
+    HalMsgOpenFlowDelBondSlaveReq,
+	HalMsgOpenFlowBondSetMacReq
+    FROM HAL-MSG-OPENFLOW-BOND
+
+    HalMsgOpenFlowL3ifReq,
+    HalMsgOpenFlowSetL3ifReq,
+    HalMsgOpenFlowDecapFlowReq,
+    HalMsgOpenFlowPortDecapEnReq,
+    HalMsgOpenFlowFidMapReq,
+	HalMsgOpenFlowVxlanDestportReq,
+    HalMsgOpenFlowTnlDecapModeReq,
+    HalMsgOpenFlowLspApsTunnelReq
+    FROM HAL-MSG-OPENFLOW-TUNNEL  -- Added by weizj for tunnel
+
+    HalMsgOpenFlowMeterEntryKey      
+    FROM HAL-MSG-OPENFLOW-METER  -- Added by weizj for meter
+	
+	HalMsgOpenFlowSetQueueShapeKey
+	FROM HAL-MSG-OPENFLOW-QUEUE  -- Added by wangl for meter
+
+  	;
+
+Hsrv2AgtMsgGenericReq ::= SEQUENCE
+{
+    err         HalMsgDefErrorCode,
+    msg         PrintableString
+}
+
+Hsrv2AgtMsg ::= SEQUENCE
+{
+    ver             INTEGER (1..3),
+    id              INTEGER (0..2147483647),
+    agentId         INTEGER (0..2147483647), -- agent id is a bitmap, used as slot No
+    sourceId        INTEGER (0..2147483647), -- nsm message ID, used in the distribute system.
+    opHsrv2Agt      CHOICE
+    {
+        -- Common Module {
+        -- IF Begin {{
+        hsrv2AgtMsgPHYIfGetLinkStatus                HalMsgIFGetLinkStatus,
+        hsrv2AgtMsgPHYIfSetPhyProp                   HalMsgIFSetPhyProp,
+        hsrv2AgtMsgPHYIfSetFlowctl                   HalMsgIFSetFlowCtrlDir,
+        hsrv2AgtMsgPHYIfSetFlowctlEnable             HalMsgIFSetFlowCtrlEnable,
+        hsrv2AgtMsgSysSetPOEProp                     HalMsgIFSetPOEProp,
+        hsrv2AgtMsgSysSetSerDesMode                  HalMsgIFSetSerDesMode,
+        hsrv2AgtMsgSysSetMaxFrameSize                HalMsgIFSetFrameSize,
+        hsrv2AgtMsgSysSetRoutermac                   HalMsgIFSetSystemMac,
+        hsrv2AgtMsgSysSetRoutermacPrefix             HalMsgIFSetRMACPrefix,
+        hsrv2AgtMsgCOMMIFSetJumboFrameEn            HalMsgIFSetJumboFrame,
+        hsrv2AgtMsgCOMMIfCreatePort                  HalMsgIFCreatePort,
+        hsrv2AgtMsgCOMMIfFlagsSet                    HalMsgIFSetPortFlag,
+        hsrv2AgtMsgCOMMIfSetPortRouted               HalMsgIFSetPortRouted,
+        hsrv2AgtMsgCOMMIFSetHagtDbMediaType          HalMsgIFSetHagtDbMedia,
+        hsrv2AgtMsgCOMMIFSetHagtStatsIntval           HalMsgIFSetStatsIntval,
+        hsrv2AgtMsgPHYIfSetStackPort                 HalMsgIFSetStackPort,
+        --vlan related
+        hsrv2AgtMsgCOMMIfSetPortDefVid               HalMsgIFSetDefaultPvid,
+        hsrv2AgtMsgCOMMIfSetUntagPvid                HalMsgIFSetPortUntagPvid,
+        hsrv2AgtMsgCOMMIfSetVlanFilter               HalMsgIFSetVlanFilter,
+        hsrv2AgtMsgCOMMIfSetVlanPortType             HalMsgIFSetVlanPortType,
+        hsrv2AgtMsgCOMMIfSetTpidValue                HalMsgIFSetTpidValue,
+        hsrv2AgtMsgCOMMIfSetTpidType                 HalMsgIFSetTpidType,
+        --sync related
+        hsrv2AgtMsgPHYIfSync                         HalMsgIFPhySync,
+        hsrv2AgtMsgSysAttriSync                      HalMsgIFSyncSystemAttri,
+        hsrv2AgtMsgL2ifAttriSync                     HalMsgIFAttriSync,
+        hsrv2AgtMsgStackPortSync                     HalMsgStackPortSync,
+        -- IF End   }}
+
+         -- Stats Begin {{
+        hsrv2AgtMsgStatsGetStats   					HalMsgStatsGetReq,
+		hsrv2AgtMsgStatsClearStats					HalMsgStatsClearReq,
+
+        -- stats End   }}
+        -- Common Module End }
+
+        -- L2 Module {
+        --VLAN Begin {{
+            hsrv2AgtMsgL2VlanAdd                         HalMsgL2VlanAddReq,
+            hsrv2AgtMsgL2VlanUpdate                      HalMsgL2VlanUpdateReq,
+            hsrv2AgtMsgL2VlanDel                         HalMsgL2VlanDelReq,
+            hsrv2AgtMsgL2VlanSetState                    HalMsgL2VlanSetStateReq,
+            hsrv2AgtMsgL2VoiceVlanEnable                 HalMsgL2VoiceVlanEnableReq,
+            hsrv2AgtMsgL2VoiceVlanIfEnable               HalMsgL2VoiceVlanIfEnableReq,
+            hsrv2AgtMsgL2VoiceVlanEntryAdd               HalMsgL2VoiceVlanEntrySetReq,
+            hsrv2AgtMsgL2VoiceVlanEntryDel               HalMsgL2VoiceVlanEntrySetReq,
+            hsrv2AgtMsgL2VoiceVlanDefaultEntryAdd        HalMsgL2VoiceVlanEntrySetReq,
+            hsrv2AgtMsgL2VoiceVlanDefaultEntryDel        HalMsgL2VoiceVlanEntrySetReq,
+            hsrv2AgtMsgL2VlanAddVidToPort                HalMsgL2VlanAddVidToPortReq,
+            hsrv2AgtMsgL2VlanDeleteVidFromPort           HalMsgL2VlanDeleteVidFromPortReq,
+            hsrv2AgtMsgL2BrgSetVlanStpid                 HalMsgBrgVlanSetStpidReq,
+            hsrv2AgtMsgL2VlanSetReplaceDscp              HalMsgL2VlanSetReplaceDscpReq,
+            hsrv2AgtMsgL2VlanSetDhcpExcpType             HalMsgL2VlanSetDhcpExcpTypeReq,
+            hsrv2AgtMsgL2VlanSetArpExcpType              HalMsgL2VlanSetArpExcpTypeReq,
+            hsrv2AgtMsgL2VlanSetLearningEnable           HalMsgL2VlanSetLearningEnableReq,
+            hsrv2AgtMsgL2VlanSetBridgeEnable             HalMsgL2VlanSetBridgeEnableReq,
+            hsrv2AgtMsgL2VlanPropertySync                HalMsgL2VlanPropertySyncReq,
+            hsrv2AgtMsgL2VlanPortSync                    HalMsgL2VlanPortSyncReq,
+            hsrv2AgtMsgL2VlanSetRsv                      HalMsgL2VlanSetRsvReq,
+        --VLAN End   }}
+
+        --Bridge Begin {{
+        hsrv2AgtMsgL2BrgFdbAdd                       HalMsgBrgFdbOpReq,
+        hsrv2AgtMsgL2BrgFdbDel                       HalMsgBrgFdbOpReq,
+        hsrv2AgtMsgBrgMacFilterAdd                   HalMsgBrgSystemEntryReq,
+        hsrv2AgtMsgBrgMacFilterDel                   HalMsgBrgSystemEntryReq,
+        hsrv2AgtMsgBrgLearnEn                        HalMsgBrgLearnEnReq,
+        --Added by xgu for hardware learning, 2013-9-16
+        hsrv2AgtMsgBrgHwLearnEn                      HalMsgBrgHwLearnEnReq,
+        hsrv2AgtMsgBrgQueryHwDB                      HalMsgBrgQueryHwDB,
+
+        hsrv2AgtMsgBrgIfLearnEn                      HalMsgBrgIfLearnEnReq,
+        --/*Modified by zhangdy for bug 19471, 2012-6-8*/
+        --This three msg are now used only by vpls,so change their name
+        hsrv2AgtMsgBrgVplsFdbFlushByFid              HalMsgBrgFdbFlushByVlanPortReq,
+        hsrv2AgtMsgBrgVplsFdbFlushByPort             HalMsgBrgFdbFlushByVlanPortReq,
+        hsrv2AgtMsgBrgVplsFdbFlushByFidPort          HalMsgBrgFdbFlushByVlanPortReq,
+        --/*End of modification by zhangdy, 2012-6-8*/
+        hsrv2AgtMsgBrgFdbFlushByMac                  HalMsgBrgFdbFlushByVlanMacReq,
+        hsrv2AgtMsgBrgFdbFlushByVlanMac              HalMsgBrgFdbFlushByVlanMacReq,
+        hsrv2AgtMsgBrgFdbFlushFdb                    HalMsgBrgFdbFlushFdbReq,
+        hsrv2AgtMsgBrgFdbFlushByLabel                HalMsgBrgFdbFlushByLabelReq,
+        hsrv2AgtMsgL2BrgFdbAddList                   HalMsgBrgFdbEntryListReq,
+        hsrv2AgtMsgL2BrgFdbDelList                   HalMsgBrgFdbEntryListReq,
+        hsrv2AgtMsgL2BrgFdbAddListRaw                HalMsgBrgFdbEntryListRawReq,
+        hsrv2AgtMsgL2BrgFdbDelListRaw                HalMsgBrgFdbEntryListRawReq,
+        hsrv2AgtMsgL2BrgFdbLearn                     HalMsgBrgLearnEntryListReq,
+        hsrv2AgtMsgL2BrgFdbLearnRaw                  HalMsgBrgLearnRawReq,
+        hsrv2AgtMsgL2BrgFdbAgeRaw                    HalMsgBrgAgingRawReq,
+        hsrv2AgtMsgL2BrgFdbAge                       HalMsgBrgAgingEntryListReq,
+        hsrv2AgtMsgBrgMacFilterListAdd               HalMsgBrgSystemEntryListReq,
+        hsrv2AgtMsgBrgFilterToCpuList                HalMsgBrgFilterToCpuListReq,
+        hsrv2AgtMsgL2BrgAgingScanEn                  HalMsgBrgAgingScanEnReq,
+        hsrv2AgtMsgBrgSetPortState                   HalMsgBrgSetPortStateReq,
+        hsrv2AgtMsgBrgSetFdbLookupType               HalMsgBrgSetFdbLookupTypeReq,
+        hsrv2AgtMsgL2BrgChangeMacLearningAbility     HalMsgBrgChangeMacLearningAbilityReq,
+        hsrv2AgtMsgL2BrgSetDiscard                   HalMsgBrgSetDiscardReq,
+        hsrv2AgtMsgCOMMIfFDBBucket                   HalMsgCOMMIfFDBBucketReq,
+        hsrv2AgtMsgCOMMIfSetEn                       HalMsgCOMMIfSetEnReq,
+        hsrv2AgtMsgCOMMIfSetMacSecExceptEn           HalMsgCOMMIfSetMacSecExceptReq,
+        hsrv2AgtMsgCOMMIfSetMacSecDiscEn             HalMsgCOMMIfSetMacSecDiscReq,
+        hsrv2AgtMsgCOMMIfSetMacSecConfigList         HalMsgCOMMIfSetMacSecConfigListReq,
+        hsrv2AgtMsgCOMMIfSetMacSecConfig             HalMsgCOMMIfSetMacSecConfigReq,
+        hsrv2AgtMsgCOMMIfSetPortIsolateGroup         HalMsgCOMMIfSetPortIsolateGroupReq,
+        hsrv2AgtMsgCOMMIfSetPortIsolateMode          HalMsgCOMMIfSetPortIsolateModeReq,
+		hsrv2AgtMsgCOMMIfSetPVlan                    HalMsgCOMMIfSetPVlanReq,
+        hsrv2AgtMsgIfSetVlanRangeEn		             HalMsgIfSetVlanRangeEn,
+        hsrv2AgtMsgIfSetCrcCheckEn		             HalMsgIfSetCrcCheckEn,
+        hsrv2AgtMsgIfSetCrcRecalcEn                  HalMsgIfSetCrcRecalcEn,
+
+        hsrv2AgtMsgBrgSystemEntryAdd                 HalMsgBrgSystemEntryReq,
+        hsrv2AgtMsgBrgSystemEntryDel                 HalMsgBrgSystemEntryReq,
+        hsrv2AgtMsgBrgSystemEntryListAdd             HalMsgBrgSystemEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbAdd                       HalMsgBrgFdbOpReq,
+        --hsrv2AgtMsgL2BrgFdbDel                       HalMsgBrgFdbOpReq,
+        --hsrv2AgtMsgBrgMacFilterAdd                   HalMsgBrgSystemEntryReq,
+        --hsrv2AgtMsgBrgMacFilterDel                   HalMsgBrgSystemEntryReq,
+        --hsrv2AgtMsgBrgCpuPacketAdd                   HalMsgBrgCpuPacketReq,
+        --hsrv2AgtMsgBrgCpuPacketDel                   HalMsgBrgCpuPacketReq,
+        --hsrv2AgtMsgBrgFilterToCpu                    HalMsgBrgFilterToCpuReq,
+        --hsrv2AgtMsgBrgLearnEn                        HalMsgBrgLearnEnReq,
+        --hsrv2AgtMsgBrgFdbFlushByVlan                 HalMsgBrgFdbFlushByVlanPortReq,
+        --hsrv2AgtMsgBrgFdbFlushByPort                 HalMsgBrgFdbFlushByVlanPortReq,
+        --hsrv2AgtMsgBrgFdbFlushByVlanPort             HalMsgBrgFdbFlushByVlanPortReq,
+        --hsrv2AgtMsgBrgFdbFlushByMac                  HalMsgBrgFdbFlushByVlanMacReq,
+        --hsrv2AgtMsgBrgFdbFlushByVlanMac              HalMsgBrgFdbFlushByVlanMacReq,
+        --hsrv2AgtMsgBrgFdbFlushByLabel                HalMsgBrgFdbFlushByLabelReq,
+        --hsrv2AgtMsgL2BrgFdbAddList                   HalMsgBrgFdbEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbDelList                   HalMsgBrgFdbEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbAddListRaw                HalMsgBrgFdbEntryListRawReq,
+        --hsrv2AgtMsgL2BrgFdbDelListRaw                HalMsgBrgFdbEntryListRawReq,
+        --hsrv2AgtMsgL2BrgFdbLearn                     HalMsgBrgLearnEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbLearnRaw                  HalMsgBrgLearnRawReq,
+        --hsrv2AgtMsgL2BrgFdbAgeRaw                    HalMsgBrgAgingRawReq,
+        --hsrv2AgtMsgL2BrgFdbAge                       HalMsgBrgAgingEntryListReq,
+        --hsrv2AgtMsgBrgMacFilterListAdd               HalMsgBrgSystemEntryListReq,
+        --hsrv2AgtMsgBrgCpuPacketListAdd               HalMsgBrgCpuPacketListReq,
+        --hsrv2AgtMsgBrgFilterToCpuList                HalMsgBrgFilterToCpuListReq,
+        --hsrv2AgtMsgL2BrgAgingScanEn                  HalMsgBrgAgingScanEnReq,
+        --hsrv2AgtMsgL2BrgDown                         HalMsgBrgAgingScanEnReq,
+        --Bridge End }}
+
+        -- RateLimit Begin {{
+        hsrv2AgtMsgL2RatelimitSetEn                  HalMsgL2RatelimitSetEnReq,
+        hsrv2AgtMsgL2RatelimitSetThresh              HalMsgL2RatelimitSetThreshReq,
+        hsrv2AgtMsgL2RatelimitSetIpgEn               HalMsgL2RatelimitSetIpgEnReq,
+        hsrv2AgtMsgL2SyncRatelimit                   HalMsgL2SyncRatelimitReq,
+        -- RateLimit End }}
+
+	-- L2MC Begin {{
+	hsrv2AgtMsgL2mcEntryAdd	                     HalMsgL2mcEntryReq,
+	hsrv2AgtMsgL2mcEntryDel	                     HalMsgL2mcEntryReq,
+	hsrv2AgtMsgL2mcNhAdd                         HalMsgL2mcNhReq,
+	hsrv2AgtMsgL2mcNhDel                         HalMsgL2mcNhReq,
+	hsrv2AgtMsgL2mcPortAdd                       HalMsgL2mcPortReq,
+	hsrv2AgtMsgL2mcPortDel                       HalMsgL2mcPortReq,
+	hsrv2AgtMsgL2mcEnableByVlan                  HalMsgL2mcVlanReq,
+	hsrv2AgtMsgL2mcDisableByVlan                 HalMsgL2mcVlanReq,
+	hsrv2AgtMsgL2mcDiscardUnknown                HalMsgL2mcDiscardUnknownReq,
+	hsrv2AgtMsgL2mcEnableDisableByL3ifid                HalMsgL2mcL3ifidReq,
+	-- L2MC End }}
+
+        --LACP Begin {{
+        hsrv2AgtMsgLacpAggAdd                        HalMsgAggReq,
+        hsrv2AgtMsgLacpAggDel                        HalMsgAggReq,
+        hsrv2AgtMsgLacpAggPropSync                   HalMsgAggPropSyncReq,
+        hsrv2AgtMsgLacpAggPropClear                  HalMsgAggPropSyncReq,
+        hsrv2AgtMsgLacpMemPropSync                   HalMsgMemportPropSyncReq,
+        hsrv2AgtMsgLacpMemPropClear                  HalMsgMemportPropSyncReq,
+        hsrv2AgtMsgLacpAggMuxAttach                  HalMsgAttachAggReq,
+        hsrv2AgtMsgLacpAggMuxDetach                  HalMsgAttachAggReq,
+        hsrv2AgtMsgLacpSetPortFlag                   HalMsgSetPortFlagReq,
+        hsrv2AgtMsgLacpShowMemPorts                  HalMsgDebugLacp,
+        hsrv2AgtMsgLacpAggSetLoadBalance             HalMsgAggSetLoadBalance,
+		hsrv2AgtMsgLacpAggSetLoadBalanceMode         HalMsgAggSetLoadBalanceMode,
+        hsrv2AgtMsgLacpSync                          HalMsgAggSyncReq,
+        --LACP End }}
+
+        --VLAN MAPPING Begin {{
+        hsrv2AgtMsgVlanMappingQinqSelectiveEnable    HalMsgL2VlanMappingProListReq,
+        hsrv2AgtMsgVlanMappingReplaceEnable          HalMsgL2VlanMappingProListReq,
+        hsrv2AgtMsgVlanMappingEntryPro               HalMsgL2VlanMappingEntryListReq,
+        hsrv2AgtMsgVlanMappingDefVidSet              HalMsgL2VlanMappingDefVidListReq,
+        hsrv2AgtMsgVlanMappingDefEntrySet            HalMsgL2VlanMappingDefEntryListReq,
+        hsrv2AgtMsgVlanMappingL2DefEntrySet          HalMsgL2VlanMappingL2DefEntryListReq,
+        hsrv2AgtMsgVlanMappingSelectUpdateUntag      HalMsgL2VlanMappingSelectUpdateUntagReq,
+        hsrv2AgtMsgVlanMappingSelectGroupSet         HalMsgL2VlanMappingSelectGroupSetReq,
+        --VLAN MAPPING End }}
+
+        --MEF Begin {{
+        --hsrv2AgtMsgMefSetVlanTpId                    HalMsgMefVlanTpIdReq,
+        --hsrv2AgtMsgMefSetBpduTunnelDmac              HalMsgMefBpduTunnelDmacReq,
+        --hsrv2AgtMsgMefSetBpduTunnelEnable            HalMsgMefpduTunnelEnableReq,
+        --hsrv2AgtMsgMefSetMefPduTunnelEnable          HalMsgMefpduTunnelEnableReq,
+        --hsrv2AgtMsgMefSetBpduProcList                HalMsgMefPduProcListReq,
+        --hsrv2AgtMsgMefSetL2PduProcList               HalMsgMefPduProcListReq,
+        --MEF End }}
+
+        --OAM ETH Begin {{
+        hsrv2AgtMsgOamEFMSetParMuxStatus               HalMsgOamEFMSetParMuxStatusReq,
+        hsrv2AgtMsgOamEFMTestPKT                       HalMsgOamEFMTestPKTReq,
+        hsrv2AgtMsgOamEFMSetLinkMomitor                HalMsgOamEFMSetLinkMomitorReq,
+        hsrv2AgtMsgEthOamCfmMode                       HalMsgEthOamCfmModeReq,
+        hsrv2AgtMsgEthOamCfmEnable                     HalMsgEthOamCfmEnableReq,
+        hsrv2AgtMsgEthOamCfmPortEnable                 HalMsgEthOamCfmPortEnableReq,
+        hsrv2AgtMsgEthOamCfmAddMaid                    HalMsgEthOamCfmMaidReq,
+        hsrv2AgtMsgEthOamCfmDelMaid                    HalMsgEthOamCfmMaidReq,
+        hsrv2AgtMsgEthOamCfmAddLMep                    HalMsgEthOamCfmAddLMepReq,
+        hsrv2AgtMsgEthOamCfmDelLMep                    HalMsgEthOamCfmDelLMepReq,
+        hsrv2AgtMsgEthOamCfmAddRMep                    HalMsgEthOamCfmRMepReq,
+        hsrv2AgtMsgEthOamCfmDelRMep                    HalMsgEthOamCfmRMepReq,
+        hsrv2AgtMsgEthOamCfmAddMip                     HalMsgEthOamCfmMipReq,
+        hsrv2AgtMsgEthOamCfmDelMip                     HalMsgEthOamCfmMipReq,
+        hsrv2AgtMsgEthOamCfmSetCCEnable                HalMsgEthOamCfmSetCCEnableReq,
+        hsrv2AgtMsgEthOamCfmSetCCMInterval             HalMsgEthOamCfmSetCCMIntervalReq,
+        hsrv2AgtMsgEthOamCfmSetCCMVlanCos              HalMsgEthOamCfmSetCCMVlanCosReq,
+        hsrv2AgtMsgEthOamCfmClearRdi                   HalMsgEthOamCfmClearRdiReq,
+        hsrv2AgtMsgEthOamCfmAddDelPortToUpMepMc        HalMsgEthOamCfmAddDelPortToUpMepMCReq,
+        hsrv2AgtMsgEthOamCfmLearningEnable             HalMsgEthOamCfmLearningEnableReq,
+        hsrv2AgtMsgEthOamCfmClearErrors                HalMsgEthOamCfmClearErrorsReq,
+        hsrv2AgtMsgEthOamCfmPortLevel                  HalMsgEthOamCfmPortLevelReq,
+        hsrv2AgtMsgEthOamCfmSetLmEnable                HalMsgEthOamCfmSetLmEnableReq,
+        hsrv2AgtMsgEthOamCfmSetLmSDEnable              HalMsgEthOamCfmSetLmSDEnableReq,
+        hsrv2AgtMsgEthOamCfmSetTrptEnable              HalMsgEthOamCfmSetTrptEnableReq,
+        hsrv2AgtMsgEthOamCfmGetTstCounters             HalMsgEthOamCfmGetTstCountersReq,
+        hsrv2AgtMsgEthOamCfmClearTstCounters           HalMsgEthOamCfmGetTstCountersReq,
+        hsrv2AgtMsgEthOamCfmPortAclEnable              HalMsgEthOamCfmPortEnableReq,
+        --OAM ETH End }}
+
+        --DOT1X Begin {{
+        hsrv2AgtMsgDot1xAuth                         HalMsgDot1xAuth,
+        --hsrv2AgtMsgDot1xSetPethAuth                  HalMsgDot1xSetPethAuth,
+        hsrv2AgtMsgDot1xSetStatus                    HalMsgDot1xSetStatus,
+        --DOT1X End }}
+
+        -- VLAN Class BEGIN {{
+        hsrv2AgtMsgVlanClassifierEntryAdd        HalMsgL2VlanClassifierEntryListReq,
+        hsrv2AgtMsgVlanClassifierEntryDel        HalMsgL2VlanClassifierEntryListReq,
+        hsrv2AgtMsgVlanClassifierEnable          HalMsgL2VlanClassifierEnListReq,
+        hsrv2AgtMsgVlanClassifierDisable         HalMsgL2VlanClassifierEnListReq,
+        hsrv2AgtMsgVlanClassifierDftAction       HalMsgL2VlanClassifierEnListReq,
+        -- VLAN Class END   }}
+
+        -- IP BINDING BEGIN {{
+        hsrv2AgtMsgIPBindingAdd                      HalMsgL2IPBindingListReq,
+        hsrv2AgtMsgIPBindingDel                      HalMsgL2IPBindingListReq,
+        hsrv2AgtMsgIPBindingEnable                   HalMsgL2IPBindingEnReq,
+        -- IP BINDING END   }}
+
+        -- VLAN SECURITY BEGIN {{
+        hsrv2AgtMsgVlanSecuritySetLimit              HalMsgVlanSecuritySetLimitReq,
+        -- VLAN SECURITY END   }}
+
+        -- PHY LOOPBACK BEGIN {{
+        hsrv2AgtMsgPhyLoopbackSetEnable                 HalMsgPhyLoopbackSetEnableReq,
+        -- PHY LOOPBACK END   }}
+
+        -- L2 Module End }
+
+        -- L3 Module {
+        -- ECMP Begin {{
+        hsrv2AgtMsgEcmpGroupCreat                        HalMsgECMPGroupAddReq,
+        hsrv2AgtMsgEcmpGroupDelete                       HalMsgECMPGroupDelReq,
+        -- ECMP End   }}
+
+        -- IPUC Begin {{
+        hsrv2AgtMsgIPucAddDefRoute                       HalMsgIPucAddDefRoute,
+        hsrv2AgtMsgIpucAddDelVrf                         HalMsgIpucAddDelVrf,
+        hsrv2AgtMsgIPucEnIPv6                            HalMsgIPucEnIPv6,
+        hsrv2AgtMsgIPucAddRoute                          HalMsgIPucRouteAddDel,
+        hsrv2AgtMsgIPucDelRoute                          HalMsgIPucRouteAddDel,
+        hsrv2AgtMsgIPucAddNh                             HalMsgIPucAddNexthop,
+        hsrv2AgtMsgIPucDelNh                             HalMsgIPucDelNexthop,
+        hsrv2AgtMsgIPucNhToUnrov                         HalMsgIPucNhToUnrov,
+        hsrv2AgtMsgIPucNhToFwd                           HalMsgIPucNhToFwd,
+        hsrv2AgtMsgIPucNhUpd                             HalMsgIPucNhUpdate,
+        -- IPUC End   }}
+
+        --Tunnel Begin {{
+        hsrv2AgtMsgTunnelAddDecapRt                      HalMsgTunnelDecapRt,
+        hsrv2AgtMsgTunnelDelDecapRt                      HalMsgTunnelDecapRt,
+        hsrv2AgtMsgTunnelPortScl                         HalMsgTunnelPortScl,
+        hsrv2AgtMsgTunnelAddEncapNh                      HalMsgTunnelEncapNhAdd,
+        hsrv2AgtMsgTunnelUpdEncapNhAttr                  HalMsgTunnelEncapNhAdd,
+        hsrv2AgtMsgTunnelUpdEncapNhFwd                   HalMsgTunnelEncapNhAdd,
+        hsrv2AgtMsgTunnelDelEncapNh                      HalMsgTunnelEncapNhDel,
+        hsrv2AgtMsgTunnelUpdEncapNhUnrov                 HalMsgTunnelEncapNhDel,
+        hsrv2AgtMsgTunnelInit                            HalMsgTunnelInit,
+        --Tunnel End  }}
+
+        -- MPLS Begin {{
+        hsrv2AgtMsgMplsNhAdd                              HalMsgMplsNhAddReq,
+        hsrv2AgtMsgMplsApsNhAddReq												HalMsgMplsApsNhAddReq,
+        hsrv2AgtMsgMplsApsNhDelReq        								HalMsgMplsApsNhDelReq,
+        hsrv2AgtMsgMplsNhToSpec                           HalMsgMplsNhToSpecReq,
+        hsrv2AgtMsgMplsNhToFwd                            HalMsgMplsNhToFwdReq,
+        hsrv2AgtMsgMplsNhDel                              HalMsgMplsNhDelReq,
+        hsrv2AgtMsgMplsNhUpdateAttr                       HalMsgMplsNhUpdateAttrReq,
+        hsrv2AgtMsgMplsNhSync                             HalMsgMplsNhSyncReq,
+        hsrv2AgtMsgMplsIntfEn                             HalMsgMplsIntfEnReq,
+        hsrv2AgtMsgMplsIlmAdd                             HalMsgMplsIlmAddReq,
+        hsrv2AgtMsgMplsIlmUpd                             HalMsgMplsIlmUpdReq,
+        hsrv2AgtMsgMplsIlmDel                             HalMsgMplsIlmDelReq,
+        hsrv2AgtMsgMplsLabelSpaceAdd                      HalMsgMplsLabelSpaceAddReq,
+        hsrv2AgtMsgMplsL2vpnEn                            HalMsgMplsL2vpnEnReq,
+        hsrv2AgtMsgMplsL2vpnAcNhAdd                       HalMsgMplsL2vpnAcNhAddReq,
+        hsrv2AgtMsgMplsL2vpnAcNhDel                       HalMsgMplsL2vpnAcNhDelReq,
+        hsrv2AgtMsgMplsL2vpnBind                          HalMsgMplsL2vpnBindReq,
+        hsrv2AgtMsgMplsL2vpnUnBind                        HalMsgMplsL2vpnUnBindReq,
+        hsrv2AgtMsgMplsPWBind                             HalMsgMplsPWBindReq,
+        hsrv2AgtMsgMplsPWUnBind                           HalMsgMplsPWUnBindReq,
+        hsrv2AgtMsgMplsVSIAdd                             HalMsgMplsVSIAddReq,
+        hsrv2AgtMsgMplsVSIDel                             HalMsgMplsVSIDelReq,
+        hsrv2AgtMsgMplsVSIMacLrnDis                       HalMsgMplsVSIMacLrnDisReq,
+        hsrv2AgtMsgMplsTunnelLoadAps											HalMsgMplsTunnelLoadApsReq,
+        hsrv2AgtMsgMplsTunnelunLoadAps										HalMsgMplsTunnelunLoadApsReq,
+        hsrv2AgtMsgMplsApsProtectingEnReq									HalMsgMplsApsProtectingEnReq,
+        hsrv2AgtMsgMplsApsGroupWorkAdd										HalMsgMplsApsGroupWorkAdd,
+        hsrv2AgtMsgMplsApsGroupProtectAdd									HalMsgMplsApsGroupProtectAdd,
+        -- MPLS End   }}
+
+
+	-- L3MC Begin {{
+	hsrv2AgtMsgL3mcAddressAdd                    HalMsgL3mcGroupInfoReq,
+	hsrv2AgtMsgL3mcAddressDel                    HalMsgL3mcGroupInfoReq,
+	hsrv2AgtMsgL3mcIPv6AddressAdd                HalMsgL3mcIPv6GroupInfoReq,
+	hsrv2AgtMsgL3mcIPv6AddressDel                HalMsgL3mcIPv6GroupInfoReq,
+	hsrv2AgtMsgL3mcMembersDel                    HalMsgL3mcGroupInfoReq,
+	hsrv2AgtMsgL3mcMembersAdd                    HalMsgL3mcGroupInfoReq,
+	hsrv2AgtMsgL3mcIPv6MembersDel                HalMsgL3mcIPv6GroupInfoReq,
+	hsrv2AgtMsgL3mcIPv6MembersAdd                HalMsgL3mcIPv6GroupInfoReq,
+	hsrv2AgtMsgL3mcRpfUpdate                     HalMsgL3mcGroupInfoReq,
+	hsrv2AgtMsgL3mcIPv6RpfUpdate                 HalMsgL3mcIPv6GroupInfoReq,
+	hsrv2AgtMsgL3mcEntryStatPoll	               HalMsgL3mcEntryStatPollReq,
+	hsrv2AgtMsgL3mcIPv6EntryStatPoll	           HalMsgL3mcIPv6EntryStatPollReq,
+	hsrv2AgtMsgMvrSetVlanMcEnReq                 HalMsgMvrVlanMcEnReq,
+  hsrv2AgtMsgMvrIPv6SetVlanMcEnReq             HalMsgMvrVlanMcEnReq,
+	hsrv2AgtMsgMvrSetVlanMcRpfEnReq              HalMsgMvrVlanMcRpfEnReq,
+  hsrv2AgtMsgMvrIPv6SetVlanMcRpfEnReq          HalMsgMvrVlanMcRpfEnReq,
+  hsrv2AgtMsgMvrSetNoMacLkpEnReq               HalMsgMvrNoMacLkpEnReq,
+  hsrv2AgtMsgL3mcIPv6SetNoMacLkpEnReq          HalMsgMvrNoMacLkpEnReq,
+  hsrv2AgtMsgL3mcInitDefaultEntry              HalMsgL3mcAddDefaultEntryReq,
+  hsrv2AgtMsgL3mcIPv6InitDefaultEntry          HalMsgL3mcAddDefaultEntryReq,
+  hsrv2AgtMsgL3mcSetLogicReplicationEnReq      HalMsgMvrNoMacLkpEnReq,
+	-- L3MC End }}
+
+        -- L3if Begin {{
+        hsrv2AgtMsgL3ifSetProp                         HalMsgL3IFSetProp,
+        hsrv2AgtMsgL3ifSetIpEn                         HalMsgL3IFSetIPFlag,
+        hsrv2AgtMsgL3ifCreate                          HalMsgL3IFCreate,
+        hsrv2AgtMsgL3ifAggmemAdd                       HalMsgL3IFAggAddMemberCB,
+        hsrv2AgtMsgL3ifAggmemDel                       HalMsgL3IFAggAddMemberCB,
+        hsrv2AgtMsgL3ifDhcpExcpTypeSet                 HalMsgL3IFDhcpExcpType,
+        hsrv2AgtMsgL3ifAttriSync                       HalMsgL3IFAttriSync,
+        -- L3if End   }}
+
+        -- VRRP Begin {{
+        hsrv2AgtMsgVrrpEnDis                           HalMsgVRRPSetEnable,
+        hsrv2AgtMsgVrrpVmacAddDel                      HalMsgVRRPAddGroup,
+        hsrv2AgtMsgVrrpSync                            HalMsgVRRPSync,
+        -- VRRP End  }}
+
+        -- IVI Begin {{
+        hsrv2AgtMsgIVIEnable                           HalMsgIVIEnableReq,
+        hsrv2AgtMsgIVIRouteAdd                         HalMsgIVIRouteAddReq,
+        hsrv2AgtMsgIVIRouteDel                         HalMsgIVIRouteDelReq,
+        hsrv2AgtMsgIVINexthopAdd                       HalMsgIVINexthopAddReq,
+        hsrv2AgtMsgIVINexthopDel                       HalMsgIVINexthopDelReq,
+        -- IVI End  }}
+
+        -- PBR Begin {{
+        hsrv2AgtMsgPBRAddEntry                         HalMsgPBRAddPolicyRmapEntryReq,
+        hsrv2AgtMsgPBRValidEntryOp                     HalMsgPBRValidPolicyRmapEntryReq,
+        hsrv2AgtMsgPBRDelEntryOp                       HalMsgPBRDelPolicyRmapEntryReq,
+        hsrv2AgtMsgPBRUpdateAction                     HalMsgPBRUpdatePolicyRmapActionReq,
+        hsrv2AgtMsgPBRLabelOp                          HalMsgPBRPolicyRmapLabelOpReq,
+        hsrv2AgtMsgPBRIntfOp                           HalMsgPBRIntfOpReq,
+        -- PBR End  }}
+
+        -- L3 Module End }
+
+        -- Misc Module {
+		
+	    -- EFD Begin {{
+		hsrv2AgtMsgEfdGlobalControlSet                 HalMsgEfdGlobalControlSetReq,
+        hsrv2AgtMsgEfdGlobalConfigSet                  HalMsgEfdGlobalConfigSetReq,
+	    hsrv2AgtMsgEfdPortSet                          HalMsgEfdPortSetReq,
+	    hsrv2AgtMsgVmawareEnable                       HalMsgVmawareEnableReq,
+        hsrv2AgtMsgFlowColorSet                        HalMsgFlowColorSetReq,
+		hsrv2AgtMsgFlowTrafficClassSet                 HalMsgFlowTrafficClassSetReq,
+		hsrv2AgtMsgFlowHashModeSet                     HalMsgFlowHashModeSetReq,
+	    hsrv2AgtMsgTunnelParserMergerSet               HalMsgTunnelParserMergerSetReq,
+        -- EFD End   }}
+		
+        -- PTP Begin {{
+        hsrv2AgtMsgPtpSetBITSClockOutput               HalMsgPtpSetBITSClockOutputReq,
+        hsrv2AgtMsgPtpAdjustOffset                     HalMsgPtpAdjustOffsetReq,
+        hsrv2AgtMsgPtpAdjustFractionalFrequencyOffset  HalMsgPtpAdjustFractionalFrequencyOffsetReq,
+        hsrv2AgtMsgPtpResetFractionalFrequencyOffset   HalMsgPtpResetFractionalFrequencyOffsetReq,
+        hsrv2AgtMsgPtpSetGlobalEnable                  HalMsgPtpSetGlobalEnableReq,
+        hsrv2AgtMsgPtpGetTaiTimeReq                    HalMsgPtpGetTaiTimeReq,
+        -- PTP End   }}
+
+        -- SyncE Begin {{
+        hsrv2AgtMsgSyncESetEnable                      HalMsgSyncESetEnableReq,
+        hsrv2AgtMsgSyncESelectPort                     HalMsgSyncESelectPortReq,
+        -- SyncE End   }}
+
+        -- CPU TRAFFIC Begin {{
+        hsrv2AgtMsgCpuTrafficLimitTotalRate          HalMsgCpuTrafficLimitTotalRateReq,
+        hsrv2AgtMsgCpuTrafficLimitIndRateList        HalMsgCpuTrafficLimitIndRateListReq,
+        hsrv2AgtMsgCpuTrafficSetReasonClassList      HalMsgCpuTrafficSetReasonClassListReq,
+        hsrv2AgtMsgCpuTrafficSyncReasonInfoList      HalMsgCpuTrafficSyncReasonInfoListReq,
+        hsrv2AgtMsgPduAddFlexL2PduKey                HalMsgPduFlexL2PduKeyReq,
+        hsrv2AgtMsgPduDelFlexL2PduKey                HalMsgPduFlexL2PduKeyReq,
+        hsrv2AgtMsgPduSetL2PduGlbActionList          HalMsgPduSetL2PduGlbActionListReq,
+        hsrv2AgtMsgPduSetFlexL2PduGlbActionList      HalMsgPduSetFlexL2PduGlbActionListReq,
+        hsrv2AgtMsgPduSetL2PduPortActionList         HalMsgPduSetL2PduPortActionListReq,
+        hsrv2AgtMsgPduSetFlexL2PduPortActionList     HalMsgPduSetFlexL2PduPortActionListReq,
+        hsrv2AgtMsgPduSetL3PduGlbActionList          HalMsgPduSetL3PduGlbActionListReq,
+        hsrv2AgtMsgPduSetL3PduL3ifActionList         HalMsgPduSetL3PduL3ifActionListReq,
+        -- CPU TRAFFIC End   }}
+
+        -- Misc Module End }
+
+        -- ACLQOS Module Begin {
+        -- ACL Begin {{
+    	hsrv2AgtMsgAclCreateAclLabel                 HalMsgAclLabelOpReq,
+    	hsrv2AgtMsgAclRemoveAclLabel                 HalMsgAclLabelOpReq,
+    	hsrv2AgtMsgAclApplyAclLabel                  HalMsgApplyAclLabelReq,
+    	hsrv2AgtMsgAclUnapplyAclLabel                HalMsgUnapplyAclLabelReq,
+    	hsrv2AgtMsgAclAddAccessGroup                 HalMsgAddAccessGroupReq,
+    	hsrv2AgtMsgAclDelAccessGroup                 HalMsgDelAccessGroupReq,
+		hsrv2AgtMsgAclAddAce                           HalMsgAddAceReq,
+    	hsrv2AgtMsgAclDelAce                         HalMsgDelAceReq,
+    	hsrv2AgtMsgAclSetAclEnable                   HalMsgSetAclEnableReq,
+    	hsrv2AgtMsgAclSetAceInvalid                  HalMsgSetAceInvalidReq,
+    	hsrv2AgtMsgACLSetAclProcFlag                 HalMsgSetAclProcFlagReq,
+    	hsrv2AgtMsgAclAddGlobalAce                   HalMsgAddGlobalAceReq,
+        -- ACL End }}
+
+        -- sFlow Begin {{
+    	hsrv2AgtMsgAclSetCpuRandomLog                HalMsgSetAclCpuRandomLogReq,
+    	hsrv2AgtMsgAclUnsetCpuRandomLog              HalMsgUnsetAclCpuRandomLogReq,
+
+		hsrv2AgtMsgSflowSetSample                    HalMsgSflowSetSampleReq,
+        -- sFlow End }}
+
+        -- IPT Begin {{
+    	hsrv2AgtMsgIptSetMacEqualEnable              HalMsgIptSetMacEqualReq,
+    	hsrv2AgtMsgIptSetIpEqualEnable               HalMsgIptSetIpEqualReq,
+
+        -- IPT End }}
+
+        -- QoS Begin {{
+        hsrv2AgtMsgQosSetGlobalFlag                 HalMsgQosSetGlobalEnableFlagsReq,
+        hsrv2AgtMsgQosSetPriColorMapTable           HalMsgQosSetPriColorMapTableReq,
+        hsrv2AgtMsgQosSetCfiEnable                  HalMsgQosSetCfiEnableReq,
+        hsrv2AgtMsgQosSetPortAttribute              HalMsgQosSetPortAttributeReq,
+        hsrv2AgtMsgQosSetPortPolicer                HalMsgQosSetPortPolicerReq,
+        hsrv2AgtMsgQosUnsetPortPolicer              HalMsgQosUnsetPortPolicerReq,
+        hsrv2AgtMsgQosFlowPolicerOp                 HalMsgQosFlowPolicerOpReq,
+        hsrv2AgtMsgQosLabelOp                       HalMsgQosLabelOpReq,
+        hsrv2AgtMsgQosSetFlowProcFlag               HalMsgQosSetFlowProcFlagReq,
+        hsrv2AgtMsgQosAddFlowEntry                  HalMsgQosAddFlowEntryReq,
+        hsrv2AgtMsgQosDelFlowEntry                  HalMsgQosDelFlowEntryReq,
+        hsrv2AgtMsgQosInvalidFlowEntry              HalMsgQosInvalidFlowEntryReq,
+        hsrv2AgtMsgQosDelAllFlowEntry               HalMsgQosDelAllFlowEntryReq,
+        hsrv2AgtMsgQosDelAllFlowStats               HalMsgQosDelAllFlowStatsReq,
+        hsrv2AgtMsgQosSetQosEnable                  HalMsgQosSetQosEnableReq,
+        hsrv2AgtMsgQosUpdateFlowAction              HalMsgQosUpdateFlowActionReq,
+        hsrv2AgtMsgQosSetPortQueueClass             HalMsgQosSetPortQueueClassReq,
+        hsrv2AgtMsgQosSetPortQueueShape             HalMsgQosSetPortQueueShapeReq,
+        hsrv2AgtMsgQosUnsetPortQueueShape           HalMsgQosUnsetPortQueueShapeReq,
+        hsrv2AgtMsgQosSetPortShape                  HalMsgQosSetPortShapeReq,
+        hsrv2AgtMsgQosUnsetPortShape                HalMsgQosUnsetPortShapeReq,
+        hsrv2AgtMsgQosGetPortQueueDepth             HalMsgQosGetPortQueueDepthReq,
+        hsrv2AgtMsgQosSetPortQueueDrop              HalMsgQosSetPortQueueDropReq,
+        hsrv2AgtMsgQosSetPortQueueStats             HalMsgQosSetPortQueueStatsReq,
+        hsrv2AgtMsgQosSetPortQueueWdrrWeight        HalMsgQosSetPortQueueWdrrWeightReq,
+        hsrv2AgtMsgQosSetPortQueueWdrrWeightMtu     HalMsgQosSetPortQueueWdrrWeightMtuReq,
+        hsrv2AgtMsgQosInitPortCfg                   HalMsgQosInitPortCfgReq,
+        hsrv2AgtMsgQosSyncPortCfg                   HalMsgQosSyncPortCfgReq,
+        hsrv2AgtMsgQosUpdatePriority                HalMsgQosAclUpdateRulePriorityReq,
+        hsrv2AgtMsgQosDeinitPortCfg                 HalMsgQosDeinitPortCfgReq,
+        -- QoS End }}
+
+        -- ACLQOS Module End }
+
+
+        -- DEBUG {{
+        hsrv2AgtMsgDebugSet                          HalMsgDebugReq,
+        hsrv2AgtMsgDebugCtrlSet                      HalMsgDebugCtrlReq,
+        --hsrv2AgtMsgLCSwitchSet                       HalMsgLCSwitchReq,
+        -- DEBUG }}
+
+        --MIRROR {{
+        hsrv2AgtMsgMirrorSetDest                     HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorUnsetDest                   HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorSetRemoteDest               HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorUnsetRemoteDest             HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorSetSrcPort                  HalMsgMirrorCfgSrcReq,
+        hsrv2AgtMsgMirrorUnsetSrcPort                HalMsgMirrorCfgSrcReq,
+        hsrv2AgtMsgMirrorSetSrcVlan                  HalMsgMirrorCfgSrcReq,
+        hsrv2AgtMsgMirrorUnsetSrcVlan                HalMsgMirrorCfgSrcReq,
+        hsrv2AgtMsgMirrorMacEscapeEn                 HalMsgMirrorCfgMacEscapeEnReq,
+        hsrv2AgtMsgMirrorSetMacEscape                HalMsgMirrorCfgMacEscapeReq,
+        hsrv2AgtMsgMirrorUnsetMacEscape              HalMsgMirrorCfgMacEscapeReq,
+        hsrv2AgtMsgMirrorDiscardEn                   HalMsgMirrorCfgDiscardEnReq,
+        hsrv2AgtMsgMirrorSetMultiDest                HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorUnSetMultiDest              HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorAddMultiDestPort            HalMsgMirrorCfgDestReq,
+        hsrv2AgtMsgMirrorDelMultiDestPort            HalMsgMirrorCfgDestReq,
+        --hsrv2AgtMsgMirrorSetForEfmOamLb              HalMsgMirrorCfgDestReq,
+        --hsrv2AgtMsgMirrorUnsetForEfmOamLb            HalMsgMirrorCfgDestReq,
+        --MIRROR }}
+        --hsrv2AgtMsgGeneric                           Hsrv2AgtMsgGenericReq,
+        --hsrv2AgtMsgInitSeq                           Hsrv2AgtMsgInitSeqReq,
+        hsrv2AgtMsgSynDone                           Hsrv2AgtMsgSynDoneReq,
+        --hsrv2AgtMsgAgentSyn                          Hsrv2AgtMsgAgentSynReq,
+
+		--TAP {{
+		hsrv2AgtMsgTapInit                            HalMsgTapGroupIngressGportReq,
+		hsrv2AgtMsgTapCreateGroup                     HalMsgTapGroupReq,
+		hsrv2AgtMsgTapDeleteGroup                     HalMsgTapGroupReq,
+		hsrv2AgtMsgTapAddIngressGport				  HalMsgTapGroupIngressGportReq,
+		hsrv2AgtMsgTapDelIngressGport			  	  HalMsgTapGroupIngressGportReq,
+		hsrv2AgtMsgTapAddEgressGport			      HalMsgTapGroupEgressGportReq,
+		hsrv2AgtMsgTapDelEgressGport			      HalMsgTapGroupEgressGportReq,
+        hsrv2AgtMsgTapTSEther                         HalMsgTapTSEtherReq,
+        hsrv2AgtMsgTapTruncation                      HalMsgTapTSEtherReq,
+		--TAP }}
+
+        -- LOOPBACK {{
+        hsrv2AgtMsgLoopPortCreat                       HalMsgLoopPortCreatReq,
+        hsrv2AgtMsgLoopNhAdd                           HalMsgLoopNhAddReq,
+        hsrv2AgtMsgLoopPortModelUpd                    HalMsgLoopPortModelUpdReq,
+        -- LOOPBACK }}
+
+        hsrv2AgtMsgRmtInitSeqReq                     Hsrv2AgtMsgInitSeqReq,
+
+        hsrv2AgtMsgBFDSessionAdd                          HalMsgBFDSessionAdd,
+        hsrv2AgtMsgBFDSessionDel                          HalMsgBFDSessionDel,
+        hsrv2AgtMsgBFDSessionGet                          HalMsgBFDSessionGet,
+        hsrv2AgtMsgBFDNexthopAdd                          HalMsgBFDNexthopAdd,
+        hsrv2AgtMsgBFDNexthopUpdate                       HalMsgBFDNexthopAdd,
+        hsrv2AgtMsgBFDNexthopDel                          HalMsgBFDNexthopDel,
+
+        -- MPLS-TP OAM {{
+        hsrv2AgtMsgTpoamAddMegid                        HalMsgTpoamMegidReq,
+        hsrv2AgtMsgTpoamDelMegid                        HalMsgTpoamMegidReq,
+        hsrv2AgtMsgTpoamAddLMep                         HalMsgTpoamAddLMepReq,
+        hsrv2AgtMsgTpoamDelLMep                         HalMsgTpoamDelLMepReq,
+        hsrv2AgtMsgTpoamAddRMep                         HalMsgTpoamAddRMepReq,
+        hsrv2AgtMsgTpoamDelRMep                         HalMsgTpoamDelRMepReq,
+        hsrv2AgtMsgTpoamEnableCc                        HalMsgTpoamEnableCcReq,
+        hsrv2AgtMsgTpoamClearRdi                        HalMsgTpoamClearRdiReq,
+        hsrv2AgtMsgTpoamRdiReason                       HalMsgTpoamRdiReasonReq,
+        hsrv2AgtMsgTpoamChannelType                     HalMsgTpoamChannelTypeReq,
+        hsrv2AgtMsgTpoamUpdateNh                        HalMsgTpoamUpdateNhReq,
+		hsrv2AgtMsgTpoamAddOam                          HalMsgTpoamAddOamReq,
+		hsrv2AgtMsgTpoamDelOam                          HalMsgTpoamDelOamReq,
+		hsrv2AgtMsgTpoamUpdateOam                       HalMsgTpoamAddOamReq,
+		hsrv2AgtMsgTpoamUpdateExp                       HalMsgTpoamUpdateExpReq,
+		hsrv2AgtMsgTpoamSetRdi                          HalMsgTpoamSetRdiReq,
+		hsrv2AgtMsgTpoamSetLmEnable                     HalMsgTpoamSetLmEnableReq,
+		hsrv2AgtMsgTpoamSetLmSDEnable                   HalMsgTpoamSetLmSDEnableReq,
+		hsrv2AgtMsgTpoamSetSFReason                     HalMsgTpoamSFReasonReq,
+		hsrv2AgtMsgTpoamSetHagtAPS                      HalMsgTpoamHagtAPSReq,
+		hsrv2AgtMsgTpoamSetPwMode                       HalMsgTpoamSetPwModeReq,
+        -- MPLS-TP OAM }}
+
+        -- G8031 {{
+        hsrv2AgtMsgG8031GroupAdd                        HalMsgG8031GroupAddReq,
+        hsrv2AgtMsgG8031GroupDel                        HalMsgG8031GroupDelReq,
+        hsrv2AgtMsgG8031GroupProtectingEn               HalMsgG8031GroupProtectingEnReq,
+        hsrv2AgtMsgG8031GroupAddVlan                    HalMsgG8031GroupAddVlanReq,
+        hsrv2AgtMsgG8031GroupDelVlan                    HalMsgG8031GroupDelVlanReq,
+        -- G8031 }}
+
+        -- G8032 {{
+        hsrv2AgtMsgG8032GroupAdd                        HalMsgG8032GroupAddReq,
+        hsrv2AgtMsgG8032GroupDel                        HalMsgG8032GroupDelReq,
+        hsrv2AgtMsgG8032GroupAddMember                  HalMsgG8032GroupAddMember,
+        hsrv2AgtMsgG8032GroupDelMember                  HalMsgG8032GroupDelMember,
+        hsrv2AgtMsgG8032GroupAddRapsGroup               HalMsgG8032GroupAddRapsGroup,
+        hsrv2AgtMsgG8032GroupDelRapsGroup               HalMsgG8032GroupDelRapsGroup,
+        hsrv2AgtMsgG8032GroupProtectingEn               HalMsgG8032GroupProtectingEnReq,
+        hsrv2AgtMsgG8032GroupAddControlVlan             HalMsgG8032ControlVlanReq,
+        hsrv2AgtMsgG8032GroupDelControlVlan             HalMsgG8032ControlVlanReq,
+        -- G8032 }}
+
+        -- OpenFlow {{
+        hsrv2AgtMsgOpenFlowPortEnable                   HalMsgOpenFlowPortEnableReq,
+		hsrv2AgtMsgOpenFlowPortSetProtectedVlan         HalMsgOpenFlowPortSetProtectedVlanReq,
+        hsrv2AgtMsgOpenFlowIgnoreVlanFilterCtl          HalMsgOpenFlowPortIgnoreVlanFilterCtlReq,
+		hsrv2AgtMsgOpenFlowTunnelMplsDisableCtl          HalMsgOpenFlowPortTunnelMplsDisableReq,
+		hsrv2AgtMsgOpenFlowNativeVlanConfig             HalMsgOpenFlowPortNativeVlanConfigReq,
+		hsrv2AgtMsgOpenFlowPortSetPacketAction          HalMsgOpenFlowPortSetPacketActionReq,
+        hsrv2AgtMsgOpenFlowPortSetConfig                HalMsgOpenFlowPortSetConfigReq,
+        hsrv2AgtMsgOpenFlowPortSetLabel                 HalMsgOpenFlowPortSetLabelReq,
+        hsrv2AgtMsgOpenFlowPortSetIloopEnable           HalMsgOpenFlowPortEnableReq,
+        hsrv2AgtMsgOpenFlowPortSetUdf                   HalMsgOpenFlowPortSetConfigReq,
+        hsrv2AgtMsgOpenFlowAddFlow                      HalMsgOpenFlowAddFlowReq,
+        hsrv2AgtMsgOpenFlowUpdateFlow                   HalMsgOpenFlowUpdateFlowReq,
+        hsrv2AgtMsgOpenFlowDelFlow                      HalMsgOpenFlowDelFlowReq,
+        hsrv2AgtMsgOpenFlowOpLabel                      HalMsgOpenFlowOpLabelReq,
+        hsrv2AgtMsgOpenFlowSetUdf                       HalMsgOpenFlowSetUdfReq,
+		hsrv2AgtMsgOpenFlowSetE2e                       HalMsgOpenFlowSetE2eReq,
+		hsrv2AgtMsgOpenFlowSetStpid                     HalMsgOpenFlowSetStpidReq,
+		hsrv2AgtMsgOpenFlowSetCtpid                     HalMsgOpenFlowSetCtpidReq,
+        hsrv2AgtMsgOpenFlowAddDecapFlow                 HalMsgOpenFlowDecapFlowReq,
+        hsrv2AgtMsgOpenFlowDelDecapFlow                 HalMsgOpenFlowDecapFlowReq,
+        hsrv2AgtMsgOpenFlowPortDecapEn                  HalMsgOpenFlowPortDecapEnReq,
+        hsrv2AgtMsgOpenFlowModDecapMode                 HalMsgOpenFlowTnlDecapModeReq,
+        hsrv2AgtMsgOpenFlowModFid                       HalMsgOpenFlowFidMapReq,
+		hsrv2AgtMsgOpenFlowVxlanDestport                HalMsgOpenFlowVxlanDestportReq,
+        hsrv2AgtMsgOpenFlowL3if                         HalMsgOpenFlowL3ifReq,
+        hsrv2AgtMsgOpenFlowSetL3if                      HalMsgOpenFlowSetL3ifReq,
+        hsrv2AgtMsgOpenFlowAddMcastNh                   HalMsgOpenFlowAddMcastNhReq,
+        hsrv2AgtMsgOpenFlowDelMcastNh                   HalMsgOpenFlowDelMcastNhReq,
+        hsrv2AgtMsgOpenFlowAddMcastMemberNh             HalMsgOpenFlowAddMcastMemberNhReq,
+        hsrv2AgtMsgOpenFlowDelMcastMemberNh             HalMsgOpenFlowDelMcastMemberNhReq,
+        hsrv2AgtMsgOpenFlowAddECMPNh                    HalMsgOpenFlowAddECMPNhReq,
+        hsrv2AgtMsgOpenFlowDelECMPNh                    HalMsgOpenFlowDelECMPNhReq,
+        hsrv2AgtMsgOpenFlowAddECMPMemberNh              HalMsgOpenFlowAddECMPMemberNhReq,
+        hsrv2AgtMsgOpenFlowDelECMPMemberNh              HalMsgOpenFlowDelECMPMemberNhReq,
+        hsrv2AgtMsgOpenFlowAddFlexNh                    HalMsgOpenFlowAddFlexNhReq,
+        hsrv2AgtMsgOpenFlowAddFlexCpuNh                 HalMsgOpenFlowAddFlexCpuNhReq,
+        hsrv2AgtMsgOpenFlowDelFlexNh                    HalMsgOpenFlowDelFlexNhReq,
+        hsrv2AgtMsgOpenFlowAddTunnelNh                  HalMsgOpenFlowAddTunnelNhReq,
+        hsrv2AgtMsgOpenFlowDelTunnelNh                  HalMsgOpenFlowDelTunnelNhReq,
+        hsrv2AgtMsgOpenFlowAddMplsTunnel                HalMsgOpenFlowAddMplsTunnelReq,
+        hsrv2AgtMsgOpenFlowDelMplsTunnel                HalMsgOpenFlowDelMplsTunnelReq,	
+        hsrv2AgtMsgOpenFlowAddPushL2vpnNh               HalMsgOpenFlowAddPushL2vpnNhReq,
+        hsrv2AgtMsgOpenFlowDelPushL2vpnNh               HalMsgOpenFlowDelPushL2vpnNhReq,
+        hsrv2AgtMsgOpenFlowAddPushL3vpnNh               HalMsgOpenFlowAddPushL3vpnNhReq,
+        hsrv2AgtMsgOpenFlowDelPushL3vpnNh               HalMsgOpenFlowDelPushL3vpnNhReq,
+        hsrv2AgtMsgOpenFlowAddSwapMplsNh                HalMsgOpenFlowAddSwapMplsNhReq,
+        hsrv2AgtMsgOpenFlowDelSwapMplsNh                HalMsgOpenFlowDelSwapMplsNhReq,
+        hsrv2AgtMsgOpenFlowAddPopPHPNh                  HalMsgOpenFlowAddPopPHPNhReq,
+        hsrv2AgtMsgOpenFlowDelPopPHPNh                  HalMsgOpenFlowDelPopPHPNhReq,
+        hsrv2AgtMsgOpenFlowAddIpucNh                    HalMsgOpenFlowAddIpucNhReq,
+        hsrv2AgtMsgOpenFlowDelIpucNh                    HalMsgOpenFlowDelIpucNhReq,
+        hsrv2AgtMsgOpenFlowAddXlateNh                   HalMsgOpenFlowAddXlateNhReq,
+        hsrv2AgtMsgOpenFlowDelXlateNh                   HalMsgOpenFlowDelXlateNhReq,
+        hsrv2AgtMsgOpenFlowAddSectionNh                 HalMsgOpenFlowSectionNh,
+        hsrv2AgtMsgOpenFlowDelSectionNh                 HalMsgOpenFlowSectionNh,
+        hsrv2AgtMsgOpenFlowAddLspApsTunnel              HalMsgOpenFlowLspApsTunnelReq,
+		hsrv2AgtMsgOpenFlowDelLspApsTunnel              HalMsgOpenFlowLspApsTunnelReq,
+		hsrv2AgtMsgOpenFlowAddApsPushL2vpnNh            HalMsgOpenFlowAddApsPushL2vpnNhReq,
+		hsrv2AgtMsgOpenFlowDelApsPushL2vpnNh            HalMsgOpenFlowAddApsPushL2vpnNhReq,
+		
+        hsrv2AgtMsgOpenFlowAddStats                     HalMsgOpenFlowAddStatsReq,
+        hsrv2AgtMsgOpenFlowDelStats                     HalMsgOpenFlowDelStatsReq,
+        hsrv2AgtMsgOpenFlowGetStats                     HalMsgOpenFlowGetStatsReq,
+        hsrv2AgtMsgOpenFlowClearStats                   HalMsgOpenFlowClearStatsReq,
+
+        hsrv2AgtMsgOpenFlowSetEcmpHashKey               HalMsgOpenFlowSetEcmpHashKeyReq,
+        hsrv2AgtMsgOpenFlowSetLinkAggHashKey            HalMsgOpenFlowSetLinkAggHashKeyReq,
+        hsrv2AgtMsgOpenFlowSetMplsParser                HalMsgOpenFlowSetMplsParserReq,
+
+        hsrv2AgtMsgOpenFlowCreateLinkAgg                HalMsgOpenFlowCreateLinkAggReq,
+        hsrv2AgtMsgOpenFlowDelLinkAgg                   HalMsgOpenFlowDelLinkAggReq,
+        hsrv2AgtMsgOpenFlowAddLinkAggMember             HalMsgOpenFlowAddLinkAggMemberReq,
+        hsrv2AgtMsgOpenFlowDelLinkAggMember             HalMsgOpenFlowDelLinkAggMemberReq,
+
+        hsrv2AgtMsgOpenFlowCreateBond                   HalMsgOpenFlowCreateBondReq,
+        hsrv2AgtMsgOpenFlowDelBond                      HalMsgOpenFlowDelBondReq,
+        hsrv2AgtMsgOpenFlowAddBondSlave                 HalMsgOpenFlowAddBondSlaveReq,
+        hsrv2AgtMsgOpenFlowDelBondSlave                 HalMsgOpenFlowDelBondSlaveReq,
+		hsrv2AgtMsgOpenFlowBondSetMac                   HalMsgOpenFlowBondSetMacReq,
+
+
+        hsrv2AgtMsgOpenFlowAddMeterEntry                HalMsgOpenFlowMeterEntryKey,
+        hsrv2AgtMsgOpenFlowUpdateMeterEntry             HalMsgOpenFlowMeterEntryKey,
+        hsrv2AgtMsgOpenFlowDelMeterEntry                HalMsgOpenFlowMeterEntryKey,
+        hsrv2AgtMsgOpenFlowUpdateMeterIpgStatus         HalMsgOpenFlowMeterEntryKey,
+		hsrv2AgtMsgOpenFlowSetQueueShape                HalMsgOpenFlowSetQueueShapeKey,
+        -- OpenFlow }}
+
+        -- Max Msg Type, MUST at the bottom
+        hsrv2AgtMsgMax                INTEGER
+    }
+}
+Hsrv2AgtMsgInitSeqReq ::= SEQUENCE
+{
+    initseq INTEGER (0..2147483647)
+}
+
+Hsrv2AgtMsgSynDoneReq ::= SEQUENCE
+{
+    done INTEGER
+}
+
+Hsrv2AgtMsgAgentSynReq ::= SEQUENCE
+{
+    physlot INTEGER,
+    logicslot INTEGER
+}
+END

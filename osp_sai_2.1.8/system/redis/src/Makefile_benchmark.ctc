@@ -1,0 +1,17 @@
+include $(TOP_DIR)/Makefile.env.inc
+export WARN_NOERROR = y
+include $(MK_DIR)/sys.mk
+include $(REDIS_DIR)/Makefile.inc
+
+PROG = redis-benchmark
+
+SRCS += ae.c anet.c redis-benchmark.c adlist.c zmalloc.c 
+
+CFLAGS = -Wno-error
+CPPFLAGS += -std=c99 -pedantic
+LD_LIBS = -L$(LIB_DIR) -llua -lgeohash -lhiredis -llinenoise -lpthread  -lm 
+
+include $(MK_DIR)/prog.mk
+
+.PHONY: FORCE
+FORCE:

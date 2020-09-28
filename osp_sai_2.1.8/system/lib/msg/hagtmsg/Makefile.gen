@@ -1,0 +1,8 @@
+#
+# for gen asn1 files
+#
+asn1_gen:
+	mkdir -p gen && cd gen && ../gen.sh
+
+clean:
+	rm -fr gen

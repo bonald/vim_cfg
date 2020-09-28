@@ -1,0 +1,124 @@
+/*
+ * Device Tree Include file for Freescale Layerscape-1043A family SoC.
+ *
+ * Copyright (C) 2015, Freescale Semiconductor
+ *
+ * Mingkai Hu <Mingkai.hu@freescale.com>
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2.  This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
+/dts-v1/;
+#include "fsl-ls1043a.dtsi"
+
+/ {
+	model = "LS1023A CTC Board";
+
+	aliases {
+		spi0 = &qspi;
+	};
+
+	irq@0{
+		compatible = "fsl,ctc-irq";
+		device_type = "irq";
+		interrupts = <0 135 0x4>, /* GPIO1_23 IRQ3 167-32 */
+			     <0 136 0x4>, /* GPIO1_24 IRQ4 168-32 */
+			     <0 137 0x4>; /* GPIO1_25 IRG5 169-32 */
+	};
+};
+
+&qspi {
+        bus-num = <0>;
+        status = "okay";
+
+        qflash0: mx25u3235f@0 {
+                #address-cells = <1>;
+                #size-cells = <1>;
+                compatible = "spi-flash";
+                spi-max-frequency = <20000000>;
+                reg = <0>;
+        };
+};
+
+&i2c0 {
+	status = "okay";
+	eeprom@56 {
+		compatible = "at24,24c64";
+		reg = <0x56>;
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	fsl-scl-gpio = <&gpio4 10 0>;
+	fsl-scl-reset = <&gpio1 24 0>;
+	rtc@32 {
+		compatible = "sd2405";
+		reg = <0x32>;
+	};
+};
+
+&wdog0 {
+	status = "disabled";
+};
+
+&crypto{
+       status = "disabled";
+};
+
+&duart0 {
+	status = "okay";
+};
+
+&duart1 {
+	status = "okay";
+};
+
+&soc {
+/* include used FMan blocks */
+#include "qoriq-fman3-0.dtsi"
+#include "qoriq-fman3-0-1g-2.dtsi"
+};
+
+&fman0 {
+	enet0:ethernet@e4000 {
+		phy-handle = <&rgmii_phy1>;
+		phy-connection-type = "rgmii-txid";
+	};
+
+	mdio@fc000 {
+		rgmii_phy1: ethernet-phy@1 {
+			reg = <0x1>;
+		};
+	};
+};
+
+&bman_fbpr {
+	compatible = "fsl,bman-fbpr";
+	alloc-ranges = <0 0 0x10000 0>;
+};
+&qman_fqd {
+	compatible = "fsl,qman-fqd";
+	alloc-ranges = <0 0 0x10000 0>;
+};
+&qman_pfdr {
+	compatible = "fsl,qman-pfdr";
+	alloc-ranges = <0 0 0x10000 0>;
+};
+
+&soc {
+	fsldpaa: fsl,dpaa {
+		compatible = "fsl,ls1043a-dpaa", "simple-bus", "fsl,dpaa";
+		ethernet@0 {
+			compatible = "fsl,dpa-ethernet";
+			fsl,fman-mac = <&enet0>;
+			dma-coherent;
+		};
+	};
+};
+
+&fman0 {
+	compatible = "fsl,fman", "simple-bus";
+};

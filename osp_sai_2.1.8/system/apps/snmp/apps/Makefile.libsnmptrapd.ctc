@@ -1,0 +1,11 @@
+include ../../../Makefile.env.inc
+include $(MK_DIR)/sys.mk
+
+LIB = snmptrapd
+SRCS=$(wildcard snmptrapd_*.c)
+
+CPPFLAGS+= -I$(APP_TOP_DIR)/ 
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/include -I$(APP_TOP_DIR)/snmp/agent/mibgroup
+CPPFLAGS+= -DNETSNMP_ENABLE_IPV6 -Ulinux -Dlinux=linux
+
+include $(MK_DIR)/lib.mk

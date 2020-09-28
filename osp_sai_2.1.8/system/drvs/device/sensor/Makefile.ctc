@@ -1,0 +1,10 @@
+include $(MK_DIR)/sys.mk
+LIB = sensor
+SRCS  = sensor_api.c
+SRCS  += sensor_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/sensor
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

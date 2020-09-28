@@ -1,0 +1,42 @@
+HAL-MSG-OAM-EFM DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+HalMsgOamEFMSetParMuxStatusReq ::= SEQUENCE
+{
+    gport            INTEGER,
+    internalPort     INTEGER,
+    parAction        INTEGER,
+    muxAction        INTEGER
+}
+
+HalMsgOamEFMTestPKTReq ::= SEQUENCE
+{
+    gport       INTEGER,
+    vlan        INTEGER,
+    count       INTEGER,
+    mac         HalMsgDefL2MacAddr
+}
+
+HalMsgOamEFMTestPKTRes ::= SEQUENCE
+{
+    gport       INTEGER,
+    count       INTEGER
+}
+
+HalMsgOamEFMSetLinkMomitorReq ::= SEQUENCE
+{
+    gport       INTEGER,
+    enable      INTEGER
+}
+
+HalMsgOamEFMSetInternalPortReq ::= SEQUENCE
+{
+    add               INTEGER,
+    gport             INTEGER,
+    internalPort      INTEGER             
+}
+END

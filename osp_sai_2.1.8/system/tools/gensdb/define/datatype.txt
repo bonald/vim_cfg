@@ -1,0 +1,174 @@
+################################################################################
+# Note:
+# 1. 定义CDB中的data type, 包含2项目[DT_TYPE] [DT_MAP]
+#    这样CDB可以清楚的知道data的size, copy方法, val2str方法等，以方便自动产生CDB API代码和CDB sync代码
+# 2. 项目之间以"-----"分隔
+# 3. [DT_TYPE]为基本类型, 包含5列
+#    1) 类型
+#    2) set方法
+#    3) dump方法
+#    4) val2str方法, 简单数据类型可以不需要
+#    5) 是否带引用符, 有第4列val2str函数时才需要, 一般char/uint8的字符串, 不需要带
+# 4. [DT_MAP]为映射表, 包含2列
+#    1) datatype name, 为TBL/DS里面使用的类型
+#    2) datatype type, 为[DT_TYPE]里面定义的, 如果datatype name与datatype type一样, 不需要第2列
+# 5. 其他注意事项
+#    1) 所有的TBL/DS key都必须在这里指定
+#    2) 所有的ENUM需要以MAX结尾, 并在cdb_ds.c定义一个数组, e.g. GLB_IF_TYPE_MAX/glb_if_type_strs
+################################################################################
+--------------------------------------------------------------------------------
+[DT_TYPE]
+# type                  set_oper        dump_oper       protobuf_type   val2str                          & (if is STRING, need not &)
+TASK                    =               %s              none            ctc_task_val2str
+VOID                    =               %p              none
+UINT                    =               %u			
+UINT64                  =               PRIu64          uint64
+INT                     =               %d              int32
+INT64                   =               PRId64          int64
+STRING                  memcpy          %s              string
+ENUM8                   =               %s              uint32
+ENUM32                  =               %s              uint32
+DOUBLE                  =               %f              double
+sdb_reference_list_t    NONE            %s              none
+UINT8ARRAY              memcpy          %s              repeat,uint8    sdb_uint8_array_val2str
+UINT32ARRAY             memcpy          %s              repeat,uint32   sdb_uint32_array_val2str
+UINT64ARRAY             memcpy          %s              repeat,uint64   sdb_uint64_array_val2str
+mac_addr_t              memcpy          %s              compose         sdb_mac_addr_val2str
+fdb_key_t               memcpy          %s              compose         sdb_fdb_key_val2str             &
+BITMAP                  memcpy          %s              bytes           sdb_bitmap_val2str
+addr_t                  memcpy          %s              compose         sdb_addr_val2str                &
+prefix_t                memcpy          %s              compose         sdb_prefix_val2str              &
+sai_neighbor_entry_t	memcpy		%s              compose         sdb_neighbor_val2str            &
+sai_ip_address_t    	memcpy		%s              compose         sdb_ipaddr_val2str              &
+sai_unicast_route_entry_t memcpy	%s              compose         sdb_ipuc_val2str                &
+sai_l2mc_entry_t        memcpy		%s              compose         sdb_l2mc_val2str                &
+sai_ipmc_entry_t        memcpy		%s              compose         sdb_ipmc_val2str                &
+ctclib_opb_t            memcpy		%s              compose         sdb_opb_val2str                 &
+sdb_mac_rx_stats_ptr_t  memcpy          %s              compose         sdb_mac_rx_stats_ptr_val2str    &
+sdb_mac_tx_stats_ptr_t  memcpy          %s              compose         sdb_mac_tx_stats_ptr_val2str    &
+sai_acl_field_data_t    memcpy          %s              compose         sdb_sai_acl_field_val2str       &
+ctc_sai_acl_tap_t       memcpy          %s              compose         sdb_sai_acl_tap_val2str         &
+ctc_sai_acl_field_list_t  memcpy        %s              compose         sdb_sai_acl_field_list_val2str  &
+ctc_sai_acl_action_list_t memcpy        %s              compose         sdb_sai_acl_action_list_val2str &
+ctc_sai_acl_action_attrlist_t memcpy    %s              compose         sdb_sai_acl_action_attrlist_val2str &
+ctc_sai_acl_tunnel_key_t memcpy         %s              compose         sdb_sai_acl_tunnel_key_val2str &
+sai_object_id_t         =               %s              compose         sdb_object_id_val2str           &
+sai_nat_forward_entry_t memcpy          %s              compose         sdb_nat_forward_val2str         &
+--------------------------------------------------------------------------------
+[DT_MAP]
+#dt_name                        dt_type
+##### INT #####
+uint8                           UINT
+uint16                          UINT
+uint32                          UINT
+uint64                          UINT64
+int8                            INT
+int16                           INT
+int32                           INT
+int64                           INT64
+vid_t                           UINT
+char                            INT
+in4_addr                        UINT
+void                            VOID
+void*                           VOID
+ctclib_hash_t                   VOID
+ctc_task_t                      TASK
+ctc_vector_t*			VOID
+
+##### UINT #####
+
+##### DOUBLE #####               
+double                          DOUBLE
+
+##### STRING #####
+char[]                          STRING
+
+###### Value Array #####
+#int8[]                          INT8ARRAY
+uint8[]                         UINT8ARRAY
+#int32[]                         INT32ARRAY
+uint32[]                        UINT32ARRAY
+uint64[]                        UINT64ARRAY
+
+
+##### BITMAP #####
+vlan_bmp_t                      BITMAP
+#port_bmp_t                      BITMAP
+#bmp_32_t                        BITMAP
+#bmp_64_t                        BITMAP
+#logid_bmp_t                     BITMAP
+#vclass_bmp_t					BITMAP
+#vrid_bmp_t                      BITMAP
+#
+###### FLAGS #####
+#FLAGS8                          FLAGS8
+#FLAGS32                         FLAGS32
+
+##### Enum #####
+sai_packet_action_t          	 ENUM32
+#glb_port_speed_t           	ENUM8
+#glb_port_duplex_t               ENUM8
+#glb_port_unidir_t               ENUM8
+#glb_if_mode_t                   ENUM8
+#glb_vlan_port_type_t            ENUM8
+#glb_agg_mode_t                  ENUM8
+
+##### TBL key #####
+stbl_port_key_t			UINT
+stbl_of_port_key_t		UINT64
+stbl_lag_memport_key_t		UINT
+stbl_vr_key_t			UINT64
+stbl_rif_key_t			UINT64
+stbl_nexthop_key_t		sai_neighbor_entry_t
+stbl_neighbor_key_t		sai_neighbor_entry_t
+stbl_vrrp_vip_key_t		sai_ip_address_t
+stbl_vlan_key_t			UINT
+stbl_vlan_class_key_t		UINT
+stbl_stp_key_t	  		UINT
+stbl_ipmc_key_t		    sai_ipmc_entry_t
+stbl_acl_port_key_t		UINT64
+stbl_acl_tbl_key_t		UINT
+stbl_acl_entry_key_t		UINT
+stbl_acl_udf_entry_key_t    UINT
+stbl_route_key_t		sai_unicast_route_entry_t
+stbl_l2mc_key_t	 		sai_l2mc_entry_t
+stbl_nexthop_group_key_t	UINT
+stbl_hostif_key_t		UINT64
+stbl_copp_trap_key_t		UINT
+stbl_copp_group_key_t		UINT
+stbl_copp_reason_key_t		UINT
+stbl_copp_entry_key_t		UINT
+stbl_acl_tunnel_key_t		ctc_sai_acl_tunnel_key_t
+stbl_nat_forward_key_t		sai_nat_forward_entry_t
+stbl_qos_mpls_domain_key_t  UINT
+stbl_qos_mpls_flow_key_t    UINT
+stbl_cfm_lmep_key_t         UINT
+stbl_cfm_rmep_key_t         UINT
+
+##### DS key #####
+                                
+##### DS #####            
+sdb_reference_list_t
+
+##### DT with val2str #####     
+fdb_key_t
+mac_addr_t
+ctclib_opb_t
+addr_t
+prefix_t
+sai_neighbor_entry_t
+sai_ip_address_t
+sai_unicast_route_entry_t
+sdb_mac_rx_stats_ptr_t
+sdb_mac_tx_stats_ptr_t
+sai_object_id_t
+sai_l2mc_entry_t
+sai_ipmc_entry_t
+sai_acl_field_data_t
+ctc_sai_acl_tap_t
+ctc_sai_acl_field_list_t
+ctc_sai_acl_action_list_t
+ctc_sai_acl_action_attrlist_t
+ctc_sai_acl_tunnel_key_t
+sai_nat_forward_entry_t
+--------------------------------------------------------------------------------

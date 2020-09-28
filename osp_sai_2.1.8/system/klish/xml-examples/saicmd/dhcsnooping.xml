@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+DHCP SNOOPING
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+<COMMAND name="show dhcp snooping" help="Show snooping configuration"/>
+<COMMAND name="show dhcp snooping config" help="DHCP snooping configuration information">
+
+	<ACTION>
+		cdbctl show/cdb/dhcp/dhcsnooping/config
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the show dhcp snooping privileged EXEC command to display the DHCP snooping configuration.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to display the configuration of DHCP snooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the show dhcp snooping config command:
+    Switch# show dhcp snooping config
+    dhcp snooping service: enabled
+    dhcp snooping switch: enabled
+    Verification of hwaddr field: enabled
+    Insertion of relay agent information (option 82): enabled
+    Relay agent information (option 82) on untrusted port: not allowed
+    dhcp snooping vlan 1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping binding mac
+	</CTCRCMD>
+
+</COMMAND>
+
+<COMMAND name="show dhcp snooping trusted-sources" help="List of DHCP snooping trusted interface(s)">
+
+	<ACTION>
+		cdbctl show/cdb/dhcp/dhcsnooping/trusted
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the show dhcp snooping trusted-sources command to display DHCP snooping trusted interfaces.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to display the trusted interfaces of DHCP snooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the show dhcp snooping trusted-sources command:
+    Switch# show dhcp snooping trusted-sources
+    List of DHCP snooping trusted interface(s):
+    ============================================================
+    eth-0-2  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping trust
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp snooping binding" help="DHCP snooping binding table">
+	<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+	    <PARAM name="all" help="DHCP snooping all binding entry" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <PARAM name="database" help="Database information" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <PARAM name="learning" help="DHCP snooping learning binding entry" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <PARAM name="manual" help="DHCP snooping configured binding entry" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <PARAM name="summary" help="Summary information" ptype="SUBCOMMAND" mode="subcommand"/>
+	</PARAM>
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" test='"${type}"!="summary"' optional="true">
+	    <PARAM name="interface" help="Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="intf" help="Interface name" ptype="IF_NAME_EA"/>
+	    </PARAM> 
+	    <PARAM name="ipv4" help="Specify IPv4 address parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="addr" help="IPv4 address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="mac" help="Specify MAC address" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="maddr" help="MAC address in HHHH.HHHH.HHHH format" ptype="MAC_ADDR"/>
+	    </PARAM>
+	    <PARAM name="vlan" help="Specify VLAN parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	    </PARAM>
+	</PARAM>
+
+	<ACTION>
+		etype=${type}
+		if [ "$etype" == "manual" ]; then
+		    etype="configed"
+		fi
+
+		if [ "$etype" == "summary" ]; then
+		    cdbctl show/cdb/dhcp/dhcbinding/summary
+		elif [ "$etype" == "database" ]; then
+		    cdbctl show/cdb/dhcp/dhcbinding/database
+		else
+                if [ "${opt}" == "ipv4" ] ; then
+                    cdbctl show/cdb/dhcp/dhcbinding/$etype/${opt}/${addr}
+                elif [ "${opt}" == "mac" ] ; then
+                    cdbctl show/cdb/dhcp/dhcbinding/$etype/${opt}/${maddr}
+                elif [ "${opt}" == "vlan" ] ; then
+                    cdbctl show/cdb/dhcp/dhcbinding/$etype/${opt}/${vid}
+                elif [ "${opt}" == "interface" ] ; then
+                    cdbctl show/cdb/dhcp/dhcbinding/$etype/${opt}/${intf}
+                else
+                    cdbctl show/cdb/dhcp/dhcbinding/$etype
+                fi
+        	fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the show dhcp snooping binding privileged EXEC command to display the DHCP snooping binding database and configuration information for all interfaces on a switch.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+If DHCP snooping is enabled and an interface changes to the down state, the switch does not delete the statically configured bindings.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the show dhcp snooping binding command:
+    Switch# show dhcp snooping binding all
+    DHCP snooping binding table:
+    VLAN MAC Address    Interface  Lease(s)   IP Address
+    ============================================================
+    1    0001.0001.0001 eth-0-2    static     1.1.1.1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping binding mac
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp snooping statistics" help="DHCP snooping statistics information">
+
+	<ACTION>
+		cdbctl show/cdb/dhcp/dhcsnooping/statistics
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the show dhcp snooping statistics privileged EXEC command to display DHCP snooping statistics.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to display the statistics of DHCP snooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None 
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the show dhcp snooping statistics command:
+    Switch# show dhcp snooping statistics
+    DHCP snooping statistics:
+    ============================================================
+    DHCP packets                              	11257
+    BOOTP packets                              	0
+    Packets forwarded                          	10381
+    Packets invalid                            	844
+    Packets MAC address verify failed          	354
+    Packets dropped                            	516
+	</CTCEXAMPLE>
+	<CTCRCMD>
+clear dhcp snooping statistics
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear dhcp snooping" help="Snooping"/>
+<COMMAND name="clear dhcp snooping statistics" help="DHCP snooping statistics information">
+
+	<ACTION>
+		cdbctl delete/cdb/dhcp/dhcsnooping/statistics
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the clear dhcp snooping statistics privileged EXEC command to clear DHCP snooping statistics.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to clear the statistics of DHCP snooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None 
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    Switch# clear dhcp snooping statistics 
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	show dhcp snooping statistics
+  </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear dhcp snooping bindings" help="Specify DHCP snooping bindings"/>
+
+<COMMAND name="clear dhcp snooping bindings learning" help="Specify DHCP snooping learning bindings">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+	    <PARAM name="ipv4" help="Specify IPv4 address parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="addr" help="IPv4 address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="mac" help="Specify MAC address" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="maddr" help="MAC address in HHHH.HHHH.HHHH format" ptype="MAC_ADDR"/>
+	    </PARAM>
+	    <PARAM name="vlan" help="Specify VLAN parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	    </PARAM>
+	    <PARAM name="interface" help="Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="intf" help="Interface name" ptype="IF_NAME_EA"/>
+	    </PARAM> 
+	</PARAM>
+
+	<ACTION>
+		if [ "${opt}" == "ipv4" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/learning/${opt}/${addr}
+		elif [ "${opt}" == "mac" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/learning/${opt}/${maddr}
+		elif [ "${opt}" == "vlan" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/learning/${opt}/${vid}
+		elif [ "${opt}" == "interface" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/learning/${opt}/${intf}
+		else
+		    cdbctl delete/cdb/dhcp/dhcbinding/learning
+		fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the clear dhcp snooping global configuration command on the switch to clear dynamic entries in DHCP binding database or the DHCP snooping statistics counters.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to clear DHCP snooping binging or statistics.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to clear the DHCP snooping statistics counters and dynamic entries:
+    Switch(config)# clear dhcp snooping bindings learning
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show dhcp snooping binding
+show dhcp snooping statistics
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear dhcp snooping bindings manual" help="Specify DHCP snooping configured bindings">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+	    <PARAM name="ipv4" help="Specify IPv4 address parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="addr" help="IPv4 address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="mac" help="Specify MAC address" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="maddr" help="MAC address in HHHH.HHHH.HHHH format" ptype="MAC_ADDR"/>
+	    </PARAM>
+	    <PARAM name="vlan" help="Specify VLAN parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	    </PARAM>
+	    <PARAM name="interface" help="Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="intf" help="Interface name" ptype="IF_NAME_EA"/>
+	    </PARAM> 
+	</PARAM>
+
+	<ACTION>
+		if [ "${opt}" == "ipv4" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${addr}
+		elif [ "${opt}" == "mac" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${maddr}
+		elif [ "${opt}" == "vlan" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${vid}
+		elif [ "${opt}" == "interface" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${intf}
+		else
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed
+		fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the clear dhcp snooping bindings manual command on the switch to clear static entries in DHCP binding database
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to clear DHCP snooping binging manual.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to clear the DHCP snooping static entries:
+    Switch(config)# clear dhcp snooping bindings manual
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show dhcp snooping binding
+	</CTCRCMD>
+</COMMAND>
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+<COMMAND name="dhcp snooping" help="Specify DHCP snooping parameter"/>
+<COMMAND name="dhcp snooping trust" help="Trust this port">
+
+	<ACTION>
+		cdbctl update/cdb/interface/${iface}/dhcp_snooping_trust/1
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping trust interface configuration command on the switch to configure a port as trusted for DHCP snooping purposes. Use the no form of this command to return to the default setting.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Configure as trusted ports those that are connected to a DHCP server or to other switches or routers. Configure as untrusted ports those that are connected to DHCP clients.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping trust is disabled.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to enable DHCP snooping trust on a port:
+    Switch(config-if-eth-0-1)# dhcp snooping trust
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping trust
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping" help="Specify DHCP snooping parameter"/>
+<COMMAND name="no dhcp snooping trust" help="Trust this port">
+	<ACTION>
+		cdbctl update/cdb/interface/${iface}/dhcp_snooping_trust/0
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping trust interface configuration command on the switch to configure a port as untrusted for DHCP snooping purposes. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to disable DHCP snooping trust on a port:
+    Switch(config-if-eth-0-1)# no dhcp snooping trust
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping trust
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp snooping vlan" help="Specify VLAN parameter">
+	<PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	<PARAM name="information" help="DHCP snooping information" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="option" help="DHCP snooping information option" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="format-type" help="Option 82 information format" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="circuit-id" help="Circuit id option 82 format" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="string" help="User defined string for circuit id" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="cidstr" help="Use string for circuit id (The character only can be 0-9A-Za-z.-_ and the max len is 63)" ptype="DHCIDSTR"/>
+
+	<ACTION>
+		cdbctl update/cdb/interface/${iface}/circuit_id/add/key/${vid}/circuit/${cidstr}
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping vlan information option interface configuration command on the switch to enable DHCP snooping information option on a VLAN of port. Use the no form of this command to return to the default setting.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+You can enter a single VLAN ID identified by VLAN ID number, a series of VLAN IDs separated by commas, a range of VLAN IDs separated by hyphens, or a range of VLAN IDs separated by entering the starting and ending VLAN IDs separated by a space.
+You must first globally enable DHCP snooping before enabling DHCP snooping on a VLAN.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping information option is disabled on all VLANs.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to enable DHCP snooping on VLAN 10:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# dhcp snooping vlan 10 information option format-type circuit-id string Centec 
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show dhcp snooping config
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping vlan" help="Specify VLAN parameter">
+	<PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	<PARAM name="information" help="DHCP snooping information" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="option" help="DHCP snooping information option" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="format-type" help="Option 82 information format" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="circuit-id" help="Circuit id option 82 format" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="string" help="User defined string for circuit id" ptype="SUBCOMMAND" mode="subcommand"/>
+
+	<ACTION>
+		cdbctl update/cdb/interface/${iface}/circuit_id/del/key/${vid}
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the no dhcp snooping vlan information option interface configuration command on the switch to return to the default setting of DHCP snooping information option on a VLAN of port.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping information option is disabled on all VLANs.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to disable DHCP snooping information option on VLAN 10:
+    Switch(config)# interface eth-0-1 
+    Switch(config-if-eth-0-1)# no dhcp snooping vlan 10 information option format-type circuit-id string      
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show dhcp snooping config
+	</CTCRCMD>
+
+</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+<COMMAND name="dhcp snooping" help="Enable DHCP snooping feature">
+	<ACTION>
+		cdbctl update/cdb/sys/sys_global/dhcp_snooping_enable/1
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping global configuration command on the switch to globally enable DHCP snooping. Use the no form of this command to return to the default setting.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+For any DHCP snooping configuration to take effect, you must globally enable DHCP snooping. DHCP snooping is not active until you enable snooping on a VLAN by using the dhcp snooping vlan vlan-id global configuration command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping is disabled.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to enable DHCP snooping:
+    Switch(config)# dhcp snooping
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show dhcp snooping config
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping" help="Enable DHCP snooping feature">
+	<ACTION>
+		cdbctl update/cdb/sys/sys_global/dhcp_snooping_enable/0
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping global configuration command on the switch to globally disable DHCP snooping.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping is disabled.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to disable DHCP snooping:
+    Switch(config)# no dhcp snooping
+	</CTCEXAMPLE>
+	<CTCRCMD>
+show dhcp snooping config
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp snooping database" help="Specify DHCP snooping database parameter"/>
+<COMMAND name="dhcp snooping database auto-save" help="Specify save parameter"/>
+
+<COMMAND name="dhcp snooping database auto-save interval" help="Specify save interval parameter">
+<PARAM name="interval" help="Interval seconds (default is 600)" ptype="DHCBINDSAVEINTV"/>
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/database_save_interval/${interval}
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping database global configuration command on the switch to configure the DHCP snooping binding database agent. Use the no form of this command to disable the agent, to reset the timeout value, or to reset the write-delay value.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+The DHCP snooping database is save as flash:/dhcpsnooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+Default interval is 600 seconds.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the dhcp snooping database command:
+    Switch(config)# dhcp snooping database auto-save interval 120
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping database auto-save interval
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping database" help="Specify DHCP snooping database parameter"/>
+<COMMAND name="no dhcp snooping database auto-save" help="Specify save parameter"/>
+<COMMAND name="no dhcp snooping database auto-save interval" help="Specify save interval parameter">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/database_save_interval/600
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping database global configuration command on the switch to configure the DHCP snooping binding database agent. Use the no form of this command to disable the agent, to reset the timeout value, or to reset the write-delay value.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+The DHCP snooping database is save as flash:/dhcpsnooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+Default interval is 600 seconds.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the dhcp snooping database command:
+    Switch(config)# no dhcp snooping database auto-save interval
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping database auto-save interval
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp snooping database save" help="Specify save parameter">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping_db/save
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping database save global configuration command on the switch to save dhcp snooping database. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the dhcp snooping database save command:
+    Switch(config)# dhcp snooping database save
+	</CTCEXAMPLE>
+	<CTCRCMD>
+load dhcp snooping database
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="load" help="Load configuration"/>
+<COMMAND name="load dhcp" help="For DHCP"/>
+<COMMAND name="load dhcp snooping" help="For DHCP snooping"/>
+
+<COMMAND name="load dhcp snooping database" help="Load DHCP snooping binding database">
+	<PARAM name="GFILENAME" help="File name" ptype="STRING"/>
+
+	<ACTION>
+showname="${GFILENAME}"
+accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+if [ ! -f $accessname ]; then
+    echo "% No such file"
+    exit
+fi
+tmpfile="`mktemp /tmp/dhcbindingXXXXXX`"
+cp -fr $accessname $tmpfile
+destfile="`basename $tmpfile`"
+cdbctl update/cdb/dhcp/dhcsnooping_db/load/$destfile
+if [ "$?" == "0" ]; then
+    rm -fr $tmpfile
+    exit 0
+else
+    rm -fr $tmpfile
+    exit 1
+fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the load dhcp snooping database global configuration command on the switch to load dhcp snooping database. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    The following is sample output from the load dhcp snooping database command:
+    Switch(config)# load dhcp snooping database flash:/dhcpsnooping
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping database save
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="no dhcp snooping bindings" help="Specify DHCP snooping bindings">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+	    <PARAM name="ipv4" help="Specify IPv4 address parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="addr" help="IPv4 address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="mac" help="Specify MAC address" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="maddr" help="MAC address in HHHH.HHHH.HHHH format" ptype="MAC_ADDR"/>
+	    </PARAM>
+	    <PARAM name="vlan" help="Specify VLAN parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	    </PARAM>    
+	    <PARAM name="interface" help="Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="intf" help="Interface name" ptype="IF_NAME_EA"/>
+	    </PARAM> 
+	</PARAM>
+
+	<ACTION>
+		if [ "${opt}" == "ipv4" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${addr}
+		elif [ "${opt}" == "mac" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${maddr}
+		elif [ "${opt}" == "vlan" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${vid}
+		elif [ "${opt}" == "interface" ] ; then
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed/${opt}/${intf}
+		else
+		    cdbctl delete/cdb/dhcp/dhcbinding/configed
+		fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the no dhcp snooping binding global configuration command on the switch to delete the DHCP snooping binding entry.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to delete the DHCP snooping binding entry:
+    Switch(config)# no dhcp snooping bindings mac 1.1.1 
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping binding mac
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp snooping binding" help="Add DHCP snooping binding item"/>
+<COMMAND name="dhcp snooping binding mac" help="Specify MAC address">
+	<PARAM name="macaddr" help="MAC address in HHHH.HHHH.HHHH format" ptype="MAC_ADDR"/>
+	<PARAM name="vlan" help="Specify VLAN parameter" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="vid" help="VLAN number" ptype="VLAN_ID"/>
+	<PARAM name="ipv4" help="Specify IPv4 address parameter" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="ipaddr" help="IPv4 address" ptype="IP_ADDR"/>
+	<PARAM name="interface" help="Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="intf" help="Interface name" ptype="IF_NAME_EA"/>
+	<PARAM name="expiry" help="Specify expiry parameter" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="timeout" help="Expiry second(s) (0 for static entry)" ptype="DHCBINDINGEXPIRY"/>
+
+	<ACTION>
+		cdbctl create/cdb/dhcp/dhcbinding/${macaddr}#0#${vid}/vid/${vid}/client_ip/${ipaddr}/ifname/${intf}/lease/${timeout}/state/running/type/configed
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping binding global configuration command on the switch to configure the DHCP snooping binding database and to add binding entries to the database.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command when you are testing or debugging the switch.
+In the DHCP snooping binding database, each database entry, also referred to a binding, has an IP address, an associated MAC address, the lease time, the interface to which the binding applies, and the VLAN to which the interface belongs.
+Use the show dhcp snooping binding privileged EXEC command to display the configured bindings.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to generate a DHCP binding configuration with an expiration time of 1000 seconds on a port in VLAN 1:
+    Switch(config)# dhcp snooping binding mac 0001.000c.01ef vlan 1 ipv4 10.10.1.1 interface eth-0-1 expiry 1000
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping bindings
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp snooping verify" help="Specify DHCP snooping verify option"/>
+<COMMAND name="dhcp snooping verify mac-address" help="Verify MAC address">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/verify_mac_address/1
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping verify global configuration command on the switch to configure the switch to verify on an untrusted port that the source MAC address in a DHCP packet matches the client hardware address. Use the no form of this command to configure the switch to not verify the MAC addresses.	
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+In a service-provider network, when a switch receives a packet from a DHCP client on an untrusted port, it automatically verifies that the source MAC address and the DHCP client hardware address match. If the addresses match, the switch forwards the packet. If the addresses do not match, the switch drops the packet.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The switch verifies the source MAC address in a DHCP packet that is received on untrusted ports matches the client hardware address in the packet.
+	</CTCDEFAULT>	
+	<CTCEXAMPLE>
+    This example shows how to enable the MAC address verification:
+    Switch(config)# dhcp snooping verify mac-address
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping verify mac-address
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping verify" help="Specify DHCP snooping verify option"/>
+<COMMAND name="no dhcp snooping verify mac-address" help="Verify MAC address">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/verify_mac_address/0
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the no dhcp snooping verify mac-address global configuration command on the switch to configure the switch to disable verify on an untrusted port that the source MAC address in a DHCP packet matches the client hardware address. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>	
+	<CTCEXAMPLE>
+    This example shows how to disable the MAC address verification:
+    Switch(config)# no dhcp snooping verify mac-address
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping verify mac-address
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp snooping information" help="DHCP snooping information"/>
+<COMMAND name="dhcp snooping information option" help="Insert relay information in request">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/add_agent_options/1
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the dhcp snooping information option global configuration command on the switch to enable DHCP option-82 data insertion. Use the no form of this command to disable DHCP option-82 data insertion.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+You must globally enable DHCP snooping by using the dhcp snooping global configuration command for any DHCP snooping configuration to take effect.
+When the option-82 feature is enabled and a switch receives a DHCP request from a host, it adds the option-82 information in the packet. The option-82 information contains the switch MAC address (the remote ID suboption) and the port identifier, vlan-mod-port, from which the packet is received (circuit ID suboption). The switch forwards the DHCP request that includes the option-82 field to the DHCP server.
+When the DHCP server receives the packet, it can use the remote ID, the circuit ID, or both to assign IP addresses and implement policies, such as restricting the number of IP addresses that can be assigned to a single remote ID or a circuit ID. Then the DHCP server echoes the option-82 field in the DHCP reply.
+The DHCP server unicasts send the reply to the switch if the request has been relayed to the server by the switch. When the client and server are on the same subnet, the server broadcasts the reply. The switch inspects the remote ID and possibly the circuit ID fields to verify that it originally inserted the option-82 data. The switch removes the option-82 field and forwards the packet to the switch port that connects to the DHCP host that sent the DHCP request.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP option-82 data is not inserted.
+	</CTCDEFAULT>	
+	<CTCEXAMPLE>
+    This example shows how to enable DHCP snooping information option-82 data insertion:
+    Switch(config)# dhcp snooping information option
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping information option
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping information" help="DHCP snooping information"/>
+<COMMAND name="no dhcp snooping information option" help="Insert relay information in request">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/add_agent_options/0
+	</ACTION>
+
+	<CTCDESCRIPTION>
+Use the no dhcp snooping information option global configuration command on the switch to disable DHCP option-82 data insertion.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>	
+	<CTCEXAMPLE>
+    This example shows how to disable DHCP option-82 data insertion:
+    Switch(config)# no dhcp snooping information option
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping information option
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp snooping information option format" help="Option 82 information format"/>
+<COMMAND name="dhcp snooping information option format remote-id" help="Remote id option 82 format">
+	<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+	    <PARAM name="hostname" help="System's network name" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <PARAM name="string" help="User defined string for remote id" ptype="SUBCOMMAND" mode="subcommand">
+	        <PARAM name="rstr" help="Use string for remote id (The character only can be 0-9A-Za-z.-_ and the max len is 63)" ptype="REMOTE_ID_STRING"/>
+	    </PARAM>
+	</PARAM>
+
+	<ACTION>
+		if [ "${opt}" == "hostname" ] ; then
+		    cdbctl update/cdb/dhcp/dhcsnooping/hostname_as_remote_id/1
+		else
+		    cdbctl update/cdb/dhcp/dhcsnooping/hostname_as_remote_id/0/remote_id_string/${rstr}
+		fi
+	</ACTION>
+
+	<CTCUSAGE>
+Use the dhcp snooping information option format remote-id global configuration command on the switch stack or on a standalone switch to configure the option-82 remote-ID suboption. Use the no form of this command to configure the default remote-ID suboption.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to configure remote-id: 
+    Switch(config)# dhcp snooping information option format remote-id string MyRemoteId
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping information option format remote-id
+	</CTCRCMD>
+
+</COMMAND>
+
+<COMMAND name="no dhcp snooping information option format" help="Option 82 information format"/>
+<COMMAND name="no dhcp snooping information option format remote-id" help="Remote id option 82 format">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/remote_id_string
+		cdbctl update/cdb/dhcp/dhcsnooping/hostname_as_remote_id/0
+	</ACTION>
+
+	<CTCUSAGE>
+Use the no form of this command to configure the default remote-ID suboption.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to delete remote-id: 
+    Switch(config)# no dhcp snooping information option format remote-id 
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping information option format remote-id
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp snooping information option allow-untrusted" help="Allow untrusted ports to accept incoming DHCP packets with relay agent information">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/allow_untrusted/1
+	</ACTION>
+
+	<CTCUSAGE>
+Use the dhcp snooping information option allow-untrusted global configuration command on an aggregation switch to configure it to accept DHCP packets with option-82 information that are received on untrusted ports that might be connected to an edge switch. Use the no form of this command to return to the default setting.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The switch drops DHCP packets with option-82 information that are received on untrusted ports that might be connected to an edge switch.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to configure an access switch to not check the option-82 information in untrusted packets from an edge switch and to accept the packets:  
+    Switch(config)# dhcp snooping information option allow-untrusted
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping information option allow-untrusted
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping information option allow-untrusted" help="Allow untrusted ports to accept incoming DHCP packets with relay agent information">
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/allow_untrusted/0
+	</ACTION>
+
+	<CTCUSAGE>
+Use the no dhcp snooping information option allow-untrusted global configuration command on an aggregation switch to configure it to no accept DHCP packets with option-82 information that are received on untrusted ports that might be connected to an edge switch. 
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to configure an access switch to no accept DHCP packets with option-82 information that are received on untrusted ports that might be connected to an edge switch:
+    Switch(config)# no dhcp snooping information option allow-untrusted
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping information option allow-untrusted
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp snooping vlan" help="Specify VLAN parameter">
+	<PARAM name="vlan" help="VLAN number or VLAN range, example: 2,5-9,12,22-28" ptype="VLAN_LIST"/>
+
+	<ACTION>
+		cdbctl update/cdb/dhcp/dhcsnooping/vlans/${vlan}
+	</ACTION>
+
+	<CTCUSAGE>
+Use the dhcp snooping vlan global configuration command on the switch to enable DHCP snooping on a VLAN. Use the no form of this command to return to the default setting.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping is disabled on all VLANs.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to enable DHCP snooping on VLAN 10:
+    Switch(config)# dhcp snooping vlan 10
+	</CTCEXAMPLE>
+	<CTCRCMD>
+no dhcp snooping vlan
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp snooping vlan" help="Specify VLAN parameter">
+	<PARAM name="vlan" help="VLAN number or VLAN range, example: 2,5-9,12,22-28"  ptype="VLAN_LIST"/>
+
+	<ACTION>
+		cdbctl delete/cdb/dhcp/dhcsnooping/vlans/${vlan}
+	</ACTION>
+	<CTCUSAGE>
+Use the dhcp snooping vlan global configuration command on the switch to enable DHCP snooping on a VLAN. Use the no form of this command to return to the default setting.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+DHCP snooping is disabled on all VLANs.
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    This example shows how to disable DHCP snooping on VLAN 10:
+    Switch(config)# no dhcp snooping vlan 10
+	</CTCEXAMPLE>
+	<CTCRCMD>
+dhcp snooping vlan
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

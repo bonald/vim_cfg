@@ -1,0 +1,44 @@
+SRCS += $(wildcard device/phy/*.c)
+SRCS += $(wildcard device/phy/aqr40x/*.c)
+
+include $(MK_DIR)/sys.mk
+LIB = phy
+SRCS += $(wildcard *.c)
+SRCS += $(wildcard aqr40x/*.c)
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/aqr40x
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/fiber
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/asic/mdio
+CPPFLAGS += -I$(SDK_DIR)/core/api/include
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+### for 88e1680 phy drivers
+SRCS += $(wildcard mad_3.21b/phy/src/driver/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/platform/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/madapi/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/madapi/88E1548P/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/madapi/88E1680/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/madapi/88E1780/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/macfunc/151xP_ptp/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/macfunc/1_step_ptp/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/macfunc/macsec/*.c)
+SRCS += $(wildcard mad_3.21b/phy/src/macfunc/util/*.c)
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/src/macfunc/1_step_ptp
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/src/macfunc/151xP_ptp
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/Include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/Include/h/madApi
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/Include/h/driver
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/Include/h/macsec
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy/mad_3.21b/phy/Include/h/platform
+## can set or unset, spi_cpm also use DDEBUG
+CPPFLAGS += -DDEBUG=1 -DDEBUG_MAD
+## should always unset
+# CPPFLAGS += -DMAD_DSP_VCT
+
+include $(MK_DIR)/lib.mk

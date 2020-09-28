@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+ARP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show ip arp" help="ARP table">
+		<ACTION>
+				cdbctl show/cdb/l3/show_arp
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+To display all the entries in the Address Resolution Protocol (ARP) table, use the show ip arp command in privileged EXEC mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To display all entries in the ARP cache, use this command without any arguments or keywords.  
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the show ip arp command:  
+    Switch# show ip arp  
+    Protocol   Address          Age (min)  Hardware Addr    Interface 
+    ----------+----------------+----------+----------------+----------
+    Internet   10.31.7.19       -          0800.0900.1834   eth-0-1          
+    Internet   10.108.1.27      -          001e.0809.7ea3   eth-0-1  
+    Internet   192.31.7.17      -          001e.0809.7ea3   eth-0-2   
+    Internet   192.31.8.17      -          001e.0809.7ea3   eth-0-2  
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+arp
+	   </CTCRCMD>		
+	</COMMAND>
+	
+	<COMMAND name="show ip arp summary" help="Summary">
+		<ACTION>
+				cdbctl show/cdb/l3/show_arp/summary
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display the summary information in the Address Resolution Protocol (ARP) table, use the show ip arp summary command in privileged EXEC mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command can display the information of ARP. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the show ip arp summary command:  
+    Switch# show ip arp summary
+     Gratuitous ARP learning is disabled
+	 0 IP ARP entries, with 0 of them incomplete
+	 (Static:0,  Dynamic:0, Interface:0)
+	 ARP Pkt Received number is: 8
+	 ARP Pkt Send number is: 25
+	 ARP Pkt Dicard number is: 5
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+arp
+	   </CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="clear ip arp" help="IP ARP features"/>
+    <COMMAND name="clear ip arp summary" help="Summary"/>
+    <COMMAND name="clear ip arp summary statistics" help="Statistics">
+        <ACTION>
+            cdbctl update/cdb/l3/flush_arp_statistics
+        </ACTION>
+    </COMMAND>
+	
+	<COMMAND name="show ip arp interface" help="ARP cache on the interface">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL"/>
+		<ACTION>
+				cdbctl show/cdb/l3/show_arp/interface/${iface_name}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display the entries of one port in the Address Resolution Protocol (ARP) table, use the show ip arp command in privileged EXEC mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command can display the entries of one port of ARP.   
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the show ip arp interface eth-0-1 command:  
+    Switch# show ip arp interface eth-0-1 
+    Protocol   Address          Age (min)  Hardware Addr    Interface 
+    ----------+----------------+----------+----------------+----------
+    Internet   10.31.7.19       -          0800.0900.1834   eth-0-1          
+    Internet   10.108.1.27      -          001e.0809.7ea3   eth-0-1  
+	
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+arp
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear arp-cache"	help="ARP cache">	   
+		<ACTION>
+			cdbctl update/cdb/l3/flush_arp
+		</ACTION>
+		<CTCDESCRIPTION>
+To refresh dynamically created entries from the Address Resolution Protocol (ARP) cache, use the clear arp-cache command in privileged EXEC mode.   
+		</CTCDESCRIPTION>
+        <CTCUSAGE>
+This command updates the dynamically learned IP address and MAC address mapping information in the ARP table to ensure the validity of those entries. If the refresh operation encounters any stale entries (dynamic ARP entries that have expired but have not yet been aged out by an internal, timer-driven process), those entries are aged out of the ARP table immediately as opposed to at the next refresh interval.  
+Use this command without any arguments or keywords to refresh all ARP cache entries for all enabled interfaces. 
+        </CTCUSAGE>
+	    <CTCDEFAULT>
+No default behavior or values. 
+	    </CTCDEFAULT>
+	    <CTCEXAMPLE>
+    The following example shows how to refresh all dynamically learned ARP cache entries:
+    Switch# clear arp-cache  
+	    </CTCEXAMPLE>
+	    <CTCRCMD>
+show ip arp
+	    </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear arp-cache interface" help="ARP cache by interface">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL"/>
+		
+		<CTCDESCRIPTION>
+To refresh dynamically created entries from the Address Resolution Protocol (ARP) cache, use the clear arp-cache command in privileged EXEC mode.  
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command updates the dynamically learned IP address and MAC address mapping information in the ARP table to ensure the validity of those entries. If the refresh operation encounters any stale entries (dynamic ARP entries that have expired but have not yet been aged out by an internal, timer-driven process), those entries are aged out of the ARP table immediately as opposed to at the next refresh interval.    
+       </CTCUSAGE>
+	   <CTCDEFAULT> 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example shows how to refresh the dynamically learned ARP cache entries of one port:
+    Switch# clear arp-cache interface eth-0-1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+show ip arp interface
+	   </CTCRCMD>
+		<ACTION>
+			cdbctl update/cdb/l3/flush_arp/interface/${iface_name}
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="clear arp-cache ip"	help="ARP cache by ip address">
+		<PARAM name="ip" help="IP address" ptype="IP_ADDR"/>
+		
+		<CTCDESCRIPTION>
+To refresh the specific dynamically created entry from the Address Resolution Protocol (ARP) cache, use the clear ip arp command in privileged EXEC mode.  
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command updates the specific dynamically learned IP address and MAC address mapping information in the ARP table. If the refresh operation encounters any stale entries (dynamic ARP entries that have expired but have not yet been aged out by an internal, timer-driven process), the entry is aged out of the ARP table immediately as opposed to at the next refresh interval.  
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is an example of clear ARP cache by ip address:  
+    Switch(config)# clear arp-cache ip 10.31.7.19   
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+show ip arp
+	   </CTCRCMD>
+		<ACTION>
+			cdbctl update/cdb/l3/flush_arp/ip/${ip}
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+
+<VIEW name="Configure">
+	<COMMAND name="arp"
+		help="ARP">
+		<PARAM name="ip" help="IP address" ptype="IP_ADDR"/>
+		<PARAM name="mac" help="MAC(Hardware) address" ptype="MAC_ADDR"/>
+		<ACTION>
+	        cdbctl create/cdb/l3/arp_fib/${ip}/${mac}
+		</ACTION>
+		<CTCDESCRIPTION>
+This command can set the arp IP address and MAC address. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This arp command can set the IP address and MAC address of arp.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    This example shows how to set the arp ip address and mac address:  
+    Switch(config)# arp 1.1.1.1 0.0.1 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   no arp
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no arp"
+		help="ARP">
+		<PARAM name="ip" help="IP address" ptype="IP_ADDR"/>
+		<ACTION>
+	        cdbctl delete/cdb/l3/arp_fib/${ip}
+		</ACTION>
+		<CTCDESCRIPTION>
+This command can remove the arp IP address.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This no arp command can remove the arp IP address.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    This example shows how to unset the arp ip address:  
+    Switch(config)# no arp 1.1.1.1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   arp
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="gratuitous-arp-learning" help="Gratuitous ARP learning">
+		<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<ACTION>cdbctl update/cdb/l3/route_global/gratuitous_arp_learn_en/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable gratuitous arp learning.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The default gratuitous arp learning is disabled, use this command can enable the gratuitous arp learning.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+	   Disable
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    This example shows how to enable the gratuitous arp learning:  
+    Switch(config)# gratuitous-arp-learning enable  
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no gratuitous-arp-learning
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no gratuitous-arp-learning" help="Set default VLAN name">
+		<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<ACTION>cdbctl update/cdb/l3/route_global/gratuitous_arp_learn_en/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable gratuitous arp learning.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+If the gratuitous arp learning is enable, use this command can disable the gratuitous arp learning.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+	   Disable
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    This example shows how to disable the gratuitous arp learning:  
+    Switch(config)# no gratuitous-arp-learning enable  
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+gratuitous-arp-learning
+	   </CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+	<COMMAND name="arp retry-interval" help="ARP request retry delay">
+		<PARAM name="retrans_time" help="Retry delay in seconds, default is 1s" ptype="ARP_RETRY_TIME"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l3/route_if/${iface}/arp_retrans_time/${retrans_time}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+When an interface requests a mapping for an address not in the cache, system will send ARP request message on the associated network requesting the address mapping. Usually, 3 request messages will be sent until the system got a response. To configure the ARP request delay interval between 2 messages, use arp retry-interval command in interface configuration mode.  
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is ignored when issued on interfaces that do not use ARP. The show interface EXEC command displays the ARP retry interval value. The value as seen in the following example from the show interface command.    
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+1
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example sets the ARP retry interval to 3 seconds:  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no switchport  
+    Switch(config-if-eth-0-1)# arp retry-interval 3  
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no arp retry-interval
+	   </CTCRCMD>
+	   
+	</COMMAND>
+
+	<COMMAND name="no arp retry-interval" help="ARP request retry delay">
+		<ACTION>
+		cdbctl update/cdb/l3/route_if/${iface}/arp_retrans_time/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+To restore the arp retry-interval to default value, use this command.  
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is ignored when issued on interfaces that do not use ARP. The show interface EXEC command displays the ARP retry interval value. The value as seen in the following example from the show interface command:  
+When retry interval is set 0, the entry would be aged right now.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+1 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example sets the ARP retry interval to default value:  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no switchport  
+    Switch(config-if-eth-0-1)# no arp retry-interval    
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+arp retry-interval
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="arp timeout" help="ARP age timeout">
+		<PARAM name="timeout" help="Ageing timeout in seconds, default is 3600s" ptype="ARP_AGING_TIME"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l3/route_if/${iface}/arp_timeout/${timeout}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+To configure how long a dynamically learned IP address and its corresponding Media Control Access (MAC) address remain in the Address Resolution Protocol (ARP) cache, use the arp timeout command in interface configuration mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is ignored when issued on interfaces that do not use ARP. The show interface EXEC command displays the ARP timeout value. The value as seen in the following example from the show interface command. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+3600 seconds
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example sets the ARP timeout to 1200 seconds:
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no switchport  
+    Switch(config-if-eth-0-1)# arp timeout 1200  
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no arp timeout
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no arp timeout" help="ARP age timeout">
+		<ACTION>
+		cdbctl update/cdb/l3/route_if/${iface}/arp_timeout/3600
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+To restore the arp ageing timeout to default value, use this command.  
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is ignored when issued on interfaces that do not use ARP. The show interface EXEC command displays the ARP timeout value. The value as seen in the following example from the show interface command:   
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+3600 seconds
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example sets the ARP timeout to default value:  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no switchport  
+    Switch(config-if-eth-0-1)# no arp timeout    
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+arp timeout   
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="local-proxy-arp" help="Local Proxy ARP function for same interface">
+		<PARAM name="enable" help="Enable local proxy ARP function" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/local_arp_proxy_en/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+The local proxy ARP feature allow the L3 Device to response ARP request which's ARP Target address is in the same subnet the ARP request comes from(No Routing is required). To enable local proxy Address Resolution Protocol (ARP) on an interface, use the local-proxy-arp enable command in interface configuration mode. To disable local proxy ARP on the interface, use the no form of this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Internet Control Message Protocol (ICMP) redirects are disabled on interfaces where the local proxy ARP feature is enabled. The main condition we need to enable local ARP proxy is that the switch enables port isolate.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Local proxy ARP is disabled by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example enable the local ARP proxy:
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no switchport  
+	Switch(config-if-eth-0-1)# no shutdown
+	Switch(config-if-eth-0-1)# ip address 1.1.1.1/24
+    Switch(config-if-eth-0-1)# local-proxy-arp enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no local-proxy-arp
+	   </CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no local-proxy-arp" help="Local Proxy ARP function for same interface">
+		<PARAM name="enable" help="Enable local proxy ARP function" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/local_arp_proxy_en/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+The local proxy ARP feature allow the L3 Device to response ARP request which's ARP Target address is in the same subnet the ARP request comes from(No Routing is required). To enable local proxy Address Resolution Protocol (ARP) on an interface, use the local-proxy-arp enable command in interface configuration mode. To disable local proxy ARP on the interface, use the no form of this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Internet Control Message Protocol (ICMP) redirects are disabled on interfaces where the local proxy ARP feature is enabled. The main condition we need to enable local ARP proxy is that the switch enables port isolate.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Local proxy ARP is disabled by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example disable the local ARP proxy: 
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no local-proxy-arp enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+local-proxy-arp
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="proxy-arp" help="Proxy ARP function">
+		<PARAM name="enable" help="Enable proxy ARP function" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/arp_proxy_en/1
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+The switch uses proxy ARP to help hosts determine MAC addresses of hosts on other networks or subnets. To enable proxy Address Resolution Protocol (ARP) on an interface, use the proxy-arp enable command in interface configuration mode. To disable proxy ARP on the interface, use the no form of this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When proxy ARP is disabled, a device will respond to ARP requests received on its interface only if the target IP address is the same as its IP address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Proxy ARP is disabled by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example enable the ARP proxy: 
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no switchport  
+	Switch(config-if-eth-0-1)# no shutdown
+	Switch(config-if-eth-0-1)# ip address 1.1.1.1/24
+    Switch(config-if-eth-0-1)# proxy-arp enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no proxy-arp
+	   </CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no proxy-arp" help="Proxy ARP function">
+		<PARAM name="enable" help="Enable proxy ARP function" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l3/route_if/${iface}/arp_proxy_en/0
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+The switch uses proxy ARP to help hosts determine MAC addresses of hosts on other networks or subnets. To enable proxy Address Resolution Protocol (ARP) on an interface, use the proxy-arp enable command in interface configuration mode. To disable proxy ARP on the interface, use the no form of this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When proxy ARP is disabled, a device will respond to ARP requests received on its interface only if the target IP address is the same as its IP address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Proxy ARP is disabled by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example disable the ARP proxy: 
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no proxy-arp enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+proxy-arp
+	   </CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

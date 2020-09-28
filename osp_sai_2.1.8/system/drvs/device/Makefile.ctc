@@ -1,0 +1,128 @@
+all_targets  = libltc2991 libvsc3308
+all_targets += libeeprom libepld libfan libfiber libgpio libphy libpower libsensor libmux
+all_targets += libbootrom liblog libled libclock libvcm libsysenv libpoe
+ifeq ($(OS_TYPE),ipi)
+all_targets += libltc4151
+endif
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+	
+libbootrom: FORCE
+	make -C bootrom -f Makefile.ctc
+
+clean_libbootrom: FORCE
+	make -C bootrom -f Makefile.ctc clean
+
+libltc2991: FORCE
+	make -C ltc2991 -f Makefile.ctc
+
+clean_ltc2991: FORCE
+	make -C ltc2991 -f Makefile.ctc clean
+	
+libltc4151: FORCE 
+	make -C ltc4151 -f Makefile.ctc
+
+clean_ltc4151: FORCE
+	make -C ltc4151 -f Makefile.ctc clean
+	
+libvsc3308: FORCE 
+	make -C vsc3308 -f Makefile.ctc
+
+clean_vsc3308: FORCE
+	make -C vsc3308 -f Makefile.ctc clean
+	
+libeeprom: FORCE
+	make -C eeprom -f Makefile.ctc
+
+clean_eeprom: FORCE
+	make -C eeprom -f Makefile.ctc clean
+
+libepld: FORCE
+	make -C epld -f Makefile.ctc
+
+clean_epld: FORCE
+	make -C epld -f Makefile.ctc clean
+
+libfan: FORCE
+	make -C fan -f Makefile.ctc
+
+clean_fan: FORCE
+	make -C fan -f Makefile.ctc clean
+
+libfiber: FORCE
+	make -C fiber -f Makefile.ctc
+
+clean_fiber: FORCE
+	make -C fiber -f Makefile.ctc clean
+
+libgpio: FORCE
+	make -C gpio -f Makefile.ctc
+
+clean_gpio: FORCE
+	make -C gpio -f Makefile.ctc clean
+
+libled: FORCE
+	make -C led -f Makefile.ctc
+
+clean_led: FORCE
+	make -C led -f Makefile.ctc clean
+
+liblog: FORCE
+	make -C log -f Makefile.ctc
+
+clean_log: FORCE
+	make -C log -f Makefile.ctc clean
+	
+libmux: FORCE
+	make -C mux -f Makefile.ctc
+
+clean_mux: FORCE
+	make -C mux -f Makefile.ctc clean
+
+libphy: FORCE
+	make -C phy -f Makefile.ctc
+
+clean_phy: FORCE
+	make -C phy -f Makefile.ctc clean
+
+libpower: FORCE
+	make -C power -f Makefile.ctc
+
+clean_power: FORCE
+	make -C power -f Makefile.ctc clean
+
+libsensor: FORCE
+	make -C sensor -f Makefile.ctc
+
+clean_sensor: FORCE
+	make -C sensor -f Makefile.ctc clean
+	
+libvcm: FORCE 
+	make -C vcm -f Makefile.ctc
+
+clean_vcm: FORCE
+	make -C vcm -f Makefile.ctc clean
+
+libclock: FORCE 
+	make -C clock -f Makefile.ctc
+
+clean_libclock: FORCE
+	make -C clock -f Makefile.ctc clean
+
+libsysenv: FORCE 
+	make -C sysenv -f Makefile.ctc
+
+clean_libsysenv: FORCE
+	make -C sysenv -f Makefile.ctc clean
+
+libpoe: FORCE 
+	make -C poe -f Makefile.ctc
+
+clean_libpoe: FORCE
+	make -C poe -f Makefile.ctc clean
+
+.PHONY: FORCE
+FORCE:

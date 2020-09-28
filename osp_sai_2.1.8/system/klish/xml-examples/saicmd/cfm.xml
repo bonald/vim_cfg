@@ -1,0 +1,1086 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+CFM
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+        <COMMAND name="show ethernet cfm" help="CFM">
+
+		<ACTION>cdbctl show/cdb/l2/show_cfm</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the command to display cfm global information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display cfm global information:
+    Switch# show ethernet cfm
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="show ethernet cfm domain" help="Maintenance domain">
+		<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		
+		<ACTION>cdbctl show/cdb/l2/show_cfm_domain/${domain_name}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the command to display information related to the configuration of MDs and MAs.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display information related to the configuration of MDs and MAs:
+    Switch# configure terminal
+    Switch(config)# ethernet cfm enable
+    Switch(config)# # ethernet cfm domain md1 level 1
+    Switch(config-ether-cfm)# # service ma1 vlan 1
+    Switch(config-ether-cfm)# # exit
+    Switch# show ethernet cfm domain md1
+    Domain Name     : md1
+    Level           : 1
+    Total Services  : 1
+    Vlan        ServiceID       
+    -------------------------------
+        1        ma1      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="show ethernet cfm cc" help="Continuty checks"/>
+
+        <COMMAND name="show ethernet cfm cc config" help="Configuration">
+		
+		<ACTION>cdbctl show/cdb/l2/show_cfm_cc_config</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the command to display information related to CC configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display information related to CC configuration:
+    Switch# configure terminal
+    Switch(config)# ethernet cfm enable
+    Switch(config)# # ethernet cfm domain md1 level 1
+    Switch(config-ether-cfm)# # service ma1 vlan 1
+    Switch(config-ether-cfm)# # exit
+    Switch# show ethernet cfm cc config
+    Domain Name      Level  Vlan  CC Status 
+    ----------------------------------------
+    md1              1      1     Enable    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="show ethernet cfm maintenance-points" help="Maintenance points">
+		
+		<ACTION>cdbctl show/cdb/l2/show_cfm_mep</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the command to display information related to configuration of MEPs, remote MEPs.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display information related to CC configuration:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 666 domain provid vlan 30 interval 1
+    Switch(config-if)# ethernet cfm mep crosscheck mpid 999 domain provid vlan 30 mac eef9.328e.0909
+    Switch(config-if)# end
+    Switch# show ethernet cfm maintenance-points
+    ######Local MEP:
+    Dir-Direction;
+    L-Level;
+    MPID Dir  DOMAIN       L VLAN PORT     CC-Status MAC-Address    RDI   Interval  
+    ------------------------------------------------------------------------------------------
+    666  Down provid       3 30   eth-0-9  Disabled  9c0b.982c.a109 False 3.3ms     
+    
+    ######Remote MEP:
+    MPID  LEVEL VLAN Remote Mac     RDI   FLAGS      STATE
+    -----------------------------------------------------------------
+    999   3     30   eef9.328e.0909 False Mac_config Initial
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+	<COMMAND name="show ethernet cfm maintenance-points local" help="Local meps">
+	
+		<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="interface" help="MEPs on the interface" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="iface_name" help="Ethernet interface name" test='"${null}"=""' ptype="IF_NAME_E"/>
+			</PARAM>
+			<PARAM name="domain" help="Maintenance domain" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+		if [ "${sub1}" == "interface" ]; then
+		    cdbctl show/cdb/l2/show_cfm_mep/local/interface/${iface_name}
+		else
+		    cdbctl show/cdb/l2/show_cfm_mep/local/domain/${domain_name}
+		fi 
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the command to display information related to configuration of MEPs, remote MEPs.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display information related to CC configuration:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 1 domain test vlan 30 interval 1
+    Switch(config-if)# ethernet cfm mep crosscheck mpid 999 domain provid vlan 30 mac eef9.328e.0909
+    Switch(config-if)# end
+    Switch# show ethernet cfm maintenance-points local mep domain test
+    ######Local MEP:
+    Dir-Direction;
+    L-Level;
+    MPID Dir  DOMAIN       L VLAN PORT     CC-Status MAC-Address    RDI   Interval  
+    ------------------------------------------------------------------------------------------
+    666  Down provid       3 30   eth-0-9  Disabled  9c0b.982c.a109 False 3.3ms     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+	<COMMAND name="show ethernet cfm maintenance-points remote" help="Configured remote mep">
+	
+		<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="interface" help="MEPs on the interface" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="iface_name" help="Ethernet interface name" test='"${null}"=""' ptype="IF_NAME_E"/>
+			</PARAM>
+			<PARAM name="domain" help="Maintenance domain" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+			</PARAM>
+		</PARAM>
+			
+		<ACTION>
+		if [ "${sub1}" == "interface" ]; then
+		    cdbctl show/cdb/l2/show_cfm_mep/remote/interface/${iface_name}
+		else
+		    cdbctl show/cdb/l2/show_cfm_mep/remote/domain/${domain_name}
+		fi 
+		</ACTION>	
+		
+		<CTCDESCRIPTION>
+Use the command to display information related to configuration of MEPs, remote MEPs.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display information related to CC configuration:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 1 domain provid vlan 30 interval 1
+    Switch(config-if)# ethernet cfm mep crosscheck mpid 999 domain provid vlan 30 mac eef9.328e.0909
+    Switch(config-if)# end
+    Switch# show ethernet cfm maintenance-points remote domain provid
+    ######Remote MEP:
+    MPID  LEVEL VLAN Remote Mac     RDI   FLAGS      STATE
+    -----------------------------------------------------------------
+    999   3     30   eef9.328e.0909 False Mac_config Initial
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+	<COMMAND name="show ethernet cfm errors" help="Continuity check errors">
+		<PARAM name="domain" help="Maintenance domain" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		</PARAM>
+			
+		<ACTION>
+		cdbctl show/cdb/l2/show_cfm_errors/domain/${domain_name}
+		</ACTION>	
+		
+		<CTCDESCRIPTION>
+Use the command to display CFM error.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to display CFM error:
+    Switch# show ethernet cfm errors domain provid
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+	<COMMAND name="clear ethernet" help="Configure layer-2"/>
+	<COMMAND name="clear ethernet cfm" help="CFM"/>
+
+	<COMMAND name="clear ethernet cfm errors" help="Continuity check errors">
+		<PARAM name="domain" help="Maintenance domain" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		</PARAM>
+			
+		<ACTION>
+		cdbctl show/cdb/l2/clear_cfm_errors/domain/${domain_name}
+		</ACTION>	
+		
+		<CTCDESCRIPTION>
+Use the command to clear cfm errors for domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to clear ccm errors:
+    Switch# clear ethernet cfm errors domain provid
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>        
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="ethernet cfm" help="Configure cfm" />
+	<COMMAND name="no ethernet cfm" help="Configure cfm" />
+
+        <COMMAND name="ethernet cfm enable" help="Enable cfm">
+
+		<ACTION>
+                cdbctl update/cdb/l2/cfm_global/cfm_enable/1
+ 		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable CFM globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to enable cfm globally:
+    Switch# configure terminal
+    Switch(config)# ethernet cfm enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+        <COMMAND name="no ethernet cfm enable" help="Enable cfm">
+
+		<ACTION>
+                cdbctl update/cdb/l2/cfm_global/cfm_enable/0
+ 		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable CFM globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to disable cfm globally:
+    Switch# configure terminal
+    Switch(config)# no ethernet cfm enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ethernet cfm mode" help="The standard of OAM">
+		<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dot1ag" help="IEEE 802.1ag-2007 (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="y1731" help="ITU-T Y.1731" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+               if [ "${sub1}" == "dot1ag" ]; then
+                    cdbctl update/cdb/l2/cfm_global/cfm_mode/0
+                else
+                    cdbctl update/cdb/l2/cfm_global/cfm_mode/1
+                fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure cfm mode globally. Use the no parameter to configure cfm mode to 802.1ag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+dot1ag
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to configure cfm mode globally:
+    Switch# configure terminal
+    Switch(config)# ethernet cfm mode dot1ag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ethernet cfm mode" help="The standard of OAM">
+		
+		<ACTION>
+               cdbctl update/cdb/l2/cfm_global/cfm_mode/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure cfm mode to 802.1ag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+dot1ag
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to configure cfm mode to default value:
+    Switch# configure terminal
+    Switch(config)# no ethernet cfm mode
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ethernet cfm domain" help="Maintenance domain"
+	       view="configure-ether-cfm-view"
+		viewid="domain_name=${domain_name}">
+               <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+               <PARAM name="level" help="The level of the md" ptype="SUBCOMMAND" mode="subcommand"   optional="true" default="8">
+			<PARAM name="level_id" help="Specify the md level" ptype="CFM_LEVEL_ID"/>			
+  			<PARAM name="format" help="MD name format (default is string)" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+  				<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+  					<PARAM name="no-md-name" help="No MD name present" ptype="SUBCOMMAND" mode="subcommand"/>
+  					<PARAM name="string" help="ASCII string" ptype="SUBCOMMAND" mode="subcommand">
+  						<PARAM name="string_name" help="MD format name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+  					</PARAM>
+  					<PARAM name="dns" help="DNS name" ptype="SUBCOMMAND" mode="subcommand">
+  						<PARAM name="string_name" help="MD format name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+  					</PARAM>
+  					<PARAM name="mac-address" help="MAC-address and 2-octet integer (H-H-H:U(0-65535), example:0001-0001-0001:1)" ptype="SUBCOMMAND" mode="subcommand">
+  						<PARAM name="string_name" help="MD format name" ptype="CFM_DOMAIN_MAC_ADDRESS_STRING"/>
+  					</PARAM>
+  				</PARAM>
+  			</PARAM>
+		</PARAM>
+				
+		<ACTION>
+		if [ "${format}" == "" ]; then
+                   cdbctl create/cdb/l2/cfm_md/${domain_name}/${level_id}
+		else
+    		    if [ "${sub1}" == "no-md-name" ]; then
+                       cdbctl create/cdb/l2/cfm_md/${domain_name}/${level_id}/name_type/1
+                   else
+                       cmdstr="cdbctl create/cdb/l2/cfm_md/${domain_name}/${level_id}"
+    
+                       if [ "${sub1}" == "string" ]; then
+                           cmdstr=$cmdstr"/name_type/4"
+                       fi
+    
+                       if [ "${sub1}" == "dns" ]; then
+                           cmdstr=$cmdstr"/name_type/2"
+                       fi
+    
+                       if [ "${sub1}" == "mac-address" ]; then
+                           cmdstr=$cmdstr"/name_type/3"
+                       fi
+    
+                       cmdstr=$cmdstr"/${string_name}"
+                       $cmdstr
+                   fi
+               fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to create an MD within which you can manage Ethernet traffic or enter cfm domain mode. Ensure you specify the level for each MD. The levels separate MDs from each other and provide different areas of functionality.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The levels define the MD as follows:
+0~2 (operator levels)
+3~4 (provider levels)
+5~7 (customer levels)
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to configure ethernet cfm domain globally:
+    Switch# configure terminal
+    Switch(config)# ethernet cfm domain md1 level 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ethernet cfm domain" help="Maintenance domain">
+               <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		
+		<ACTION>
+		cdbctl delete/cdb/l2/cfm_md/${domain_name}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to delete an MD within which you can manage Ethernet traffic or enter cfm domain mode. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    This example shows how to delete domain:
+    Switch# configure terminal
+    Switch(config)# no ethernet cfm domain md1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+       <COMMAND name="ethernet cfm cc" help="Continuity check"/>
+
+       <COMMAND name="ethernet cfm cc enable" help="Enable continuity check"/>
+       
+	<COMMAND name="ethernet cfm cc enable domain" help="Maintenance domain">
+	       <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+
+		<ACTION>
+               cmdstr="cdbctl update/cdb/l2/cfm_ma/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		cmdstr=$cmdstr"/cci_enabled/1"
+		$cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to enable continuity check for an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to enable cc:
+    Switch# configure terminal 
+    Switch(config)# ethernet cfm cc enable domain test vlan 2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+       <COMMAND name="no ethernet cfm cc" help="Continuity check"/>
+
+       <COMMAND name="no ethernet cfm cc enable" help="Enable continuity check"/>
+       
+	<COMMAND name="no ethernet cfm cc enable domain" help="Maintenance domain">
+	       <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>		
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+
+		<ACTION>
+               cmdstr="cdbctl update/cdb/l2/cfm_ma/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		cmdstr=$cmdstr"/cci_enabled/0"
+		$cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to disable continuity check for an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to disable cc:
+    Switch# configure terminal 
+    Switch(config)# no ethernet cfm cc enable domain test vlan 2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ethernet cfm cc domain" help="Maintenance domain">
+	       <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>		
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+		<PARAM name="priority" help="Vlan Priority" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="priority_value" help="Vlan Priority(default is 7)" ptype="COS_ID"/>
+		</PARAM>
+		
+		<ACTION>
+               cmdstr="cdbctl update/cdb/l2/cfm_ma/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		cmdstr=$cmdstr"/ccm_vlan_cos/${priority_value}"
+		$cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to define continuity check vlan priority for an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to configure vlan priority for CC message:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config)# ethernet cfm cc domain test vlan 30 priority 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ethernet cfm cc domain" help="Maintenance domain">
+	       <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>		
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+		<PARAM name="priority" help="Vlan Priority" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+		<ACTION>
+               cmdstr="cdbctl update/cdb/l2/cfm_ma/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		cmdstr=$cmdstr"/ccm_vlan_cos/7"
+		$cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to define continuity check vlan priority for an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to configure vlan priority for CC message:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config)# no ethernet cfm cc domain test vlan 30 priority
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ethernet cfm errors" help="Continuity check errors"/>
+
+       <COMMAND name="ethernet cfm errors enable" help="Enable continuity check errors"/>
+
+       <COMMAND name="ethernet cfm errors enable domain" help="Maintenance domain">
+	       <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>		
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+
+		<ACTION>
+               cmdstr="cdbctl update/cdb/l2/cfm_ma/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		cmdstr=$cmdstr"/error_write_disable/0"
+		$cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to configure reserve ccm errors. The default action is to reserve ccm errors.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+For every mep, five latest errors will be reserved.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to configure reserve ccm errors:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# ethernet cfm errors enable domain test vlan 30
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+       <COMMAND name="no ethernet cfm errors" help="Continuity check errors"/>
+
+       <COMMAND name="no ethernet cfm errors enable" help="Enable continuity check errors"/>
+       
+	<COMMAND name="no ethernet cfm errors enable domain" help="Maintenance domain">
+	       <PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>		
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+
+		<ACTION>
+               cmdstr="cdbctl update/cdb/l2/cfm_ma/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		cmdstr=$cmdstr"/error_write_disable/1"
+		$cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to configure reserve ccm errors. The default action is to reserve ccm errors.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to configure reserve ccm errors:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# no ethernet cfm errors enable domain test vlan 30
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-ether-cfm-view"
+	prompt="${SYSTEM_NAME}(config-ether-cfm-${domain_name})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+        </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from ERPS configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from ERPS configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+        </COMMAND>
+
+        <COMMAND name="service" help="Configure maintenance association" >
+        	<PARAM name="CSI_ID" help="Enter service name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_SERVICE_STRING"/>
+        	<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+		<PARAM name="format" help="MA name format (default is string)" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="string" help="ASCII string" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="string_name" help="MA format name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_SERVICE_STRING"/>
+				</PARAM>
+				<PARAM name="icc-based" help="ITU carrier code" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="string_name" help="MA format name, character only can be 0-9A-Za-z.-_ and the max len is 13" ptype="CFM_SERVICE_STRING"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+		cmdstr="cdbctl create/cdb/l2/cfm_ma/${domain_name}/${CSI_ID}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+		
+		if [ "${format}" == "" ]; then
+                   $cmdstr
+		else
+                   if [ "${sub1}" == "string" ]; then
+                       cmdstr=$cmdstr"/name_type/2"
+                   fi
+    
+                   if [ "${sub1}" == "icc-based" ]; then
+                       cmdstr=$cmdstr"/name_type/32"
+                   fi
+
+                   cmdstr=$cmdstr"/${string_name}"
+                   $cmdstr
+               fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to create an MA within which you can create mep.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to create MA:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="no service" help="Configure maintenance association" >
+        	<PARAM name="CSI_ID" help="Enter service name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_SERVICE_STRING"/>
+        	
+		<ACTION>
+		cdbctl delete/cdb/l2/cfm_ma/${domain_name}/${CSI_ID}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the command to delete an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to remove MA:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# no service cst
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+        
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ethernet" help="Configure layer-2"/>
+	<COMMAND name="no ethernet" help="Configure layer-2"/>
+
+	<COMMAND name="ethernet cfm" help="Configure cfm" />
+	<COMMAND name="no ethernet cfm" help="Configure cfm" />       
+	
+	<COMMAND name="ethernet cfm mep" help="Configure maintenance end point">
+		<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="down" help="Down mep" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="up" help="Up mep" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="mpid" help="Configure the mepid" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mpid_value" help="Enter the mepid" ptype="CFM_MPID_ID"/>
+		</PARAM>
+		<PARAM name="domain" help="Maintenance-domain to which this MEP belongs" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		</PARAM>
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+		<PARAM name="interval" help="Continuity check interval" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="sub2" help="Name" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="1" help="CCI Interval 3.3 millisecond" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="2" help="CCI Interval 10 millisecond" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="3" help="CCI Interval 100 millisecond" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="4" help="CCI Interval 1 second" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="5" help="CCI Interval 10 seconds" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="6" help="CCI Interval 1 minute" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="7" help="CCI Interval 10 minutes" ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+		cmdstr="cdbctl create/cdb/l2/cfm_lmep/interface/${iface}/domain/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+               cmdstr=$cmdstr"/interval/${sub2}/${sub1}/${mpid_value}"
+               $cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to define an MEP within an MA. Each MEP and remote MEP must have a unique ID within an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to create MA:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 1 domain test vlan 30 interval 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+	<COMMAND name="no ethernet cfm mep" help="Configure maintenance end point">
+		<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="down" help="Down mep" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="up" help="Up mep" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="mpid" help="Configure the mepid" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mpid_value" help="Enter the mepid" ptype="CFM_MPID_ID"/>
+		</PARAM>
+		<PARAM name="domain" help="Maintenance-domain to which this MEP belongs" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		</PARAM>
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+
+		<ACTION>
+		cmdstr="cdbctl delete/cdb/l2/cfm_lmep/interface/${iface}/domain/${domain_name}"
+		if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+               cmdstr=$cmdstr"/${sub1}/${mpid_value}"
+               $cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to delete an MEP within an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to create MA:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 1 domain test vlan 30 interval 1
+    Switch(config-if)# no ethernet cfm mep down mpid 1 domain test vlan 30
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>	
+
+	<COMMAND name="ethernet cfm mep crosscheck" help="Remote mep for crosscheck">
+		<PARAM name="mpid" help="Configure remote mepid" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mpid_value" help="Enter the mepid" ptype="CFM_MPID_ID"/>
+		</PARAM>
+		<PARAM name="domain" help="Maintenance-domain to which this MEP belongs" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		</PARAM>
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+		<PARAM name="mac" help="Configure the remote mac mandatory for unicast CCMs" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mac_value" help="MAC address" ptype="MAC_ADDR"/>
+		</PARAM>
+
+		<ACTION>
+		cmdstr="cdbctl create/cdb/l2/cfm_rmep/interface/${iface}/domain/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+               cmdstr=$cmdstr"/mac/${mac_value}/${mpid_value}"
+               $cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to define a remote MEP within an MA. Each MEP and remote MEP must have a unique ID within an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to create MA:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 1 domain test vlan 30 interval 1
+    Switch(config-if)# ethernet cfm mep crosscheck mpid 999 domain provid vlan 30 mac eef9.328e.0909
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ethernet cfm mep crosscheck" help="Remote mep for crosscheck">
+		<PARAM name="mpid" help="Configure remote mepid" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mpid_value" help="Enter the mepid" ptype="CFM_MPID_ID"/>
+		</PARAM>
+		<PARAM name="domain" help="Maintenance-domain to which this MEP belongs" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="domain_name" help="Enter domain name, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		</PARAM>
+		<PARAM name="vlan" help="Associate to vlan id" ptype="SUBCOMMAND" mode="subcommand"  optional="true">
+			<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID" default="none"/>
+		</PARAM>
+
+		<ACTION>
+		cmdstr="cdbctl delete/cdb/l2/cfm_rmep/interface/${iface}/domain/${domain_name}"
+
+               if [ "none" != ${vlan_id} ]; then
+                   cmdstr=$cmdstr"/vlan/${vlan_id}"
+               fi
+               cmdstr=$cmdstr"/${mpid_value}"
+               $cmdstr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to delete a remote MEP within an MA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>				
+		<CTCEXAMPLE>
+    The following example shows how to create MA:
+    Switch# configure terminal
+    Switch(config)# vlan range 30-40
+    Switch(config)# ethernet cfm domain test level 5
+    Switch(config-ether-cfm)# service cst vlan 30
+    Switch(config-ether-cfm)# exit
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# switchport mode trunk
+    Switch(config-if)# switchport trunk allowed vlan add 30
+    Switch(config-if)# ethernet cfm mep down mpid 1 domain test vlan 30 interval 1
+    Switch(config-if)# ethernet cfm mep crosscheck mpid 999 domain provid vlan 30 mac eef9.328e.0909
+    Switch(config-if)# no ethernet cfm mep crosscheck mpid 999 domain provid vlan 30
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+		
+</VIEW>
+</CLISH_MODULE>

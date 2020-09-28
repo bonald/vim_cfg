@@ -1,0 +1,1368 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+DEBUG
+</CTCMODULENAME>
+
+
+<VIEW name="Exec">
+
+<!-- start shell commands -->
+
+	<COMMAND name="ctc_shell" help="Enter SDK debug shell" hidden="true">
+		<ACTION>ctc_shell</ACTION>
+	</COMMAND>
+
+    <COMMAND name="start" help="Start" access="4" hidden="true">
+    	<PARAM name="shell" help="Shell" access="4" interrupt="true" ptype="SUBCOMMAND" mode="subcommand"/>
+        <ACTION>
+fnconvert -c login -U root
+
+if [ "$?" != "0" ] ; then
+    exit 1
+fi
+if [ -f /tmp/zone.conf ]; then
+    source /tmp/zone.conf
+fi
+
+if [ `uname -m` == "x86_64" ]; then
+    su --login root
+elif [ -f /etc/debian_version ]; then
+    /bin/sh --login --noprofile
+else
+    /bin/sh --login
+fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enter shell mode on the switch.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+On the switch, the password is !@#
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to enter shell mode use this command:
+    Switch# start shell
+    Password: !@#
+    [root@Switch /mnt/flash]$
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show acl-iotime" help="Shell" hidden="true">
+        <ACTION>cdbctl show/cdb/l2/acl_iotime</ACTION>
+    </COMMAND>
+
+    <COMMAND name="clear acl-iotime" help="Shell" hidden="true">
+        <ACTION>cdbctl update/cdb/l2/acl_iotime</ACTION>
+    </COMMAND>
+
+<!--  enter internal debug view -->
+    <COMMAND name="internal-debug"
+        help="Internal debug"
+        view="Internal-debug-view"
+        hidden="true">
+<ACTION>
+fnconvert -c login -U root
+if [ "$?" != "0" ] ; then
+    exit 1
+fi
+exit 0
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enter internal-debug mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The default enter password is:!@#
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	In the following example shows how to enter internal-debug mode:
+    Switch# internal-debug
+    Password:
+    Switch(internal-debug)#
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Internal-debug-view"
+    prompt="${SYSTEM_NAME}(internal-debug)# "
+    depth="1">
+
+    <COMMAND name="exit"
+        help="Exit from internal debug mode"
+        lock="false">
+        <ACTION builtin="clish_nested_up"/>
+    </COMMAND>
+
+    <COMMAND name="quit"
+        help="Exit from internal debug mode"
+        lock="false">
+        <ACTION builtin="clish_nested_up"/>
+    </COMMAND>
+
+    <COMMAND name="cdbctl"
+        help="Test Configure Database">
+        <PARAM name="cdb cmd" help="Central database control" ptype="STRING"/>
+
+        <ACTION>cdbctl ${_params}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to test configure database.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	In the following example shows how to debug route-mac:
+    DUT1(internal-debug)# cdbctl read/cdb/sys/sys_global/route_mac
+    /route_mac=001e.080a.ace5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+    </COMMAND>
+
+    <COMMAND name="cfgtrace"
+        help="Trace command">
+        <PARAM name="enable" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="on" help="Enable" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="off" help="Disable" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION builtin="clish_ctc_cfgtrace">${enable}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable or disable the trace command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	In the following example shows how to enable trace:
+    Switch(internal-debug)# cfgtrace on
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="update" help="Update system"/>
+	<COMMAND name="update port" help="Phy port">
+		<PARAM name="information" help="Information" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="port-connection" help="Port-connection" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="port_connection" help="Must be / or -" ptype="PORT-CONNECTION" />
+		<PARAM name="sub-port-connection" help="Sub-port-connection" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="sub_port_connection" help="Must be / or - or :" ptype="SUBPORT-CONNECTION" />
+
+		<PARAM name="name1" help="Short name of 100M port (Example:ZMeg)" ptype="STRING" optional="true" default="none"/>
+		<PARAM name="fullname1" test='"${name1}"!="none"' help="Full name of 100M port (Example:ZMegaEthernet)" ptype="STRING" />
+		<PARAM name="name2"     test='"${name1}"!="none"' help="Short name of 1G port (Example:Gig)" ptype="STRING" />
+		<PARAM name="fullname2" test='"${name1}"!="none"' help="Full name of 1G port (Example:GigabitEthernet)" ptype="STRING" />
+		<PARAM name="name3"     test='"${name1}"!="none"' help="Short name of 10G port (Example:XGig)" ptype="STRING" />
+		<PARAM name="fullname3" test='"${name1}"!="none"' help="Full name of 10G port (Example:XGigabitEthernet)" ptype="STRING" />
+		<PARAM name="name4"     test='"${name1}"!="none"' help="Short name of 40G port (Example:QGig)" ptype="STRING" />
+		<PARAM name="fullname4" test='"${name1}"!="none"' help="Full name of 40G port (Example:QGigabitEthernet)" ptype="STRING" />
+		<PARAM name="name5"     test='"${name1}"!="none"' help="Short name of 100G port (Example:ZGig)" ptype="STRING" />
+		<PARAM name="fullname5" test='"${name1}"!="none"' help="Full name of 100G port (Example:ZGigabitEthernet)" ptype="STRING" />
+
+		<ACTION>
+			swap_port="`fnconvert -c encoding -m '${port_connection}'`"
+			swap_sub_port="`fnconvert -c encoding -m '${sub_port_connection}'`"
+
+			if [ "${name1}" == "none" ]; then
+				cdbctl update/cdb/sys/update_port_connection/$swap_port/$swap_sub_port
+			else
+				cdbctl update/cdb/sys/update_port_connection/$swap_port/$swap_sub_port/${name1}/${fullname1}/${name2}/${fullname2}/${name3}/${fullname3}/${name4}/${fullname4}/${name5}/${fullname5}/
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="update oem" help="OEM">
+		<PARAM name="information" help="Information" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="package" help="Package" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="pkg_name" help="Package name, (e.g. CNOS)" ptype="STRING"/>
+		<PARAM name="product" help="Product" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="prd_name" help="Product name, (e.g. E580)" ptype="STRING"/>
+		<PARAM name="boardtype" help="Board type" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="brd_name" help="Board type name, (e.g. 20Q4Z)" ptype="STRING"/>
+		<PARAM name="snmpoid" help="Snmp OID" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="snmpoid_name" help="Snmp OID, (e.g. 919,27975)" ptype="STRING"/>
+		<PARAM name="chassistype" help="Chassis type" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="chassis_name" help="Chassis type name, (e.g. pizzabox)" ptype="STRING"/>
+		<PARAM name="card1" help="Sub card" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="card1_name" help="Sub card name, (e.g. 4SFP)" ptype="STRING"/>
+		<PARAM name="card2" help="Sub card" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="card2_name" help="Sub card name, (e.g. 4SFP)" ptype="STRING"/>
+		<PARAM name="card3" help="Sub card" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="card3_name" help="Sub card name, (e.g. 4SFP)" ptype="STRING"/>
+		<PARAM name="company" help="Company" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="company_name" help="Company name, (e.g. 2004-2016 Centec Networks Inc)" ptype="KLINE"/>
+		<ACTION>
+			cdbctl update/cdb/sys/update_oem_info/${pkg_name}/${prd_name}/${brd_name}/${snmpoid_name}/${chassis_name}/${card1_name}/${card2_name}/${card3_name}/"${company_name}"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="generate" help="Gengrate file"/>
+	<COMMAND name="generate oem" help="OEM">
+		<PARAM name="file" help="File" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="GFILENAME" help="Binary file" ptype="STRING"/>
+		<PARAM name="package" help="Package" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="pkg_name" help="Package name, (e.g. CNOS)" ptype="STRING"/>
+		<PARAM name="product" help="Product" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="prd_name" help="Product name, (e.g. E580)" ptype="STRING"/>
+		<PARAM name="boardtype" help="Board type" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="brd_name" help="Board type name, (e.g. 20Q4Z)" ptype="STRING"/>
+		<PARAM name="snmpoid" help="Snmp OID" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="snmpoid_name" help="Snmp OID, (e.g. 919,27975)" ptype="STRING"/>
+		<PARAM name="chassistype" help="Chassis type" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="chassis_name" help="Chassis type name, (e.g. pizzabox)" ptype="STRING"/>
+		<PARAM name="card1" help="Sub card" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="card1_name" help="Sub card name, (e.g. 4SFP)" ptype="STRING"/>
+		<PARAM name="card2" help="Sub card" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="card2_name" help="Sub card name, (e.g. 4SFP)" ptype="STRING"/>
+		<PARAM name="card3" help="Sub card" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="card3_name" help="Sub card name, (e.g. 4SFP)" ptype="STRING"/>
+		<PARAM name="company" help="Company" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="company_name" help="Company name, (e.g. 2004-2016 Centec Networks Inc)" ptype="KLINE"/>
+		<ACTION>
+			cdbctl update/cdb/sys/generate_oem_file/${GFILENAME}/parameter/${pkg_name}/${prd_name}/${brd_name}/${snmpoid_name}/${chassis_name}/${card1_name}/${card2_name}/${card3_name}/"${company_name}"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="show"
+        help="Show">
+    </COMMAND>
+
+    <COMMAND name="debug"
+        help="Set debug configuration">
+    </COMMAND>
+
+    <COMMAND name="no"
+        help="Negate a command or set its defaults">
+    </COMMAND>
+
+    <COMMAND name="no debug"
+        help="Unset debug configuration">
+    </COMMAND>
+
+	<COMMAND name="debug sai" help="Switch Abstract Interface">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="function" help="Enable SAI function trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="parameter" help="Enable SAI function parameter trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="sdk-function" help="Enable SDK function trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Enable SAI packet trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>cdbctl update/cdb/sys/ptf_sai/sai/${type}/1</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no debug sai" help="Switch Abstract Interface">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="function" help="Enable SAI function trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="parameter" help="Enable SAI function parameter trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="sdk-function" help="Enable SDK function trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="packet" help="Enable SAI packet trace" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+		<ACTION>cdbctl update/cdb/sys/ptf_sai/sai/${type}/0</ACTION>
+	</COMMAND>
+
+	<COMMAND name="debug netconf" help="Netconf server debug">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="rpc" help="Enable netconf rpc log" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="all" help="Netconf log level" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+	         <ACTION>
+	         	if [ ${type} == "rpc" ]; then
+	         		cdbctl update/cdb/debug/app_debug/netconf_rpc/1
+	         	else
+				cdbctl update/cdb/debug/app_debug/netconf_debug/1
+	         	fi
+	         </ACTION>
+	</COMMAND>
+
+	<COMMAND name="no debug netconf" help="Netconf server debug">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="rpc" help="Enable netconf rpc log" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="all" help="Netconf log level" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        	<ACTION>
+	         	if [ ${type} == "rpc" ]; then
+	         		cdbctl update/cdb/debug/app_debug/netconf_rpc/0
+	         	else
+				cdbctl update/cdb/debug/app_debug/netconf_debug/0
+	         	fi
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="clear netconf-rpc-log" help="Clear netconf rpc log statistics" >
+		<ACTION>
+	            cdbctl update/cdb/debug/app_debug/netconf_rpc_clear/1
+		</ACTION>
+	</COMMAND>
+
+    <COMMAND name="show ip-route" help="Debug show routes" lock="false" interrupt="true">
+        <ACTION>
+            cdbctl show/cdb/l3/route_node/debug
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show debug"
+        help="Debug information">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="hsrv" help="Hsrv" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="lsrv" help="Lsrv" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl show/cdb/debug/${type}_debug
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show socket all"
+        help="Memory">
+        <PARAM name="detail" help="Detail" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+
+        <ACTION>
+            cdbctl show/cdb/sys/show_common/ccs/socket/${detail}
+            cdbctl show/cdb/sys/show_common/cds/socket/${detail}
+            cdbctl show/cdb/sys/show_common/switch/socket/${detail}
+            cdbctl show/cdb/sys/show_common/opm/socket/${detail}
+            cdbctl show/cdb/sys/show_common/routed/socket/${detail}
+            cdbctl show/cdb/sys/show_common/chsm/socket/${detail}
+            cdbctl show/cdb/sys/show_common/appcfg/socket/${detail}
+            cdbctl show/cdb/sys/show_common/fea/socket/${detail}
+            cdbctl show/cdb/sys/show_common/dhcsnooping/socket/${detail}
+            cdbctl show/cdb/sys/show_common/dhcrelay/socket/${detail}
+            cdbctl show/cdb/sys/show_common/authd/socket/${detail}
+            cdbctl show/cdb/sys/show_common/ptp/socket/${detail}
+            cdbctl show/cdb/sys/show_common/bhm/socket/${detail}
+            cdbctl show/cdb/sys/show_common/ssm/socket/${detail}
+            cdbctl show/cdb/sys/show_common/ncs/socket/${detail}
+            cdbctl show/cdb/sys/show_common/dhcpd6/socket/${detail}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show socket"
+        help="Socket">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="ccs" help="Ccs process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cds" help="Cds process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="switch" help="Switch process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="opm" help="OAM APS Manager process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="routed" help="Routed process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="chsm" help="Chassis process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="appcfg" help="Application configuration process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fea" help="Fea process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dhcsnooping" help="Dhcp snooping process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dhcrelay" help="Dhcp relay process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="authd" help="Authentication process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ptp" help="PTP process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="bhm" help="Heart Beat Monitor process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ssm" help="Synchronization Status Message process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ncs" help="NETCONF Service" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dhcpd6" help="DHCP Server" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <PARAM name="detail" help="Detail" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+
+        <ACTION>cdbctl show/cdb/sys/show_common/${type}/socket/${detail}</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+<!-- dump CDB commands -->
+    <COMMAND name="show dump-cdb"
+        help="Dump cdb">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="ccs" help="Ccs process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cds" help="Cds process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="switch" help="Switch process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="routed" help="Routed process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="chsm" help="Chassis process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fea" help="Fea process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ovs-vswitchd" help="Ovs-vswitch process" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <PARAM name="tbl" help="Table" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="interface" help="Interface" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="vlan" help="vlan" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fdb" help="fdb" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="mcfdb" help="mcfdb" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="macfilter" help="macfilter" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="brg_global" help="brg_global" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="lag_global" help="lag_global" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="route_if" help="route_if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="pmap" help="pmap" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cmap" help="cmap" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="acl" help="acl" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="pmap_if" help="pmap_if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="time_range" help="time_range" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="switch_debug" help="switch_debug" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="peth_debug" help="peth_debug" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="hsrv_debug" help="hsrv_debug" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="hagt_debug" help="hagt_debug" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="sys_global" help="sys_global" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="version" help="version" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="manage_if" help="manage_if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="bootimage" help="bootimage" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="card" help="card" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="sys_spec" help="sys_spec" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="sys_spec_global" help="sys_spec_global" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>cdbctl show/cdb/debug/dump_cdb/${type}/${tbl}</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show dump-cdb-all"
+        help="Dump cdb">
+        <ACTION>cdbctl read/cdb/debug/dump_cdb_range</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show subscriber"
+        help="Dump Table Subscribe PMs " />
+
+	<COMMAND name="show subscriber ccs"
+        help="Ccs">
+        <PARAM name="type" help="Table" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="table" help="By tables" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cdb" help="By CDB path" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>cdbctl show/cdb/debug/dump_ccs_subscriber/${type}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show ccs by tables or by CDB path.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show subscriber cds"
+        help="Cds">
+        <PARAM name="type" help="Table" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pm" help="PMs" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>cdbctl show/cdb/debug/dump_cds_subscriber/${type}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show subscriber cds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+<!--  clear hsrv -->
+    <COMMAND name="clear"
+        help="Clear"/>
+
+    <COMMAND name="clear hsrv"
+        help="Hsrv information">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="peth" help="Peth" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/clear_hsrv/${type}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+<!--  dump sai -->
+    <COMMAND name="show sai"
+        help="SAI information">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="opb" help="Offset Pool Bitmap" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl show/cdb/debug/show_hsrv/sai_opb
+        </ACTION>
+
+    </COMMAND>
+
+<!--  dump hsrv -->
+    <COMMAND name="show hsrv"
+        help="Hsrv information">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="task" help="Task" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fdb" help="FDB" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="peth" help="Peth" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="kmpeth" help="Kernel Peth" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="sflow" help="Sflow" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="brg" help="Bridge" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="message" help="Message" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="sai_opb" help="SAI OPB" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl show/cdb/debug/show_hsrv/${type}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show hsrv interface"
+        help="IPv4">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="port" help="Port" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="agg" help="Link Agg" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="l3if" help="L3if" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl show/cdb/debug/show_hsrv/interface/${type}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show hsrv ipv4"
+        help="Interface">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="neighbor" help="Neighbor" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="nexthop" help="Nexthop" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="route" help="Route" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <PARAM name="detail" test='"${type}"="neighbor"' help="Detail" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+
+        <ACTION>
+            cdbctl show/cdb/debug/show_hsrv/ipv4/${type}/${detail}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show hsrv vlan"
+        help="VLAN">
+        <PARAM name="vlan_id" help="VLAN id" optional="true" ptype="VLAN_ID"/>
+        <PARAM name="port" help="Port" optional="true" ptype="SUBCOMMAND" mode="subcommand" />
+
+        <ACTION>
+            cdbctl show/cdb/debug/show_hsrv/vlan/${vlan_id}/${port}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show hsrv tap"
+        help="TAP">
+        <PARAM name="tapid" help="TAP id" optional="true" ptype="UINT"/>
+
+        <ACTION>
+            cdbctl show/cdb/debug/show_hsrv/tap/${tapid}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="debug hsrv" help="Debug Hsrv" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="vswitch" help="vswitch" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="nexthop" help="nexthop" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="vlan" help="vlan" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fdb" help="fdb" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="l2mc" help="l2mc" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="agg" help="Link Agg" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ipuc" help="ipuc" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="neighbor" help="neighbor" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ecmp" help="ecmp" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="acl" help="acl" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dot1x" help="dot1x" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="stp" help="STP" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="g8032_event" help="G8032" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ipmc" help="ipmc" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/hsrv_debug/${type}/1
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv" help="Debug Hsrv" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+        	<PARAM name="vswitch" help="vswitch" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="nexthop" help="nexthop" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="vlan" help="vlan" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fdb" help="fdb" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="l2mc" help="l2mc" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="agg" help="Link Agg" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ipuc" help="ipuc" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="neighbor" help="neighbor" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ecmp" help="ecmp" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="acl" help="acl" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dot1x" help="dot1x" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="stp" help="STP" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="g8032_event" help="G8032" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ipmc" help="ipmc" ptype="SUBCOMMAND" mode="subcommand" />
+         </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/hsrv_debug/${type}/0
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug hsrv ptp" help="Precision Time Protocol (IEEE1588)" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pkt_rx" help="packet recieve" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="pkt_tx" help="packet send" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cfg" help="config" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="interrupt" help="interrupt" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/ptp_pkt_rx/1
+                cdbctl update/cdb/debug/hsrv_debug/ptp_pkt_tx/1
+                cdbctl update/cdb/debug/hsrv_debug/ptp_cfg/1
+                cdbctl update/cdb/debug/hsrv_debug/ptp_interrupt/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/ptp_${type}/1
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv ptp" help="Precision Time Protocol (IEEE1588)" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pkt_rx" help="packet recieve" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="pkt_tx" help="packet send" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cfg" help="config" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="interrupt" help="interrupt" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/ptp_pkt_rx/0
+                cdbctl update/cdb/debug/hsrv_debug/ptp_pkt_tx/0
+                cdbctl update/cdb/debug/hsrv_debug/ptp_cfg/0
+                cdbctl update/cdb/debug/hsrv_debug/ptp_interrupt/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/ptp_${type}/0
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug hsrv l2protocol" help="L2 Protocol" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pkt_rx" help="packet recieve" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="pkt_tx" help="packet send" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/l2protocol_pkt_rx/1
+                cdbctl update/cdb/debug/hsrv_debug/l2protocol_pkt_tx/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/l2protocol_${type}/1
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv l2protocol" help="L2 Protocol" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pkt_rx" help="packet recieve" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="pkt_tx" help="packet send" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/l2protocol_pkt_rx/0
+                cdbctl update/cdb/debug/hsrv_debug/l2protocol_pkt_tx/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/l2protocol_${type}/0
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="debug hsrv interface" help="Interface" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="l2if" help="L2if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="l3if" help="L3if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ifdb" help="Ifdb" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/interface_l2if/1
+                cdbctl update/cdb/debug/hsrv_debug/interface_l3if/1
+                cdbctl update/cdb/debug/hsrv_debug/interface_ifdb/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/interface_${type}/1
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv interface" help="Interface" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="l2if" help="L2if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="l3if" help="L3if" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ifdb" help="Ifdb" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/interface_l2if/0
+                cdbctl update/cdb/debug/hsrv_debug/interface_l3if/0
+                cdbctl update/cdb/debug/hsrv_debug/interface_ifdb/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/interface_${type}/0
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug hsrv message" help="Message" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pm2hsrv" help="pm2hsrv" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="hsrv2pm" help="hsrv2pm" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/message_pm2hsrv/1
+                cdbctl update/cdb/debug/hsrv_debug/message_hsrv2pm/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/message_${type}/1
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv message" help="Message" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="pm2hsrv" help="pm2hsrv" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="hsrv2pm" help="hsrv2pm" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/message_pm2hsrv/0
+                cdbctl update/cdb/debug/hsrv_debug/message_hsrv2pm/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/message_${type}/0
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug hsrv qos" help="QOS" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="class" help="class" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="policer" help="policer" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="process" help="process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="queue" help="queue" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/qos_class/1
+                cdbctl update/cdb/debug/hsrv_debug/qos_policer/1
+                cdbctl update/cdb/debug/hsrv_debug/qos_process/1
+                cdbctl update/cdb/debug/hsrv_debug/qos_queue/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/qos_${type}/1
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv qos" help="QOS" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="class" help="class" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="policer" help="policer" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="process" help="process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="queue" help="queue" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/qos_class/0
+                cdbctl update/cdb/debug/hsrv_debug/qos_policer/0
+                cdbctl update/cdb/debug/hsrv_debug/qos_process/0
+                cdbctl update/cdb/debug/hsrv_debug/qos_queue/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/qos_${type}/0
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+<!--  lsrv debug -->
+
+    <COMMAND name="debug lsrv" help="Debug Lsrv" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="card" help="card" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="port" help="port" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fiber" help="fiber" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fan" help="fan" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="psu" help="psu" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="led" help="led" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="thermal" help="thermal" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="synce" help="synce" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/lsrv_debug/${type}/1
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+     <COMMAND name="no debug lsrv" help="Debug Lsrv" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="card" help="card" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="port" help="port" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fiber" help="fiber" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fan" help="fan" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="psu" help="psu" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="led" help="led" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="thermal" help="thermal" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="synce" help="synce" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            cdbctl update/cdb/debug/lsrv_debug/${type}/0
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="debug hsrv nat" help="debug nat" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="rule" help="nat rule" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="session" help="nat session" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="nat timer" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/nat_rule/1
+                cdbctl update/cdb/debug/hsrv_debug/nat_session/1
+                cdbctl update/cdb/debug/hsrv_debug/nat_timer/1
+            else
+                cdbctl update/cdb/debug/hsrv_debug/nat_${type}/1
+            fi
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="no debug hsrv nat" help="debug nat" access="2">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="rule" help="nat rule" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="session" help="nat session" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="timer" help="nat timer" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+        <ACTION>
+            if [ "all" == ${type} ]; then
+                cdbctl update/cdb/debug/hsrv_debug/nat_rule/0
+                cdbctl update/cdb/debug/hsrv_debug/nat_session/0
+                cdbctl update/cdb/debug/hsrv_debug/nat_timer/0
+            else
+                cdbctl update/cdb/debug/hsrv_debug/nat_${type}/0
+            fi
+        </ACTION>
+
+    </COMMAND>
+
+
+	<COMMAND name="show mstp-debug" help="Display STP debug"/>
+
+	<COMMAND name="show mstp-debug hybrid-stp" help="Display hybrid STP hardware state">
+		<ACTION>
+			cdbctl show/cdb/l2/show_hybrid_stp
+		</ACTION>
+		<CTCBYPASS/>
+	</COMMAND>
+
+	<COMMAND name="show mstp-debug instance-state" help="Display STP hardware state">
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<PARAM name="instance" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="instance_id" help="Instance ID" ptype="INSTANCE_ID_ALL"/>
+		</PARAM>
+		<ACTION>
+			cdbctl show/cdb/l2/show_inst_state/${instance_id}/${if_id}/
+		</ACTION>
+		<CTCBYPASS/>
+	</COMMAND>
+
+	<COMMAND name="show mstp-debug instance-state check" help="Check Forward state and STP state mismatch">
+		<ACTION>
+			cdbctl show/cdb/l2/show_inst_state/check
+		</ACTION>
+		<CTCBYPASS/>
+	</COMMAND>
+
+	<COMMAND name="show mstp-debug port-db" help="Display STP port debug information">
+		<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="if_id" help="Interface name, eth-X-X or aggX" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<PARAM name="instance" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="instance_id" help="Instance ID" ptype="INSTANCE_ID_ALL"/>
+		</PARAM>
+		<ACTION>
+			cdbctl show/cdb/l2/show_mstp/mst_debug/${instance_id}/${if_id}/
+		</ACTION>
+		<CTCBYPASS/>
+	</COMMAND>
+
+	<COMMAND name="show mstp-debug port-compare" help="Display STP port priority compare information">
+		<PARAM name="instance" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="instance_id" help="Instance ID" ptype="INSTANCE_ID_ALL"/>
+		</PARAM>
+		<ACTION>
+			cdbctl show/cdb/l2/show_mstp/mst_debug_tree/${instance_id}
+		</ACTION>
+		<CTCBYPASS/>
+	</COMMAND>
+
+	<COMMAND name="show idebug" help="Internal debug"/>
+	<COMMAND name="show idebug heart-beat-monitor" help="Internal debug">
+		<ACTION>
+			cdbctl show/cdb/sys/bhm_module/show
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="sysmon-feed-disable" help="Disable HW watchdog feed">
+		<ACTION>
+				cdbctl update/cdb/sys/bhm_global/hw_watchdog_feed_en/0
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

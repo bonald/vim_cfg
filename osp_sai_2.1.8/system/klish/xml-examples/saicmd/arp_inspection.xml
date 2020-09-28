@@ -1,0 +1,945 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+ARP INSPECTION
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ip arp inspection" help="Status of ARP inspection">
+		<ACTION>
+		cdbctl show/cdb/l3/show_arpinsp
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+This command can display all arp inspection information, include source mac validate、destination mac validate、ip validate, ACL match and static, ACL logging and DHCP logging, all kinds of arp droped or forward packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If no ARP Inspection is enabled on any VLANs, only source mac validate、destination mac validate、ip validate can be displayed.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example display the all arp inspection: 
+    Switch# show ip arp inspection 
+    Source Mac Validation      : Disabled 
+	Destination Mac Validation : Enabled 
+	IP Address Validation      : Enabled 
+
+	Vlan    Configuration      ACL Match     Static ACL
+	--------+------------------+-------------+--------------
+	2        enabled           test          static       
+	4        enabled           test          static       
+	6        enabled  
+    7        enabled                                      
+	8        enabled                                      
+
+	Vlan     ACL Logging     DHCP Logging
+	---------+---------------+--------------
+	2        matchlog        deny         
+	4        matchlog        deny         
+	6        deny            permit       
+	7        deny            deny         
+	8        deny            deny         
+
+	Vlan     Forwarded      Dropped     DHCP Drops     ACL Drops
+	---------+--------------+-----------+--------------+---------
+	2        0              0           0              0            
+	4        0              0           0              0
+	6        0              0           0              0            
+	7        0              0           0              0            
+	8        0              0           0              0            
+
+	Vlan     DHCP Permits     ACL Permits     Source MAC Failures
+	=============================================================
+	2        0                0               0              
+	4        0                0               0              
+	6        0                0               0              
+	7        0                0               0              
+	8        0                0               0              
+
+	Vlan     Dest MAC Failures     IP Validation Failures     Invalid Protocol Data
+	---------+---------------------+--------------------------+--------------------
+	2        0                     0                          0              
+	4        0                     0                          0              
+	6        0                     0                          0              
+	7        0                     0                          0              
+	8        0                     0                          0  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+	   </CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ip arp inspection interface" help="Arp inspection trust" >
+	    <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     <PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+	    </PARAM>
+	    <ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l3/show_arpinsp/interface/
+		else
+			cdbctl show/cdb/l3/show_arpinsp/interface/${if_name}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+This command can display the ARP Inspection trust or untrust on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The interface is trust port or not.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to show the interface arp inspection trust or not:
+		Switch# show ip arp inspection interface
+		Interface      Trust State
+		---------------+------------
+		eth-0-1        trusted  
+		eth-0-2        untrusted  
+		eth-0-3        untrusted  
+		eth-0-4        untrusted  
+		eth-0-5        untrusted  
+		eth-0-6        untrusted  
+		eth-0-7        untrusted  
+		eth-0-8        untrusted  
+		eth-0-9        untrusted  
+		eth-0-10       untrusted  
+		eth-0-11       untrusted  
+		eth-0-12       untrusted  
+		eth-0-13       untrusted  
+		eth-0-14       untrusted  
+		eth-0-15       untrusted  
+		eth-0-16       untrusted  
+		eth-0-17       untrusted  
+		eth-0-18       untrusted  
+		eth-0-19       untrusted  
+		eth-0-20       untrusted  
+		eth-0-21       untrusted  
+		eth-0-22       untrusted  
+		eth-0-23       untrusted  
+		eth-0-24       untrusted
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp inspection trust
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ip arp inspection log" help="Log buffer" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		    <PARAM name="arp_log_id" help="Specify the number of messages, the default number is 32" ptype="ARP_LOG_ID"/>
+		</PARAM>
+		<ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l3/show_arpinsp/log
+		else
+			cdbctl show/cdb/l3/show_arpinsp/log/${arp_log_id}
+		fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to display the log configuration and log information in ARP Inspection log buffer. The default number is 32.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to verify ARP Inspection log settings.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to display the log information in ARP Inspection log buffer:
+		Switch# show ip arp inspection log
+		Total Log Buffer Size : 32
+		Syslog rate : 5 entries per 1 seconds.
+
+		No entries in log buffer.
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp inspection log-buffer entries
+ip arp inspection log-buffer logs
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="show ip arp inspection statistics" help="Packet statistics on VLAN" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+            </PARAM>
+		</PARAM>
+		<ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l3/show_arpinsp/statistics
+		else
+			cdbctl show/cdb/l3/show_arpinsp/statistics/${vlan_list}
+		fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to displays statistics for forwarded, dropped, MAC validation failure, IP validation failure, ACL permitted and denied, and DHCP permitted and denied packets for the specified vlan. If no vlans are specified or if a range is specified, displays information only for vlans with ARP Inspection enabled.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Displays statistics for forwarded, dropped, MAC validation failure, IP validation failure, ACL permitted and denied, and DHCP permitted and denied packets for the specified VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to display the ARP Inspection statistics:
+		Switch# show ip arp inspection statistics
+		Vlan     Forwarded      Dropped     DHCP Drops     ACL Drops
+		---------+--------------+-----------+--------------+---------
+		2        0              0           0              0            
+		3        0              0           0              0                       
+
+		Vlan     DHCP Permits     ACL Permits     Source MAC Failures
+		---------+----------------+---------------+-------------------
+		2        0                0               0              
+		3        0                0               0                           
+
+		Vlan     Dest MAC Failures     IP Validation Failures     Invalid Protocol Data
+		---------+---------------------+--------------------------+---------------------
+		2        0                     0                          0              
+		3        0                     0                          0              
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear ip arp inspection statistics
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ip arp inspection vlan" help="Packet statistics on VLAN" >
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		<ACTION>
+			cdbctl show/cdb/l3/show_arpinsp/vlan/${vlan_list}
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to displays the configuration and the operating state of ARP Inspection for the specified vlan.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If no vlans are specified or if a range is specified, displays information only for vlans with ARP Inspection enabled.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to display the ARP Inspection vlan:
+		Switch# show ip arp inspection vlan 2-3
+		Source Mac Validation      : Disabled 
+		Destination Mac Validation : Disabled 
+		IP Address Validation      : Disabled 
+		
+		Vlan    Configuration      ACL Match     Static ACL
+		--------+------------------+-----------------------
+		2        enabled           acl 
+		3        enabled           acl 		
+
+		Vlan     ACL Logging     DHCP Logging 
+		---------+---------------+-------------------------
+		2        deny            deny 
+		3        deny            deny 				
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp inspection vlan
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show arp" help="Arp"/>
+	<COMMAND name="show arp access-list" help="Arp access-list" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="acl_name" help="ARP ACL name" ptype="NAME_STRING"/>
+		</PARAM>
+		<ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l3/show_arpacl
+		else
+			cdbctl show/cdb/l3/show_arpacl/${acl_name}
+		fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to display the ARP ACL configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display the ARP ACL configured by ACL name.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+		This example shows how to display arp ace.
+		Switch # show arp access-list 
+		arp access-list test
+		 10 permit request ip 1.1.1.1 0.255.255.255 mac any
+		</CTCEXAMPLE>
+		<CTCRCMD>
+arp access-list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear ip arp inspection" help="ARP inspection features"/>
+	<COMMAND name="clear ip arp inspection log-buffer" help="ARP inspection log-buffer" >
+		<ACTION>
+			cdbctl update/cdb/l3/clear_arpinsp/log-buffer
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use clear ip arp inspection log-buffer command to delete all log in log-buffer.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+		This example shows how to delete all log in log-buffer.
+		Switch# clear ip arp inspection log-buffer
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection log
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clear ip arp inspection statistics" help="ARP inspection statistics" >
+		<ACTION>
+			cdbctl update/cdb/l3/clear_arpinsp/statistics
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use clear ip arp inspection statistics command delete all statistics of ARP Inspection.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>	
+		This example shows how to delete all statistics of ARP Inspection.
+		Switch# clear ip arp inspection statistics
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection statistics
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="ip arp" help="IP ARP features"/>
+	<COMMAND name="ip arp inspection" help="Status of ARP inspection"/>
+	
+	<COMMAND name="ip arp inspection vlan" help="Enable/Disable ARP inspection on VLANs">
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="logging" help="Configure type of packets to be logged" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="logging_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="acl-match" help="Logging of packets that match ACLs" ptype="SUBCOMMAND" mode="subcommand" > 
+						<PARAM name="acl_match_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+							<PARAM name="matchlog" help="Log packets on ACE logging configuration" ptype="SUBCOMMAND" mode="subcommand" /> 
+							<PARAM name="none" help="Do not log packets that match ACLs" ptype="SUBCOMMAND" mode="subcommand" />
+							<PARAM name="deny" help="Log packets that ARP is denied, default log action" ptype="SUBCOMMAND" mode="subcommand" />
+						</PARAM>
+					</PARAM>
+					<PARAM name="dhcp-bindings" help="Logging of packets that match DHCP bindings" ptype="SUBCOMMAND" mode="subcommand" > 
+						<PARAM name="dhcp_bindings_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+							<PARAM name="all" help="Log all packets that match DHCP bindings" ptype="SUBCOMMAND" mode="subcommand" /> 
+							<PARAM name="none" help="Do not log packets that match DHCP bindings" ptype="SUBCOMMAND" mode="subcommand" /> 
+							<PARAM name="permit" help="Log DHCP binding permitted packets" ptype="SUBCOMMAND" mode="subcommand" />
+							<PARAM name="deny" help="Log packets that ARP is denied, default log action" ptype="SUBCOMMAND" mode="subcommand" />
+					    </PARAM>
+				    </PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>	
+		<ACTION>
+			if [ ${part} == "all" ]; then
+				cdbctl create/cdb/l3/arpinsp/${vlan_list}
+            elif [ ${logging_type} == "acl-match" ]; then
+				cdbctl create/cdb/l3/arpinsp/${vlan_list}/logging/${logging_type}/${acl_match_type}
+			elif [ ${logging_type} == "dhcp-bindings" ]; then
+				cdbctl create/cdb/l3/arpinsp/${vlan_list}/logging/${logging_type}/${dhcp_bindings_type}
+			fi
+        </ACTION>
+	</COMMAND>
+	
+	<COMMAND name="ip arp inspection validate" help="Validate addresses">
+	<PARAM name="sub" help="Type" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="dst-mac" help="Validate destination MAC address" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="ip" help="Validate IP addresses" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+			<PARAM name="src-mac" help="Validate source MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="ip" help="Validate IP addresses" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="dst-mac" help="Validate destination MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+			<PARAM name="src-mac" help="Validate source MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src-mac" help="Validate source MAC address" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="ip" help="Validate IP addresses" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+			<PARAM name="dst-mac" help="Validate destination MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+		</PARAM>
+	</PARAM>
+		<ACTION>
+			if [ ${sub} == "dst-mac" ]; then
+				cdbctl update/cdb/l3/arpinsp/dst-mac/${ip}/${src-mac}/1
+			elif [ ${sub} == "ip" ]; then
+				cdbctl update/cdb/l3/arpinsp/ip/${dst-mac}/${src-mac}/1
+			elif [ ${sub} == "src-mac" ]; then
+				cdbctl update/cdb/l3/arpinsp/src-mac/${ip}/${dst-mac}/1
+			fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Users can configure the validation destination mac, source mac, ip, the three validation type is optional. 
+If user validate dst-mac, the the switch will checks the destination MAC address in the Ethernet header against the target MAC address in ARP body. When enabled, packets with different MAC addresses are classified as invalid and are dropped.
+If user validates ip, the switch will checks the ARP body for invalid and unexpected IP addresses.
+If user validate src-mac, the switch will checks the source MAC address in the Ethernet header against the sender MAC address in the ARP body. When enabled, packets with different MAC addresses are classified as invalid and are dropped.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When user validate dst-mac, the check is performed for ARP responses; 
+When user validates ip, the addresses include 0.0.0.0, 255.255.255.255, and all IP multicast addresses. Sender IP addresses are checked in all ARP requests and responses, and target IP addresses are checked only in ARP responses.
+When user validate src-mac, the check is performed on both ARP requests and responses.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to configure the validation dst-mac, ip, src-mac:
+		Switch(config)# ip arp inspection validate dst-mac ip src-mac
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ip arp inspection filter" help="Specify ARP acl to be applied">
+		<PARAM name="acl_name" help="ARP ACL name" ptype="NAME_STRING">
+			<PARAM name="vlan" help="VLANs to apply the filter" mode="subcommand" ptype="SUBCOMMAND"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+				<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+					<PARAM name="static" help="Apply the ACL statically" ptype="SUBCOMMAND" mode="subcommand"/> 
+				</PARAM>
+			</PARAM>
+		</PARAM>	
+		<ACTION>
+			if [ ${part} == "all" ]; then
+				cdbctl create/cdb/l3/arpinsp/${acl_name}/${vlan_list}/dynamic
+            else
+				cdbctl create/cdb/l3/arpinsp/${acl_name}/${vlan_list}/static
+			fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to apply the ARP ACLs. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The vlan_list can be a single VLAN, also can be the vlan range.
+Specify static to treat implicit denies in the ARP ACL as explicit denies and to drop packets that do not match any previous clauses in the ACL. DHCP bindings are not used. If you do not specify this keyword, it means that there is no explicit deny in the ACL that denies the 
+packet, and DHCP bindings determine whether a packet is permitted or denied if the packet does not match any clauses in the ACL.
+ARP packets containing only IP-to-MAC address bindings are compared against the ACL. Packets are permitted only if the access list permits them.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to apply the ARP ACL to a vlan 2
+		Switch(config)# ip arp inspection filter aaaa vlan 2 static 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+arp access-list
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ip arp inspection log-buffer" help="Log buffer configuration"/>
+	<COMMAND name="ip arp inspection log-buffer entries" help="Number of entries for log buffer">
+			<PARAM name="arp_log_entry_num" help="Number of entries for log buffer, default is 32" ptype="ARP_LOG_ENTRY_NUM"/>
+		<ACTION>
+			cdbctl update/cdb/l3/arpinsp/entries/${arp_log_entry_num}
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set log-buffer size.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+32	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to set log-buffer size to 10.
+		Switch(config)# ip arp inspection log-buffer entries 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection log
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="ip arp inspection log-buffer logs" help="Number of logs per interval">
+			<PARAM name="arp_log_num" help="Number of entries, default is 5" ptype="ARP_LOG_NUM">
+				<PARAM name="interval" help="Interval for controlling logging rate" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="arp_log_rate" help="Interval in seconds, default is 1" ptype="ARP_LOG_RATE"/>
+				</PARAM>
+			</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l3/arpinsp/logs/${arp_log_num}/${arp_log_rate}
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to configure the DAI logging system messages.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+A 0 value for the logs number indicates that the entries should not be logged out of this buffer.
+A 0 value for the interval seconds keyword and argument indicates an immediate log.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Log num is 5, log interval is 1.
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to configure logging to send 12 messages every 2 seconds.
+		Switch(config)# ip arp inspection log-buffer logs 12 interval 2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection log
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="arp access-list" help="ARP access list" view="configure-arp-acl-view" viewid="arp_acl_name=${arp_acl_name}">
+	    <PARAM name="arp_acl_name" help="Specify a Arp access-list name, up to 20 characters" ptype="NAME_STRING"/>
+		<ACTION>
+			cdbctl create/cdb/l3/arpacl_config/${arp_acl_name}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to create ARP ACL and then enter ARP ACL configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the system already has an ARP ACL with the same name, this command will enter the ARp ACL configuration mode.  
+When the name is not used by any ACL, this command is to create the ARP ACL firstly and then enter the ARP ACL configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create an ARP ACL named testacl and then enter the ARP ACL configuration mode.   
+    Switch(config)# arp access-list testacl   
+    Switch(config-arp-acl-testacl)#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show arp access-list
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="no arp access-list" help="ARP access list">
+	    <PARAM name="arp_acl_name" help="Specify a MAC IP access-list name, up to 20 characters" ptype="NAME_STRING"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/arpacl_config/${arp_acl_name}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to remove this ARP ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the ARP ACL, and should detach ARP ACL from the interface which applied this ARP ACL.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove an ARP ACL named testacl.  
+    Switch(config)# no arp access-list testacl    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show arp access-list
+		</CTCRCMD>
+	</COMMAND>
+		
+	
+	<COMMAND name="no ip arp" help="IP ARP features"/>
+	<COMMAND name="no ip arp inspection" help="Status of ARP inspection"/>
+	
+	<COMMAND name="no ip arp inspection vlan" help="Enable/Disable ARP inspection on VLANs">
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="logging" help="Configure type of packets to be logged" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="logging_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="acl-match" help="Logging of packets that match ACLs" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="dhcp-bindings" help="Logging of packets that match DHCP bindings" ptype="SUBCOMMAND" mode="subcommand" /> 
+				</PARAM>
+			</PARAM>
+		</PARAM>	
+		<ACTION>
+			if [ ${part} == "all" ]; then
+				cdbctl delete/cdb/l3/arpinsp/${vlan_list}
+            elif [ ${logging_type} == "acl-match" ]; then
+				cdbctl delete/cdb/l3/arpinsp/${vlan_list}/logging/${logging_type}
+			elif [ ${logging_type} == "dhcp-bindings" ]; then
+				cdbctl delete/cdb/l3/arpinsp/${vlan_list}/logging/${logging_type}
+			fi
+        </ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip arp inspection validate" help="Validate addresses">
+	<PARAM name="sub" help="Type" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		<PARAM name="dst-mac" help="Validate destination MAC address" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="ip" help="Validate IP addresses" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+			<PARAM name="src-mac" help="Validate source MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="ip" help="Validate IP addresses" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="dst-mac" help="Validate destination MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+			<PARAM name="src-mac" help="Validate source MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src-mac" help="Validate source MAC address" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="ip" help="Validate IP addresses" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+			<PARAM name="dst-mac" help="Validate destination MAC address" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+		</PARAM>
+	</PARAM>
+		<ACTION>
+			if [ ${sub} == "all" ]; then
+				cdbctl update/cdb/l3/arpinsp/dst-mac/ip/src-mac/0
+			elif [ ${sub} == "dst-mac" ]; then
+				cdbctl update/cdb/l3/arpinsp/dst-mac/${ip}/${src-mac}/0
+			elif [ ${sub} == "ip" ]; then
+				cdbctl update/cdb/l3/arpinsp/ip/${dst-mac}/${src-mac}/0
+			elif [ ${sub} == "src-mac" ]; then
+				cdbctl update/cdb/l3/arpinsp/src-mac/${ip}/${dst-mac}/0
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Users can unset the validation destination mac, source mac, ip, the three validation type is optional. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to unset the validation dst-mac, ip, src-mac:
+		Switch(config)# no ip arp inspection validate dst-mac ip src-mac
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no ip arp inspection filter" help="Specify ARP acl to be applied">
+		<PARAM name="acl_name" help="ARP ACL name" ptype="NAME_STRING">
+			<PARAM name="vlan" help="VLANs to apply the filter" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>	
+		</PARAM>
+		<ACTION>
+			cdbctl delete/cdb/l3/arpinsp/${acl_name}/${vlan_list}
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this no command to unapply the ARP ACLs. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The vlan_list can be a single VLAN, also can be the vlan range.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to unapply the ARP ACL to a vlan 2
+		Switch(config)# ip arp inspection filter aaaa vlan 2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+arp access-list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip arp inspection log-buffer" help="Log buffer configuration"/>
+	<COMMAND name="no ip arp inspection log-buffer entries" help="Log buffer configuration">
+		<ACTION>
+			cdbctl update/cdb/l3/arpinsp/entries/32
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this no command to set the log-buffer entries to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+32	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to set the log-buffer entries to default value.
+		Switch(config)# no ip arp inspection log-buffer entries
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection log
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no ip arp inspection log-buffer logs" help="Log buffer configuration">
+		<ACTION>
+			cdbctl update/cdb/l3/arpinsp/logs/5/1
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this no command to set the log-buffer logs to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Log num is 5, log rate is 1.	
+		</CTCDEFAULT>	
+		<CTCEXAMPLE>
+		This example shows how to set the log-buffer logs to default value.
+		Switch(config)# no ip arp inspection log-buffer logs
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip arp inspection log
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ip arp inspection" help="Status of ARP inspection"/>
+	
+	<COMMAND name="ip arp inspection trust" help="Configure trust state">
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/arpinsp_trust_enable/1
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip arp inspection trust configuration command on the switchport port to set ARP Inspection trust enable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be switchport.
+The switch forwards ARP packets that it receives on this interface, and does not check them. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp inspection trust enable.
+    Switch(config-if-eth-0-1) ip arp inspection trust	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip arp inspection trust
+show ip arp inspection interface
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip arp inspection" help="Status of ARP inspection"/>
+	
+	<COMMAND name="no ip arp inspection trust" help="Configure trust state">
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/arpinsp_trust_enable/0
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use no command will set ip arp inspection trust to disable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The port must be switchport.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set arp inspection trust disable.
+    Switch(config-if-eth-0-2) no ip arp inspection trust
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip arp inspection trust
+show ip arp inspection interface
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+
+<VIEW name="configure-arp-acl-view" 
+	prompt="${SYSTEM_NAME}(config-arp-acl-${arp_acl_name})# "
+	depth="1">
+	
+	<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from ARP ACL configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from ARP ACL configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+	
+	<COMMAND name="GACL" help="Specify the sequence-number(1...65535)" ptype="ARP_SEQUECE_NUM">
+		<PARAM name="filter" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="permit" help="Specify packets to permit" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="deny" help="Specify packets to reject" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="arp_type" help="Part1" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="request" help="ARP Request" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="response" help="ARP response" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="ip" help="Sender IP" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="ip_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="send_ip" help="Sender address" ptype="IP_ADDR"/>
+				<PARAM name="any" help="Any Sender IP" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="host" help="A single Sender host " ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="send_ip_mask" test='"${ip_type}"="send_ip"' help="Sender wildcard bits" ptype="IP_ADDR"/>
+			<PARAM name="send_ip" test='"${ip_type}"="host"' help="Sender host's IP address" ptype="IP_ADDR"/>	
+		</PARAM>
+		<PARAM name="mac" help="Sender MAC" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="mac_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="send_mac" help="Sender MAC address" ptype="MAC_ADDR"/>
+				<PARAM name="any" help="Any Sender MAC" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="host" help="A single Sender host " ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="send_mac_mask" test='"${mac_type}"="send_mac"' help="Sender wildcard bits" ptype="MAC_ADDR"/>
+			<PARAM name="send_mac" test='"${mac_type}"="host"' help="Sender host's MAC address" ptype="MAC_ADDR"/>
+		</PARAM>
+		<PARAM name="is_log" help="Part2" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="log" help="Log at match" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<ACTION>
+			cdbctl create/cdb/l3/arpace_config/${arp_acl_name}/${GACL}/${filter}/${arp_type}/ip/${ip_type}/${send_ip}/${send_ip_mask}/mac/${mac_type}/${send_mac}/${send_mac_mask}/${is_log}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to permit or deny packets matching the ARP Inspection filter.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If IP address wildcard bits is provided, the IP address is logically-anded in bitwise with the reverse bits of the wildcard bits. For example, 10.10.10.0 0.0.0.255 means the addresses from 10.10.10.0 to 10.10.10.255 are matched.
+If the log command is configured, it means that the arp packet will be logged if match the ARP ACL.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set an ARP Inspection filter with sequence number 10 from an ARP ACL.  
+    DUT1(config)# arp access-list testacl  
+    DUT1(config-arp-acl-testacl)# 10 permit ip 10.10.10.0 0.0.0.255 mac host 0.0.1 log
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show arp access-list
+no sequence-num
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="permit" help="Specify packets to permit">
+		<PARAM name="arp_type" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="request" help="ARP Request" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="response" help="ARP response" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="ip" help="Sender IP" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="ip_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="send_ip" help="Sender address" ptype="IP_ADDR"/>
+				<PARAM name="any" help="Any Sender IP" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="host" help="A single Sender host " ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="send_ip_mask" test='"${ip_type}"="send_ip"' help="Sender wildcard bits" ptype="IP_ADDR"/>
+			<PARAM name="send_ip" test='"${ip_type}"="host"' help="Sender host's IP address" ptype="IP_ADDR"/>	
+		</PARAM>
+		<PARAM name="mac" help="Sender MAC" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="mac_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="send_mac" help="Sender MAC address" ptype="MAC_ADDR"/>
+				<PARAM name="any" help="Any Sender MAC" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="host" help="A single Sender host " ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="send_mac_mask" test='"${mac_type}"="send_mac"' help="Sender wildcard bits" ptype="MAC_ADDR"/>
+			<PARAM name="send_mac" test='"${mac_type}"="host"' help="Sender host's MAC address" ptype="MAC_ADDR"/>
+		</PARAM>
+		<PARAM name="is_log" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="log" help="Log at match" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<ACTION>
+			cdbctl create/cdb/l3/arpace_config/${arp_acl_name}/0/permit/${arp_type}/ip/${ip_type}/${send_ip}/${send_ip_mask}/mac/${mac_type}/${send_mac}/${send_mac_mask}/${is_log}
+        </ACTION>
+	</COMMAND>
+	
+	<COMMAND name="deny" help="Specify packets to reject">
+		<PARAM name="arp_type" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="request" help="ARP Request" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="response" help="ARP response" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<PARAM name="ip" help="Sender IP" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="ip_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="send_ip" help="Sender address" ptype="IP_ADDR"/>
+				<PARAM name="any" help="Any Sender IP" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="host" help="A single Sender host " ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="send_ip_mask" test='"${ip_type}"="send_ip"' help="Sender wildcard bits" ptype="IP_ADDR"/>
+			<PARAM name="send_ip" test='"${ip_type}"="host"' help="Sender host's IP address" ptype="IP_ADDR"/>	
+		</PARAM>
+		<PARAM name="mac" help="Sender MAC" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="mac_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="send_mac" help="Sender MAC address" ptype="MAC_ADDR"/>
+				<PARAM name="any" help="Any Sender MAC" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="host" help="A single Sender host " ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="send_mac_mask" test='"${mac_type}"="send_mac"' help="Sender wildcard bits" ptype="MAC_ADDR"/>
+			<PARAM name="send_mac" test='"${mac_type}"="host"' help="Sender host's MAC address" ptype="MAC_ADDR"/>
+		</PARAM>
+		<PARAM name="is_log" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="log" help="Log at match" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<ACTION>
+			cdbctl create/cdb/l3/arpace_config/${arp_acl_name}/0/deny/${arp_type}/ip/${ip_type}/${send_ip}/${send_ip_mask}/mac/${mac_type}/${send_mac}/${send_mac_mask}/${is_log}
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="no sequence-num" help="Specify the sequence-number">
+        <PARAM name="seq_num" help="Sequence-number" ptype="ARP_SEQUECE_NUM"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/arpace_config/${arp_acl_name}/${seq_num}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a filter from ARP ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete a filter from ARP ACL.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete an arp inspection filter with sequence number 10 from an ARP ACL.  
+    Switch(config-arp-acl-testacl)# no sequence-num 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show arp access-list
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

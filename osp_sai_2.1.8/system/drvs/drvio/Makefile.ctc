@@ -1,0 +1,3 @@
+.PHONY: all
+all:
+	$(CTC_MAKE) -C $(TOP_DIR)/drvs/drvio/${MY_CPU_DIR} -f Makefile.ctc

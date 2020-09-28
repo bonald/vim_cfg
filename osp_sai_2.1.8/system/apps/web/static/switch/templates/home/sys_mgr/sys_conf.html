@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Base Settings' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- BEGIN: IP -->
+        <form class="form-inline" name="SysConfNetForm" novalidate>
+            <div class="form-group col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[SysConfNetForm.IP.$valid]">
+                <label class="col-md-4">{{ 'Management IP' | translate }}</label>
+                <input class="form-control col-md-4" type="text" name="IP" ng-model="net.mgmtIP" placeholder="x.x.x.x/x" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))\/((\d$)|([0-2]\d$))|(3[0-2]$)/" required/>
+            </div>
+            <button class="btn btn-primary " ng-click="modifyIpAddr()" ng-disabled="SysConfNetForm.$invalid || (net.mgmtIP == netRef.mgmtIP)">
+                <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+            </button>
+        </form>
+        <!-- BEGIN: END -->
+
+        <hr />
+
+        <!-- BEGIN: gateway -->
+        <form class="form-inline" name="SysConfGWForm" novalidate>
+            <div class="form-group col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[SysConfGWForm.Gateway.$valid]">
+                <label class="col-md-4">{{ 'Gateway' | translate }}</label>
+                <input class="form-control" type="text" name="Gateway" ng-model="net.gateway" placeholder="x.x.x.x" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required/>
+            </div>
+            <button class="btn btn-primary" ng-click="modifyGateway()" ng-disabled="SysConfGWForm.$invalid || (net.gateway == netRef.gateway)">
+                <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+            </button>
+        </form>
+        <!-- END: gateway -->
+
+        <hr />
+
+        <!-- sys -->
+        <form class="form-inline" name="SysConfSysForm" novalidate>
+            <div class="form-group col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[SysConfSysForm.Hostname.$valid]">
+                <label class="col-md-4">{{ 'Hostname' | translate }}</label>
+                <input type="text" class="form-control" name="Hostname" ng-model="sys.hostname" placeholder="1~63" ng-pattern="/^(?=.*[a-zA-Z0-9]$)[a-zA-Z][\w.-]{0,62}$/" required/>
+            </div>
+            <button class="btn btn-primary" ng-click="modifyHostname()" ng-disabled="SysConfSysForm.$invalid || sysRef.hostname == sys.hostname">
+                <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,238 @@
+include $(MK_DIR)/sys_vx.mk
+
+ifeq ($(USW), yes)
+CHIP_OBJ_API_DIR+=$(OBJ_BASE_DIR)/core/usw/src/ctc
+CHIP_OBJ_SYS_DIR+=$(OBJ_BASE_DIR)/core/usw/src/sys
+else
+CHIP_OBJ_API_DIR=$(OBJ_BASE_DIR)/core/$(CHIPNAME)/src/ctc
+CHIP_OBJ_SYS_DIR=$(OBJ_BASE_DIR)/core/$(CHIPNAME)/src/sys
+endif
+API_OBJ_DIR=$(OBJ_BASE_DIR)/core/api/src
+INIT_OBJ_DIR=$(OBJ_BASE_DIR)/core/init
+COMMON_OBJ_DIR=$(OBJ_BASE_DIR)/core/common/src
+SWITCH_OBJ_DIR=$(OBJ_BASE_DIR)/core/switch
+APP_OBJ_DIR=$(OBJ_BASE_DIR)/core/app
+
+
+LIB = sdkcore
+
+
+LIBAPI = sdkcoreapi
+
+LIBSYS = sdkcoresys
+
+LIBSYS1 = sdkcoresys1
+ifeq ($(CHIPNAME),humber)
+
+OBJSAPI = $(wildcard $(CHIP_OBJ_API_DIR)/qos/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/interface/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/interrupt/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/l2/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/l3/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/misc/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/nexthop/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/security/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/stats/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/usrid/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/vlan/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/oam/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/mpls/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/ptp/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/synce/*.o)
+
+OBJSSYS = $(wildcard $(CHIP_OBJ_SYS_DIR)/qos/*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/common/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/interface/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/interrupt/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/l2/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/l3/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/misc/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/nexthop/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/security/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/stats/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/usrid/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/vlan/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/oam/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/mpls/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/ptp/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/synce/*.o) \
+				$(wildcard $(API_OBJ_DIR)/*.o) \
+				$(wildcard $(COMMON_OBJ_DIR)/*.o)
+OBJSSYS1 =
+
+endif
+
+
+ifeq ($(CHIPNAME),greatbelt)
+
+OBJSAPI = $(wildcard $(CHIP_OBJ_API_DIR)/acl/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/qos/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/interface/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/interrupt/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/l2/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/l3/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/misc/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/nexthop/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/stats/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/scl/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/vlan/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/security/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/oam/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/mpls/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/timesync/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/stacking/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/dma/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/packet/*.o) \
+				$(wildcard $(COMMON_OBJ_DIR)/*.o) \
+				$(wildcard $(API_OBJ_DIR)/*.o)\
+                $(wildcard $(INIT_OBJ_DIR)/*.o) \
+                $(wildcard $(SWITCH_OBJ_DIR)/*.o) \
+                $(wildcard $(APP_OBJ_DIR)/*.o)
+
+OBJSSYS = $(wildcard $(CHIP_OBJ_SYS_DIR)/acl/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/qos/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/interface/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/interrupt/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/l2/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/l3/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/misc/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/nexthop/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/stats/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/scl/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/vlan/*.o) 
+				
+OBJSSYS1 = $(wildcard $(CHIP_OBJ_SYS_DIR)/security/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/oam/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/mpls/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/timesync/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/stacking/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/dma/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/packet/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/common/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/scl/*.o)
+
+endif
+
+ifeq ($(CHIPNAME),goldengate)
+
+OBJSAPI = $(wildcard $(CHIP_OBJ_API_DIR)/acl/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/qos/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/interface/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/interrupt/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/l2/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/l3/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/misc/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/nexthop/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/stats/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/scl/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/vlan/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/security/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/oam/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/mpls/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/timesync/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/stacking/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/dma/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/packet/*.o) \
+				$(wildcard $(CHIP_OBJ_API_DIR)/overlay/*.o) \
+				$(wildcard $(COMMON_OBJ_DIR)/*.o) \
+				$(wildcard $(API_OBJ_DIR)/*.o) \
+                $(wildcard $(INIT_OBJ_DIR)/*.o) \
+                $(wildcard $(SWITCH_OBJ_DIR)/*.o) \
+                $(wildcard $(APP_OBJ_DIR)/*.o)
+
+OBJSSYS = $(wildcard $(CHIP_OBJ_SYS_DIR)/acl/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/qos/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/interface/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/interrupt/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/l2/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/l3/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/misc/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/nexthop/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/stats/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/scl/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/vlan/*.o) 
+				
+OBJSSYS1 = $(wildcard $(CHIP_OBJ_SYS_DIR)/security/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/oam/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/mpls/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/timesync/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/stacking/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/dma/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/packet/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/common/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/overlay/*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/scl/*.o)
+
+endif
+
+ifeq ($(USW),yes)
+
+OBJSAPI = $(wildcard $(CHIP_OBJ_API_DIR)/*.o) \
+				$(wildcard $(COMMON_OBJ_DIR)/*.o) \
+				$(wildcard $(API_OBJ_DIR)/*.o) \
+                $(wildcard $(INIT_OBJ_DIR)/*.o) \
+                $(wildcard $(SWITCH_OBJ_DIR)/*.o) \
+                $(wildcard $(APP_OBJ_DIR)/*.o)
+
+OBJSSYS = $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_a*.o) \
+				$(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_b*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_c*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_d*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_e*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_f*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_i*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_l*.o)
+                
+OBJSSYS1 = $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_m*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_n*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_o*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_p*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_q*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_r*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_s*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_t*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_u*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_v*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/sys_usw_w*.o) \
+                $(wildcard $(CHIP_OBJ_SYS_DIR)/$(chipname)/*.o)
+
+endif
+
+############ Make LIB ################
+
+ifeq ($(SPLIT_CORE),NO)
+all: $(LIB_DIR)/lib$(LIB).a
+else
+all: $(LIB_DIR)/lib$(LIBAPI).a $(LIB_DIR)/lib$(LIBSYS).a $(LIB_DIR)/lib$(LIBSYS1).a
+endif
+	
+$(LIB_DIR)/lib$(LIB).a: $(OBJSAPI) $(OBJSSYS) $(OBJSSYS1)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+$(LIB_DIR)/lib$(LIBAPI).a: $(OBJSAPI)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+$(LIB_DIR)/lib$(LIBSYS).a: $(OBJSSYS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+		
+$(LIB_DIR)/lib$(LIBSYS1).a: $(OBJSSYS1)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/lib$(LIB).a

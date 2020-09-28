@@ -1,0 +1,19 @@
+HAL-MSG-OPENFLOW-QUEUE DEFINITIONS AUTOMATIC TAGS ::= BEGIN   -- Added by wangl for qos
+
+-------------------------------------
+--  Message definitions for OpenFlow queue (BEGIN) {
+-------------------------------------
+HalMsgOpenFlowSetQueueShapeKey ::= SEQUENCE
+{
+    queueId        INTEGER,
+    cir            INTEGER,
+    pir            INTEGER,
+    gport          INTEGER,
+	shapeEn        INTEGER
+}
+
+-------------------------------------
+--  } Message definitions for OpenFlow queue (END)
+-------------------------------------
+
+END

@@ -1,0 +1,43 @@
+<div class="col-md-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label>shell命令</label>
+        </div>
+        <div class="panel-body">
+            <form class="form" style="max-height: 500px;" novalidate>
+                <div class="form-group">
+                    <input type="text" class="form-control" ng-model="cmd"/>
+                </div>
+
+                <button class="btn btn-primary" ng-click="sendCmd()" ng-disabled="cmd==''">OK</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label>cmd历史</label>
+            <button class="btn btn-default btn-sm" ng-click="clearHistory()" style="float: right; margin-top: 0px; margin-right: 0px;">清除</button>
+        </div>
+        <div class="panel-body">
+            <table class="table table-condensed table-hover">
+                <tr ng-repeat="x in history | orderBy:'id':true" ng-click="updateCmd(x.cmd)">
+                    <td><b style="cursor: pointer;">{{ x.cmd }}</b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <label>response: {{ resp.status }}</label>
+        </div>
+        <div class="panel-body">
+            <dl>
+                <dd ng-repeat="line in resp.lines">{{ line }}</dd>
+            </dl>
+        </div>
+    </div>
+</div>

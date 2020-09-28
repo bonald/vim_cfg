@@ -1,0 +1,21 @@
+#!/bin/sh
+
+mkdir -p /switch/lib
+ln -s /lib/ld.so.1 /switch/lib/ld.so.1
+ln -s /lib/libc.so.6 /switch/lib/libc.so.6
+
+board_type_detect
+boardseries=`cat /tmp/ctcos_board_info | grep product_series | awk '{ print $2}'`
+boardtype=`cat /tmp/ctcos_board_info | grep board_type | awk '{ print $2}'`
+
+insmod /lib/ctc_boards.ko board_series=0x$boardseries board_type=0x$boardtype
+insmod /lib/ctc_restart.ko
+insmod /lib/dal.ko
+insmod /lib/ctc_hw.ko
+insmod /lib/ctc_gpio.ko
+insmod /lib/ctc_phy.ko
+insmod /lib/ctc_power.ko
+insmod /lib/ctc_reset.ko
+insmod /lib/ctc_watchdog.ko
+
+exit 0

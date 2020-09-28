@@ -1,0 +1,115 @@
+HAL-MSG-OPENFLOW-TUNNEL DEFINITIONS AUTOMATIC TAGS ::= BEGIN   -- Added by weizj for tunnel
+
+IMPORTS
+    HalMsgIpv4addr,
+    HalMsgIpv6addr
+    FROM HAL-MSG-L3TYPES
+    ;
+
+-------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow TUNNEL (BEGIN) {
+-------------------------------------
+HalMsgOpenDecapFlowRule ::= SEQUENCE
+{
+    flags           INTEGER,
+    vni             INTEGER,
+    metadata        INTEGER,
+    ipSa            HalMsgIpv4addr,
+    ipDa            HalMsgIpv4addr
+}
+
+-------------------------------------
+-- } DATA STRUCTURE definitions for OpenFlow TUNNEL (END)
+-------------------------------------
+
+-------------------------------------
+--  Message definitions for OpenFlow TUNNEL (BEGIN) {
+-------------------------------------
+HalMsgOpenFlowFidMapReq ::= SEQUENCE
+{
+    tunnelId        INTEGER,
+    fid             INTEGER
+}
+
+HalMsgOpenFlowVxlanDestportReq ::= SEQUENCE
+{
+    destport        INTEGER,
+    isSet           INTEGER
+}
+
+HalMsgOpenFlowTnlDecapModeReq ::= SEQUENCE
+{
+    decapMode       INTEGER
+}
+
+HalMsgOpenFlowPortDecapEnReq ::=  SEQUENCE
+{
+    gport               INTEGER,
+    enable              INTEGER,
+    type                INTEGER
+}
+
+HalMsgOpenFlowDecapFlowReq ::= SEQUENCE
+{
+    decapMode       INTEGER,
+    type            INTEGER,
+    fid             INTEGER,
+    tnl             HalMsgOpenDecapFlowRule
+}
+
+HalMsgOpenFlowL3ifReq ::= SEQUENCE
+{
+    l3ifid         INTEGER,
+    gport          INTEGER,
+    vlanId         INTEGER,
+    enable         INTEGER
+}
+
+HalMsgOpenFlowSetL3ifReq ::= SEQUENCE
+{
+    gport          INTEGER,
+    enable         INTEGER
+}
+
+HalMsgOpenFlowLspApsTunnelReq ::= SEQUENCE
+{
+    update 			INTEGER,
+    tunnelId        INTEGER,
+    apsGroupId		INTEGER,
+    labelNumber		INTEGER,
+    tunnelLabel1	INTEGER,
+    mapTTL1         INTEGER,
+    tunnelLabel2	INTEGER,
+    mapTTL2         INTEGER,
+    apsType		    INTEGER,
+    gportid         INTEGER,
+    macAddr         PrintableString,
+    statsen			INTEGER,
+    statsid         INTEGER,
+    unrov			INTEGER,
+    vid				INTEGER,
+    iftype          INTEGER,
+		
+    ptunnelId       INTEGER,
+    papsGroupId		INTEGER,
+    plabelNumber	INTEGER,
+    ptunnelLabel1	INTEGER,
+    pmapTTL1        INTEGER,
+    ptunnelLabel2	INTEGER,
+    pmapTTL2        INTEGER,
+    papsType		INTEGER,
+    pgportid        INTEGER,
+    pmacAddr        PrintableString,
+    pstatsen		INTEGER,
+    pstatsid        INTEGER,
+    punrov			INTEGER,
+    pvid   			INTEGER,
+    piftype         INTEGER,
+    isSpme			INTEGER 
+}
+-------------------------------------
+--  } Message definitions for OpenFlow TUNNEL (END)
+-------------------------------------
+
+END
+

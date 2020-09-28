@@ -1,0 +1,385 @@
+HAL-MSG-MPLS DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIpv6addr,
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES 
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+    ;
+
+
+HalMsgMplsNhAddReq ::= SEQUENCE
+{
+    nexthopid       INTEGER,
+    offset          INTEGER,
+    nhType          INTEGER,
+    spec            INTEGER,
+    nhExt          INTEGER,
+    
+    gportid         INTEGER,
+    vid             INTEGER,
+    oifType         INTEGER,
+    outVlanIsSvlan  INTEGER,
+    macAddr         PrintableString,  
+    
+    statsptr          INTEGER,
+    useTtlFromPacket  INTEGER,
+    fid               INTEGER,
+    vplsPortType      INTEGER,
+    vplsPort          INTEGER,
+    maxChipNum        INTEGER,
+    alreadyChipBMP    INTEGER,
+    labelinfo         PrintableString,
+    l2vpnTagop        INTEGER,
+    cwen              INTEGER
+}
+
+HalMsgMplsApsNhAddReq ::= SEQUENCE
+{
+	  firstcreate			INTEGER,
+	  working						INTEGER,
+    apsgroupid				INTEGER,
+    apsnhid						INTEGER,
+   	nhtype						INTEGER,
+    apsoffset					INTEGER,
+    spec							INTEGER,
+    nhExt							INTEGER,
+		workingvalid    INTEGER,
+    wnexthopid       INTEGER,
+    woffset          INTEGER,
+    wnhType          INTEGER,
+    wspec            INTEGER,
+    wnhExt          INTEGER,
+    
+    wgportid         INTEGER,
+    wvid             INTEGER,
+    woifType         INTEGER,
+    woutVlanIsSvlan  INTEGER,
+    wmacAddr         PrintableString,  
+    
+    wstatsptr          INTEGER,
+    wuseTtlFromPacket  INTEGER,
+    wfid               INTEGER,
+    wvplsPortType      INTEGER,
+    wvplsPort          INTEGER,
+    wmaxChipNum        INTEGER,
+    walreadyChipBMP    INTEGER,
+    wlabelinfo         PrintableString,
+    wl2vpnTagop        INTEGER,
+    wcwen              INTEGER,
+    
+    protectingvalid   INTEGER,
+    pnexthopid       INTEGER,
+    poffset          INTEGER,
+    pnhType          INTEGER,
+    pspec            INTEGER,
+    pnhExt          INTEGER,
+    
+    pgportid         INTEGER,
+    pvid             INTEGER,
+    poifType         INTEGER,
+    poutVlanIsSvlan  INTEGER,
+    pmacAddr         PrintableString,  
+    
+    pstatsptr          INTEGER,
+    puseTtlFromPacket  INTEGER,
+    pfid               INTEGER,
+    pvplsPortType      INTEGER,
+    pvplsPort          INTEGER,
+    pmaxChipNum        INTEGER,
+    palreadyChipBMP    INTEGER,
+    plabelinfo         PrintableString,
+    pl2vpnTagop        INTEGER,
+    pcwen              INTEGER 
+}
+
+HalMsgMplsApsNhDelReq ::= SEQUENCE
+{
+    nexthopid       INTEGER,
+    offset          INTEGER,
+    nhType          INTEGER,
+    spec            INTEGER,
+    nhExt          INTEGER,
+    
+    gportid         INTEGER,
+    vid             INTEGER,
+    oifType         INTEGER,
+    outVlanIsSvlan  INTEGER,
+    macAddr         PrintableString,  
+    
+    statsptr          INTEGER,
+    useTtlFromPacket  INTEGER,
+    fid               INTEGER,
+    vplsPortType      INTEGER,
+    vplsPort          INTEGER,
+    maxChipNum        INTEGER,
+    alreadyChipBMP    INTEGER,
+    labelinfo         PrintableString,
+    l2vpnTagop        INTEGER,
+    cwen              INTEGER,
+    working						INTEGER
+}
+HalMsgMplsNhToSpecReq ::= SEQUENCE
+{
+    nexthopid         INTEGER,
+    maxChipNum        INTEGER,
+    fid               INTEGER,
+    port              INTEGER,
+    alreadyChipBMP    INTEGER,
+    vplsPort          INTEGER     
+}
+
+HalMsgMplsNhToFwdReq ::= SEQUENCE
+{
+    nexthopid       INTEGER,
+    offset          INTEGER,
+    nhType          INTEGER,
+    spec            INTEGER,
+    nhExt           INTEGER,
+    
+    gportid         INTEGER,
+    vid             INTEGER,
+    oifType         INTEGER,
+    outVlanIsSvlan  INTEGER,
+    macAddr         PrintableString,  
+    
+    statsptr          INTEGER,
+    useTtlFromPacket  INTEGER,
+    fid               INTEGER,
+    vplsPortType      INTEGER,
+    vplsPort          INTEGER,
+    maxChipNum        INTEGER,
+    alreadyChipBMP    INTEGER,
+    labelinfo         PrintableString,
+    l2vpnTagop        INTEGER,
+    cwen              INTEGER    
+}
+
+HalMsgMplsNhDelReq ::= SEQUENCE
+{
+    nexthopid         INTEGER,
+    maxChipNum        INTEGER,
+    fid               INTEGER,
+    port              INTEGER,
+    alreadyChipBMP    INTEGER,
+    vplsPort          INTEGER     
+}
+
+HalMsgMplsNhUpdateAttrReq ::= SEQUENCE
+{
+    nexthopid       INTEGER,
+    offset          INTEGER,
+    nhType          INTEGER,
+    spec            INTEGER,
+    nhExt           INTEGER,
+    
+    gportid         INTEGER,
+    vid             INTEGER,
+    oifType         INTEGER,
+    outVlanIsSvlan  INTEGER,
+    macAddr         PrintableString,  
+    
+    statsptr          INTEGER,
+    useTtlFromPacket  INTEGER,
+    fid               INTEGER,
+    vplsPortType      INTEGER,
+    vplsPort          INTEGER,
+    maxChipNum        INTEGER,
+    alreadyChipBMP    INTEGER,
+    labelinfo         PrintableString,
+    l2vpnTagop        INTEGER,
+    cwen              INTEGER    
+}
+
+HalMsgMplsNhSyncReq ::= SEQUENCE
+{
+    nexthopid   INTEGER,
+    offset      INTEGER,
+    type        INTEGER,
+    spec        INTEGER,
+    info        PrintableString
+}
+
+HalMsgMplsIntfEnReq ::= SEQUENCE
+{
+    l3ifid       INTEGER,
+    enable       INTEGER,
+    lsid         INTEGER
+}
+
+HalMsgMplsIlmAddReq ::= SEQUENCE
+{
+    label        INTEGER,
+    nexthopid    INTEGER,
+    vrf          INTEGER,
+    type         INTEGER,
+    spaceid      INTEGER,
+    model        INTEGER,
+    cwen         INTEGER,
+    pop          INTEGER,
+    fid          INTEGER,
+    vplsPort     INTEGER,
+    vplsPortType INTEGER,
+    trustExp     INTEGER
+}
+
+HalMsgMplsIlmUpdReq ::= SEQUENCE
+{
+    label        INTEGER,
+    nexthopid    INTEGER,
+    vrf          INTEGER,
+    type         INTEGER,
+    spaceid      INTEGER,
+    model        INTEGER,
+    cwen         INTEGER,
+    pop          INTEGER,
+    fid          INTEGER,
+    vplsPort     INTEGER,
+    vplsPortType INTEGER,
+    trustExp     INTEGER
+}
+
+HalMsgMplsIlmDelReq ::= SEQUENCE
+{
+    label        INTEGER,
+    spaceid      INTEGER,
+    nexthopid    INTEGER
+}
+
+HalMsgMplsLabelSpaceAddReq ::= SEQUENCE
+{
+    number        INTEGER,
+    lsid          INTEGER
+}
+
+HalMsgMplsL2vpnEnReq ::= SEQUENCE
+{
+    mode         INTEGER,
+    vlanid       INTEGER,         
+    port         INTEGER,
+    priorityVlan INTEGER,
+    enable       INTEGER
+}
+
+HalMsgMplsL2vpnAcNhAddReq ::= SEQUENCE
+{
+    port           INTEGER,
+    vlan           INTEGER,
+    acMode         INTEGER,
+    l2vpnTagop     INTEGER,
+    type           INTEGER,
+    nexthopid      INTEGER,
+    offset         INTEGER,
+    fid            INTEGER,
+    useTtlFromPkt  INTEGER,
+    maxChipNum     INTEGER,
+    alreadyChipBMP INTEGER,
+    vplsPortType   INTEGER,
+    vplsPort       INTEGER
+}
+
+HalMsgMplsL2vpnAcNhDelReq ::= SEQUENCE
+{
+    port           INTEGER,
+    acMode         INTEGER,
+    nexthopid      INTEGER,
+    fid            INTEGER,
+    type           INTEGER,
+    maxChipNum     INTEGER,
+    alreadyChipBMP INTEGER     
+}
+
+HalMsgMplsL2vpnBindReq ::= SEQUENCE
+{
+    port           INTEGER,
+    vlan           INTEGER,
+    mode           INTEGER,
+    type           INTEGER,
+    nexthopid      INTEGER,
+    fid            INTEGER,
+    serviceid      INTEGER,
+    policeid       INTEGER,
+    vplsPortType   INTEGER,
+    vplsSrcPort    INTEGER
+}
+
+HalMsgMplsL2vpnUnBindReq ::= SEQUENCE
+{
+    port           INTEGER,
+    vlan           INTEGER,
+    mode           INTEGER,
+    type           INTEGER,
+    fid            INTEGER
+}
+
+HalMsgMplsPWBindReq ::= SEQUENCE
+{
+    customerid     INTEGER,
+    vplsPort       INTEGER,
+    vplsPortType   INTEGER,
+    fid            INTEGER,
+    serviceid      INTEGER,
+    policeid       INTEGER
+
+}
+
+HalMsgMplsPWUnBindReq ::= SEQUENCE
+{
+    customerid     INTEGER,
+    vplsPort       INTEGER,
+    vplsPortType   INTEGER,
+    fid            INTEGER
+}
+
+HalMsgMplsVSIAddReq ::= SEQUENCE
+{
+    vplsid       INTEGER,
+    fid          INTEGER,
+    groupid      INTEGER
+}
+
+HalMsgMplsVSIDelReq ::= SEQUENCE
+{
+    vplsid       INTEGER,
+    fid          INTEGER,
+    groupid      INTEGER
+}
+
+HalMsgMplsVSIMacLrnDisReq ::= SEQUENCE
+{
+    fid          				INTEGER,
+    maclearndisable      INTEGER
+}
+
+HalMsgMplsTunnelLoadApsReq ::= SEQUENCE
+{
+    apsgroupid         	 INTEGER
+}
+
+HalMsgMplsTunnelunLoadApsReq ::= SEQUENCE
+{
+    apsgroupid           INTEGER
+}
+
+HalMsgMplsApsProtectingEnReq ::= SEQUENCE
+{
+    apsgroupid           INTEGER,
+    protectingen 		   INTEGER
+}
+
+HalMsgMplsApsGroupWorkAdd ::= SEQUENCE
+{
+    apsgroupid           INTEGER,
+    gport 		           INTEGER
+}
+
+HalMsgMplsApsGroupProtectAdd ::= SEQUENCE
+{
+    apsgroupid           INTEGER,
+    gport 		           INTEGER
+}
+
+END

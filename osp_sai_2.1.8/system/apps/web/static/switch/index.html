@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head id="root-head">
+        <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <title>WEB</title>
+
+        <!-- css -->
+        <link rel="stylesheet" href="./third/bootstrap_3.3.6/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="./css/base.css" />
+        <link rel="stylesheet" href="./css/header.css" />
+        <link rel="stylesheet" href="./css/index.css" />
+        <link rel="stylesheet" href="./css/animate.css" />
+        <link rel="stylesheet" href="./css/btn-switch.css" />
+        <link rel="stylesheet" href="./css/pagination.css" />
+
+        <!-- libs -->
+        <script type="text/javascript" src = "./third/jquery_2.1.4/jquery.min.js"></script>
+        <script type="text/javascript" src = "./third/bootstrap_3.3.6/js/bootstrap.min.js"></script> 
+
+        <script type="text/javascript" src = "./third/angular_1.5.5/angular.min.js"></script>
+        <script type="text/javascript" src = "./third/angular_1.5.5/angular-cookies.min.js"></script>
+        <script type="text/javascript" src = "./third/angular_1.5.5/angular-route.min.js"></script>
+        <script type="text/javascript" src = "./third/angular_1.5.5/angular-animate.min.js"></script>
+        <script type="text/javascript" src = "./third/angular_translate_2.9.0/angular-translate.min.js"></script>
+        <script type="text/javascript" src = "./third/angular_file_upload_2.2.0/angular-file-upload.min.js"></script>
+
+        <script type="text/javascript" src = "./third/chartjs_1.1.0/Chart.js"></script>
+        <script type="text/javascript" src = "./third/underscorejs_1.7.0/underscore-min.js"></script>
+
+        <!-- users -->
+        <script type="text/javascript" src = "./js/config.js"></script>
+        <script type="text/javascript" src = "./js/directives.js"></script>
+        <script type="text/javascript" src = "./js/services.js"></script>
+        <script type="text/javascript" src = "./js/components.js"></script>
+        <script type="text/javascript" src = "./js/filter.js"></script>
+        <script type="text/javascript" src = "./js/url.js"></script>
+        <script type="text/javascript" src = "./js/nav.js"></script>
+
+        <script type="text/javascript" src = "./js/base64.js"></script>
+
+        <!-- i18n -->
+        <script type="text/javascript" src = "./js/i18n/zh_CN/zh_CN.js"></script>
+        <script type="text/javascript" src = "./js/i18n/en_US/en_US.js"></script>
+        <script type="text/javascript" src = "./js/i18n/ja_JP/ja_JP.js"></script>
+
+
+        <!-- header and footer -->
+        <script type="text/javascript" src = "./js/header.js"></script>
+
+        <!-- login -->
+        <script type="text/javascript" src = "./js/login.js"></script>
+
+        <!-- home -->
+        <script type="text/javascript" src = "./js/home/status.js"></script>
+
+        <!-- sys_mgr -->
+        <script type="text/javascript" src = "./js/home/sys_mgr/file_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/sys_mgr/update_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/sys_mgr/update_mgr_without_fileapi.js"></script>
+        <script type="text/javascript" src = "./js/home/sys_mgr/sys_conf.js"></script>
+        <script type="text/javascript" src = "./js/home/sys_mgr/log_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/sys_mgr/snmp_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/sys_mgr/time_mgr.js"></script>   
+        <script type="text/javascript" src = "./js/home/filemgr.js"></script>
+        <!-- port -->
+        <script type="text/javascript" src = "./js/home/port_mgr/status.js"></script>
+        <script type="text/javascript" src = "./js/home/port_mgr/if_statistic.js"></script>
+        <script type="text/javascript" src = "./js/home/port_mgr/link_agg.js"></script>
+        <script type="text/javascript" src = "./js/home/port_mgr/storm_ctl.js"></script>
+        <script type="text/javascript" src = "./js/home/port_mgr/transceiver.js"></script>
+
+
+        <!-- srv_mgr -->
+        <script type="text/javascript" src = "./js/home/srv_mgr/vlan/status.js"></script>
+        <script type="text/javascript" src = "./js/home/srv_mgr/vlan/access_trunk.js"></script>
+
+        <script type="text/javascript" src = "./js/home/srv_mgr/mac/mac_address_table.js"></script>
+
+        <!-- routing -->
+        <script type="text/javascript" src = "./js/home/routing/ipv4_routing.js"></script>
+        <script type="text/javascript" src = "./js/home/routing/ipv4_static.js"></script>
+        <script type="text/javascript" src = "./js/home/routing/ipv4_port_cfg.js"></script>
+        <script type="text/javascript" src = "./js/home/security/arp_table.js"></script>    
+        <!-- security -->
+        <script type="text/javascript" src = "./js/home/security/dhcp_snooping.js"></script>
+        <script type="text/javascript" src = "./js/home/security/dot1x.js"></script>
+
+        <script type="text/javascript" src = "./js/home/security/ddos_prevent.js"></script>
+
+        <script type="text/javascript" src = "./js/home/security/worm_filter.js"></script>
+        <script type="text/javascript" src = "./js/home/security/web_sessions.js"></script>
+        <script type="text/javascript" src = "./js/home/security/user_management.js"></script>
+
+        <!-- authentication -->
+        <script type="text/javascript" src = "./js/home/authentication/aaa_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/authentication/tacas_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/authentication/radius_mgr.js"></script>
+
+
+        <!-- tap -->
+        <script type="text/javascript" src = "./js/home/tap/tap_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/tap/flow_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/tap/flow_inner_match_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/tap/acl_mgr.js"></script>
+        <script type="text/javascript" src = "./js/home/tap/tap_statistics.js"></script>
+
+        <!-- tools -->
+        <script type="text/javascript" src = "./js/home/tools/ping.js"></script>
+        <script type="text/javascript" src = "./js/home/tools/traceroute.js"></script>
+
+        <!-- reboot and save -->
+        <script type="text/javascript" src = "./js/home/reboot_and_save.js"></script>
+        <script type="text/javascript" src = "./js/home/reboot.js"></script>
+        <script type="text/javascript" src = "./js/home/debug.js"></script>
+
+    </head>
+
+    <body ng-app="appMain">
+        <div class="container-fluid" >
+            <div ng-include="'./templates/header.html'" ng-hide="isAcitve('/login$')" ng-controller="ctlHeader"></div>
+            <div class="row">
+                <div id = "body-left" class="col-md-3 col-lg-2">
+                    <div ng-if="System_product == 'Tap-350'|| System_product == 'Tap-580'||System_product == 'Tap-550'||System_product == 'Tap-530'" ng-include="'./templates/nav_tap.html'" ng-hide="isAcitve('/login$')"></div>
+                    <div ng-if="System_product == 'CNOS-350'|| System_product == 'CNOS-580'||System_product == 'CNOS-550'||System_product == 'CNOS-530'" ng-include="'./templates/nav.html'" ng-hide="isAcitve('/login$')"></div>
+                    <div ng-if="System_product == 'Hybrid-350'|| System_product == 'Hybrid-580'||System_product == 'Hybrid-550'||System_product == 'Hybrid-530'" ng-include="'./templates/nav_hybrid.html'" ng-hide="isAcitve('/login$')"></div>
+
+                </div>
+                <div id = "body-right" class="col-md-9 col-lg-10" ui-view="body-right">
+                    <div ng-view></div>
+                </div>
+            </div>            
+            <div ng-include="'./templates/footer.html'" ng-hide="isAcitve('/login$')"></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,143 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- buttons -->
+        <div class="form-inline">
+            <!-- add -->
+            <button type="button" class="btn btn-default" ng-click="addFdbFlag = true" ng-hide="addFdbFlag" ng-disabled="initLoading">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+            </button>
+            <button type="button" class="btn btn-default" ng-click="addFdbFlag = false" ng-show="addFdbFlag">
+                <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+            </button>
+			
+			<!-- flush -->
+            <button type="button" class="btn btn-default" ng-click="load()">{{ 'Update' | translate }}</button>
+
+            <!-- delete -->
+            <button type="button" class="btn btn-default" ng-click="multiDelete()" ng-show="isDeleteEnable()">{{ 'Delete' | translate }}</button>
+
+			<!-- delete all -->
+            <button type="button" class="btn btn-default" ng-click="deleteAll()" ng-show="macAddressTable.length > 0">{{ 'Delete All' | translate }}</button>
+			
+			
+        </div>
+
+        <!-- add form -->
+        <form class="form-inline" style="margin-top: 15px;" name="addFdbForm" ng-show="addFdbFlag" novalidate>
+            <!-- mac address -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.macAddr.$valid]">
+                <label>{{ 'MAC address' | translate }}</label>
+                <input type="text" class="form-control" name="macAddr" ng-model="newFdb.macAddr" placeholder="eg:0001.0001.0001" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/" required />
+            </div>
+
+            <!-- port -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.port.$valid]">
+                <label>{{ 'Port' | translate }}</label>
+                <select class="form-control" name="port" ng-model="newFdb.port" ng-options="value | switchPort for (key, value) in portIndexObj" required></select>
+            </div>
+
+            <!-- vlan -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.vlan.$valid]">
+                <label>VLAN</label>
+                <input type="number" class="form-control" name="vlan" ng-model="newFdb.vlan" placeholder="1 ~ 4094" ng-min="1" ng-max="4094" required />
+            </div>
+
+            <!-- submit -->
+            <button class="btn btn-primary" ng-disabled="addFdbForm.$invalid || loading" ng-click="addNewFdb()">OK</button>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Filter' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-inline">
+            <!-- filter 
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;{{ 'Filter' | translate }}
+                </span>
+                <input type="text" class="form-control input-sm" id="file-filter" placeholder="filter" ng-model="fdbFilterStr" />
+            </div>
+            -->
+            <!-- vlan filter -->
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;VLAN
+                </span>
+                <input type="text" class="form-control input-sm" id="file-filter" ng-model="vlanFilterStr" placeholder="1-4094" />
+            </div>
+
+            <!-- mac address filter -->
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;{{ 'MAC address' | translate }}
+                </span>
+                <input type="text" class="form-control input-sm" id="file-filter" ng-model="macAddressFilterStr" placeholder="xxxx.xxxx.xxxx" />
+            </div>
+
+            <!-- port filter -->
+            <div class="form-group">
+                <label>{{ 'Port' | translate }}</label>
+                <select class="form-control" ng-options="x for x in portOptions" ng-model="portFilterStr"></select>
+            </div>
+
+            <!-- type filter -->
+            <div class="form-group">
+                <label>{{ 'Type' | translate }}</label>
+                <select class="form-control" ng-options="x for x in typeOptions" ng-model="typeFilterStr"></select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'MAC address table information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center"><input type="checkbox" ng-click="setCheckboxAll(SELCTLALL)" ng-model="SELCTLALL" /></th>
+                        <th class="text-center">{{ 'MAC address' | translate }}</th>
+                        <th class="text-center">{{ 'VLAN ID' | translate }}</th>
+                        <th class="text-center">{{ 'Port' | translate }}</th>
+                        <th class="text-center">{{ 'Type' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--
+                    <tr ng-repeat="x in macAddressTable | filter:fdbFilterStr | filter:{vlan_id: vlanFilterStr, mac_address: macAddressFilterStr, type: typeFilterStr} | filter:fnEthEqualCmp">
+                    -->
+                    <tr ng-repeat="x in fdbDisp">
+                        <td class="text-center"><input type="checkbox" ng-model="multiSel[x.key]" /></td>
+                        <td class="text-center">{{ x.mac_address }}</td>
+                        <td class="text-center">{{ x.vlan_id }}</td>
+                        <td class="text-center">{{ x.port }}</td>
+                        <td class="text-center">{{ x.type }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-show="x.type=='static'" ng-click="deleteFdb(x)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+            <p class="text-center"><b ng-show="macAddressTable.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>

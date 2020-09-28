@@ -1,0 +1,559 @@
+# CROSS_COMPILE should set appropriate compiler path to PATH.
+# Suggestion: add these two lines to your ~/.bash_profile
+#    PATH=$PATH:/sw/pub/xtools.ppc-linux/bin/:/opt/gcc-4.3/bin/
+#    export PATH
+# In this case, /sw/pub/xtools.ppc-linux/bin/    /opt/gcc-4.3/bin/  is our appropriate compiler path.
+
+####################### Set default param ##############3###
+include $(TOP_DIR)/Makefile.env.inc
+include $(MK_DIR)/sys.mk
+
+ifndef CHIPNAME
+export CHIPNAME = tsingma
+endif
+
+ifndef VER
+export VER = d
+endif
+
+ifndef targetbase
+export targetbase = linux
+endif
+
+
+ifndef BOARD
+export BOARD = linux-board
+endif
+
+ifndef ARCH
+export ARCH = mips
+endif
+
+ifndef auto	
+export auto = yes
+endif
+
+ifeq ($(CHIPNAME),tsingma)
+export cpp = yes
+endif
+
+ifneq ($(VER),r)
+override VER = d
+endif
+
+#export ChipAgent = TRUE
+
+ifeq ($(CHIPNAME),tsingma)
+ChipAgent = TRUE
+endif
+
+ifneq ($(CHIPNAME), $(filter $(CHIPNAME), humber greatbelt goldengate))
+export USW = yes
+else
+export USW = no
+endif
+
+#### Added by xgu, for gbsystem, this will be asigned by upper layer, 20121122
+export TOP_DIR
+### Add by cuixl, for uml$(OSP_MAKE) for gb system, 20130402
+export IS_UML
+ifeq ($(IS_UML),y)
+export BOARD = ctc-sim
+endif
+ifndef M64 
+export M64 = FALSE
+endif
+############################# linux #####################################
+ifeq ($(targetbase),linux)
+
+export SDK_DIR = $(CURDIR)
+export MK_DIR = $(CURDIR)/mk
+#### Modified by xgu, for gbsystem, this will be asigned by upper layer, 20121122
+#export K_DIR = /swpj/sdkuser/lil/system/out/pizza_box
+export K_DIR
+
+# ctcsdk: cli+sdk+cmodel (software simulation)
+ifeq ($(BOARD),ctc-sim)
+export CMODEL_DIR = $(TOP_DIR)/cmodel/tsingma
+ifeq ($(M64),TRUE)
+CPU = i686_x64
+MODELCPPZIP = so_64.zip
+else
+CPU = i686
+MODELCPPZIP = so.zip
+endif
+ARCH = um
+#CROSS_COMPILE =
+KDIR =
+DAL_MAKEFILE = Makefile
+ifeq ($(ARCH),powerpc)
+CPU = ppc_82xx
+#CROSS_COMPILE =ppc-linux-
+endif
+ifeq ($(CPU),hi3535)
+ARCH=arm
+#CROSS_COMPILE =arm-hisiv200-linux-
+endif
+ifeq ($(ARCH),mips)
+CPU = octeon
+#CROSS_COMPILE =mips64-octeon-linux-gnu-
+endif
+
+all_targets = libsdksal libdal libdrv liblibctccli libdkits
+#all_targets = libsdksal libdal libdrv libmemmodel liblibctccli 
+ifeq ($(ChipAgent),TRUE)
+#all_targets += libchipagent
+endif
+all_targets += libcmodel libcmodelcli libsdkcore libctccli libmodelcpp
+#all_targets += ctc_shell
+#all_targets += app
+ifeq ($(UNITTEST),TRUE)
+#all_targets += gtest
+endif
+
+dtcli_targets = libsdksal libdal libdrv liblibctccli libctccli
+dtcli_targets += libdtcli
+
+endif
+
+# ctcsdk: cli+sdk+memmodel (software simulation)
+ifeq ($(BOARD),linux-sim)
+CPU = i686
+#CROSS_COMPILE =
+KDIR =
+ifeq ($(ARCH),powerpc)
+CPU = ppc_82xx
+#CROSS_COMPILE =ppc-linux-
+endif
+ifeq ($(CPU),hi3535)
+ARCH=arm
+#CROSS_COMPILE =arm-hisiv200-linux-
+endif
+ifeq ($(ARCH),mips)
+CPU = octeon
+#CROSS_COMPILE =mips64-octeon-linux-gnu-
+endif
+
+all_targets = libsdksal libdal libdrv liblibctccli
+ifeq ($(ChipAgent),TRUE)
+#all_targets += libchipagent
+endif
+all_targets += libsdkcore libctccli
+all_targets += app
+ifeq ($(UNITTEST),TRUE)
+all_targets += gtest
+endif
+endif
+
+# ctcsdk: cli+sdk+cmodel+asic (hardware platform board)
+ifeq ($(BOARD),ctc-board)
+export CMODEL_DIR = $(TOP_DIR)/cmodel/tsingma
+#ifeq ($(ARCH),powerpc)
+#CPU = ppc_82xx
+#CROSS_COMPILE =ppc-linux-
+#endif
+ifeq ($(CPU),hi3535)
+ARCH=arm
+#CROSS_COMPILE =arm-hisiv200-linux-
+endif
+ifeq ($(ARCH),mips)
+CPU = octeon
+#CROSS_COMPILE =mips64-octeon-linux-gnu-
+endif
+ifeq ($(ARCH),loongson)
+CPU = ls2f
+#CROSS_COMPILE =mipsel-linux-
+endif
+ifeq ($(ARCH),powerpc)
+CPU = fscl
+#CROSS_COMPILE =powerpc-linux-gnu-
+endif
+KDIR = $(K_DIR)
+DAL_MAKEFILE = Makefile.ctc
+all_targets = libsdksal libdal libdrv liblibctccli libdkits 
+#all_targets = libsdksal libdal libdrv liblibctccli 
+ifeq ($(ChipAgent),TRUE)
+#all_targets += libchipagent
+endif
+all_targets += libcmodel libcmodelcli libsdkcore libctccli libmodelcpp
+#all_targets += app
+ifeq ($(UNITTEST),TRUE)
+all_targets += gtest
+endif
+#all_targets += ctc_shell
+dtcli_targets = libsdksal libdal libdrv liblibctccli libctccli
+dtcli_targets += libdtcli
+endif
+
+# ctcsdk: cli+sdk++asic (hardware platform board)
+ifeq ($(BOARD),linux-board)
+#ifeq ($(ARCH),powerpc)
+#CPU = ppc_82xx
+#CROSS_COMPILE =ppc-linux-
+#endif
+ifeq ($(CPU),hi3535)
+ARCH=arm
+#CROSS_COMPILE =arm-hisiv200-linux-
+endif
+ifeq ($(ARCH),mips)
+CPU = octeon
+#CROSS_COMPILE =mips64-octeon-linux-gnu-
+endif
+ifeq ($(ARCH),loongson)
+CPU = ls2f
+#CROSS_COMPILE =mipsel-linux-
+endif
+ifeq ($(ARCH),powerpc)
+CPU = fscl
+#CROSS_COMPILE =powerpc-linux-gnu-
+endif
+
+
+KDIR = $(K_DIR)
+DAL_MAKEFILE = Makefile.ctc
+all_targets = libsdksal libdal libdrv liblibctccli libdkits 
+ifeq ($(ChipAgent),TRUE)
+#all_targets += libchipagent
+endif
+all_targets += libsdkcore libctccli
+#all_targets += app
+ifeq ($(UNITTEST),TRUE)
+all_targets += gtest
+endif
+#all_targets += ctc_shell
+endif
+
+#### Modified by xgu, for gbsystem, this will be asigned by upper layer, 20121122
+#export BLD_DIR = $(SDK_DIR)/build.$(CPU).$(VER)
+export BLD_DIR
+export BOARD
+export VER
+export CPU
+export ARCH
+export SUBARCH
+export CROSS_COMPILE
+export KDIR
+
+all: $(all_targets) FORCE
+dtcli: $(dtcli_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+# debugtool is not used by merging v3.0.2.20, SDK will remove it later
+#libdebugtool: FORCE
+#	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool -f Makefile.lib
+
+libsdksal: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/sal -f Makefile.ctc
+
+clean_libsdksal: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/sal -f Makefile.ctc clean
+
+libdal: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/dal -f $(DAL_MAKEFILE)
+
+clean_libdal: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/dal -f $(DAL_MAKEFILE) clean
+
+libdrv: FORCE
+	@echo "GEN => $@"
+	$(OSP_MAKE) -C $(SDK_DIR)/driver/usw -f Makefile.ctc
+
+clean_libdrv: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/driver/usw -f Makefile.ctc clean
+
+#ifeq ($(auto),yes)
+#libsdkcore: FORCE
+#	@cd $(SDK_DIR)/script/Auto_generate_api && \
+#	sh auto_generate_api.sh humber greatbelt tsingma && \
+#	sh gen_error.sh && \
+#	sh opf2str.sh $(CHIPNAME) && \
+#	$(OSP_MAKE) -C $(SDK_DIR)/core
+#else
+#libsdkcore: FORCE
+#	$(OSP_MAKE) -C $(SDK_DIR)/core
+#endif
+libsdkcore: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/core
+
+#clean_libdebugtool: FORCE
+#	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool -f Makefile.lib clean_debugtools
+
+clean_libsdkcore: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/core clean
+
+libmemmodel: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/mem_model/$(CHIPNAME)
+
+clean_libmemmodel: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/mem_model/$(CHIPNAME) clean
+
+libchipagent: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/chip_agent
+
+clean_libchipagent: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/chip_agent clean
+
+liblibctccli: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/libctccli
+
+clean_liblibctccli: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/libctccli clean
+
+
+libmodelcpp: FORCE
+ifeq ($(cpp),yes)
+	@echo "GEN => $@"
+	$(OSP_MAKE) -C $(CMODEL_DIR)/$(CHIPNAME)/src/modelcpp -f Makefile.lib
+else 
+	@echo "Copy $(MODELCPPZIP) => $@"
+	@rm -rf libmodelcpp.so
+	@unzip $(CMODEL_DIR)/$(CHIPNAME)/$(MODELCPPZIP)
+	@mv -f libmodelcpp.so $(LIB_DIR)/
+endif
+
+clean_libmodelcpp: FORCE
+	@rm -rf $(CMODEL_DIR)/build.i686.d/bin.tmp
+	$(OSP_MAKE) -C $(CMODEL_DIR)/$(CHIPNAME)/src/modelcpp -f Makefile.lib clean 
+
+libctccli: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/ctccli
+
+clean_libctccli: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/ctccli clean
+	
+libcmodel: FORCE
+	@echo "GEN => $@"
+	$(OSP_MAKE) -C $(CMODEL_DIR) -f Makefile.lib
+
+clean_libcmodel: FORCE
+	@rm -rf $(CMODEL_DIR)/build.i686.d/bin.tmp
+	$(OSP_MAKE) -C $(CMODEL_DIR) -f Makefile.lib clean
+
+libcmodelcli: FORCE
+	$(OSP_MAKE) -C $(CMODEL_DIR)/$(CHIPNAME)/ui/cmodel_cli -f Makefile
+
+clean_libcmodelcli: FORCE
+	$(OSP_MAKE) -C $(CMODEL_DIR)/$(CHIPNAME)/ui/cmodel_cli clean  -f Makefile
+
+app:	FORCE
+ifeq ($(UNITTEST),TRUE)
+	$(OSP_MAKE) -C $(SDK_DIR)/app -f Makefile_libapp
+else
+	$(OSP_MAKE) -C $(SDK_DIR)/app  -f Makefile
+endif
+
+clean_app:	FORCE
+ifeq ($(UNITTEST),TRUE)
+	$(OSP_MAKE) -C $(SDK_DIR)/app -f Makefile_libapp clean
+else
+	$(OSP_MAKE) -C $(SDK_DIR)/app -f Makefile clean
+endif
+
+gtest:	FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/gtest -f Makefile
+
+clean_gtest:	FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/gtest -f Makefile clean
+
+libdtcli:	FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool
+
+clean_libdtcli:	FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool clean
+
+libdkits:   FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/dkits -f Makefile.lib
+
+clean_libdkits: FORCE
+	$(OSP_MAKE) -C $(SDK_DIR)/dkits -f Makefile.lib clean
+
+	
+ctc_shell: FORCE 
+	$(OSP_MAKE) -C $(SDK_DIR)/libctccli/ctc-shell/client -f Makefile.ctc
+
+clean_ctc_shell:
+	$(OSP_MAKE) -C $(SDK_DIR)/sdk/libctccli/ctc-shell/client -f Makefile.ctc clean
+	
+	
+distclean: FORCE
+	rm -rf $(BLD_DIR)
+
+.PHONY: FORCE
+FORCE:
+endif
+
+################################# vxworks #####################################3
+####
+####ifeq ($(targetbase),vxworks)
+####
+####ifeq ($(BUILD_SPEC),SIMNTgnu)
+####CPU              = SIMNT
+####TOOL             = gnu
+####TOOL_FAMILY      = gnu
+####DEFAULT_RULE     = sdk.out
+####endif
+####
+####
+####ifeq ($(BUILD_SPEC),PPC603gnu)
+####CPU              = PPC603
+####TOOL             = gnu
+####TOOL_FAMILY      = gnu
+####DEFAULT_RULE     = sdk.out
+####endif
+####
+#####include $(TGT_DIR)/h/$(OSP_MAKE)/defs.project
+####
+###### build-configuration info
+####
+####ifeq ($(BUILD_SPEC),PPC603gnu)
+####AR               = arppc
+####AS               = ccppc
+####CC               = ccppc
+####CC_ARCH_SPEC     = -mcpu=603 -mstrict-align
+####CFLAGS           = -O0 -mcpu=603 -Wall -mstrict-align -mlongcall -fno-builtin -I. -I$(WIND_BASE)/target/h/ -DCPU=PPC603 -DTOOL_FAMILY=gnu -DTOOL=gnu -D_WRS_KERNEL -DVXWORKS -DBE_HOST=1
+####CFLAGS_AS        = -g -mcpu=603 -mstrict-align -ansi -fno-builtin -P -xassembler-with-cpp -I. -I$(WIND_BASE)/target/h/ -I$(WIND_BASE)/target/h/wrn/coreip -DCPU=PPC603 -DTOOL_FAMILY=gnu -DTOOL=gnu -D_WRS_KERNEL
+####CPP              = ccppc -E -P
+####LD               = ldppc
+####LDDEPS           = 
+####LDFLAGS          = -X -N
+####LD_PARTIAL       = ccppc -r -nostdlib -Wl,-X
+####LD_PARTIAL_FLAGS = -X -r
+####NM               = nmppc
+####OPTION_DEFINE_MACRO = -D
+####OPTION_DEPEND    = -M -w
+####OPTION_GENERATE_DEPENDENCY_FILE = -MD
+####OPTION_INCLUDE_DIR = -I
+####OPTION_LANG_C    = -xc
+####OPTION_UNDEFINE_MACRO = -U
+#####POST_BUILD_RULE  = $(PRJ_DIR)\PPC603gnu\XelApp.bat
+####PRJ_LIBS         = 
+####SIZE             = sizeppc
+####TOOL_FAMILY      = gnu
+####endif
+####
+####ifeq ($(BUILD_SPEC),SIMNTgnu)
+####AR               = arsimpc
+####AS               = ccsimpc
+####RANLIB           = ranlibsimpc
+####CC               = ccsimpc
+####CC_ARCH_SPEC     = -mpentium
+####CFLAGS           = -g -mpentium -ansi -fno-builtin -fno-defer-pop -I. -I$(WIND_BASE)/target/h/  -DCPU=SIMNT -DTOOL_FAMILY=gnu  -DTOOL=gnu
+####CFLAGS_AS        = -g -mpentium -ansi -fno-builtin -fno-defer-pop -P -xassembler-with-cpp -I. -I$(WIND_BASE)/target/h/  -DCPU=SIMNT -DTOOL_FAMILY=gnu  -DTOOL=gnu
+####CPP              = ccsimpc -E -P
+####LD               = ldsimpc
+####LDFLAGS          = --subsystem=windows
+####LD_PARTIAL       = ccsimpc -r -nostdlib
+####LD_PARTIAL_FLAGS = -r
+####NM               = nmsimpc -g
+####OPTION_DEFINE_MACRO = -D
+####OPTION_DEPEND    = -M -w
+####OPTION_GENERATE_DEPENDENCY_FILE = -MD
+####OPTION_INCLUDE_DIR = -I
+####OPTION_LANG_C    = -xc
+####OPTION_UNDEFINE_MACRO = -U
+####SIZE             = sizesimpc
+####TOOL_FAMILY      = gnu
+####POST_BUILD_RULE  =
+####PRJ_LIBS         =
+####endif
+####
+####
+##### override $(OSP_MAKE) definitions only above this line
+####include $(TGT_DIR)/h/$(OSP_MAKE)/rules.project
+####
+##### should change these two variable according to your compile environment
+##### LINK: YES - build ctcsdk vxWorks image , NO - build libctcsdk.a
+####export LINK = YES
+##### SPLIT_CORE: NO - libsdkcore.a , YES - libsdkcoreapi.a libsdkcoresys.a
+####export SPLIT_CORE = YES
+####
+####BLD_DIR = $(SDK_DIR)/build.$(CPU).$(VER)
+####
+####all_targets = libsal libdal libdrv libsdkcore liblibctccli libctccli libdebugtool
+####
+####ifeq ($(ChipAgent),TRUE)
+####all_targets += libchipagent
+####endif
+####
+##### ctcsdk: sdk + asic
+####ifeq ($(BOARD),vxworks)
+####all_targets += libapp
+####endif
+####
+##### ctcsdk: sdk + memmodel
+####ifeq ($(BOARD),vxworks-sim)
+####all_targets += libmemmodel libapp
+####endif
+####
+####all: $(all_targets) FORCE
+####clean: $(addprefix clean_,$(all_targets)) FORCE
+####
+####libsal: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/sal
+####
+####clean_libsal: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/sal clean
+####
+####libdal: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/dal -f Makefile
+####
+####clean_libdal: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/dal clean
+####	
+####libdrv: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/driver/$(CHIPNAME)
+####
+####clean_libdrv: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/driver/$(CHIPNAME) clean
+####
+####libsdkcore: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/core
+####
+####libdebugtool: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool/debug_cli -f Makefile_vx
+####	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool -f Makefile_libdbg.vx
+####
+####clean_libdebugtool: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool/debug_cli -f Makefile_vx clean
+####	$(OSP_MAKE) -C $(SDK_DIR)/debug_tool -f Makefile_libdbg.vx clean
+####	
+####clean_libsdkcore: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/core clean
+####
+####libmemmodel: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/mem_model/$(CHIPNAME)
+####
+####clean_libmemmodel: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/mem_model/$(CHIPNAME) clean
+####
+####libchipagent: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/chip_agent
+####
+####clean_libchipagent: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/chip_agent clean
+####liblibctccli: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/libctccli
+####
+####clean_liblibctccli: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/libctccli clean
+####
+####libctccli: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/ctccli
+####
+####clean_libctccli: FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/ctccli clean
+####
+####libapp:	FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/app
+####
+####clean_libapp:	FORCE
+####	$(OSP_MAKE) -C $(SDK_DIR)/app clean
+####
+####
+####distclean: FORCE
+####	rm -rf $(BLD_DIR)
+####
+####.PHONY: FORCE
+####FORCE:
+####
+####endif

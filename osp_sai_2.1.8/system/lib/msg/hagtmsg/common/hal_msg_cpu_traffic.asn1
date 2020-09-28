@@ -1,0 +1,146 @@
+HAL-MSG-CPU-TRAFFIC DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+HalMsgCpuTrafficLimitIndRate ::= SEQUENCE
+{
+    reason       INTEGER,
+    rate         INTEGER
+}
+
+HalMsgCpuTrafficLimitIndRateListReq ::= SEQUENCE
+{
+    reasonRateList SEQUENCE OF HalMsgCpuTrafficLimitIndRate
+}
+
+HalMsgCpuTrafficLimitTotalRateReq ::= SEQUENCE
+{
+    rate         INTEGER
+}
+
+HalMsgCpuTrafficSetReasonClass ::= SEQUENCE
+{
+    reason       INTEGER,
+    class        INTEGER
+}
+
+HalMsgCpuTrafficSetReasonClassListReq ::= SEQUENCE
+{
+    reasonClassList SEQUENCE OF HalMsgCpuTrafficSetReasonClass
+}
+
+HalMsgCpuTrafficSyncReasonInfo ::= SEQUENCE
+{
+    reason       INTEGER,
+    rate         INTEGER,
+    class        INTEGER
+}
+
+HalMsgCpuTrafficSyncReasonInfoListReq ::= SEQUENCE
+{
+    reasonInfoList SEQUENCE OF HalMsgCpuTrafficSyncReasonInfo
+}
+
+HalMsgPduFlexL2PduKeyReq ::= SEQUENCE
+{
+    flexL2pdu   INTEGER,    -- GLB_PDU_FLEX_L2PDU_XXX
+    keyType     INTEGER,    -- GLB_L2PDU_TYPE_XXX
+    key         CHOICE
+    {
+        byMacda  SEQUENCE
+        {
+            macda       HalMsgDefL2MacAddr,
+            macdaMask   HalMsgDefL2MacAddr
+        },
+        etherType   INTEGER
+    }
+}
+
+HalMsgPduDefL2PduGlbAction ::= SEQUENCE
+{
+    l2Pdu         INTEGER,
+    entryValid    INTEGER,
+    bypassAll     INTEGER,
+    copyToCpu     INTEGER
+}
+
+HalMsgPduSetL2PduGlbActionListReq ::= SEQUENCE
+{
+    l2PduGlbActionList  SEQUENCE OF HalMsgPduDefL2PduGlbAction
+}
+
+HalMsgPduDefFlexL2PduGlbAction ::= SEQUENCE
+{
+    flexL2PduKey  HalMsgPduFlexL2PduKeyReq,
+    entryValid    INTEGER,
+    bypassAll     INTEGER
+}
+
+HalMsgPduSetFlexL2PduGlbActionListReq ::= SEQUENCE
+{
+    flexL2PduGlbActionList  SEQUENCE OF HalMsgPduDefFlexL2PduGlbAction
+}
+
+HalMsgPduDefL2PduPortAction ::= SEQUENCE
+{
+    l2Pdu        INTEGER,   -- GLB_L2PDU_XXX
+    portId       INTEGER,
+    action       INTEGER
+}
+
+HalMsgPduSetL2PduPortActionListReq ::= SEQUENCE
+{
+    l2PduPortActionList SEQUENCE OF HalMsgPduDefL2PduPortAction
+}
+
+HalMsgPduDefFlexL2PduPortAction ::= SEQUENCE
+{
+    flexL2PduKey HalMsgPduFlexL2PduKeyReq,
+    portId       INTEGER,
+    action       INTEGER
+}
+
+HalMsgPduSetFlexL2PduPortActionListReq ::= SEQUENCE
+{
+    flexL2PduPortActionList SEQUENCE OF HalMsgPduDefFlexL2PduPortAction
+}
+
+HalMsgPduDefL3PduGlbAction ::= SEQUENCE
+{
+    l3pdu        INTEGER,       -- GLB_L3PDU_XXX
+    entryValid   INTEGER
+}
+
+HalMsgPduSetL3PduGlbActionListReq ::= SEQUENCE
+{
+    l3PduGlbActionList  SEQUENCE OF HalMsgPduDefL3PduGlbAction
+}
+
+HalMsgPduDefL3PduL3ifAction ::= SEQUENCE
+{
+    l3pdu        INTEGER,
+    l3ifId       INTEGER,
+    action       INTEGER
+}
+
+HalMsgPduSetL3PduL3ifActionListReq ::= SEQUENCE
+{
+    l3PduL3ifActionList SEQUENCE OF HalMsgPduDefL3PduL3ifAction
+}
+
+HalMsgCpuTrafficNhptrToReason ::= SEQUENCE
+{
+    nhPtr        INTEGER,
+    reason       INTEGER
+}
+
+HalMsgCpuTrafficNhptrToReasonResp ::= SEQUENCE
+{
+    mapList      SEQUENCE OF HalMsgCpuTrafficNhptrToReason
+}
+
+
+END

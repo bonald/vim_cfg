@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ethernet" help="Configure layer-2"/>
+	<COMMAND name="show ethernet evc" help="EVC (Ethernet Virtual Connection)">
+		<PARAM name="evc_name" help="EVC name, maximum length is 16" optional="true" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl show/cdb/l2/show_evc_entry/${evc_name}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of EVC (Ethernet Virtual Connection).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of EVC (Ethernet Virtual Connection).
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of EVC (Ethernet Virtual Connection):  
+	Switch# show ethernet evc   
+	EVC GRE:  
+	 EVC Dot1Q SVLANID                : 10  
+	 EVC Dot1Q CVLANID                : 0  
+	 Number of using this EVC         : 1  
+	EVC RED:  
+	 EVC Dot1Q SVLANID                : 20  
+	 EVC Dot1Q CVLANID                : 0  
+	 Number of using this EVC         : 1  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ethernet evc
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show vlan mapping" help="The vlan mapping table parameters"/>
+	<COMMAND name="show vlan mapping table" help="The vlan mapping table">
+		<PARAM name="table_name" optional="true" help="Vlan mapping table name, maximum length is 16" ptype="NAME_STRING">
+			<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="none">
+				<PARAM name="applied-interface" optional="true" help="Display interface who use the vlan mapping table" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="evc" optional="true" help="EVC (Ethernet Virtual Connection)" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="evc_name" help="EVC name, maximum length is 16" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="raw-vlan" optional="true" help="The group of raw vlan" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="raw_vlan" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+						<PARAM name="raw_vlan_id" help="The raw VLAN ID" ptype="VLAN_ID"/>
+						<PARAM name="untagged" help="Null VLAN" ptype="SUBCOMMAND" mode="subcommand"/>
+						<PARAM name="out-of-range" help="The out of range raw VLANs" ptype="SUBCOMMAND" mode="subcommand"/>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ "applied-interface" == ${mode} ]; then
+				cdbctl show/cdb/l2/show_vlan_mapping_table/table_name/${table_name}/${mode}
+			elif [ "evc" == ${mode} ]; then
+				cdbctl show/cdb/l2/show_vlan_mapping_table/table_name/${table_name}/${mode}/${evc_name}
+			elif [ "raw-vlan" == ${mode} ]; then
+				if [ "untagged" == ${raw_vlan} ]; then
+					cdbctl show/cdb/l2/show_vlan_mapping_table/table_name/${table_name}/${mode}/0
+				elif [ "out-of-range" == ${raw_vlan} ]; then
+					cdbctl show/cdb/l2/show_vlan_mapping_table/table_name/${table_name}/${mode}/4095
+				else
+					cdbctl show/cdb/l2/show_vlan_mapping_table/table_name/${table_name}/${mode}/${raw_vlan_id}
+				fi
+			else
+				cdbctl show/cdb/l2/show_vlan_mapping_table/table_name/${table_name}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of vlan mapping table.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of vlan mapping table.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of vlan mapping table:  
+	Centec# show vlan mapping table   
+	Table Name       EVC Name         Mapped VLAN  Raw VLAN  
+	----------------+----------------+------------+------------  
+	vmt              GRE              10           100  
+	                 RED              20           200  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show vlan mapping table applied-interface" help="Display interface who use the vlan mapping table">
+
+		<ACTION>
+			cdbctl show/cdb/l2/show_vlan_mapping_table/applied-interface
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the informatiion of all vlan mapping table.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the informatiion of all vlan mapping table.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the informatiion of all vlan mapping table:  
+	Centec# show vlan mapping table applied-interface   
+	Table Name       Interface Name   Type  
+	----------------+----------------+----------------  
+	vmt              eth-0-5          VLAN Translation  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="ethernet" help="Configure layer-2"/>
+	<COMMAND name="ethernet evc" help="EVC (Ethernet Virtual Connection)"
+			 view="configure-evc-view" viewid="evc_name=${evc_name}">
+		<PARAM name="evc_name" help="EVC name, the first character of table name should be 0-9A-Za-z, character only can be 0-9A-Za-z.-_, maximum length is 16" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl create/cdb/l2/evc_entry/${evc_name}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create an EVC (Ethernet Virtual Connection) entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create an EVC (Ethernet Virtual Connection) entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create an EVC (Ethernet Virtual Connection) entry:  
+	DUT1(config)# ethernet evc RED  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ethernet evc
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ethernet" help="Configure layer-2"/>
+	<COMMAND name="no ethernet evc" help="EVC (Ethernet Virtual Connection)">
+		<PARAM name="evc_name" help="EVC name, maximum length is 16" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl delete/cdb/l2/evc_entry/${evc_name}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete an EVC (Ethernet Virtual Connection) entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete an EVC (Ethernet Virtual Connection) entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete an EVC (Ethernet Virtual Connection) entry:  
+	DUT1(config)# no ethernet evc RED  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ethernet evc
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="vlan mapping" help="Configure vlan mapping table parameters"/>
+	<COMMAND name="vlan mapping table" help="Configure vlan mapping table"
+			 view="configure-vlan-mapping-view" viewid="vmt_name=${vmt_name}">
+		<PARAM name="vmt_name" help="Configure vlan mapping table name, the first character of table name should be 0-9A-Za-z, character only can be 0-9A-Za-z.-_, maximum length is 16" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl create/cdb/l2/vlan_mapping_table/${vmt_name}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a vlan mapping table.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a vlan mapping table.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a vlan mapping table:  
+	DUT1(config)# vlan mapping table GREEN  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no vlan mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no vlan mapping" help="Configure vlan mapping table parameters"/>
+	<COMMAND name="no vlan mapping table" help="Configure vlan mapping table">
+		<PARAM name="vmt_name" help="Configure vlan mapping table name, maximum length is 16" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl delete/cdb/l2/vlan_mapping_table/${vmt_name}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a vlan mapping table.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a vlan mapping table.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a vlan mapping table:  
+	DUT1(config)# no vlan mapping table GREEN  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="raw" help="Configure raw vlan group"/>
+	<COMMAND name="raw vlan" help="Configure raw vlan group"/>
+	<COMMAND name="raw vlan group" help="Configure raw vlan group">
+		<PARAM name="group_id" help="Group Id, range is 1-64" ptype="VMT_GROUP_ID"/>
+		<PARAM name="vlan" help="VLAN ID list" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,9-11" ptype="VLAN_LIST"/>
+
+		<ACTION>
+			cdbctl create/cdb/l2/vlan_group/${group_id}/vlan_list/${vlan_list}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a vlan group range profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a vlan group range profile.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a vlan group range profile:  
+	DUT1(config)# raw vlan group 1 vlan 2-5,9-11  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no raw vlan group
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no raw" help="Configure raw vlan group"/>
+	<COMMAND name="no raw vlan" help="Configure raw vlan group"/>
+	<COMMAND name="no raw vlan group" help="Configure raw vlan group">
+		<PARAM name="group_id" help="Group Id, range is 1-64" ptype="VMT_GROUP_ID"/>
+
+		<ACTION>
+			cdbctl delete/cdb/l2/vlan_group/${group_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a vlan group range profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a vlan group range profile.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a vlan group range profile:  
+	DUT1(config)# no raw vlan group 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+raw vlan group
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-evc-view"
+	prompt="${SYSTEM_NAME}(config-evc-${evc_name})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="exit"
+		help="Exit from EVC configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from EVC configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="dot1q" help="802.1Q commands"/>
+	<COMMAND name="dot1q mapped-vlan" help="EVC mapped-vlan">
+
+		<PARAM name="mapped_vlan_id" help="EVC mapped-vlan ID" ptype="VLAN_ID"/>
+		<ACTION>
+			cdbctl update/cdb/l2/evc_entry/${evc_name}/mapped_svid/${mapped_vlan_id}/mapped_cvid/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the mapped svlan of evc entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the mapped svlan of evc entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the mapped svlan of evc entry:  
+	DUT1(config-evc-RED)# dot1q mapped-vlan 8  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no dot1q mapped-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no dot1q" help="802.1Q commands"/>
+	<COMMAND name="no dot1q mapped-vlan" help="EVC mapped-vlan">
+
+		<ACTION>
+			cdbctl update/cdb/l2/evc_entry/${evc_name}/mapped_svid/0/mapped_cvid/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the mapped svlan of evc entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the mapped svlan of evc entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the mapped svlan of evc entry:  
+	DUT1(config-evc-RED)# no dot1q mapped-vlan  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1q mapped-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="dot1q mapped-double-vlan" help="EVC mapped-double-vlan">
+		<PARAM name="mapped_cvlan_id" help="EVC mapped-inner-vlan ID" ptype="VLAN_ID"/>
+		<PARAM name="mapped_svlan_id" help="EVC mapped-outer-vlan ID" ptype="VLAN_ID"/>
+
+		<ACTION>
+			cdbctl update/cdb/l2/evc_entry/${evc_name}/mapped_svid/${mapped_svlan_id}/mapped_cvid/${mapped_cvlan_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the mapped double vlan of evc entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the mapped double vlan of evc entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the mapped double vlan of evc entry:  
+	DUT1(config-evc-RED)# dot1q mapped-double-vlan 8 16  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no dot1q mapped-double-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no dot1q mapped-double-vlan" help="EVC mapped-double-vlan">
+
+		<ACTION>
+			cdbctl update/cdb/l2/evc_entry/${evc_name}/mapped_svid/0/mapped_cvid/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the mapped double vlan of evc entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the mapped double vlan of evc entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the mapped double vlan of evc entry:  
+	DUT1(config-evc-RED)# no dot1q mapped-double-vlan  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dot1q mapped-double-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-vlan-mapping-view"
+	prompt="${SYSTEM_NAME}(config-vlan-mapping-${vmt_name})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="exit"
+		help="Exit from vlan mapping table configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from vlan mapping table configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="raw-vlan" help="Configure VLAN mapping table entry">
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="out-of-range" optional="true" help="The out of range raw VLANs" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="untagged" optional="true" help="Null VLAN" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="group" optional="true" help="The group of raw vlan" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="group_id" help="Group Id, range is 1-64" ptype="VMT_GROUP_ID"/>
+			</PARAM>
+			<PARAM name="vlan_list" help="The List of the Raw VLAN IDs of ingress mapping, example: 2-5,7,9-11, or the Inner VLAN ID of egress mapping ranging in 0-4094" ptype="VLAN_LIST_INCLUDE0">
+				<PARAM name="egress_mode" help="Mode" optional="true" ptype="SUBCOMMAND" mode="switch" default="none">
+					<PARAM name="svlan_id" help="The Outer vlan ID of egress mapping ranging in 1-4094" ptype="VLAN_ID">
+						<PARAM name="egress-vlan" help="Egress vlan mapping" ptype="SUBCOMMAND" mode="subcommand">
+							<PARAM name="rawvlan" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+								<PARAM name="untagged" optional="true" help="Null VLAN" ptype="SUBCOMMAND" mode="subcommand"/>
+								<PARAM name="raw_vid" help="The mapped vlan ID ranging in  1-4094" ptype="VLAN_ID"/>
+							</PARAM>
+						</PARAM>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<PARAM name="evc" help="EVC (Ethernet Virtual Connection)" ptype="SUBCOMMAND" mode="subcommand" test='"${egress_mode}"="none"'/>
+		<PARAM name="evc_name" help="EVC name, maximum length is 16" ptype="NAME_STRING" test='"${egress_mode}"="none"'/>
+
+		<ACTION>
+			if [ "out-of-range" == ${mode} ]; then
+				cdbctl create/cdb/l2/vlan_mapping_entry/${vmt_name}/raw_vid/out-of-range/evc_entry/${evc_name}
+			elif [ "untagged" == ${mode} ]; then
+				cdbctl create/cdb/l2/vlan_mapping_entry/${vmt_name}/raw_vid/untagged/evc_entry/${evc_name}
+			elif [ "group" == ${mode} ]; then
+				cdbctl update/cdb/l2/vlan_mapping_table/${vmt_name}/group_id/${group_id}/group_evc_entry_name/${evc_name}
+			else
+				if [ "none" == ${egress_mode} ]; then
+					cdbctl create/cdb/l2/vlan_mapping_entry/${vmt_name}/raw_vid/${vlan_list}/evc_entry/${evc_name}
+				else
+					if [ "untagged" == ${rawvlan} ]; then
+						cdbctl create/cdb/l2/egress_mapping_entry/${vmt_name}/egress/${vlan_list}/${svlan_id}/0
+					else
+						cdbctl create/cdb/l2/egress_mapping_entry/${vmt_name}/egress/${vlan_list}/${svlan_id}/${raw_vid}
+					fi
+				fi
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to add the vlan mapping entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to add the vlan mapping entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to add the vlan mapping entry:  
+	DUT1(config-vlan-mapping-RED)# raw-vlan untagged evc GREEN  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no raw-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no raw-vlan" help="Configure VLAN mapping table entry">
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="out-of-range" optional="true" help="The out of range raw VLANs" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="untagged" optional="true" help="Null VLAN" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="group" optional="true" help="The group of raw vlan" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="vlan_list" help="The List of the Raw VLAN IDs of ingress mapping, example: 2-5,7,9-11, or the Inner VLAN ID of egress mapping ranging in 0-4094" ptype="VLAN_LIST_INCLUDE0">
+				<PARAM name="egress_mode" help="Mode" optional="true" ptype="SUBCOMMAND" mode="switch" default="none">
+					<PARAM name="svlan_id" help="The Outer vlan ID of egress mapping ranging in 1-4094" ptype="VLAN_ID">
+						<PARAM name="egress-vlan" help="Egress vlan mapping" ptype="SUBCOMMAND" mode="subcommand"/>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ "out-of-range" == ${mode} ]; then
+				cdbctl delete/cdb/l2/vlan_mapping_entry/${vmt_name}/raw_vid/out-of-range
+			elif [ "untagged" == ${mode} ]; then
+				cdbctl delete/cdb/l2/vlan_mapping_entry/${vmt_name}/raw_vid/untagged
+			elif [ "group" == ${mode} ]; then
+				cdbctl update/cdb/l2/vlan_mapping_table/${vmt_name}/group_id/0
+			else
+				if [ "none" == ${egress_mode} ]; then
+					cdbctl delete/cdb/l2/vlan_mapping_entry/${vmt_name}/raw_vid/${vlan_list}
+				else
+					cdbctl delete/cdb/l2/egress_mapping_entry/${vmt_name}/egress/${vlan_list}/${svlan_id}
+				fi
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete the vlan mapping entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete the vlan mapping entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete the vlan mapping entry:  
+	DUT1(config-vlan-mapping-RED)# no raw-vlan untagged  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+raw-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no evc" help="EVC corresponding to the Raw-VLAN">
+		<PARAM name="evc_name" help="EVC name, maximum length is 16" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl delete/cdb/l2/vlan_mapping_entry/${vmt_name}/evc_entry/${evc_name}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete the vlan mapping entry using specific ethernet evc.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete the vlan mapping entry using specific ethernet evc.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete the vlan mapping entry using specific ethernet evc:  
+	DUT1(config-vlan-mapping-RED)# no evc RED  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+raw-vlan
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+</CLISH_MODULE>

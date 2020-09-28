@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+MLAG
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show mlag" help="Multi-Chassis Link Aggregation">
+		<ACTION>cdbctl show/cdb/l2/show_mlag</ACTION>
+
+		<CTCDESCRIPTION>
+This command displays information about the MLAG configuration.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display information about the MLAG configuration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch# show mlag 
+    MLAG Configuration:
+    peer-link             : eth-0-9
+    peer-address          : 12.1.1.2
+    reload-delay          : Auto
+    
+    MLAG Status:
+    role                  : Slave
+    state                 : Established
+    local system-id       : d48c.87aa.bf00
+    remote system-id      : d4a9.270d.fb00
+    mlag system-id        : d4a9.270d.fb00
+    local lacp-priority   : 32768
+    remote lacp-priority  : 32768
+    mlag lacp-priority    : 32768
+    peer-conf             : Yes
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mlag configuration
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show mlag peer" help="Mlag peer">
+		<ACTION>cdbctl show/cdb/l2/show_mlag/peer</ACTION>
+
+		<CTCDESCRIPTION>
+This command displays information about the MLAG peer configuration and status.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display information about the MLAG peer configuration and status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch# show mlag peer 
+    MLAG neighbor is 12.1.1.2, MLAG version 1
+    Operation hold time is 80, keepalive interval is 20 seconds
+    Uptime 00:47:56, Last read time 00:00:15
+    MLAG state = Established
+    
+    Total        : received 148, sent 148
+    Open         : received 1, sent 1
+    KAlive       : received 144, sent 144
+    Fdb sync     : received 0, sent 0
+    Failover     : received 0, sent 0
+    Conf         : received 1, sent 1
+    Syspri       : received 1, sent 1
+    Peer fdb     : received 1, sent 1
+    
+    Connections established 1; dropped 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+peer-address
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show mlag interface" help="Mlag interface">
+		<ACTION>cdbctl show/cdb/l2/show_mlag/interface</ACTION>
+
+		<CTCDESCRIPTION>
+This command displays information about the MLAG interface configuration and status.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display information about the MLAG interface configuration and status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch# show mlag interface
+    mlagid  local-if  local-state    remote-state
+    -------+---------+--------------+--------------
+    1       agg1      up             up
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mlag
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="clear mlag" help="Multi-Chassis Link Aggregation"/>
+	<COMMAND name="clear mlag count" help="Mlag packet count">
+		<ACTION>cdbctl update/cdb/l2/clear_mlag_counters</ACTION>
+
+		<CTCDESCRIPTION>
+This command clears mlag counters.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear mlag count information which can be displayed by show mlag peer command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch# clear mlag count 
+    Switch# show mlag peer
+    MLAG neighbor is 12.1.1.2, MLAG version 1
+    Operation hold time is 80, keepalive interval is 20 seconds
+    Uptime 00:54:58, Last read time 00:00:17
+    MLAG state = Established
+    
+    Total        : received 0, sent 0
+    Open         : received 0, sent 0
+    KAlive       : received 0, sent 0
+    Fdb sync     : received 0, sent 0
+    Failover     : received 0, sent 0
+    Conf         : received 0, sent 0
+    Syspri       : received 0, sent 0
+    Peer fdb     : received 0, sent 0
+    
+    Connections established 1; dropped 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag peer
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="mlag" help="Multi-Chassis Link Aggregation"/>
+	<COMMAND name="no mlag" help="Multi-Chassis Link Aggregation"/>
+
+	<COMMAND name="mlag configuration" help="Configuration" view="configure-mlag-view">
+		<ACTION>cdbctl update/cdb/l2/mlag/enable/1</ACTION>
+
+		<CTCDESCRIPTION>
+This command enters MLAG configuration mode to configure Multichassis Link Aggregation features. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to enable MLAG feature.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config)# mlag configuration 
+    Switch(config-mlag)# exit
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no mlag configuration" help="Configuration">
+		<ACTION>cdbctl update/cdb/l2/mlag/enable/0</ACTION>
+
+		<CTCDESCRIPTION>
+This command removes all MLAG configuration command from running-config.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable MLAG feature.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config)# no mlag configuration 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-mlag-view"
+	prompt="${SYSTEM_NAME}(config-mlag)# "
+	depth="1">
+
+<!-- Inheritance -->
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode"/>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-mlag mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from MLAG configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from MLAG configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="peer-link" help="Peer link">
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_EA"/>
+		
+		<ACTION>cdbctl update/cdb/l2/mlag/peer_link_ifindex/${ifname}</ACTION>
+
+		<CTCDESCRIPTION>
+This command specifies the interface that connects MLAG peer.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to specify the interface that connects MLAG peer. To form an MLAG, two switches are connected through an interface called a apeer link. The peer link carries control and data traffic between the two switches.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# peer-link eth-0-9 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no peer-link" help="Peer link">
+		<ACTION>cdbctl update/cdb/l2/mlag/peer_link_ifindex</ACTION>
+
+		<CTCDESCRIPTION>
+This command removes the interface that connects MLAG peer.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the interface that connects MLAG peer.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# no peer-link
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="peer-address" help="Peer address">
+		<PARAM name="address" help="IP address" ptype="IP_ADDR"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l2/mlag_peer/peer_addr/${address}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+This command specifies the peer IPv4 address for a MLAG domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to specifiy the peer IPv4 address for a MLAG domain. MLAG control traffic is sent to the peer IPv4 address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# peer-address 10.10.1.2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag peer
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no peer-address" help="Peer address">
+		<ACTION>
+			cdbctl update/cdb/l2/mlag_peer/peer_addr
+		</ACTION>
+
+		<CTCDESCRIPTION>
+This command removes the peer IPv4 address for a MLAG domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the peer IPv4 address for a MLAG domain.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# no peer-address
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag peer
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="timer" help="Adjust mlag timers"/>
+	<COMMAND name="no timer" help="Adjust mlag timers"/>
+
+	<COMMAND name="timer mlag" help="Multi-Chassis Link Aggregation timers">
+		<PARAM name="keepalive" help="Keepalive interval (Default: 60 s)" ptype="MLAG_KEEPALIVE"/>
+		<PARAM name="holdtime" help="Holdtime (Default: 240 s)" ptype="MLAG_HOLDTIME"/>
+		
+		<ACTION>cdbctl update/cdb/l2/mlag_peer/set_timers/${keepalive}/${holdtime}</ACTION>
+
+		<CTCDESCRIPTION>
+This command set mlag keepalive and holdtime timers.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set mlag keepalive and holdtime timers. It will be take effective by next time when the peer goes to established. Between the locally configured keepalive timer and the calculated value by the remote holdtime/4 carried in open message, system uses the smaller one in actual calculation.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default keepalive interval is 60 seconds and default holdtime is 240 seconds.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# timers mlag 10 40
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag peer
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no timer mlag" help="Multi-Chassis Link Aggregation timers">
+		<ACTION>cdbctl update/cdb/l2/mlag_peer/set_timers</ACTION>
+
+		<CTCDESCRIPTION>
+This command set mlag keepalive and holdtime timers to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set mlag keepalive and holdtime timers to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default keepalive interval is 60 seconds and default holdtime is 240 seconds.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# no timers mlag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag peer
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="reload-delay" help="Reload delay period for mlag links">
+			<PARAM name="mode" help="mode" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="auto" help="Auto recovery from link disabled" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="reload_relay" help="Disable link interval seconds" ptype="MLAG_RELOAD_RELAY"/>
+			</PARAM>		
+		<ACTION>cdbctl update/cdb/l2/mlag/reload_delay_interval/${reload_relay}</ACTION>
+
+		<CTCDESCRIPTION>
+This command set mlag reload-delay.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When an MLAG peer reboots, all ports except those in peer-link port-channel remain in errdisabled state for a specified period. This period allows all topology states to stabilize before the switch begins forwarding traffic. The specified period is configured by this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# reload-delay auto
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no reload-delay" help="Reload delay period for mlag links">
+		<ACTION>cdbctl update/cdb/l2/mlag/reload_delay_interval/</ACTION>
+
+		<CTCDESCRIPTION>
+This command set mlag reload-delay to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set mlag reload-delay to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Auto
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    Switch(config-mlag)# no reload-delay
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag
+		</CTCRCMD>
+
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+        <COMMAND name="mlag" help="Multi-Chassis Link Aggregation">
+		<PARAM name="mlag_id" help="MLAG ID" ptype="MLAG_ID"/>
+		
+            <ACTION>cdbctl create/cdb/l2/mlag_port/${mlag_id}/${iface}</ACTION>
+
+		<CTCDESCRIPTION>
+This command set MLAG ID of this interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The mlag command assigns an MLAG ID to a port-channel. MLAG peer switches form an MLAG when each switch configures the same MLAG ID to a port-channel interface. Only one MLAG ID can be assigned to an interface. An individual MLAG number cannot be assigned to more than one interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch(config-if-agg1)# mlag 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag interface
+		</CTCRCMD>
+
+        </COMMAND>
+
+        <COMMAND name="no mlag" help="Multi-Chassis Link Aggregation">
+            <ACTION>cdbctl delete/cdb/l2/mlag_port/${iface}</ACTION>
+
+		<CTCDESCRIPTION>
+This command removes MLAG ID of this interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove MLAG ID of this interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch(config-if-agg1)# no mlag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mlag interface
+		</CTCRCMD>
+
+        </COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+Monitor
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show hardware" help="Hardware monitor"/>
+	<COMMAND name="show hardware monitor" help="Hardware monitor"/>
+	<COMMAND name="show hardware monitor latency" help="Latency feature"/>
+	<COMMAND name="show hardware monitor latency config" help="Latency event config">
+	
+	<ACTION>cdbctl show/cdb/l2/show_monitor/latency</ACTION>
+		
+	<CTCDESCRIPTION>
+This command can display the hardware monitor latency event whether enable、high threshold and low threshold on interface, include monitor latency active range.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command is used to display the hardware monitor latency event configuration.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE>
+    Switch# show hardware monitor latency config 
+    Monitor latency active range(ns):  
+    -----------------------+------------------------
+    Range1:    0 -  800     Range2:  800 - 1000
+    Range3: 1000 - 1200     Range4: 1200 - 1400
+    Range5: 1400 - 1800     Range6: 1800 - 2000
+    Range7: 2000 - 4096     Range8: 4096 - more
+
+    Port         Event       Thrd_high  Thrd_low   
+    -----------+-----------+-----------+------------
+    eth-0-1/1   disable     6           2           
+    eth-0-1/2   enable      5           2           
+    eth-0-1/3   disable     6           2           
+    eth-0-1/4   disable     6           2           
+    eth-0-2     disable     6           2           
+    eth-0-3     disable     6           2           
+    eth-0-4     disable     6           2           
+    eth-0-5     disable     6           2           
+    eth-0-6     disable     6           2           
+    eth-0-7     disable     6           2           
+    eth-0-8     disable     6           2           
+    eth-0-9     disable     6           2           
+    eth-0-10    disable     6           2           
+    eth-0-11    disable     6           2           
+    eth-0-12    disable     6           2           
+    eth-0-13    disable     6           2           
+    eth-0-14    disable     6           2           
+    eth-0-15    disable     6           2           
+    eth-0-16    disable     6           2           
+    eth-0-17    disable     6           2           
+    eth-0-18    disable     6           2           
+    eth-0-19    disable     6           2           
+    eth-0-20    disable     6           2           
+    eth-0-21    disable     6           2           
+    eth-0-22    disable     6           2           
+    eth-0-23    disable     6           2           
+    eth-0-24    disable     6           2  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+hardware monitor latency event
+	</CTCRCMD>
+	
+	</COMMAND>
+	
+	<COMMAND name="show hardware monitor buffer" help="Buffer feature"/>
+	<COMMAND name="show hardware monitor buffer config" help="Buffer event config">
+		<ACTION>cdbctl show/cdb/l2/show_monitor/buffer</ACTION>
+		
+		<CTCDESCRIPTION>
+This command can display the hardware monitor buffer event whether enable、high threshold and low threshold.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display the hardware monitor buffer event configuration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# show hardware monitor buffer config 
+    Monitor buffer event : enable
+    Monitor buffer event threshold high (buffer cell count) : 32
+    Monitor buffer event threshold low  (buffer cell count) : 16
+		</CTCEXAMPLE>
+		<CTCRCMD>
+hardware monitor buffer event
+	   </CTCRCMD>
+		
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="hardware" help="Hardware monitor"/>
+	<COMMAND name="hardware monitor" help="Monitor feature"/>
+	<COMMAND name="hardware monitor buffer" help="Buffer feature"/>
+	<COMMAND name="hardware monitor buffer event" help="Event feature">
+		<PARAM name="enable" help="Enable buffer event" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/qos/qos_global/buffer_event_enable/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the this command to enable the buffer event.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to enable the buffer event.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable buffer event:
+    Switch(config)# hardware monitor buffer event enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show hardware monitor latency config
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no hardware" help="Hardware monitor"/>
+	<COMMAND name="no hardware monitor" help="Monitor feature"/>
+	<COMMAND name="no hardware monitor buffer" help="Buffer feature"/>
+	<COMMAND name="no hardware monitor buffer event" help="Event feature">
+		<PARAM name="enable" help="Disable buffer event" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+		<ACTION>cdbctl update/cdb/qos/qos_global/buffer_event_enable/0</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to disable the buffer event.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to disable the buffer event.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable buffer event:
+    Switch(config)# hardware monitor buffer event disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show hardware monitor latency config
+		</CTCRCMD>
+	</COMMAND>  
+		 
+	<COMMAND name="hardware monitor buffer event threshold" help="Set threshold">
+		<PARAM name="low" help="Low threshold" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="low_thrd" help="The number range is 16-22528, default is 16 and multiple of 16" ptype="BUFFER_LOW_THRESHOLD"/>
+		</PARAM>
+		<PARAM name="high" help="High threshold" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="high_thrd" help="The number range is 16-22528, default is 64 and multiple of 16" ptype="BUFFER_HIGH_THRESHOLD"/>
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/qos/qos_global/buffer_event_low/${low_thrd}/buffer_event_high/${high_thrd}</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to set the buffer event low threshold and high threshold.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is set the buffer event low threshold and high threshold.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+low threshold is 16, high threshold is 64
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set buffer event threshold:
+    Switch(config)# hardware monitor buffer threshold low 16 high 64
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show hardware monitor latency config
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no hardware monitor buffer event threshold" help="Set threshold default">
+		<ACTION>cdbctl update/cdb/qos/qos_global/buffer_event_low/16/buffer_event_high/64</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="hardware_monitor_latency_event_range" help="Range feature" hidden="true">
+		<PARAM name="range_1" help="Range 1 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_2" help="Range 2 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_3" help="Range 3 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_4" help="Range 4 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_5" help="Range 5 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_6" help="Range 6 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_7" help="Range 7 value" ptype="RANGE_ID_VALUE"/>
+		<PARAM name="range_8" help="Range 8 value" ptype="RANGE_ID_VALUE"/>
+		
+		<ACTION>cdbctl update/cdb/qos/qos_global/latency_range/${range_1}/${range_2}/${range_3}/${range_4}/${range_5}/${range_6}/${range_7}/${range_8}</ACTION>
+		
+	</COMMAND>
+  
+</VIEW>
+
+<VIEW name="configure-if-view">
+	<COMMAND name="hardware" help="Hardware monitor"/>
+	<COMMAND name="hardware monitor" help="Monitor feature"/>
+	<COMMAND name="hardware monitor latency" help="Latency feature"/>
+	<COMMAND name="hardware monitor latency event" help="Event feature">
+		<PARAM name="enable" help="Enable latency event" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/interface/${iface}/latency_event_enable/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the this command to enable the latency event.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to enable the latency event.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable latency event:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# hardware monitor latency event enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show hardware monitor buffer config
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no hardware" help="Hardware monitor"/>
+	<COMMAND name="no hardware monitor" help="Monitor feature"/>
+	<COMMAND name="no hardware monitor latency" help="Latency feature"/>
+	<COMMAND name="no hardware monitor latency event" help="Event feature">
+		<PARAM name="enable" help="Enable latency event" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+		<ACTION>cdbctl update/cdb/interface/${iface}/latency_event_enable/0</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to disable the latency event.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is used to disable the latency event.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable latency event:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# hardware monitor latency event disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show hardware monitor buffer config
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="hardware monitor latency event threshold" help="Set threshold">
+		<PARAM name="low" help="Low rangeId" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="latency_low_thrd" help="The number range is 1-7, default is 2" ptype="LATENCY_LOW_THRESHOLD"/>
+		</PARAM>
+		<PARAM name="high" help="High rangeId" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="latency_high_thrd" help="The number range is 2-8, default is 6" ptype="LATENCY_HIGH_THRESHOLD"/>
+		</PARAM>
+
+		<ACTION>cdbctl update/cdb/interface/${iface}/latency_event_low/${latency_low_thrd}/latency_event_high/${latency_high_thrd}</ACTION>
+		<CTCDESCRIPTION>
+Use the this command to set the latency event low threshold and high threshold.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command is set the latency event low threshold and high threshold.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+low threshold is 2, high threshold is 6
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set latency event threshold:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# hardware monitor latency threshold low 3 high 5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show hardware monitor buffer config
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no hardware monitor latency event threshold" help="Set threshold default">
+		<ACTION>cdbctl update/cdb/interface/${iface}/latency_event_low/2/latency_event_high/6</ACTION>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,17 @@
+include $(MK_DIR)/sys.mk
+LIB = fiber
+SRCS  = fiber_api.c
+SRCS  += fiber_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/fiber
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/phy
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/gpio
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/asic/mdio
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+
+include $(MK_DIR)/lib.mk

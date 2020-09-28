@@ -1,0 +1,409 @@
+################################################################################
+# Note:
+# 1. Table用于产生 ds_xxx_define.h/ds_xxx.h/ds_xxx.c
+# 2. DS的顺序应该与note.txt里面顺序且一一对应，否则会报错
+# 3. "#" 注释
+# 4. DS之间以"-----"分隔
+# 5. 一个DS有 [TBL] [KEY] [DATA] [FLAGS] 4个选项
+# 6. [DS]有3列
+#    1) DS name
+#    2) ds_xxx.h中的参数名  lag -> p_lag
+#    3) master Table名称
+# 7. [KEY] 如果master Table有多个DS元素, 需要[KEY]
+# 8. [DATA]有4列，如果有key的话，必须放在第一行
+#    1) data type, 所有的datatype必须在datatype.txt中定义
+#    2) data name, 可以带指针或者数组
+#    3) access property, READ/RW/SUB/FLAGS
+#       其中SUB表示是DS, 注意DS必须通过指针附着在TBL上
+#       FLAGS表示包含多个flag, 具体见[FLAGS]
+#    4) note, 这一列会copy到源代码中
+# 9. [FLAGS] 如果[DATA]中有FLAGS项, 需要有该选项, 有4列
+#    1) data name
+#    2) field name
+#    3) FLAG定义, 必须在proto.h里面定义好
+#    4) access property, READ/RW
+# 10. 其他注意事项
+#    1) 尽量避免使用指针. 譬如interface.desc
+#    2) 除了FLAGS外, data name与field name是一一对应的
+#    3) REFERLIST_TBL用于挂接指向另一个TBL的指针
+#    4) REFERLIST_DS用于挂接指向另一个DS的指针
+################################################################################
+--------------------------------------------------------------------------------
+[DS]
+DS_BRGIF                brgif                   TBL_INTERFACE
+[DATA]
+vid_t                   pvid                    RW      /* default is 1 */
+vid_t                   inner_native_vid        RW      /* Inner Native Vlan for Qinq Ports */
+glb_vlan_qinq_type_t    qinq_type               RW      /* glb_vlan_qinq_type_t */
+uint8                   qinq_default_fwd        RW      /* QinQ default forwarding control */
+uint8                   vlan_translation_en     RW      /* VLAN-Translation enable control */
+uint8                   vlan_trans_default_fwd  RW      /* VLAN-Translation default forwarding control */
+char                    vlan_mapping_table[GLB_VLAN_MAPPING_TAB_NAME_MAX+1]  RW    /* vlan mapping table name */
+uint8                   dot1q_tag_native_en     RW      /* Tagged packet when it is sent out with native vlan */
+brg_allowed_vlan_t      allowed_vlan            RW
+uint8                   ingress_filter          RW
+uint8                   egress_filter           READ
+uint8                   tpid_type               RW      /* glb_tpid_type_t */
+uint8                   mac_learning_en         RW
+uint8                   oper_mac_learning_en    RW      /* calcuted by mac_learning_en and mlag_is_peer_link */
+uint8                   port_security_en        RW
+uint8                   violate_mode            RW
+uint8                   mlag_is_peer_link       READ    /* is MLAG peer link, if set should block MLAG isolation group ingress */
+uint8                   mlag_is_port_block      READ    /* is MLAG peer port block, if set should block MLAG isolation group egress */
+uint8                   mlag_is_group           READ    /* both MLAG port and MLAG peer-link has configured */
+uint32                  max_mac                 RW
+brg_allowed_vlan_t      untagged_vlan           RW      /* only valid for trunk port; if set, vlan is untagged, otherwise, tagged (default) */
+--------------------------------------------------------------------------------
+[DS]
+DS_ACLQOS_IF            aclqos_if                                       TBL_INTERFACE
+[DATA]
+uint8                   default_cos                                     RW      /* default port cos value, default: 0 */
+uint8                   domain                                          RW      /* qos domain, default: 0 */
+uint8                   trust                                           RW      /* trust state, refer to glb_qos_trust_state_t, default: trust cos */
+uint8                   replace                                         RW      /* replace state, refter to glb_qos_replace_state_t, default: NONE*/
+uint32                  shape_pir                                       RW      /* port shape, Unit:kbits/s, default: NONE*/
+uint8                   queue_stats_enable                              RW      /* */
+char                    input_policy_map[PMAP_NAME_SIZE]                RW      /* attached police-map nmae */
+char                    output_policy_map[PMAP_NAME_SIZE]               RW      /* attached police-map nmae */
+char                    input_policer[POLICER_NAME_SIZE]                RW      /* policer name */
+char                    output_policer[POLICER_NAME_SIZE]               RW      /* policer name */
+#array[][] is not supported now, using arrag[]
+#char                 queue_shape[GLB_QOS_PORT_QUEUE_NUM][QOS_SHAPE_NAME_SIZE]  RW      /* queue shape name */
+#char                 queue_drop[GLB_QOS_PORT_QUEUE_NUM][QOS_SHAPE_NAME_SIZE]   RW      /* queue drop name */
+#uint32                  queue_shape[GLB_QOS_PORT_QUEUE_NUM]            RW      /* queue shape ID */
+#uint32                  queue_drop[GLB_QOS_PORT_QUEUE_NUM]             RW      /* queue drop ID */
+qos_name_t              queue_shape_profile[GLB_QOS_PORT_QUEUE_NUM]             RW      /* queue shape name */
+qos_name_t              queue_drop_profile[GLB_QOS_PORT_QUEUE_NUM]              RW      /* queue drop name */
+uint32                  queue_class[GLB_QOS_PORT_QUEUE_NUM]             RW      /* queue class */
+uint32                  queue_weight[GLB_QOS_PORT_QUEUE_NUM]            RW      /* queue weight */
+uint32                  queue_drop_mode[GLB_QOS_PORT_QUEUE_NUM]         RW      /* queue drop mode: glb_qos_queue_drop_mode_t */
+uint32                  queue_ecn_enable[GLB_QOS_PORT_QUEUE_NUM]        RW      /* ecn enable */
+uint32                  queue_transimt_pkt[GLB_QOS_PORT_QUEUE_NUM]      READ    /* for dump queue stats */
+uint32                  queue_transimt_byte[GLB_QOS_PORT_QUEUE_NUM]     READ    /* for dump queue stats */
+uint32                  queue_drop_pkt[GLB_QOS_PORT_QUEUE_NUM]          READ    /* for dump queue stats */
+uint32                  queue_drop_byte[GLB_QOS_PORT_QUEUE_NUM]         READ    /* for dump queue stats */
+uint64                  queue0_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue0_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue0_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue0_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue1_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue1_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue1_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue1_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue2_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue2_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue2_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue2_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue3_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue3_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue3_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue3_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue4_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue4_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue4_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue4_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue5_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue5_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue5_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue5_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue6_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue6_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue6_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue6_drop_byte                                RW    /* for dump queue stats */
+uint64                  queue7_transimt_pkt                             RW    /* for dump queue stats */
+uint64                  queue7_transimt_byte                            RW    /* for dump queue stats */
+uint64                  queue7_drop_pkt                                 RW    /* for dump queue stats */
+uint64                  queue7_drop_byte                                RW    /* for dump queue stats */
+uint8                   phb_enable                                      READ    /* for dump queue weight&class */
+--------------------------------------------------------------------------------
+[DS]
+DS_LAG                  lag                             TBL_INTERFACE
+[DATA]
+glb_agg_mode_t          mode                            READ    /* glb_agg_mode_t */
+uint8                   lag_id                          READ
+uint8                   oper_state                      READ
+uint8                   mismatch                        READ    /* oper speed mismatch */
+int8                    bundle_ports_count              READ
+uint8			load_balance_mode		RW
+uint8                    is_active_backup_mode       RW
+uint32                  max_active_number           RW
+uint32                  cur_active_number           RW
+uint32                  cur_active_max_priority    RW
+REFERLIST_TBL_INTERFACE member_ports                    READ    /* only for LAG group */
+--------------------------------------------------------------------------------
+[DS]
+DS_LACP                 lacp                            TBL_INTERFACE
+[DATA]
+uint16                  actor_port_priority             RW
+uint16                  actor_oper_port_key             READ
+uint16                  actor_port_number               READ
+uint8                   short_timeout                   RW
+uint8                   actor_oper_port_state           READ
+uint16                  partner_admin_system_priority   READ
+mac_addr_t              partner_admin_system            READ
+uint16                  partner_admin_key               READ
+uint16                  partner_admin_port_priority     READ
+uint16                  partner_admin_port_number       READ
+uint8                   partner_admin_port_state        READ
+uint16                  partner_oper_system_priority    READ
+mac_addr_t              partner_oper_system             READ
+uint16                  partner_oper_key                READ
+uint16                  partner_oper_port_priority      READ
+uint16                  partner_oper_port_number        READ
+uint8                   partner_oper_port_state         READ
+uint32                  tx_lacp_count                   READ
+uint32                  tx_error_count                  READ
+uint32                  rx_lacp_count                   READ
+uint32                  rx_error_count                  READ
+uint32                  mlag_id                         READ    /* MLAG ID */
+uint8                   ntt                             READ
+uint8                   lacp_enabled                    READ
+uint8                   ready_n                         READ
+uint8                   port_moved                      READ
+lacp_pertx_state_t      periodic_tx_state               READ    /* lacp_pertx_state_t */
+lacp_rx_state_t         receive_state                   READ    /* lacp_rx_state_t */
+lacp_mux_state_t        mux_state                       READ    /* lacp_mux_state_t */
+lacp_selected_t         selected                        READ    /* lacp_selected_t */
+void                    *pdu                            READ
+ctc_task_t              *current_while_timer            READ
+ctc_task_t              *periodic_timer                 READ
+ctc_task_t              *wait_while_timer               READ
+--------------------------------------------------------------------------------
+[DS] 
+DS_CONNECTED            connect                         TBL_ROUTE_IF 
+[KEY] 
+prefix_t                address 
+[DATA] 
+DS_CONNECTED_KEY        key                             READ 
+prefix_t                destination                     RW 
+FLAGS8                  flags                           FLAGS 
+uint8                   installed                       READ 
+[FLAGS] 
+flags                   flags_secondary                 RT_IF_ADDR_SECONDARY  READ 
+flags                   flags_anycast                   RT_IF_ADDR_ANYCAST    READ 
+flags                   flags_virtual                   RT_IF_ADDR_VIRTUAL    READ 
+flags                   flags_duplicate                 RT_IF_ADDR_DUPLICATE  READ
+--------------------------------------------------------------------------------
+[DS] 
+DS_CONNECTED_V6            connect_v6                         TBL_ROUTE_IF 
+[KEY] 
+prefix_t                address 
+[DATA] 
+DS_CONNECTED_V6_KEY        key                             READ 
+prefix_t                destination                     RW 
+FLAGS32               flags                             FLAGS 
+uint8                   installed                         READ
+char                    ifname[IFNAME_SIZE]       RW
+uint32                  ifindex                           RW
+ctc_task_t            *t_timer                         READ
+uint16                  dad_ns_send                  RW
+uint16                  unsolicited_na                RW
+[FLAGS] 
+flags                   flags_secondary                 RT_IF_ADDR_SECONDARY  READ 
+flags                   flags_anycast                   RT_IF_ADDR_ANYCAST    READ 
+flags                   flags_virtual                   RT_IF_ADDR_VIRTUAL    READ 
+flags                   flags_duplicate                 RT_IF_ADDR_DUPLICATE  READ
+flags                   flags_v6_global                 RT_IF_ADDRV6_GLOBAL  READ 
+flags                   flags_v6_linklocal                   RT_IF_ADDRV6_LINKLOCAL    READ 
+flags                   flags_v6_auto_linklocal                   RT_IF_ADDRV6_AUTO_LINKLOCAL    READ 
+flags                   flags_v6_global_eui64                 RT_IF_ADDRV6_GLOBAL_EUI64  READ
+flags                   flags_v6_dad_in_progress            RT_IF_ADDRV6_DAD_IN_PROGRESS  READ
+flags                   flags_v6_na_in_progress              RT_IF_ADDRV6_NA_IN_PROGRESS  READ
+flags                   flags_v6_configured              RT_IF_ADDRV6_CONFIGURED  READ
+flags                   flags_v6_real                       RT_IF_ADDRV6_REAL  READ
+-----------------------------------------------------------------------------
+[DS] 
+DS_STATIC_ROUTE_DUP_IPV4_NH            static_route_dup_ipv4_nh                         TBL_ARP
+[KEY] 
+addr_ipv4_t                address 
+[DATA] 
+DS_STATIC_ROUTE_DUP_IPV4_NH_KEY        key                             READ 
+--------------------------------------------------------------------------------
+[DS] 
+DS_OSPF_AUTH        	ospf_auth                   TBL_ROUTE_IF 
+[KEY] 
+uint32                	id 
+[DATA] 
+DS_OSPF_AUTH_KEY    	key                             READ 
+char                    ospf_auth_md5_key[17]     		RW
+-----------------------------------------------------------------------------
+[DS]
+DS_STORM_CONTROL        storm_control                   TBL_INTERFACE
+[DATA]
+uint32                  bcast_mode                      RW    /* glb_ratelimit_mode_t */
+uint32                  mcast_mode                      RW    /* glb_ratelimit_mode_t */
+uint32                  ucast_mode                      RW    /* glb_ratelimit_mode_t */
+uint32                  bcast_rate                      RW
+uint32                  mcast_rate                      RW
+uint32                  ucast_rate                      RW
+--------------------------------------------------------------------------------
+[DS]
+DS_OPENFLOW_IF          openflow                        TBL_INTERFACE
+[DATA]
+uint8                   enable                          RW      /* openflow enable, default:0 */
+uint8                   obey_vlan_filter                RW      /* obey vlan filter, default: 0 */
+--------------------------------------------------------------------------------
+[DS]
+DS_DHCLIENT_IF          dhclient                        TBL_INTERFACE
+[DATA]
+uint32                  requested_flags                 RW      /* requested flags */
+uint32                  lease                           RW      /* lease time, seconds */
+uint32                  status                          RW      /* status */
+uint32                  option                          RW      /* request option */
+uint32                  client_flags                    RW
+char                    client_id[DHCP_NAME_SIZE]       RW      /* client id */
+uint32                  class_flags                     RW
+char                    class_id[DHCP_NAME_SIZE]        RW      /* class id */
+char                    hostname[COMM_NAME_SIZE+1]       RW      /* hostname */
+uint32                 iana_t1                             RW   /* IA_NA  T1 */ 
+uint32                 iana_t2                             RW   /* IA_NA  T2 */ 
+--------------------------------------------------------------------------------
+[DS]
+DS_PVLAN_COMMUNITY      community                       TBL_PVLAN
+[KEY]
+vid_t                   community_vid 
+[DATA]
+DS_PVLAN_COMMUNITY_KEY  key                             READ
+uint8                   group_id                        RW
+REFERLIST_TBL_INTERFACE ports                           RW      /* list of community ports */
+--------------------------------------------------------------------------------
+[DS] 
+DS_CIRCUIT_ID           circuit_id                      TBL_INTERFACE 
+[KEY] 
+vid_t                   vid
+[DATA] 
+DS_CIRCUIT_ID_KEY       key                             READ
+char                    circuit[DHCSNOOPING_MAX_CIRCUIT_ID_STRING] RW   /* circuit id string */
+--------------------------------------------------------------------------------
+[DS] 
+DS_FLUSH_FDB            flush_fdb                       TBL_L2_ACTION
+[DATA] 
+flush_fdb_type_t        type                            RW    /* flush_fdb_type_t */
+flush_fdb_subtype_t     subtype                         RW    /* flush_fdb_subtype_t */
+flush_fdb_mode_t        mode                            RW    /* flush_fdb_mode_t */
+uint32                  ifindex                         RW
+vid_t                   vid                             RW
+mac_addr_t              mac                             RW
+--------------------------------------------------------------------------------
+[DS] 
+DS_LLDP_NEIGHBOUR       neigh                                   TBL_LLDP_IF 
+[KEY] 
+lldp_msap_id_t
+[DATA] 
+DS_LLDP_NEIGHBOUR_KEY   key                                     READ
+uint32                  rx_ifindex                              READ
+mac_addr_t              mac_addr                                READ
+uint32                  rx_ttl                                  READ
+uint32                  chassis_id_sub_type                     READ         
+uint32                  port_id_sub_type                        READ
+char                    system_name[LLDP_NAME_SIZE+1]           READ
+char                    system_desc[LLDP_DESCRIPTION_SIZE+1]    READ
+char                    port_desc[LLDP_DESCRIPTION_SIZE+1]      READ
+char                    ifname[IFNAME_SIZE+1]                   READ     
+char                    vlan_name[LLDP_VLAN_NAME_SIZE+1]        READ    /*8021 vlan name*/
+uint32                  vlan_id                                 READ    /*8021 vlan id*/
+uint32                  sys_cap                                 READ    /*basic system capability*/
+uint32                  sys_cap_en                              READ    /*basic system capability enable*/
+char                    mant_addr[LLDP_MGMT_ADDR_LENGTH]        READ    /*basic management addr*/
+char                    oid[LLDP_OID_LEN_MAX]                   READ
+uint32                  oid_len                                 READ
+uint32                  mgmt_addr_sub_type                      READ
+uint32                  if_numbering                            READ    /*basic management ip,if_numbering*/
+uint32                  if_number                               READ
+uint32                  pvid                                    READ    /*8021 port vlan id*/
+uint32                  ppvid_flag                              READ    /*8021 port protocol vlan id flag*/
+uint32                  ppvid                                   READ    /*8021 port protocol vlan id*/
+uint32                  protocol_id                             READ    /*8021 protocol id*/
+uint32                  autonego_support                        READ    /*8023 support autonego or not*/
+uint32                  autonego_cap                            READ    /*8023 autonego capability*/
+uint32                  oper_mau_type                           READ    /*8023 autonego mau type*/
+uint32                  link_aggr_status                        READ    /*8021 or 8023 surpport linkagg or not*/
+uint32                  link_aggr_id                            READ    /*8021 or 8023 linkagg id */
+uint32                  max_frame_size                          READ    /*8023 max_frame_size*/
+uint32                  power_flag                              READ    /*8023 PSE or PD*/
+uint32                  power_pair                              READ    /*8023 Signal or Spare or Unknown*/
+uint32                  power_class                             READ    /*8023 power class 0,1,2 ...*/
+uint32                  med_capbility                           READ    /*med capability*/
+uint32                  med_dev_type                            READ    /*med device type:Network Connectivity or Endpoint or Unknown */
+uint32                  med_policy_flag                         READ    /*med network policy*/
+uint32                  med_power_flag                          READ    /*med power flag*/
+uint32                  med_power_value                         READ    /*med power value*/
+uint32                  med_lci_format                          READ    /*med lci TLV：location_id format*/
+char                    med_hard_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]       READ   /*med Inventory TLV：hardware version*/
+char                    med_firm_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]       READ   /*med Inventory TLV：firmware version*/
+char                    med_soft_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]       READ   /*med Inventory TLV：software version*/
+char                    med_serial_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]     READ   /*med Inventory TLV：serial version*/
+char                    med_manufac_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]    READ   /*med Inventory TLV：manufacturer version*/
+char                    med_moname_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]     READ   /*med Inventory TLV：model name version*/
+char                    med_asset_ver[LLDP_MED_INVENTORY_VALUE_SIZE+1]      READ   /*med Inventory TLV：asset version*/
+char                    med_lci_coordinate[LLDP_MED_LCI_COORDINATE_SIZE+1]  READ   /*med lci TLV：location_id format: coordinate*/
+char                    med_lci_elin[LLDP_MED_LCI_ELIN_MAX_SIZE+1]          READ   /*med lci TLV：location_id format: ecs-elin*/ 
+lldp_civic_address_t    med_lci_civic                                       READ   /*med lci TLV：location_id format: civic*/   
+ctc_task_t              *rx_ttl_timer                           READ
+--------------------------------------------------------------------------------
+[DS] 
+DS_MROUTER_PORT         mr_port                        TBL_IGSP_INTF 
+[KEY] 
+char                    name[IFNAME_SIZE]
+[DATA] 
+DS_MROUTER_PORT_KEY     key                            READ
+uint32                  type                           READ             /* igmp_mrouter_type_t */
+sal_time_t              uptime                         READ
+ctc_task_t             *expire_timer                   READ
+void                   *igsp_if                        INTERNAL        /* refer to tbl_igsp_intf_t */
+--------------------------------------------------------------------------------
+[DS] 
+DS_QUERY                query                          TBL_IGSP_INTF 
+[KEY] 
+addr_ipv4_t             group
+[DATA] 
+DS_QUERY_KEY            key                            READ
+uint32                  max_resp_time                  READ
+vid_t                   vid                            READ
+ctc_task_t             *response_timer                 READ
+--------------------------------------------------------------------------------
+[DS] 
+DS_L2PROTOCOL           l2protocol                     TBL_INTERFACE 
+[KEY] 
+char               		l2pro_name[GLB_L2_PROTOCOL_NAME_SIZE+1] 
+[DATA] 
+DS_L2PROTOCOL_KEY       key                            READ 
+uint32					is_standard_pro				   RW  /* If is_standard_pro is 1, then it is standard protocol*/
+uint32					l2pro_action				   RW  /* glb_l2_proto_action_t */
+vid_t					l2pro_vlan					   RW  /* Vlan id */
+char					l2pro_evc_name[GLB_VLAN_EVC_NAME_LEN+1]	RW  /* EVC name */
+--------------------------------------------------------------------------------
+[DS]
+DS_ND_PREFIX                 nd_prefix               TBL_ROUTE_IF
+[KEY]
+nd_prefix_key_t
+[DATA]
+DS_ND_PREFIX_KEY          key                       READ
+uint16                             config                    RW        /* config parameters */
+uint32                             vlifetime                RW        /* valid lifetime. */
+uint32                             plifetime                RW        /* preferred lifetime */
+uint16                             onlink                    RW        /* onlink determination */
+uint16                             autoconfig              RW        /* auto configuration */
+-----------------------------------------------------------------------------
+[DS] 
+DS_JOIN_GROUP              join                            TBL_IGSP_INTF
+[KEY] 
+addr_ipv4_t                group 
+[DATA] 
+DS_JOIN_GROUP_KEY          key                             READ 
+vid_t                      vid                             READ
+uint8                      type                            READ        /* igmp_type_t */
+--------------------------------------------------------------------------------
+[DS] 
+DS_CFM_ERROR           cfm_error                      TBL_CFM_MD
+[KEY] 
+cfm_time_key_t
+[DATA] 
+DS_CFM_ERROR_KEY    key                              READ
+uint16                          level                             RW
+uint16                          vlan_id                         RW
+char                             md_name[CFM_MD_NAME_MAX_LENGTH_8021AG]       RW     /* MA name */
+uint32                          mep_id                         RW
+uint8                            err_reason                    RW
+mac_addr_t                  rmep_mac                     RW      
+--------------------------------------------------------------------------------

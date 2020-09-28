@@ -1,0 +1,163 @@
+<div class="row">
+    <!-- options -->
+    <div class="col-lg-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ 'Options' | translate }}</div>
+            <div class="panel-body">
+                <div class="form-inline">
+                      <!-- filter -->
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;{{ 'Filter' | translate }}
+                            </span>
+                            <input type="text" class="form-control input-sm" id="file-filter" placeholder="filter" ng-model="fileFilterStr" />
+                        </div>
+                        <!-- order
+                        <div class="form-group">
+                            <label>{{ 'Keyword' | translate }}</label>
+                            <select class="form-control" ng-model="order.by" ng-options="x.display | translate for x in orderItems"></select>
+                       </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ul class="nav nav-tabs">
+    <li ng-class="{'active': tabsUsed == 'connected'}"><a href="javascript:;" ng-click="changeTabs('connected')">{{ 'connected' | translate }}</a></li>
+    <!--<li ng-class="{'active': tabsUsed == 'kernel'}"><a href="javascript:;" ng-click="changeTabs('kernel')">{{ 'kernel route' | translate }}</a></li>-->
+    <li ng-class="{'active': tabsUsed == 'static'}"><a href="javascript:;" ng-click="changeTabs('static')">{{ 'static' | translate }}</a></li>
+
+    <!--<li ng-class="{'active': tabsUsed == 'RIP'}"><a href="javascript:;" ng-click="changeTabs('RIP')">{{ 'RIP' | translate }}</a></li>-->
+    <li ng-class="{'active': tabsUsed == 'OSPF'}"><a href="javascript:;" ng-click="changeTabs('OSPF')">{{ 'OSPF' | translate }}</a></li>
+    <!--<li ng-class="{'active': tabsUsed == 'IS'}"><a href="javascript:;" ng-click="changeTabs('IS')">{{ 'IS-IS' | translate }}</a></li>-->
+
+    <!--<li ng-class="{'active': tabsUsed == 'BGP'}"><a href="javascript:;" ng-click="changeTabs('BGP')">{{ 'BGP' | translate }}</a></li>-->
+    <!--<li ng-class="{'active': tabsUsed == 'PIM'}"><a href="javascript:;" ng-click="changeTabs('PIM')">{{ 'PIM' | translate }}</a></li>-->
+
+        
+</ul>
+
+<!-- boot files -->
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed =='connected'">
+      <div class="panel-body">
+        
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-model="SELCTLALL" ng-click="setCheckboxConnectecdAll(SELCTLALL)" /></th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ 'Protocol Type' | translate }}</th>
+                    <th class="text-center">{{ 'IP/Mask' | translate }}</th>
+                    <th class="text-center">{{ 'select' | translate }}</th>    
+                    <th class="text-center">{{ 'fib' | translate }}</th>
+                    <th class="text-center">{{ 'ifname' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in routing_connet | filter: fileFilterStr | limitTo:pgItemNumEachPage:(pgCurrent_connet - 1) * pgItemNumEachPage">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSel[routing_connet.indexOf(x)]"/></td>
+                    <td class="text-center">{{ $index }}</td>
+                    <td class="text-center"><a href="javascript:;" ng-click="modifyChannelGroup(x.lag_name, x.member_ports)">{{ x.type }}</a></td>
+                    <td class="text-center">{{ x.ip }}</td>
+                    <td class="text-center">{{ x.selected }}</td>
+                    <td class="text-center">{{ x.fib }}</td>
+                    <td class="text-center">{{ x.ifname }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <pagination pg-current="pgCurrent_connet" pg-item-cnt="pgItemCnt_connet" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+        <p class="text-center"><b ng-show="routing_connet.length == 0">N/A</b></p>    
+    </div>
+    <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+        <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+    </div>    
+</div>
+
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed =='kernel'">
+    <div class="panel-body">
+       <h3 class="panel-title">{{ 'kernel' | translate }}</h3>
+    </div>
+
+</div>
+
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed =='static'">
+    <div class="panel-body">
+        
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-model="SELCTLALL" ng-click="setCheckboxStaticAll(SELCTLALL)" /></th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ 'Protocol Type' | translate }}</th>
+                    <th class="text-center">{{ 'IP/Mask' | translate }}</th>
+                    <th class="text-center">{{ 'Distance/Metric' | translate }}</th>    
+                    <th class="text-center">{{ 'Nexthop' | translate }}</th>
+                    <th class="text-center">{{ 'select' | translate }}</th>    
+                    <th class="text-center">{{ 'fib' | translate }}</th>                    
+                    <th class="text-center">{{ 'ifname' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in routing_static | filter: fileFilterStr | limitTo:pgItemNumEachPage:(pgCurrent_static - 1) * pgItemNumEachPage">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSel[routing_static.indexOf(x)]"/></td>
+                    <td class="text-center">{{ $index }}</td>
+                    <td class="text-center"><a href="javascript:;" ng-click="modifyChannelGroup(x.lag_name, x.member_ports)">{{ x.type }}</a></td>
+                    <td class="text-center">{{ x.ip }}</td>
+                    <td class="text-center">{{ x.distance }}</td>
+                    <td class="text-center">{{ x.nexthop }}</td>
+                    <td class="text-center">{{ x.selected }}</td>
+                    <td class="text-center">{{ x.fib }}</td>                    
+                    <td class="text-center">{{ x.active }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <pagination pg-current="pgCurrent_static" pg-item-cnt="pgItemCnt_static" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+        <p class="text-center"><b ng-show="routing_static.length == 0">N/A</b></p>        
+    </div>
+    <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+        <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+    </div>  
+</div>
+
+<!-- boot files -->
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed =='OSPF'">
+      <div class="panel-body">
+        
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-model="SELCTLALL" ng-click="setCheckboxOspfAll(SELCTLALL)" /></th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ 'Protocol Type' | translate }}</th>
+                    <th class="text-center">{{ 'IP/Mask' | translate }}</th>
+                    <th class="text-center">{{ 'select' | translate }}</th>    
+                    <th class="text-center">{{ 'fib' | translate }}</th>
+                    <th class="text-center">{{ 'ifname' | translate }}</th>
+                    <th class="text-center">{{ 'uptime' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in routing_ospf | filter: fileFilterStr | limitTo:pgItemNumEachPage:(pgCurrent_ospf - 1) * pgItemNumEachPage">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSel[routing_ospf.indexOf(x)]"/></td>
+                    <td class="text-center">{{ $index }}</td>
+                    <td class="text-center"><a href="javascript:;" ng-click="modifyChannelGroup(x.lag_name, x.member_ports)">{{ x.type }}</a></td>
+                    <td class="text-center">{{ x.ip }}</td>
+                    <td class="text-center">{{ x.selected }}</td>
+                    <td class="text-center">{{ x.fib }}</td>
+                    <td class="text-center">{{ x.ifname }}</td>
+                    <td class="text-center">{{ x.uptime }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <pagination pg-current="pgCurrent_ospf" pg-item-cnt="pgItemCnt_ospf" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+        <p class="text-center"><b ng-show="routing_connet.length == 0">N/A</b></p>    
+    </div>
+    <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+        <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+    </div>    
+</div>

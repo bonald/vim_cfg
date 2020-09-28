@@ -1,0 +1,41 @@
+
+#ifndef __TBL_NAT_RULE_DEFINE_H__
+#define __TBL_NAT_RULE_DEFINE_H__
+
+/* TBL_NAT_RULE field defines */
+typedef enum
+{
+    TBL_NAT_RULE_FLD_KEY                  = 0 ,  /* READ */
+    TBL_NAT_RULE_FLD_ID                   = 1 ,  /* RW */
+    TBL_NAT_RULE_FLD_CATEGORY_ID          = 2 ,  /* RW */
+    TBL_NAT_RULE_FLD_REFER_IIF            = 3 ,  /* RW */
+    TBL_NAT_RULE_FLD_REFER_OIF            = 4 ,  /* RW */
+    TBL_NAT_RULE_FLD_NFT_CHAIN_ID_ACL     = 5 ,  /* RW */
+    TBL_NAT_RULE_FLD_NFT_CHAIN_ID_RULE_PRE = 6 ,  /* RW */
+    TBL_NAT_RULE_FLD_NFT_CHAIN_ID_RULE_POST = 7 ,  /* RW */
+    TBL_NAT_RULE_FLD_MAX                  = 8 
+} tbl_nat_rule_field_id_t;
+
+/* TBL_NAT_RULE defines */
+typedef nat_rule_key_t tbl_nat_rule_key_t;
+
+typedef struct
+{
+    tbl_nat_rule_key_t   key;
+    uint32               id;
+    uint32               category_id;         /* oif category id, save it for latter use*/
+    char                 refer_iif[IFNAME_SIZE+1]; /* if configured local ip in NAT rule, find the correspoding iif and save it here for later use*/
+    char                 refer_oif[IFNAME_SIZE+1]; /* if configured pool in NAT rule, or global IP, find the correspoding oif and save it here for later use*/
+    uint32               nft_chain_id_acl;
+    uint32               nft_chain_id_rule_pre;
+    uint32               nft_chain_id_rule_post;
+} tbl_nat_rule_t;
+
+typedef struct
+{
+    ctclib_hash_t        *nat_rule_hash;
+    ctclib_slist_t       *nat_rule_list;
+} tbl_nat_rule_master_t;
+
+#endif /* !__TBL_NAT_RULE_DEFINE_H__ */
+

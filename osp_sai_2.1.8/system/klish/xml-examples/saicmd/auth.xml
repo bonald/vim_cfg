@@ -1,0 +1,4550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+AUTH
+</CTCMODULENAME>	
+	
+	
+<VIEW name="Exec">
+
+<COMMAND name="show usernames" help="User names">
+<PARAM name="service-type" help="Service-type of usernames" ptype="SUBCOMMAND" mode="SUBCOMMAND" optional="true"/>
+<ACTION>
+	if [ "${service-type}" == "" ]; then
+    	cdbctl show/cdb/app/user
+    else
+    	cdbctl show/cdb/app/user/service-type
+    fi
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show local user account names on the switch.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following is sample output from the show usernames command:  
+    Switch# show usernames 
+    Number   User name                        Privilege   Password   Rsa Key    
+    ========================================================================    
+    1        admin                            4           *    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show users" help="Display information about terminal lines">
+<ACTION>
+    cdbctl show/cdb/app/login
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to display information about terminal lines.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show users command:  
+    Switch# show users    
+     Line           User       Host(s)              Idle       Location    
+     130 vty  0                idle                 00:58:28   10.10.33.249  
+     131 vty  1                idle                 00:01:32   10.10.22.235  
+     132 vty  2                idle                 00:49:00   10.10.25.30  
+    *133 vty  3                idle                 00:00:00   10.10.25.30  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show web" help="Web"/>
+<COMMAND name="show web users" help="Display information of web logined users">
+<ACTION>
+    cdbctl show/cdb/app/login/web
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to display information of web logined users. 
+		</CTCDESCRIPTION>-
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to show web users:   
+    Switch# show web users
+    Web user list:
+    Session Id   Expire Time          Client IP       User Name
+    ============================================================
+    1            2012-03-23 06:12:43  127.0.0.1       admin
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show privilege" help="Show current privilege level">
+<ACTION builtin="clish_ctc_get_privilege">
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the current privilege. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to show current privilege:   
+    Switch# show privilege
+    Current privilege level is 4
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear line" help="Line"/>
+<COMMAND name="clear line console" help="Primary terminal line"/>
+<COMMAND name="clear line console 0" help="Line number" access="4">
+<ACTION>
+mytty="`tty`"
+if [ "$mytty" == "/dev/ttyS0" ]; then
+    echo "% Not allowed to clear current line"
+    exit 1
+fi
+sess="`cdbctl read/cdb/app/login | grep con0`"
+if [ "$sess" != "" ]; then
+    pid=`echo "$sess" | sed 's/.*\/pid=\([0-9a-zA-Z-]\+\).*/\1/' | sed 's/\-/\//g' `
+    kill -9 $pid 2>/dev/null
+    usleep 200
+    ktty=`echo "$sess" | sed 's/.*\/key=\([0-9a-zA-Z-]\+\).*/\1/' | sed 's/\-/\//g' `
+    kill -15 `ps -ax 2>/dev/null | grep "$ktty" | grep -v "grep" | awk '{printf $1" "}'` 2>/dev/null
+    usleep 200
+    kill -9 `ps -ax 2>/dev/null | grep "$ktty" | grep -v "grep" | awk '{printf $1" "}'` 2>/dev/null
+fi
+echo "[OK]"
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to clear primary console terminal line login.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to clear line console 0:   
+	Swithch# clear line console 0   
+	[OK]    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear line vty" help="Virtual terminal" access="4">
+<PARAM name="vstart" help="First Line number" ptype="VTYID"/>
+<PARAM name="vend" help="Last Line number" ptype="VTYID" optional="true" default=""/>
+
+<ACTION>
+if [ "${vend}" == "" ]; then
+    endid=${vstart}
+else
+    endid=${vend}
+fi
+
+if [ ${vstart} -gt $endid ]; then
+    echo "% First line number is greater than last line number" 
+    exit 1
+fi
+
+matchstr=""
+vid=${vstart}
+while [ $vid -le $endid ]; do
+    if [ "$matchstr" == "" ]; then
+        matchstr="vty$vid"
+    else
+        matchstr="$matchstr|vty$vid"
+    fi
+    vid=`expr $vid + 1`
+done
+
+tmpfile="`mktemp /tmp/clearXXXXXX`"
+cdbctl read/cdb/app/login | grep -E "$matchstr" > $tmpfile
+if [ "$?" == "1" ]; then
+    echo "[OK]"
+    rm -fr $tmpfile
+    exit 0;
+fi
+
+mytty="`tty`"
+mykey="`echo $mytty | sed 's/\/dev\///' | sed 's/\//-/g' `"
+rpckey="`cdbctl read/cdb/app/login | grep Local | sed 's/\/key=\([^\/]\+\).*/\1/' `"
+vid=${vstart}
+while [ $vid -le $endid ]; do
+    sesskey="`cat $tmpfile | grep vty$vid | sed 's/\/key=\([^\/]\+\).*/\1/' `"
+    if [ "$sesskey" != "" ]; then
+        if [ "$sesskey" == "$mykey" ]; then
+            echo "% Not allowed to clear current line"
+            rm -fr $tmpfile
+            exit 1
+        fi
+        if [ "$sesskey" == "$rpckey" ]; then
+            echo "% Not allowed to clear rpc line"
+            exit 1
+        fi
+    fi
+    vid=`expr $vid + 1`
+done
+
+vid=${vstart}
+while [ $vid -le $endid ]; do
+    sesspid="`cat $tmpfile | grep vty$vid | sed 's/.*\/pid=\([0-9]\+\).*/\1/' `"
+    if [ "$sesspid" != "" ]; then
+        kill -15 $sesspid 2>/dev/null
+        if [ "$?" == "1" ]; then
+            ktty=`cat $tmpfile | grep vty$vid | sed 's/.*\/key=\([0-9a-zA-Z-]\+\).*/\1/'`
+            cdbctl delete/cdb/app/login/$ktty
+        fi
+        if ! [ -f "/dev/pts/$vid" ]; then                                                                                   
+            ktty=`cat $tmpfile | grep vty$vid | sed 's/.*\/key=\([0-9a-zA-Z-]\+\).*/\1/'`
+            cdbctl delete/cdb/app/login/$ktty > /dev/null  
+        fi 
+    fi
+    vid=`expr $vid + 1`
+done
+usleep 200
+
+vid=${vstart}
+while [ $vid -le $endid ]; do
+    sesspid="`cat $tmpfile | grep vty$vid | sed 's/.*\/pid=\([0-9]\+\).*/\1/' `"
+    if [ "$sesspid" != "" ]; then
+        ktty=`cat $tmpfile | grep vty$vid | sed 's/.*\/key=\([0-9a-zA-Z-]\+\).*/\1/' | sed 's/\-/\//g' `
+        kill -9 `ps -ax 2>/dev/null | grep "$ktty" | grep -v "grep" | awk '{printf $1" "}'` 2>/dev/null
+        
+    fi
+    vid=`expr $vid + 1`
+done
+rm -fr $tmpfile
+echo "[OK]"
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to clear virtual terminal line login. Line number range is 0 to 7.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to clear virtual terminal line form 0 to 2:   
+	Swithch# clear line vty 0 2  
+    [OK]   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear web" help="Web" access="4"/>
+<COMMAND name="clear web session" help="Session" access="4">
+<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+  <PARAM name="all" help="All sessions" ptype="SUBCOMMAND" mode="SUBCOMMAND"/>
+  <PARAM name="sess" help="Session ID" ptype="WEBSESSION"/>
+</PARAM>
+<ACTION>
+if [ "${opt}" == "all" ]; then
+     cdbctl read/cdb/app/login|grep "protocol=web" \
+     | sed 's/=/ /g' | sed 's/\// /g' \
+     | awk '{ print "cdbctl delete/cdb/app/login/"$2}' \
+     | sh
+else
+    delsess="${sess}"
+    rets="`cdbctl read/cdb/app/login/$delsess/protocol`"
+    if [ "$?" != "0" ]; then
+        echo "% No such web session"
+        exit 1
+    fi
+
+    if [ "$rets" != "/protocol=web" ]; then
+        echo "% Not web session"
+        exit 1
+    fi
+    
+    cdbctl delete/cdb/app/login/$delsess
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi    
+fi
+echo "[OK]"
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to clear web sessions.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to clear all web sessions 
+	Swithch# clear web session all
+    [OK]      
+		</CTCEXAMPLE>
+<CTCRCMD>   
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show console" help="Console">
+<ACTION>
+    cdbctl show/cdb/app/console
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show the current console configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show console command:  
+    Switch# show console     
+    Current console configuration:   
+    ============================================================   
+    line console 0  
+     speed 115200  
+     parity none  
+     databits 8  
+     stopbits 1  
+     exec-timeout 10 0  
+     privilege level 4  
+     no line-password  
+     no login  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show vty" help="Virtual terminal">
+<ACTION>
+    cdbctl show/cdb/app/vty
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show the current vty configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show vty command:  
+    Switch# show vty 
+    line vty maximum 8
+    line vty 0 7   
+     exec-timeout 35791 0   
+     privilege level 4   
+     no line-password   
+     no login     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show rsa" help="RSA"/>
+<COMMAND name="show rsa keys" help="Show RSA key information">
+<ACTION>
+    cdbctl show/cdb/app/rsa
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show RSA key information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to show RSA key: 
+    Switch# show rsa keys
+    Current RSA key configuration:
+    Name                              Type     Usage   Modulus
+    ============================================================
+    abc                               private  0       1024
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show rsa key" help="Key">
+<PARAM name="keyname" help="Key name, character only can be 0-9A-Za-z.-_ and start with a-z or A-Z" ptype="RSAKEYNAME"/>
+<PARAM name="fmt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+  <PARAM name="der" help="DER format" ptype="SUBCOMMAND" mode="subcommand"/>
+  <PARAM name="pem" help="PEM format" ptype="SUBCOMMAND" mode="subcommand">
+    <PARAM name="enc" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true">
+        <PARAM name="3des" help="Encrypt the private key with Triple DES" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD"/>
+        </PARAM>
+        <PARAM name="aes128" help="Encrypt the private key with AES 128 bits" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD"/>
+        </PARAM>
+        <PARAM name="aes192" help="Encrypt the private key with AES 192 bits" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD"/>
+        </PARAM>
+        <PARAM name="aes256" help="Encrypt the private key with AES 256 bits" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD"/>
+        </PARAM>
+        <PARAM name="des" help="Encrypt the private key with DES" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD"/>
+        </PARAM>
+    </PARAM>
+</PARAM> 
+</PARAM>
+
+<ACTION>
+if [ "${fmt}" != "" ]; then
+    export SHOW_RSA_KEY_FMT=${fmt}
+else
+    export SHOW_RSA_KEY_FMT="der"
+fi
+if [ "${fmt}" == "pem" ]; then
+    if [ "${enc}" != "" ]; then
+        export SHOW_RSA_KEY_ENC=${enc}
+        export SHOW_RSA_KEY_PASSWD=${pin}
+    fi
+fi
+cdbctl show/cdb/app/rsa/${keyname}
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show RSA key information.    
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the rsa key generate command to generate a key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to show RSA key:     
+    Switch# show rsa key abc 
+    RSA key information:
+    ============================================================
+    Name: abc
+    Type: private
+    Modulus: 1024 bit
+    Usage count: 0
+    Private key DER code:
+      30820258
+        0201
+          00
+        028180
+          BCA50EB2 75145939 B247E630 830A1FEE C596F433 3F5B6C84 88C50026 F204ED2A
+          9FB1F424 9EE50FA5 DA51F74C 6E711CBD 4D6C0DFC 050AF194 55117937 5C789ED6
+          8A2B2AD5 AA5C3FAF BE8621EC 2878B5FC 7E9C5031 3CEF42A4 CB37EFC7 AF80D16A
+          3464AA42 5229AA0D F00197A5 452DC3D2 5825CB5B 2B38E7B2 161ADB19 814A142B 
+        0203
+          010001
+        028180
+          6D085DA9 49C05C1D DBEC70A0 836CBBAE 2F2823B6 E71CB969 15000029 8262D48D
+          7945CA9D CBF50B09 4A596BBD 126C7036 FDE3C165 73A8B29E 90588C1E 32654930
+          291D5BB3 F87FB7B7 BB3ECF29 6C5BE47E 6AF91CE9 F59AFB59 228E2934 D7F9B4B1
+          F3D3AA96 C10CEFCD 630E51AE 336B73EE DEF92B2A 5E48539C DED9A9F7 1715A171 
+        0240
+          F91E09E8 93D02645 1227F3AD B55B0206 63848D27 74EACE0E B9A4D0BB 4C5B92C5
+          BD3D6190 15B68360 D0E44186 7B9C028E 883C6B27 6D3FC1E3 1F03C04B 681327C9 
+        0240
+          C1DB4EA4 EBC16333 929837FC E90A61BE 683204D4 937385CC 88F215AA F1A98056
+          063CC0A2 50DCB5FF A7D69776 9E4DFE43 807CB191 B513148A 1D5881B2 2FA5BE53 
+        0240
+          6018EF57 91958CFD BE083D5E F803985F 608A646D 2113E6D3 1557F7D1 189E869A
+          D2EA57B5 5E3ADEA9 3D4B9FDF 41D5A7C2 D5D900B8 DFD2E577 38A298CE 3DE28DC9 
+        0240
+          70D8BF11 1603FF41 5846AFE0 D3AFAD72 6FA91E52 B87AF91A 3565E6E3 19C637E4
+          DBC0A5CA 57140406 0CA7C887 CE634C6D F2EFA356 547804EE D9625A2D 65BB2FED 
+        0240
+          80FBD19D 2676C907 BDEB255B FFFE08C7 9B2AC9CD 2F48143F 0BC4A475 F25167EA
+          C7AAFC95 BFBC65EF D4EF40A2 9E4076CE 3B9F33BE 48BA3ACF 42E5E1DB 704990E1 
+    Public key DER code:
+      308188
+        028180
+          BCA50EB2 75145939 B247E630 830A1FEE C596F433 3F5B6C84 88C50026 F204ED2A
+          9FB1F424 9EE50FA5 DA51F74C 6E711CBD 4D6C0DFC 050AF194 55117937 5C789ED6
+          8A2B2AD5 AA5C3FAF BE8621EC 2878B5FC 7E9C5031 3CEF42A4 CB37EFC7 AF80D16A
+          3464AA42 5229AA0D F00197A5 452DC3D2 5825CB5B 2B38E7B2 161ADB19 814A142B 
+        0203
+          010001    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show tacacs" help="Shows tacacs+ server statistics">
+<ACTION>
+    cdbctl show/cdb/l2/show_tacacs_server
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to display information about AAA server configurations.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show TACACS+ servers statistics.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following is sample output from the show tacacs command:
+    Switch# show aaa status
+    ================================================================
+    Host            Port  Timeout Retries Dead Secret
+    ================================================================
+    4.4.4.201       49    5       3       0    123456
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show aaa" help="Authentication, authorization, and accounting"/>
+
+<COMMAND name="show aaa status" help="Status">
+<ACTION>
+cdbctl show/cdb/sys/sys_global/aaa_new_model
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to show authentication, authorization, accounting (AAA) status.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show authentication, authorization, accounting (AAA) status.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example shows how to show authentication, authorization, accounting status:
+    Switch# show aaa status
+    aaa status:
+         Authentication enable
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show aaa privilege" help="Privilege for AAA user"/>
+
+<COMMAND name="show aaa privilege mapping" help="Privilege mapping">
+<ACTION>
+cdbctl show/cdb/sys/sys_global/aaa_privilege1
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to show privilege mapping relationship with server privilege.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show privilege mapping relationship with server privilege.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example shows how to show privilege mapping relationship:
+    Switch# show aaa privilege mapping 
+    Server     Switch     Server
+    =====================================
+       0~1          1          1
+         2          2          2
+         3          3          3
+      4~15          4         15
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show aaa method-lists" help="Method lists defined in the AAA subsystem"/>
+<COMMAND name="show aaa method-lists authentication" help="Authentication configurations parameters">
+<ACTION>
+cdbctl show/cdb/app/authen
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to show authentication, authorization, accounting (AAA) authentication method lists.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show authentication, authorization, accounting (AAA) authentication method lists.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example shows how to show authentication method lists:
+    Switch# show aaa method-lists authentication
+    Authen queue = AAA_ML_AUTHEN_LOGIN
+      Name = abc state = ALIVE: radius
+      Name = default state = ALIVE: local
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show aaa method-lists authorization" help="Authorization configurations parameters">
+<ACTION>
+cdbctl show/cdb/app/author
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to show authentication, authorization, accounting (AAA) authorization method lists.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show authentication, authorization, accounting (AAA) authorization method lists.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example shows how to show authorization method lists:
+    Switch# show aaa method-lists authorization
+    Author queue = AAA_ML_AUTHOR_SHELL
+      Name = abc state = ALIVE: radius
+      Name = default state = ALIVE: local
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show aaa method-lists accounting" help="Accounting configurations parameters">
+<ACTION>
+cdbctl show/cdb/app/account
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+cdbctl show/cdb/app/accountcmd
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to show authentication, authorization, accounting (AAA) accounting method lists.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show authentication, authorization, accounting (AAA) accounting method lists.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example shows how to show accounting method lists:
+    Switch# show aaa method-lists accounting
+    Account queue = AAA_ML_ACCT_SHELL
+      Name = abc state = ALIVE: radius
+      Name = default state = ALIVE: none
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show aaa method-lists all" help="all AAA configurations parameters">
+<ACTION>
+cdbctl show/cdb/app/authen
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+cdbctl show/cdb/app/author
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+cdbctl show/cdb/app/account
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+cdbctl show/cdb/app/accountcmd
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to show authentication, authorization, accounting (AAA) method lists.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command is used to show authentication, authorization, accounting (AAA) method lists.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example shows how to show method lists:
+    Switch# show aaa method-lists all
+    Authen queue = AAA_ML_AUTHEN_LOGIN
+      Name = abc state = ALIVE: radius
+      Name = default state = ALIVE: local
+    Author queue = AAA_ML_AUTHOR_SHELL
+      Name = abc state = ALIVE: radius
+      Name = default state = ALIVE: local
+    Account queue = AAA_ML_ACCT_SHELL
+      Name = abc state = ALIVE: radius
+      Name = default state = ALIVE: none
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+	<COMMAND name="re-activate" help="Re-activate servers"/>
+        
+	<COMMAND name="re-activate radius-server" help="RADIUS server configuration commands">
+		<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand"/>
+                
+		<ACTION>cdbctl update/cdb/l2/dot1x_radius/reactivate/all</ACTION>
+                
+		<CTCDESCRIPTION>
+Use this command to re-activate the specified radius servers.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to re-activate the radius server. It's unnecessary for users to wait 
+for the radius-server dead time with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to re-activate radius-server:
+    Switch# re-activate radius-server all		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+radius-server host
+radius-server deadtime
+show radius-server
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="re-activate radius-server host" help="RADIUS server host commands">
+	       <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+		    <PARAM name="ip_addr" help="RADIUS server IPv4 address" ptype="IP_ADDR"/>
+		    <PARAM name="ipv6_addr" help="RADIUS server IPV6 address" ptype="IPV6_ADDR" />
+		</PARAM>
+		<PARAM name="auth-port" help="RADIUS server port" optional="true" ptype="SUBCOMMAND" mode="subcommand"> 
+			<PARAM name="portid" help="RADIUS server port number (default 1812)" ptype="DOT1X_AUTH_PORT" default="1812"/>
+		</PARAM>
+                
+		<ACTION>
+               if [ ${host} == "ip_addr" ]; then
+		    cdbctl update/cdb/l2/dot1x_radius/reactivate/host/${ip_addr}/${portid}
+               else
+                   cdbctl update/cdb/l2/dot1x_radius/reactivate/host/${ipv6_addr}/${portid}
+               fi
+		</ACTION>
+                
+		<CTCDESCRIPTION>
+Use this command to re-activate the specified radius servers.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to re-activate the radius server. It's unnecessary for users to wait 
+for the radius-server dead time with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to re-activate radius-server:
+    Switch# re-activate radius-server 10.0.0.1 auth-port 1813
+		</CTCEXAMPLE>
+		<CTCRCMD>
+radius-server host
+radius-server deadtime
+show radius-server
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show radius-server" help="RADIUS server configuration commands">
+                
+                <ACTION>cdbctl show/cdb/l2/show_radius_server</ACTION>
+                
+                <CTCDESCRIPTION>
+Use this command to display radius server states of each IEEE 802.1x session.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the current radius-server and dead radius-servers of each IEEE
+802.1 x sessions.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show radius-server:
+    Switch# show radius-server
+    =====================================
+    radius servers in dead list:
+     server address    : 4.4.4.201:1812
+     dead timer        : 299
+    =====================================
+    802.1X session on interface eth-0-9:
+    current radius server:
+     retransmit count  : 1
+     server address    : 5.4.4.201:1812
+    =====================================
+		</CTCEXAMPLE>
+                <CTCRCMD>
+radius-server host
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show radius-server interface" help="Specify an interface to show">
+                <PARAM name="if_id" help="Physical interface" ptype="IF_NAME_E"/>
+                
+                <ACTION>cdbctl show/cdb/l2/show_radius_server/interface/${if_id}</ACTION>
+                
+                <CTCDESCRIPTION>
+Use this command to display radius server states for specified interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the current radius-server for specified interface and 
+dead radius-servers.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show radius-server:
+    Switch# show radius-server interface eth-0-9
+    =====================================
+    radius servers in dead list:
+     server address    : 4.4.4.201:1812
+     dead timer        : 299
+    =====================================
+    802.1X session on interface eth-0-9:
+    current radius server:
+     retransmit count  : 1
+     server address    : 5.4.4.201:1812
+    =====================================
+		</CTCEXAMPLE>
+                <CTCRCMD>
+radius-server host
+		</CTCRCMD>
+	</COMMAND>
+<COMMAND name="show login-security" help="Show login-security status" access="2">
+	<ACTION>
+		cdbctl show/cdb/sys/show_login_security
+	</ACTION>
+	<CTCDESCRIPTION>
+Use this command to show login security function.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear login-security" help="Clear login record" access="4">
+<PARAM name="record" help="Login record" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="username" help="User name, the first character should be a-z or A-Z, character only can be 0-9A-Za-z.-_ and the max len is 31" ptype="NAME_STRING" optional="true"/>
+	<ACTION>
+		if [ "${username}" == "" ]; then
+			cdbctl delete/cdb/app/login_record/all
+		else
+			cdbctl delete/cdb/app/login_record/${username}
+		fi
+	</ACTION>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+<COMMAND name="tacacs-server" help="TACACS server configuration commands" access="4"></COMMAND>
+<COMMAND name="tacacs-server host" help="Set TACACS server (dotted IP notation)" access="4">
+<PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+<PARAM name="optip" help="IP address" mode="switch" ptype="SUBCOMMAND">
+  <PARAM name="ipv4_addr" help="Set TACACS server IP address" ptype="IP_ADDR">
+    <PARAM name="source-ip" help="Bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+        <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+    </PARAM>
+  </PARAM>
+  <PARAM name="ipv6_addr" help="Set TACACS server IPv6 address" ptype="IPV6_ADDR"/>
+</PARAM>
+<PARAM name="auth-port" help="TACACS server port" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+  <PARAM name="port" help="TACACS server port number (default 49)" ptype="AUTHDPORT" default="49"/>
+</PARAM>
+<PARAM name="key" help="Set the shared encryption key of TACACS server" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+  <PARAM name="optkey" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+    <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+    <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+  </PARAM>
+  <PARAM name="authdkey" help="TACACS server key-string" ptype="AUTHDKEY"/>
+</PARAM>
+<PARAM name="retransmit" help="Set the maximum failed TACACS requests sent to server" 
+    ptype="SUBCOMMAND" optional="true" mode="subcommand">
+  <PARAM name="retries" help="TACACS server retries (default 3)" ptype="AUTHDRETRIES" default="3"/>
+</PARAM>
+<PARAM name="timeout" help="Set the timeout value for no response from TACACS server"
+    ptype="SUBCOMMAND" optional="true" mode="subcommand">
+  <PARAM name="tm" help="TACACS server timeout in seconds (default 5)" ptype="AUTHDTIMEOUT" default="5"/>
+</PARAM>
+<ACTION>
+if [ "${optip}" == "ipv4_addr" ]; then
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+    	cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv4_addr}
+    	if [ $? -ne 0 ]; then
+    		exit 1
+    	fi
+    else
+        NS_BAND=inband
+    fi
+    
+    if [ -n "${source-ip}" ]; then
+        cdbctl create/cdb/sys/inband_snat/0#${port}#${ipv4_addr}/type/8/ifname/${bind_if}/ip/${bind_addr}/
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+    
+    cdbctl create/cdb/sys/ns_route/0#${port}#${ipv4_addr}/8/$NS_BAND/
+    if [ $? -ne 0 ]; then
+        if [ -n "${source-ip}" ]; then
+            cdbctl delete/cdb/sys/inband_snat/0#${port}#${ipv4_addr}
+        fi
+        exit 1
+    fi
+    
+    if [ "${optip}" == "ipv4_addr" ]; then
+        if [ "${port}" != "" ]; then 
+          keystr="${ipv4_addr}#tacplus#${port}"
+        else  
+          keystr="${ipv4_addr}#tacplus#49"
+        fi      
+    else
+        keystr="${ipv6_addr}#tacplus"
+    fi
+    
+    oldname=`cdbctl read/cdb/app/auth_server/$keystr/key`
+    if [ "$oldname" == "/key=$keystr" ]; then
+        cmdstr="cdbctl update/cdb/app/auth_server/$keystr"
+    else
+        cmdstr="cdbctl create/cdb/app/auth_server/$keystr"
+    fi
+    
+    cmdstr=$cmdstr"/is_inband/$NS_BAND"
+    
+    if [ "${port}" != "" ]; then
+       cmdstr=$cmdstr"/port/${port}"
+    fi
+    
+    if [ "${authdkey}" != "" ]; then
+        if [ "${optkey}" == "encrypt" ]; then
+            cmdstr=$cmdstr"/enc_secret/${authdkey}"
+        elif [ "${optkey}" == "secret" ]; then
+            encstr=`fnconvert -c encrypt -m "${authdkey}"`
+            cmdstr=$cmdstr"/enc_secret/$encstr"
+        else
+            cmdstr=$cmdstr"/secret/${authdkey}"
+        fi
+    fi
+
+    if [ "${retries}" != "" ]; then
+        cmdstr=$cmdstr"/retries/${retries}"
+    fi
+    
+    if [ "${tm}" != "" ]; then
+        cmdstr=$cmdstr"/timeout/${tm}"
+    fi
+    
+    $cmdstr
+    if [ $? -ne 0 ]; then
+        cdbctl delete/cdb/sys/ns_route/0#${port}#${ipv4_addr}/$NS_BAND/
+        if [ -n "${source-ip}" ]; then
+            cdbctl delete/cdb/sys/inband_snat/0#${port}#${ipv4_addr}
+        fi
+    fi
+else
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+    	cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6_addr}
+    	if [ $? -ne 0 ]; then
+    		exit 1
+    	fi
+    else
+        NS_BAND=inband
+    fi
+    
+    cdbctl create/cdb/sys/ns_route/0#${port}#${ipv6_addr}/8/$NS_BAND/
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+    
+    if [ "${port}" != "" ]; then 
+        keystr="${ipv6_addr}#tacplus#${port}"
+    else  
+        keystr="${ipv6_addr}#tacplus#49"
+    fi      
+    
+    oldname=`cdbctl read/cdb/app/auth_server/$keystr/key`
+    if [ "$oldname" == "/key=$keystr" ]; then
+        cmdstr="cdbctl update/cdb/app/auth_server/$keystr"
+    else
+        cmdstr="cdbctl create/cdb/app/auth_server/$keystr"
+    fi
+    
+    cmdstr=$cmdstr"/is_inband/$NS_BAND"
+    
+    if [ "${port}" != "" ]; then
+       cmdstr=$cmdstr"/port/${port}"
+    fi
+    
+    if [ "${secret}" != "" ]; then
+        if [ "${encrypt}" == "8" ]; then
+            cmdstr=$cmdstr"/enc_secret/${secret}"
+        else
+            cmdstr=$cmdstr"/secret/${secret}"
+        fi
+    fi
+    
+    if [ "${retries}" != "" ]; then
+        cmdstr=$cmdstr"/retries/${retries}"
+    fi
+    
+    if [ "${tm}" != "" ]; then
+        cmdstr=$cmdstr"/timeout/${tm}"
+    fi
+    
+    $cmdstr
+    if [ $? -ne 0 ]; then
+        cdbctl delete/cdb/sys/ns_route/0#${port}#${ipv6_addr}/$NS_BAND/
+    fi
+fi
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to set tacacs-server parameters.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example set tacacs-server 2.1.1.1
+    Switch(config)# tacacs-server host 2.1.1.1 key mykey
+</CTCEXAMPLE>
+<CTCRCMD>
+no tacacs-server host
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no tacacs-server" help="TACACS server configuration commands" access="4"/>
+
+<COMMAND name="no tacacs-server host" help="Set TACACS server (dotted IP notation)" access="4">
+<PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+<PARAM name="optip" help="IP address" mode="switch" ptype="SUBCOMMAND">
+    <PARAM name="ipv4_addr" help="Set TACACS server IP address" ptype="IP_ADDR"/>
+    <PARAM name="ipv6_addr" help="Set TACACS server IPv6 address" ptype="IPV6_ADDR"/>
+</PARAM>
+<PARAM name="auth-port" help="TACACS server port" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+    <PARAM name="portid" help="TACACS server port number (default 49)" ptype="AUTHDPORT" default="49"/>
+</PARAM>
+<ACTION>
+if [ -n "${mgmt-if}" ]; then
+    NS_BAND=outband
+else
+    NS_BAND=inband
+fi
+
+if [ "${optip}" == "ipv4_addr" ]; then   
+   if [ "${auth-port}" != "" ]; then 
+      keystr="${ipv4_addr}#tacplus#${portid}"
+    else  
+      keystr="${ipv4_addr}#tacplus#49"
+    fi    
+    
+    cdbctl delete/cdb/app/auth_server/$keystr/is_inband/$NS_BAND
+    if [ $? -eq 0 ]; then
+        cdbctl delete/cdb/sys/ns_route/0#${portid}#${ipv4_addr}/$NS_BAND
+        cdbctl delete/cdb/sys/inband_snat/0#${portid}#${ipv4_addr}
+    fi
+else
+    if [ "${auth-port}" != "" ]; then 
+        keystr="${ipv6_addr}#tacplus#${portid}"
+    else  
+        keystr="${ipv6_addr}#tacplus#49"
+    fi    
+    
+    cdbctl delete/cdb/app/auth_server/$keystr/is_inband/$NS_BAND
+    if [ $? -eq 0 ]; then
+        cdbctl delete/cdb/sys/ns_route/0#${portid}#${ipv6_addr}/$NS_BAND
+    fi
+fi
+</ACTION>
+<CTCDESCRIPTION>
+Use this command to unset tacacs-server parameters.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE>
+    The following example delete tacacs-server 2.1.1.1
+    Switch(config)# no tacacs-server host 2.1.1.1 
+</CTCEXAMPLE>
+<CTCRCMD>
+tacacs-server host
+</CTCRCMD>
+</COMMAND>
+
+        <COMMAND name="radius-server" help="RADIUS server configuration commands" access="4"/>
+        <COMMAND name="no radius-server" help="RADIUS server configuration commands" access="4"/>
+
+        <COMMAND name="radius-server deadtime" help="Set the wait time of re-activating RADIUS server" access="4">
+                <PARAM name="value" help="RADIUS server deadtime in minutes (default 5)" ptype="RADIUS_DEAD_TIME"/>
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_deadtime/${value}</ACTION>
+	        
+                <CTCDESCRIPTION>
+Use this command to improve RADIUS response times when some servers might be unavailable 
+and cause the unavailable servers to be skipped immediately.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to cause the switch to mark as "dead" any RADIUS servers that fail to 
+respond to authentication requests, thus avoiding the wait for the request to time out 
+before trying the next configured server. A RADIUS server marked as "dead" is skipped 
+by additional requests for the duration of minutes, unless there are no servers not marked "dead".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5 minutes
+		</CTCDEFAULT>	        
+	        <CTCEXAMPLE>
+    This example shows how to set radius-server dead time:
+    Switch(config)# radius-server deadtime 10
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="no radius-server deadtime" help="Set default wait time of re-activating RADIUS server" access="4">
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_deadtime/0</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to set radius-server deadtime to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set radius-server deadtime to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	 		
+		<CTCEXAMPLE>
+    This example shows how to set default radius-server dead time:
+    Switch(config-if)# no radius-server deadtime
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>		
+        </COMMAND>
+        
+        <COMMAND name="radius-server retransmit" help="Set the maximum failed RADIUS requests sent to server" access="4">
+                <PARAM name="value" help="RADIUS server retries (default 3)" ptype="RADIUS_RETRANSMIT"/>
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_retry/${value}</ACTION>
+	       
+                <CTCDESCRIPTION>
+Use this command to specify the number of times the switch searches the list of RADIUS server hosts before 
+giving up.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The switch tries all servers, allowing each one to time out before increasing the retransmit count.
+If the RADIUS server is only a few hops from the switch, we recommend that you configure 
+the RADIUS server retransmit rate to 5.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3 attempts
+		</CTCDEFAULT>
+	        <CTCEXAMPLE>
+    This example shows how to set radius-server retransmit:
+    Switch(config)# radius-server retransmit 10
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="no radius-server retransmit" help="Set default maximum failed RADIUS requests sent to server" access="4">
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_retry/3</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to set radius-server retransmit to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set radius-server retransmit to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default radius-server retransmit:
+    Switch(config-if)# no radius-server retransmit
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>		
+        </COMMAND>
+        
+        <COMMAND name="radius-server timeout" help="Set the timeout value for no response from RADIUS server" access="4">
+                <PARAM name="value" help="RADIUS server timeout in secs (default 5)" ptype="RADIUS_TIMEOUT"/>
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_timeout/${value}</ACTION>
+
+                <CTCDESCRIPTION>
+Use this command to set the interval for which a switch waits for a server host to reply.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the number of seconds a switch waits for a server host to reply 
+before timing out.
+If the RADIUS server is only a few hops from the switch, we recommend that you configure 
+the RADIUS server timeout to 15 seconds.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5 seconds
+		</CTCDEFAULT>	        
+	        <CTCEXAMPLE>
+    This example shows how to set radius-server timeout:
+    Switch(config)# radius-server timeout 10
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>		
+        </COMMAND>
+        
+        <COMMAND name="no radius-server timeout" help="Set default timeout value for no response from RADIUS server" access="4">
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_timeout/5</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set radius-server timeout to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set radius-server timeout to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default radius-server timeout:
+    Switch(config-if)# no radius-server timeout
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>	
+        </COMMAND>
+        
+        <COMMAND name="radius-server key" help="Set the shared encryption key of RADIUS server" access="4">                
+                <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                    <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                    <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+                <PARAM name="value" help="RADIUS server key-string" ptype="STRING"/>
+	        <ACTION>
+                if [ "${opt}" == "encrypt" ]; then
+                    cdbctl update/cdb/l2/dot1x_global/radius_default_shared_enc_secret/${value}
+                elif [ "${opt}" == "secret" ]; then
+                    encstr=`fnconvert -c encrypt -m "${value}"`
+                    cdbctl update/cdb/l2/dot1x_global/radius_default_shared_enc_secret/$encstr
+                else
+                    cdbctl update/cdb/l2/dot1x_global/radius_default_shared_secret/${value}
+                fi
+	        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set the shared encryption key of RADIUS server.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the shared encryption key in a switch. 
+Shared encryption key is the foundation of communicate between switch and server. You need 
+set a same shared encryption string in authentication server and switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	        
+	        <CTCEXAMPLE>
+    This example shows how to set radius-server key:
+    Switch(config)# radius-server key 123456
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+                </CTCRCMD>	
+        </COMMAND> 
+        
+        <COMMAND name="no radius-server key" help="Unset the shared encryption key of RADIUS server" access="4">
+	        
+	        <ACTION>cdbctl update/cdb/l2/dot1x_global/radius_default_shared_secret</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to delete radius-server key.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete radius-server key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+    This example shows how to unset radius-server key:
+    Switch(config-if)# no radius-server key
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server host
+        </CTCRCMD>		
+        </COMMAND>
+        
+        <COMMAND name="radius-server host" help="Set RADIUS server (dotted IP notation)" access="4">
+                <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+                    <PARAM name="ip_addr" help="IP address" ptype="IP_ADDR">
+                        <PARAM name="source-ip" help="Bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+                            <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+                        </PARAM>
+                    </PARAM>
+                    <PARAM name="ipv6_addr" help="IPV6 address" ptype="IPV6_ADDR" />
+                </PARAM>    
+                <PARAM name="auth-port" help="RADIUS server port" optional="true" ptype="SUBCOMMAND" mode="subcommand"> 
+                    <PARAM name="portid" help="RADIUS server port number (default 1812)" ptype="DOT1X_AUTH_PORT" default="1812"/>
+                </PARAM>
+                <PARAM name="key" help="Set the shared encryption key of RADIUS server" optional="true" ptype="SUBCOMMAND" mode="subcommand"> 
+                    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                        <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                        <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                    </PARAM>
+                    <PARAM name="keystring" help="RADIUS server key-string" ptype="RADIUS_SERVER_STRING" default=""/>
+                </PARAM>
+                <PARAM name="retransmit" help="Set the maximum failed RADIUS requests sent to server" optional="true" ptype="SUBCOMMAND" mode="subcommand"> 
+                    <PARAM name="retransmit_num" help="RADIUS server retries (default 3)" ptype="RADIUS_RETRANSMIT" default="0"/>
+                </PARAM>
+                <PARAM name="timeout" help="Set the timeout value for no response from RADIUS server" optional="true" ptype="SUBCOMMAND" mode="subcommand"> 
+                    <PARAM name="timeout_value" help="RADIUS server timeout in secs (default 5)" ptype="RADIUS_TIMEOUT" default="0"/>
+                </PARAM>
+                
+                <ACTION>
+                if [ ${host} == "ip_addr" ]; then
+                    if [ -n "${mgmt-if}" ]; then
+                        NS_BAND=outband
+                        cdbctl update/cdb/l3/check_mgmt_if_ip/${ip_addr}
+                        if [ $? -ne 0 ]; then
+                            exit 1
+                        fi
+                    else
+                        NS_BAND=inband
+                    fi
+    
+                    if [ -n "${source-ip}" ]; then
+                        cdbctl create/cdb/sys/inband_snat/1#${portid}#${ip_addr}/type/7/ifname/${bind_if}/ip/${bind_addr}/
+                        if [ $? -ne 0 ]; then
+                            exit 1
+                        fi
+                    fi
+    
+                    cdbctl create/cdb/sys/ns_route/1#${portid}#${ip_addr}/7/$NS_BAND/
+                    if [ $? -eq 0 ]; then
+                        if [ "${opt}" == "encrypt" ]; then
+                            cdbctl create/cdb/l2/dot1x_radius/key/${ip_addr}/${portid}/shared_enc_secret/${keystring}/max_retry/${retransmit_num}/timeout/${timeout_value}/is_inband/$NS_BAND
+                        elif [ "${opt}" == "secret" ]; then
+                            encstr=`fnconvert -c encrypt -m "${keystring}"`
+                            cdbctl create/cdb/l2/dot1x_radius/key/${ip_addr}/${portid}/shared_enc_secret/$encstr/max_retry/${retransmit_num}/timeout/${timeout_value}/is_inband/$NS_BAND
+                        else
+                            cdbctl create/cdb/l2/dot1x_radius/key/${ip_addr}/${portid}/shared_secret/${keystring}/max_retry/${retransmit_num}/timeout/${timeout_value}/is_inband/$NS_BAND
+                        fi
+    
+                        if [ $? -ne 0 ]; then
+                            cdbctl delete/cdb/sys/ns_route/1#${portid}#${ip_addr}/$NS_BAND/
+                            if [ -n "${source-ip}" ]; then
+                                cdbctl delete/cdb/sys/inband_snat/1#${portid}#${ip_addr}
+                            fi
+                        fi
+                    else
+                        if [ -n "${source-ip}" ]; then
+                            cdbctl delete/cdb/sys/inband_snat/1#${portid}#${ip_addr}
+                        fi
+                    fi
+                else
+                    if [ -n "${mgmt-if}" ]; then
+                        NS_BAND=outband
+                        cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6_addr}
+                        if [ $? -ne 0 ]; then
+                            exit 1
+                        fi
+                    else
+                        NS_BAND=inband
+                    fi
+    
+                    cdbctl create/cdb/sys/ns_route/1#${portid}#${ipv6_addr}/7/$NS_BAND/
+                    if [ $? -eq 0 ]; then
+                        if [ "${encrypt}" == "8" ]; then
+                            cdbctl create/cdb/l2/dot1x_radius/key/${ipv6_addr}/${portid}/shared_enc_secret/${keystring}/max_retry/${retransmit_num}/timeout/${timeout_value}/is_inband/$NS_BAND
+                        else
+                            cdbctl create/cdb/l2/dot1x_radius/key/${ipv6_addr}/${portid}/shared_secret/${keystring}/max_retry/${retransmit_num}/timeout/${timeout_value}/is_inband/$NS_BAND
+                        fi
+    
+                        if [ $? -ne 0 ]; then
+                            cdbctl delete/cdb/sys/ns_route/1#${portid}#${ipv6_addr}/$NS_BAND/
+                            
+                        fi
+                    fi
+                fi
+                </ACTION>
+		<CTCDESCRIPTION>
+Use this command to specify a RADIUS server host.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+You can use multiple radius-server host commands to specify multiple hosts. The software 
+searches for hosts in the order in which you specify them.
+If no host-specific timeout, retransmit, or key values are specified, the global values 
+apply to each host.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	        
+	        <CTCEXAMPLE>
+    This example shows how to set radius-server key:
+    Switch(config)# radius-server host 10.0.0.1 
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server deadtime
+radius-server key
+radius-server timeout
+                </CTCRCMD>
+        </COMMAND> 
+        
+        <COMMAND name="no radius-server host" help="Delete RADIUS server (dotted IP notation)" access="4">
+                <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">           
+                    <PARAM name="ip_addr" help="IP address" ptype="IP_ADDR"/>
+                    <PARAM name="ipv6_addr" help="IPV6 address" ptype="IPV6_ADDR" />
+                </PARAM>
+                <PARAM name="auth-port" help="RADIUS server port" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="portid" help="RADIUS server port number (default 1812)" ptype="DOT1X_AUTH_PORT" default="1812"/>
+                </PARAM>
+                
+                <ACTION>
+                if [ -n "${mgmt-if}" ]; then
+                    NS_BAND=outband
+                else
+                    NS_BAND=inband
+                fi
+                    
+                if [ ${host} == "ip_addr" ]; then
+                    cdbctl delete/cdb/l2/dot1x_radius/key/${ip_addr}/$NS_BAND/${portid}
+                    if [ $? -eq 0 ]; then
+                        cdbctl delete/cdb/sys/ns_route/1#${portid}#${ip_addr}/$NS_BAND/
+                        cdbctl delete/cdb/sys/inband_snat/1#${portid}#${ip_addr}
+                    fi
+                else
+                    cdbctl delete/cdb/l2/dot1x_radius/key/${ipv6_addr}/$NS_BAND/${portid}
+                    if [ $? -eq 0 ]; then
+                        cdbctl delete/cdb/sys/ns_route/1#${portid}#${ipv6_addr}/$NS_BAND/
+                    fi
+                fi
+                </ACTION>
+	        
+	        <CTCDESCRIPTION>
+Use this command to delete a RADIUS server.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete a RADIUS server.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>	
+	        <CTCEXAMPLE>
+    This example shows how to set radius-server key:
+    Switch(config)# no radius-server host 10.0.0.1 
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+radius-server deadtime
+radius-server key
+radius-server timeout
+                </CTCRCMD>
+        </COMMAND>
+</VIEW>
+
+<VIEW name="Exec">
+
+	<COMMAND name="re-activate tacacs-server" help="TACACS server configuration commands">
+		<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+		<ACTION>cdbctl update/cdb/app/auth_server/all/dead</ACTION>
+                
+		<CTCDESCRIPTION>
+Use this command to re-activate the all tacacs servers.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to re-activate the tacacs server. It's unnecessary for users to wait 
+for the tacacs-server dead time with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to re-activate all tacacs-server:
+    Switch# re-activate tacacs-server all		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+tacacs-server host
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="re-activate tacacs-server host" help="TACACS server host commands">
+		<PARAM name="optip" help="IP address" mode="switch" ptype="SUBCOMMAND">
+  			<PARAM name="ipv4_addr" help="Set TACACS server IPv4 address" ptype="IP_ADDR"/>
+  			<PARAM name="ipv6_addr" help="Set TACACS server IPV6 address" ptype="IPV6_ADDR" />
+		</PARAM>
+		<PARAM name="auth-port" help="TACACS server port" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+    		<PARAM name="port" help="TACACS server port number (default 49)" ptype="AUTHDPORT" default="49"/>
+		</PARAM>                		
+                
+		<ACTION>
+if [ "${optip}" == "ipv4_addr" ]; then
+    if [ "${port}" != "" ]; then 
+      keystr="${ipv4_addr}#tacplus#${port}"
+    else  
+      keystr="${ipv4_addr}#tacplus#49"
+    fi      
+else
+    if [ "${port}" != "" ]; then 
+      keystr="${ipv6_addr}#tacplus#${port}"
+    else  
+      keystr="${ipv6_addr}#tacplus#49"
+    fi  
+fi
+
+cmdstr="cdbctl update/cdb/app/auth_server/$keystr"
+
+if [ "${port}" != "" ]; then
+   cmdstr=$cmdstr"/port/${port}"
+fi
+cmdstr=$cmdstr"/dead/0"
+$cmdstr
+		</ACTION>
+                
+		<CTCDESCRIPTION>
+Use this command to re-activate the specified tacacs servers.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to re-activate the tacacs server. It's unnecessary for users to wait 
+for the tacacs-server dead time with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to re-activate tacacs-server:
+    Switch# re-activate tacacs-server host 10.0.0.1 auth-port 49
+		</CTCEXAMPLE>
+		<CTCRCMD>
+tacacs-server host
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+<COMMAND name="line" help="Configure a terminal line" access="4"/>
+<COMMAND name="line console" help="Primary terminal line" access="4"/>
+<COMMAND name="line console 0" help="First Line number" view="Line-CON"
+    viewid="console=0" access="4">
+</COMMAND>
+
+<COMMAND name="line vty" help="Virtual terminal" view="Line-VTY"
+    viewid="vstart=${vstart};vend=${vend}" access="4">
+  <PARAM name="vstart" help="First Line number" ptype="VTYID"/>
+  <PARAM name="vend" help="Last Line number" ptype="VTYID" optional="true" default=""/>
+  
+  <ACTION>
+if [ "${vend}" == "" ]; then
+    exit 0
+fi
+
+vid=${vend}
+if [ ${vstart} -gt $vid ]; then
+    echo "% First line number is greater than last line number" 
+    exit 1
+fi
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use line vty command to set virtual terminal line configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use line vty command to set virtual terminal line configuration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following is an example of configure to line console 0:   
+    Switch(config)# line console 0      
+    Switch(config-line)#     
+	  
+	The following is an example of configure to virtual terminal line 0 to 7:   
+    Switch(config)# line vty 0 7
+    Switch(config-line)#  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+
+<COMMAND name="rsa" help="RSA" access="4"/>
+<COMMAND name="rsa key" help="Key" view="RSA-key"
+    viewid="keyname=${keyname}" access="4">
+<PARAM name="keyname" help="Key name, character only can be 0-9A-Za-z.-_ and start with a-z or A-Z" ptype="RSAKEYNAME"/>
+<PARAM name="cmdopt" help="Command" ptype="SUBCOMMAND" mode="switch" optional="true">
+  <PARAM name="generate" help="Generate RSA key (default 1024 bits)" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="bits" help="RSA key bits number" ptype="RSAKEYBITS" optional="true" default="1024"/>
+  </PARAM>
+  <PARAM name="import" help="Import RSA key" ptype="SUBCOMMAND" mode="subcommand">
+    <PARAM name="mgmt-if" help="Management Interface" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="url" help="Import from URL" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="src" help="Import from URL" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="GFILENAME" help="Export to local file system" ptype="STRING" test='"${mgmt-if}"=""'/>
+        <PARAM name="GURLNAME" help="Import from URL" ptype="STRING"/>
+    </PARAM>
+    <PARAM name="type" help="Import key type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="private" help="Import private key" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="public" help="Import public key" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="fmt" help="Import key format" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="der" help="DER format" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="der-hex" help="DER HEX format" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="pem" help="PEM format" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to decrypt the private key" 
+                optional="true" ptype="RSAPASSWORD" test='"${type}"="private"'/>
+        </PARAM>
+        <PARAM name="ssh2" help="SSHv2 format" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="pin" help="Passphrase used to decrypt the private key" 
+                optional="true" ptype="RSAPASSWORD" test='"${type}"="private"'/>
+        </PARAM>
+    </PARAM>
+  </PARAM>
+  <PARAM name="export" help="Export RSA key" ptype="SUBCOMMAND" mode="subcommand">
+    <PARAM name="mgmt-if" help="Management Interface" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="url" help="Export to URL" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="src" help="Export to URL" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="GFILENAME" help="Export to local file system" ptype="STRING" test='"${mgmt-if}"=""'/>
+        <PARAM name="GURLNAME" help="Export to URL" ptype="STRING"/>
+    </PARAM>
+    <PARAM name="type" help="Export key type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="private" help="Export private key" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="public" help="Export public key" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="fmt" help="Export key format" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="der" help="DER format" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="der-hex" help="DER HEX format" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="pem" help="PEM format" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="enc" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true" test='"${type}"="private"'>
+                <PARAM name="3des" help="Encrypt the private key with Triple DES" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="aes128" help="Encrypt the private key with AES 128 bits" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="aes192" help="Encrypt the private key with AES 192 bits" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="aes256" help="Encrypt the private key with AES 256 bits" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="des" help="Encrypt the private key with DES" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD" test='"${enc}"!=""'/>
+        </PARAM>
+        <PARAM name="ssh2" help="SSHv2 format" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="3des" help="Encrypt the private key with triple DES" 
+                ptype="SUBCOMMAND" mode="subcommand" test='"${type}"="private"' optional="true">
+                <PARAM name="pin" help="Passphrase used to protect the private key (length should >= 6)" ptype="RSAPASSWORD"/>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+  
+  </PARAM>      
+</PARAM>
+
+<ACTION postproc="clish_enter_rsakey_mode">
+if [ "${cmdopt}" == "" ] || [ "${cmdopt}" == "generate" ]; then
+    # call postproc bultin function
+    exit 0
+fi
+
+if [ "${cmdopt}" == "import" ]; then
+    # import rsa key
+    oldkey="`cdbctl read/cdb/app/rsa/${keyname}/type`"
+    if [ "$?" == "0" ]; then
+        echo "% Key exist error"
+        exit 1
+    fi
+
+    keycnt="`cdbctl read/cdb/app/rsa/count`"
+    if [ "$?" != "0" ]; then
+        echo "% Internal error: can't get RSA key count"
+        exit 1
+    fi
+
+    if [ "$keycnt" == "/count=32" ]; then
+        echo "% Too many keys. Please delete some keys first"
+        exit 1
+    fi
+
+    if [ "${src}" == "GFILENAME" ]; then
+        showname="${GFILENAME}"
+        accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+        if [ "$?" != "0" ] ; then
+            echo "% Invalid file name"
+            exit 1
+        fi
+
+        if ! [ -f $accessname ]; then
+            echo "% Please specify regular file"
+            exit 1
+        fi
+    else
+        if [ "${mgmt-if}" != "" ]; then
+            export CUR_VRF="MANG_VRF"
+        else
+            export CUR_VRF="ZERO_VRF"
+        fi
+    fi
+
+    if [ "${pin}" != "" ]; then
+        export RSA_PASSWD="${pin}"
+    fi
+
+    export RSA_KEYNAME="${keyname}"
+
+    if [ "${src}" == "GURLNAME" ]; then
+        accessname="`mktemp /tmp/rsaXXXXXX`"
+        export FNPPID="`echo $PPID`"
+        fnconvert -c url -p $accessname -a recv -u "${GURLNAME}"
+        if [ "$?" != "0" ]; then
+            echo "% Import RSA key failed"
+            rm -fr $accessname
+            exit 1
+        fi
+    fi
+
+    fnconvert -c import -p "$accessname" -m "Import RSA key" -t ${fmt} -f ${type}
+    if [ "$?" == "0" ]; then
+        echo "% Import RSA key successed"
+    else
+        echo "% Import RSA key failed"
+    fi
+    if [ "${src}" == "GURLNAME" ]; then
+        rm -fr $accessname
+    fi
+
+    exit 1
+fi
+
+# export rsa key
+if [ "${src}" == "GFILENAME" ]; then
+    showname="${GFILENAME}"
+    accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+    if [ "$?" != "0" ] ; then
+        echo "% Invalid file name"
+        exit 1
+    fi
+
+    if [ -e $accessname ]; then
+        if ! [ -f $accessname ]; then
+            echo "% Please specify regular file"
+            exit 1
+        fi
+
+        fnconvert -m "overwrite" -p "$showname" -c fileprocconfirm
+        if [ "$?" != "0" ]; then
+            exit 1
+        fi
+    fi
+else
+    if [ "${mgmt-if}" != "" ]; then
+        export CUR_VRF="MANG_VRF"
+    else
+        export CUR_VRF="ZERO_VRF"
+    fi
+fi
+
+tmpfile="`mktemp /tmp/rsaXXXXXX`"
+cdbctl read/cdb/app/rsa/${keyname} > $tmpfile
+if [ "$?" != "0" ]; then
+    echo "% No such RSA key"
+    rm -fr $tmpfile
+    exit 1
+fi
+
+if [ "${enc}" != "" ]; then
+    export RSA_ENC="${enc}"
+fi
+
+if [ "${pin}" != "" ]; then
+    export RSA_PASSWD="${pin}"
+    if [ "${enc}" == "" ]; then
+        export RSA_ENC="3des"
+    fi
+fi
+
+if [ "${src}" == "GFILENAME" ]; then
+    fnconvert -c rsa -p $tmpfile -m "Export RSA key" -t ${fmt} -f ${type} -o $accessname
+    if [ "$?" != "0" ]; then
+        echo "% Export RSA key failed"
+        rm -fr $tmpfile
+        exit 1
+    fi 
+else
+    tmpforsend="`mktemp /tmp/rsaXXXXXX`"
+    fnconvert -c rsa -p $tmpfile -m "Export RSA key" -t ${fmt} -f ${type} -o $tmpforsend
+    if [ "$?" != "0" ]; then
+        echo "% Extract RSA key failed"
+        rm -fr $tmpforsend
+        rm -fr $tmpfile
+        exit 1
+    fi
+    
+    fnconvert -c url -p $tmpforsend -a send -u "${GURLNAME}"
+    if [ "$?" != "0" ]; then
+        echo "% Export RSA key failed"
+        rm -fr $tmpforsend
+        rm -fr $tmpfile
+        exit 1
+    fi
+    rm -fr $tmpforsend
+fi
+
+rm -fr $tmpfile
+echo "% Export RSA key success"
+exit 1
+</ACTION>
+
+		<CTCDESCRIPTION>
+To create a key, use the rsa key command in global configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the rsa key command to create a key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example creates a key named KEY1:
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)#    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+		
+</COMMAND>
+
+<COMMAND name="no rsa" help="Rsa" access="4"/>
+<COMMAND name="no rsa key" help="Key" access="4">
+<PARAM name="keyname" help="Key name, character only can be 0-9A-Za-z.-_ and start with a-z or A-Z" ptype="RSAKEYNAME"/>
+
+<ACTION>cdbctl delete/cdb/app/rsa/${keyname}</ACTION>
+		
+		<CTCDESCRIPTION>
+To delete a key, use the rsa key command in global configuration mode.    
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the rsa key command to delete a key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None  
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example deletes a key named KEY1:
+    Switch(config)# no rsa key KEY1    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="line vty maximum" help="Set max Line number" access="4">
+  <PARAM name="vmx" help="Max Line number" ptype="VTYMAX"/>
+  
+  <ACTION>
+  cdbctl update/cdb/sys/sys_global/max_vty/${vmx}
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use line vty maximum command to set maximum vty users.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>  
+	The following is an example of configure to three vty users.   
+    Switch(config)# line vty maximum 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no line" help="Configure a terminal line" access="4"/>
+<COMMAND name="no line vty" help="Virtual terminal" access="4"/>
+<COMMAND name="no line vty maximum" help="Set max Line number" access="4">
+  <ACTION>
+  cdbctl update/cdb/sys/sys_global/max_vty/8
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set maximum vty users to it default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>  
+	The following is an example to reset maximum vty users.
+    Switch(config)# no line vty maximum
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="username"
+        help="Establish user name authentication" access="4">
+  <PARAM name="name" help="Configure User name, the first character should be a-z or A-Z, character only can be 0-9A-Za-z.-_ and the max len is 31" ptype="NAME_STRING"/>
+  <PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+    <PARAM name="assign" help="Assign" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="rsa" help="RSA public key" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="key" help="Key" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="keyname" help="Key name, character only can be 0-9A-Za-z.-_ and start with a-z or A-Z" ptype="RSAKEYNAME"/>
+    </PARAM>
+    <PARAM name="password" help="Specify the password for the user" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+      <PARAM name="pin" help="User password string, characters and its length range is [1, 64). " ptype="NAME_STRING"/>
+      <PARAM name="privilege" help="Set user privilege level" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="pri" help="Set user privilege level" ptype="PRIVILEGE"/>
+      </PARAM>
+    </PARAM>
+    <PARAM name="privilege" help="Set user privilege level" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="pri" help="Set user privilege level" ptype="PRIVILEGE"/>
+      <PARAM name="passwd" help="Name" ptype="SUBCOMMAND" mode="switch" optional="true">
+        <PARAM name="password" help="Specify the password for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+          <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+          <PARAM name="pin" help="User password string" ptype="PASSWORD"/>
+        </PARAM>
+        <PARAM name="secret" help="Specify the secret for the user" ptype="SUBCOMMAND" mode="subcommand">
+          <PARAM name="pin" help="User secret string" ptype="PASSWORD"/>
+        </PARAM>
+      </PARAM>
+      </PARAM>
+      <PARAM name="secret" help="Specify the secret for the user" ptype="SUBCOMMAND" mode="subcommand">
+      <PARAM name="pin" help="User secret string" ptype="PASSWORD"/>
+    </PARAM>
+    <PARAM name="service-type" help="Specify the service-type for the user" ptype="SUBCOMMAND" mode="subcommand">
+	    <PARAM name="type" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    	<PARAM name="telnet" help="Specify the telnet service for the user" ptype="SUBCOMMAND" mode="subcommand">
+	    	 	  <PARAM name="ssh" help="Specify the ssh service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	      <PARAM name="rpc-api" help="Specify the rpc-api service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	      <PARAM name="web" help="Specify the web service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	</PARAM>
+	    	<PARAM name="ssh" help="Specify the ssh service for the user" ptype="SUBCOMMAND" mode="subcommand">
+	    	      <PARAM name="telnet" help="Specify the telnet service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	      <PARAM name="rpc-api" help="Specify the rpc-api service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	      <PARAM name="web" help="Specify the web service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	</PARAM>
+	    	<PARAM name="rpc-api" help="Specify the rpc-api service for the user" ptype="SUBCOMMAND" mode="subcommand">
+	    	    <PARAM name="telnet" help="Specify the telnet service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	    <PARAM name="ssh" help="Specify the ssh service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	    <PARAM name="web" help="Specify the web service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	</PARAM>
+	    	<PARAM name="web" help="Specify the web service for the user" ptype="SUBCOMMAND" mode="subcommand">
+	    	    <PARAM name="telnet" help="Specify the telnet service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	    <PARAM name="ssh" help="Specify the ssh service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	    <PARAM name="rpc-api" help="Specify the rpc-api service for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	    	</PARAM>
+	    	<PARAM name="all" help="Specify the all connection service for the user" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	<PARAM name="none" help="Specify the none connection service for the user(only be valid when login by password)" ptype="SUBCOMMAND" mode="subcommand"/>
+    	</PARAM>
+  	</PARAM>
+  </PARAM>   
+  
+  <ACTION>
+oldname=`cdbctl read/cdb/app/user/${name}/key`
+if [ "$oldname" == "/key=${name}" ]; then
+    cmdstr="cdbctl update/cdb/app/user/${name}"
+else
+    if [ "${sub1}" == "assign" ]; then
+        echo "% No such user, please create it first"
+        exit 1
+    fi
+    if [ "${sub1}" == "service-type" ]; then
+        echo "% No such user, please create it first"
+        exit 1
+    fi
+    cmdstr="cdbctl create/cdb/app/user/${name}"
+fi
+
+if [ "${sub1}" == "password" ]; then
+    if [ "${pri}" != "" ]; then
+        cmdstr=$cmdstr"/privilege/${pri}"
+    fi
+
+    if [ "${encrypt}" == "8" ]; then
+        cmdstr=$cmdstr"/enc_passwd/${pin}"
+    else
+        cmdstr=$cmdstr"/passwd/${pin}"
+    fi
+elif [ "${sub1}" == "privilege" ]; then
+    cmdstr=$cmdstr"/privilege/${pri}"
+    if [ "${passwd}" == "password" ] ; then
+        if [ "${encrypt}" == "8" ]; then
+            cmdstr=$cmdstr"/enc_passwd/${pin}"
+        else
+            cmdstr=$cmdstr"/passwd/${pin}"
+        fi
+    elif [ "${passwd}" == "secret" ] ; then
+      encstr=`fnconvert -c encrypt -m "${pin}"`
+      cmdstr=$cmdstr"/enc_passwd/$encstr"
+    fi
+elif [ "${sub1}" == "assign" ]; then
+    cmdstr=$cmdstr"/rsakey/${keyname}"
+elif [ "${sub1}" == "secret" ]; then
+    encstr=`fnconvert -c encrypt -m "${pin}"`
+    cmdstr=$cmdstr"/enc_passwd/$encstr"
+elif [ "${sub1}" == "service-type" ]; then
+	if [ "${type}" == "telnet" ]; then
+		cmdstr=$cmdstr"/service-type/telnet"
+		if [ "${ssh}" != "" ]; then
+		cmdstr=$cmdstr"/ssh"
+		fi
+		if [ "${rpc-api}" != "" ]; then
+		cmdstr=$cmdstr"/rpc-api"
+		fi
+		if [ "${web}" != "" ]; then
+		cmdstr=$cmdstr"/web"
+		fi
+	elif [ "${type}" == "ssh" ]; then
+		cmdstr=$cmdstr"/service-type/ssh"
+		if [ "${telnet}" != "" ]; then
+		cmdstr=$cmdstr"/telnet"
+		fi
+		if [ "${rpc-api}" != "" ]; then
+		cmdstr=$cmdstr"/rpc-api"
+		fi
+		if [ "${web}" != "" ]; then
+		cmdstr=$cmdstr"/web"
+		fi
+	elif [ "${type}" == "rpc-api" ]; then
+		cmdstr=$cmdstr"/service-type/rpc-api"
+		if [ "${telnet}" != "" ]; then
+		cmdstr=$cmdstr"/telnet"
+		fi
+		if [ "${ssh}" != "" ]; then
+		cmdstr=$cmdstr"/ssh"
+		fi
+		if [ "${web}" != "" ]; then
+		cmdstr=$cmdstr"/web"
+		fi
+	elif [ "${type}" == "web" ]; then
+		cmdstr=$cmdstr"/service-type/web"
+		if [ "${telnet}" != "" ]; then
+		cmdstr=$cmdstr"/telnet"
+		fi
+		if [ "${ssh}" != "" ]; then
+		cmdstr=$cmdstr"/ssh"
+		fi
+		if [ "${rpc-api}" != "" ]; then
+		cmdstr=$cmdstr"/rpc-api"
+		fi
+	elif [ "${type}" == "all" ]; then
+		cmdstr=$cmdstr"/service-type/all"
+	elif [ "${type}" == "none" ]; then
+		cmdstr=$cmdstr"/service-type/none"
+	fi
+	
+fi
+    $cmdstr
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use username command to create a local user account on the switch.  
+Use username password command to add username and password.
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is a sample output from this command displaying how to add a user named testName and 
+    with the password of 123456.  
+    Switch(config)# username testName password 123456  
+    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no username"
+        help="Establish user name authentication" access="4">
+  <PARAM name="name" help="User name" ptype="NAME_STRING"/>
+  <PARAM name="type" help="option" ptype="SUBCOMMAND" mode="switch" optional="true">
+	  <PARAM name="service-type" help="Service type" ptype="SUBCOMMAND" mode="subcommand"/>
+	  <PARAM name="assign" help="Assign" ptype="SUBCOMMAND" mode="subcommand">
+	      <PARAM name="rsa" help="RSA public key" ptype="SUBCOMMAND" mode="subcommand"/>
+	      <PARAM name="key" help="Key" ptype="SUBCOMMAND" mode="subcommand"/>
+	  </PARAM>
+  </PARAM>
+  
+  <ACTION>
+if [ "${type}" == "" ]; then
+	cdbctl delete/cdb/app/user/${name}
+else
+	if [ "${type}" == "assign" ]; then
+    cdbctl update/cdb/app/user/${name}/rsakey
+	fi
+	if [ "${type}" == "service-type" ]; then
+    cdbctl update/cdb/app/user/${name}/service-type/all
+	fi
+
+fi
+
+
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to delete username and password.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is a sample output from this command displaying how to delete a user named testName.  
+    Switch(config)# no username testName
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="re-username"
+        help="Re-Establish user name authentication" access="4">
+  <PARAM name="oldname" help="Old user name" ptype="NAME_STRING"/>
+  <PARAM name="newname" help="New user name" ptype="NAME_STRING"/>
+  <ACTION>
+cdbctl update/cdb/sys/change_username/${oldname}/${newname}
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use re-username command to modify local user account on the switch.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to change user account's name:  
+    Switch(config)# re-username jack mike
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+
+<COMMAND name="enable" help="Modify enable password parameters" access="4"/>
+<COMMAND name="no enable" help="Modify enable password parameters" access="4"/>
+
+<COMMAND name="enable password" help="Assign the privileged level password" access="4">
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+        <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+        <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="pin" help="Enable password string" ptype="NAME_STRING"/>
+      
+  <ACTION>
+if [ "${opt}" == "encrypt" ]; then
+    cdbctl update/cdb/sys/enable/3/enc_passwd/${pin}
+elif [ "${opt}" == "secret" ]; then
+    encstr=`fnconvert -c encrypt -m "${pin}"`
+    cdbctl update/cdb/sys/enable/3/enc_passwd/$encstr
+else
+    cdbctl update/cdb/sys/enable/3/passwd/${pin}
+fi
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set the password which is needed when user enter Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If this command is set, user need to provide the password when enter Privileged EXEC mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set the password:  
+    Switch(config)# enable password 654321  
+    Switch(config)# exit  
+    Switch# disable   
+    Switch> enable    
+    Password:    
+    Switch#    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no enable password" help="Assign the privileged level password" access="4">
+  <ACTION>
+cdbctl update/cdb/sys/enable/3/passwd
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to unset the password when user enter Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset the password:  
+    Switch(config)# no enable password     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="enable password privilege" help="Assign the privileged level password" access="4">
+    <PARAM name="pri" help="Set user privilege level, default is 4" ptype="PRIVILEGE"/>
+    <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+        <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+        <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="pin" help="Enable password string" ptype="PASSWORD"/>
+
+  <ACTION>
+epri="`expr ${pri} - 1`"
+if [ "${opt}" == "encrypt" ]; then
+    cdbctl update/cdb/sys/enable/$epri/enc_passwd/${pin}
+elif [ "${opt}" == "secret" ]; then
+    encstr=`fnconvert -c encrypt -m "${pin}"`
+    cdbctl update/cdb/sys/enable/$epri/enc_passwd/$encstr
+else
+    cdbctl update/cdb/sys/enable/$epri/passwd/${pin}
+fi
+  </ACTION>    
+
+		<CTCDESCRIPTION>
+Use this command to set the password which is needed when user enter Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If this command is set, user need to provide the password when enter Privileged EXEC mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set the password:  
+    Switch(config)# enable password privilege 2 abc123
+    Switch(config)# exit  
+    Switch# disable   
+    Switch> enable    
+    Password:    
+    Switch#    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>    
+</COMMAND>
+
+<COMMAND name="no enable password privilege" help="Assign the privileged level password" access="4">
+  <PARAM name="pri" help="Set user privilege level" ptype="PRIVILEGE"/>
+  <ACTION>
+epri="`expr ${pri} - 1`"
+cdbctl update/cdb/sys/enable/$epri/passwd
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to unset the password when user enter Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset the password:  
+    Switch(config)# no enable password privilege 2   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="service" help="Set up miscellaneous service" access="4"/>
+<COMMAND name="no service" help="Set up miscellaneous service" access="4"/>
+<COMMAND name="service password-encryption"  help="Encrypt system passwords" access="4">
+  <ACTION>
+cdbctl update/cdb/sys/sys_global/service_password_encryption/1
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set up miscellaneous service encrypt system passwords.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set service password-encryption:   
+	Switch(config)# service password-encryption    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no service password-encryption" help="Encrypt system passwords" access="4">
+  <ACTION>
+cdbctl update/cdb/sys/sys_global/service_password_encryption/0
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to unset service encrypt system passwords.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset service password-encryption:   
+	Switch(config)# no service password-encryption    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="login-security" help="Configure login-security function" access="4"/>
+<COMMAND name="no login-security" help="Configure login-security function" access="4"/>
+<COMMAND name="login-security enable" help="Enable login-security function,default is on.Only support for telnet and ssh" access="4">
+	<ACTION>
+		cdbctl update/cdb/app/login_security_glb/enable/1
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="no login-security enable" help="Enable login-security function,default is on.Only support for telnet and ssh" access="4">
+	<ACTION>
+		cdbctl update/cdb/app/login_security_glb/enable/0
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="login-security max-fail-num" help="Configure the maximum value of login failures within set time period" access="4">
+	    <PARAM name="max_fail_num" help="Maximum value of login failures within set time period (default value: 5)." ptype="LOGIN_FAILNUM"/>
+		<PARAM name="period" help="Period during which user login failures are counted(default value: 5 minutes)." ptype="LOGIN_TIME_PERIOD"/>
+	<ACTION>
+		cdbctl update/cdb/app/login_security_glb/max-fail-num/${max_fail_num}/${period}
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="no login-security max-fail-num" help="Configure the maximum value of login failures within set time period" access="4">
+	<ACTION>
+		cdbctl update/cdb/app/login_security_glb/max-fail-num/5/5
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="login-security lock-duration" help="Configure login security lock duration" access="4">
+<PARAM name="duration" help="Duration during which a user is locked (default value: 5 minutes)." ptype="LOGIN_DURATION"/>
+	<ACTION>
+		cdbctl update/cdb/app/login_security_glb/lock-duration/${duration}
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="no login-security lock-duration" help="Configure login security lock duration" access="4">
+	<ACTION>
+		cdbctl update/cdb/app/login_security_glb/lock-duration/5
+	</ACTION>
+</COMMAND>
+
+<!-- aaa -->
+
+<COMMAND name="aaa"
+        help="Authentication, authorization, and accounting" access="4"/>
+<COMMAND name="no aaa"
+        help="Authentication, authorization, and accounting" access="4"/>
+
+<COMMAND name="aaa new-model" help="Access control commands and functions" access="4">
+<ACTION>
+cdbctl update/cdb/sys/sys_global/aaa_new_model/1
+
+vtyid=0
+while [ $vtyid -lt 8 ]
+do
+    oldname=`cdbctl read/cdb/app/vty/$vtyid/auth_method`
+    if [ "$oldname" == "/auth_method=" ]; then
+        cdbctl update/cdb/app/vty/$vtyid/auth_method/default 
+	fi
+	oldname=`cdbctl read/cdb/app/vty/$vtyid/author_method`
+    if [ "$oldname" == "/author_method=" ]; then
+        cdbctl update/cdb/app/vty/$vtyid/author_method/default 
+	fi
+	oldname=`cdbctl read/cdb/app/vty/$vtyid/account_method`
+    if [ "$oldname" == "/account_method=" ]; then
+        cdbctl update/cdb/app/vty/$vtyid/account_method/default 
+	fi
+	oldname=`cdbctl read/cdb/app/vty/$vtyid/accountcmd_method`
+    if [ "$oldname" == "/accountcmd_method=" ]; then
+        cdbctl update/cdb/app/vty/$vtyid/accountcmd_method/default 
+	fi
+  let vtyid+=1
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable the authentication, authorization, accounting (AAA) access control model. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+AAA access model is disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to enable AAA access control model:  
+    Switch# configure terminal  
+    Switch(config)# aaa new-model  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no aaa new-model" help="Access control commands and functions" access="4">
+<ACTION>
+cdbctl update/cdb/sys/sys_global/aaa_new_model/0
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable the authentication, authorization, accounting (AAA) access control model. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+AAA access model is disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to disable AAA access control model:  
+    Switch# configure terminal  
+    Switch(config)# no aaa new-model  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="aaa authentication" help="Authentication configurations parameters"/>
+<COMMAND name="aaa authentication login"
+        help="Set authentication lists for logins" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="The default authentication list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Named authentication list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+<PARAM name="sub2" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="enable" help="Enable password" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="line" help="Line password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="local" help="Local username" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="line" help="Line password" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="enable" help="Enable password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="local" help="Local username" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="local" help="Local username" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="enable" help="Enable password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="line" help="Line password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="enable" help="Enable password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="line" help="Line password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="local" help="Local username" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="enable" help="Enable password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="line" help="Line password" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="local" help="Local username" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+	<PARAM name="none" help="No authentication" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+	</PARAM>	
+</PARAM>
+<PARAM name="none" help="No authentication" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='"${sub2}"!="none"'>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+else
+    authlist=${alname}
+fi
+
+oldname=`cdbctl read/cdb/app/authen/$authlist/key`
+if [ "$oldname" == "/key=$authlist" ]; then
+    cmdstr="cdbctl update/cdb/app/authen/$authlist/methods/"
+else
+    cmdstr="cdbctl create/cdb/app/authen/$authlist/methods/"
+fi
+
+methods=""
+idx=0
+for opt in ${__line}
+do
+    idx="`expr $idx + 1`"
+    if [ $idx -gt 4 ]; then
+        if [ "$methods" == "" ]; then
+            methods="$opt"
+        else
+            methods=$methods",$opt"
+        fi
+    fi
+done
+cmdstr=$cmdstr$methods
+
+$cmdstr
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the aaa authentication login configuration command to Set authentication, authorization, accounting (AAA) authentication at login
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the aaa authentication login configuration command to specify one or more AAA methods. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set authentication at login:
+    Switch# configure terminal
+    Switch(config)# aaa authentication login default local radius none    
+		</CTCEXAMPLE>
+		<CTCRCMD>    
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no aaa authentication" help="Authentication configurations parameters"/>
+
+<COMMAND name="no aaa authentication login"
+        help="Set authentication lists for logins" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="The default authorization list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Named authorization list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+	cdbctl update/cdb/app/authen/$authlist/methods/local
+else
+    authlist=${alname}
+	cdbctl delete/cdb/app/authen/$authlist
+fi
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use no aaa authentication login configuration command to unset authentication, authorization, accounting (AAA) authentication at login.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete authentication, authorization, accounting (AAA) authentication. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None   
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to delete authentication:
+    Switch# configure terminal
+    Switch(config)# no aaa authentication login default   
+		</CTCEXAMPLE>
+		<CTCRCMD>      
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="aaa authorization" help="Authorization configurations parameters"/>
+<COMMAND name="aaa authorization exec"
+        help="For starting an exec (shell)" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="The default authorization list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Named authorization list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+<PARAM name="sub2" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="local" help="Local username" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="local" help="Local username" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="local" help="Local username" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    </PARAM>
+    <PARAM name="none" help="No authorization" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    </PARAM>
+</PARAM>
+<PARAM name="none" help="No authorization" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='"${sub2}"!="none"'>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+else
+    authlist=${alname}
+fi
+
+oldname=`cdbctl read/cdb/app/author/$authlist/key`
+if [ "$oldname" == "/key=$authlist" ]; then
+    cmdstr="cdbctl update/cdb/app/author/$authlist/methods/"
+else
+    cmdstr="cdbctl create/cdb/app/author/$authlist/methods/"
+fi
+
+methods=""
+idx=0
+for opt in ${__line}
+do
+    idx="`expr $idx + 1`"
+    if [ $idx -gt 4 ]; then
+        if [ "$methods" == "" ]; then
+            methods="$opt"
+        else
+            methods=$methods",$opt"
+        fi
+    fi
+done
+cmdstr=$cmdstr$methods
+
+$cmdstr
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the aaa authorization exec configuration command to Set authentication, authorization, accounting (AAA) authorization at login
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the aaa authorization exec configuration command to Set authentication, authorization, accounting (AAA) authorization at login
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set authorization exec:
+    Switch# configure terminal
+    Switch(config)# aaa authorization exec default local radius none    
+		</CTCEXAMPLE>
+		<CTCRCMD>    
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no aaa authorization" help="Authorization configurations parameters"/>
+
+<COMMAND name="no aaa authorization exec"
+        help="For starting an exec (shell)" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="The default authorization list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Named authorization list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+	cdbctl update/cdb/app/author/$authlist/methods/local
+else
+    authlist=${alname}
+	cdbctl delete/cdb/app/author/$authlist
+fi
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete authentication, authorization, accounting (AAA) authorization.   
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete authentication, authorization, accounting (AAA) authorization. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None   
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to delete authorization:
+    Switch# configure terminal
+    Switch(config)# no aaa authorization exec default
+		</CTCEXAMPLE>
+		<CTCRCMD>      
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="aaa accounting" help="Accounting configurations parameters"/>
+<COMMAND name="aaa accounting exec"
+        help="For starting an exec (shell)" access="4">
+    
+    <PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="default" help="The default accounting list" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="alname" help="Named accounting list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+    </PARAM>  
+    <PARAM name="sub2" help="Name" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="none" help="No accounting" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="start-stop" help="Record start and stop without waiting" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="sub3" help="Type" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" mode="subcommand">    
+                    <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+                </PARAM> 
+                <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            <PARAM name="none" help="No accounting" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        </PARAM>
+        <PARAM name="stop-only" help="Record stop when service terminates" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="sub4" help="Type" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" mode="subcommand">    
+                    <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+                </PARAM> 
+                <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="radius" help="Use list of all Radius hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+			<PARAM name="none" help="No accounting" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        </PARAM>
+    </PARAM>  
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+else
+    authlist=${alname}
+fi
+
+oldname=`cdbctl read/cdb/app/account/$authlist/key`
+if [ "$oldname" == "/key=$authlist" ]; then
+    cmdstr="cdbctl update/cdb/app/account/$authlist"
+else
+    cmdstr="cdbctl create/cdb/app/account/$authlist"
+fi
+
+if [ "${sub2}" == "start-stop" ]; then
+    cmdstr=$cmdstr"/start_stop/1/stop_only/0/methods/"
+    methods=""
+    idx=0
+    for opt in ${__line}
+    do
+        idx="`expr $idx + 1`"
+        if [ $idx -gt 5 ]; then
+            if [ "$methods" == "" ]; then
+                methods="$opt"
+            else
+                methods=$methods",$opt"
+            fi
+        fi
+    done
+elif [ "${sub2}" == "stop-only" ]; then
+    cmdstr=$cmdstr"/stop_only/1/start_stop/0/methods/"
+    methods=""
+    idx=0
+    for opt in ${__line}
+    do
+        idx="`expr $idx + 1`"
+        if [ $idx -gt 5 ]; then
+            if [ "$methods" == "" ]; then
+                methods="$opt"
+            else
+                methods=$methods",$opt"
+            fi
+        fi
+    done
+else
+    methods="/stop_only/0/start_stop/0/methods/none"
+fi
+
+cmdstr=$cmdstr$methods
+$cmdstr
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set authentication, authorization, accounting (AAA) accounting at login.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set authentication, authorization, accounting (AAA) accounting at login.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set accounting exec:
+    Switch# configure terminal
+    Switch(config)# aaa accounting exec default start-stop tacplus none    
+		</CTCEXAMPLE>
+		<CTCRCMD>    
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no aaa accounting" help="Accounting configurations parameters"/>
+
+<COMMAND name="no aaa accounting exec"
+        help="For starting an exec (shell)" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="The default accounting list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Named accounting list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+	cdbctl update/cdb/app/account/$authlist/stop_only/0/start_stop/0/methods/none
+else
+    authlist=${alname}
+	cdbctl delete/cdb/app/account/$authlist
+fi
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete authentication, authorization, accounting (AAA) accounting.   
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete authentication, authorization, accounting (AAA) accounting. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None   
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to delete accounting:
+    Switch# configure terminal
+    Switch(config)# no aaa accounting exec default
+		</CTCEXAMPLE>
+		<CTCRCMD>      
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="aaa accounting commands"
+        help="For exec (shell) commands" access="4">
+    
+    <PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="default" help="The default accounting list" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="alname" help="Named accounting list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+    </PARAM>  
+    <PARAM name="sub2" help="Name" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="tacplus" help="Use list of all Tacacs+ hosts" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+            <PARAM name="none" help="No accounting" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        </PARAM> 
+        <PARAM name="none" help="No accounting" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>  
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+else
+    authlist=${alname}
+fi
+
+oldname=`cdbctl read/cdb/app/accountcmd/$authlist/key`
+if [ "$oldname" == "/key=$authlist" ]; then
+    cmdstr="cdbctl update/cdb/app/accountcmd/$authlist/methods/"
+else
+    cmdstr="cdbctl create/cdb/app/accountcmd/$authlist/methods/"
+fi
+
+methods=""
+idx=0
+for opt in ${__line}
+do
+    idx="`expr $idx + 1`"
+    if [ $idx -gt 4 ]; then
+        if [ "$methods" == "" ]; then
+            methods="$opt"
+        else
+            methods=$methods",$opt"
+        fi
+    fi
+done
+cmdstr=$cmdstr$methods
+
+$cmdstr
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set authentication, authorization, accounting (AAA) accounting for commands.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set authentication, authorization, accounting (AAA) accounting for commands.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set accounting commands:
+    Switch# configure terminal
+    Switch(config)# aaa accounting commands default tacplus none    
+		</CTCEXAMPLE>
+		<CTCRCMD>    
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no aaa accounting commands"
+        help="For exec (shell) commands" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="The default accounting list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Named Accounting list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "default" ]; then
+    authlist="default"
+	cdbctl update/cdb/app/accountcmd/$authlist/methods/none
+else
+    authlist=${alname}
+	cdbctl delete/cdb/app/accountcmd/$authlist
+fi
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete authentication, authorization, accounting (AAA) accounting for commands.   
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete authentication, authorization, accounting (AAA) accounting for commands. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None   
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to delete accounting for commands:
+    Switch# configure terminal
+    Switch(config)# no aaa accounting commands default
+		</CTCEXAMPLE>
+		<CTCRCMD>      
+		</CTCRCMD>
+</COMMAND>
+
+<!-- aaa privilege mapping -->
+
+<COMMAND name="aaa privilege"
+        help="Privilege for AAA user"/>
+<COMMAND name="no aaa privilege"
+        help="Privilege for AAA user"/>
+        
+<COMMAND name="aaa privilege mapping" help="Privilege mapping" access="4">
+<PARAM name="privilege1" help=" Max server privilege mapping to switch privilege 1(default is 0)" ptype="AAA_PRIVILEGE1"/>
+<PARAM name="privilege2" help=" Max server privilege mapping to switch privilege 2(default is 1)" ptype="AAA_PRIVILEGE2"/>
+<PARAM name="privilege3" help=" Max server privilege mapping to switch privilege 3(default is 10)" ptype="AAA_PRIVILEGE3"/>
+<ACTION>
+cdbctl update/cdb/sys/sys_global/aaa_privilege1/${privilege1}/aaa_privilege2/${privilege2}/aaa_privilege3/${privilege3}
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the mapping range in AAA server and switch. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default max server privilege 0 mapping to switch privilege 1
+Default max server privilege 1 mapping to switch privilege 2
+Default max server privilege 10 mapping to switch privilege 3
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set the mapping range:  
+    Switch# configure terminal  
+    Switch(config)# aaa privilege mapping 1 2 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no aaa privilege mapping" help="Privilege mapping" access="4">
+<ACTION>
+cdbctl update/cdb/sys/sys_global/aaa_privilege1/0/aaa_privilege2/1/aaa_privilege3/10
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the default mapping range in AAA server and switch. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default max server privilege 0 mapping to switch privilege 1
+Default max server privilege 1 mapping to switch privilege 2
+Default max server privilege 10 mapping to switch privilege 3
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set default mapping range:  
+    Switch# configure terminal  
+    Switch(config)# no aaa privilege mapping
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+</VIEW>
+
+<!-- console view -->
+
+<VIEW name="Line-CON"
+    prompt="${SYSTEM_NAME}(config-line)# "
+    depth="1">
+<NAMESPACE ref="Configure"
+    help="false"
+    completion="false"/>
+
+<COMMAND name="exit"
+    help="End current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_nested_up"/>
+</COMMAND>
+
+<COMMAND name="quit"
+    help="Exit current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_nested_up"/>
+</COMMAND>
+
+<COMMAND name="no"
+    help="Negate a command or set its defaults"/>
+
+<COMMAND name="exec-timeout"
+        help="Set timeout value">
+  <PARAM name="min" help="Timeout value in minute(s), default is 10" ptype="ETIMEOUTMIN"/>
+  <PARAM name="sec" help="Timeout value in second(s)" ptype="ETIMEOUTSEC" optional="true" default="0"/>
+  
+  <ACTION>
+cdbctl update/cdb/app/console/timeout_min/${min}/timeout_sec/${sec}
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set console timeout value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default timeout is 10 minutes. Minute range is from 0 to 35791, second range is from 0 to 2147483.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console exec-timeout to 2 minutes 30 seconds:  
+    Switch# configure terminal   
+    Switch(config)# line console 0	
+    Switch(config-line)# exec-timeout 2 30  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no exec-timeout" help="Set timeout value">
+  <ACTION>
+cdbctl update/cdb/app/console/timeout_min/10/timeout_sec/0
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set console timeout value to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default timeout is 10 minutes. Minute range is from 0 to 35791, second range is from 0 to 2147483.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console exec-timeout to default value:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no exec-timeout    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="login" help="Enable password checking">
+<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+    <PARAM name="local" help="Local password checking" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION>
+if [ "${sub1}" == "" ]; then
+    cdbctl update/cdb/app/console/login/login
+    exit
+fi
+
+if [ "${sub1}" == "local" ]; then
+    cdbctl update/cdb/app/console/login/local
+    exit
+fi
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable console password checking, you can choose local password checking.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+no password checking
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console local password checking enable:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# login local      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no login"  help="Enable password checking">
+<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+    <PARAM name="local" help="Local password checking" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+
+<ACTION>
+
+if [ "${sub1}" == "" ]; then
+    cdbctl update/cdb/app/console/login/nologin
+    exit
+fi
+
+if [ "${sub1}" == "local" ]; then
+    cdbctl update/cdb/app/console/login/nologin
+    exit
+fi
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable console password checking.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+no password checking
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console local password checking disable:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no login local    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="privilege"
+        help="Change privilege level for line"/>
+<COMMAND name="privilege level"
+        help="Assign default privilege level for line">
+<PARAM name="pri" help="Default privilege level for line" ptype="PRIVILEGE"/>
+
+<ACTION>
+cdbctl update/cdb/app/console/privilege/${pri}
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console privilege level for line.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 1, range is from 1 to 4.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console privilege level for line to 2:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# privilege level 2    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no privilege" help="Change privilege level for line"/>
+<COMMAND name="no privilege level" help="Assign default privilege level for line">
+<ACTION>
+cdbctl update/cdb/app/console/privilege/1
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console privilege level for line to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 1, range is from 1 to 4.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console privilege level for line to default value:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no privilege level    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="line-password" help="Set the line-password">
+<PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+<PARAM name="pin" help="User password string" ptype="NAME_STRING"/>
+<ACTION>
+if [ "${encrypt}" == "" ]; then
+	cdbctl update/cdb/app/console/passwd/${pin}
+else
+    cdbctl update/cdb/app/console/enc_passwd/${pin}
+fi
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console line-password specifies a hidden password will follow or user password string.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+No console line-password. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console line-password specifies a hidden password 
+    will follow:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# line-password 8 test    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no line-password" help="Set the line-password">
+<ACTION>
+cdbctl update/cdb/app/console/passwd
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to unset console line-password
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+No console line-password. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset console line-password:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no line-password   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="line-secret" help="Set the line-secret">
+<PARAM name="pin" help="User password string" ptype="NAME_STRING"/>
+<ACTION>
+    encstr=`fnconvert -c encrypt -m "${pin}"`
+    cdbctl update/cdb/app/console/enc_passwd/$encstr
+</ACTION>
+</COMMAND>
+
+
+<COMMAND name="stopbits" help="Set a sync line stop bits"/>
+<COMMAND name="stopbits 1" help="One-bit stop bit (default)">
+<ACTION>
+cdbctl update/cdb/app/console/stopbits/1
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console sync line stop bits one-bit stop.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is one-bit stop.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console sync line stop bits one-bit stop:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# stopbits 1    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="stopbits 2" help="Two-bit stop bit">
+<ACTION>
+cdbctl update/cdb/app/console/stopbits/2
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console sync line stop bits two-bit stop.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is one-bit stop.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console sync line stop bits two-bit stop:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# stopbits 2    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no stopbits" help="Set async line stop bits">
+<ACTION>
+cdbctl update/cdb/app/console/stopbits/1
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console sync line stop bits to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is one-bit stop.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console sync line stop bits to default value:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no stopbits     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="databits" help="Set number of data bits per character"/>
+<COMMAND name="databits 7" help="7-bit databits">
+<ACTION>
+cdbctl update/cdb/app/console/databits/7
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console number of data bits per character to 7-bit databits.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 8-bit databits.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console number of data bits per character to 
+    7-bit databits:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# databits 7   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="databits 8" help="8-bit databits (default)">
+<ACTION>
+cdbctl update/cdb/app/console/databits/8
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console number of data bits per character to 8-bit databits.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 8-bit databits.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console number of data bits per character 
+    to 8-bit databits:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# databits 8   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no databits" help="Set number of data bits per character">
+<ACTION>
+cdbctl update/cdb/app/console/databits/8
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console number of data bits per character to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 8-bit databits.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console number of data bits per character 
+    to 7-bit databits:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no databits     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="parity" help="Set terminal parity">
+<PARAM name="parity" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="even" help="Even parity" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="none" help="None parity (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="odd" help="Odd parity" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION>
+cdbctl update/cdb/app/console/parity/${parity}
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console terminal parity.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default parity type is none.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console terminal parity type odd:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# parity odd     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no parity" help="Set terminal parity">
+<ACTION>
+cdbctl update/cdb/app/console/parity/none
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set console terminal parity to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default parity type is none.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set console terminal parity type to default value:  
+    Switch# configure terminal    
+    Switch(config)# line console 0	 
+    Switch(config-line)# no parity      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="speed"
+        help="Set the transmit and receive speeds">
+<PARAM name="speed" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="115200" help="Terminal speed (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="57600" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="38400" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="19200" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="9600" help="Terminal speed (v350 default)" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="4800" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="2400" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="1200" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="600" help="Terminal speed" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION>
+cdbctl update/cdb/app/console/baudrate/${speed}
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the transmit and receive speeds of console terminal.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+115200
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following is an example of set console terminal speed to 115200:  
+    Switch(config)# line console 0   
+    Switch(config-line)# speed 115200	 
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no speed" help="Set the transmit and receive speeds">
+<ACTION>cdbctl update/cdb/app/console/baudrate/default</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the transmit and receive speeds of console terminal to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+115200
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following is an example of set console terminal speed to default value 9600:  
+    Switch(config)# line console 0   
+    Switch(config-line)# no speed  	 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<!-- vty view -->
+
+<VIEW name="Line-VTY"
+    prompt="${SYSTEM_NAME}(config-line)# "
+    depth="1">
+<NAMESPACE ref="Configure"
+    help="false"
+    completion="false"/>
+
+<COMMAND name="exit"
+    help="End current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_nested_up"/>
+</COMMAND>
+
+<COMMAND name="quit"
+    help="Exit current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_nested_up"/>
+</COMMAND>
+
+<COMMAND name="no"
+    help="Negate a command or set its defaults"/>
+
+<COMMAND name="exec-timeout"
+        help="Set timeout value">
+  <PARAM name="min" help="Timeout value in minute(s), default is 10" ptype="ETIMEOUTMIN"/>
+  <PARAM name="sec" help="Timeout value in second(s)" ptype="ETIMEOUTSEC" optional="true" default="0"/>
+  
+  <ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/timeout_min/${min}/timeout_sec/${sec}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set vty timeout value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default timeout is 10 minutes. Minute range is from 0 to 35791, second range is from 0 to 2147483.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set vty 0-7 exec-timeout to 2 minutes 30 seconds:  
+    Switch# configure terminal   
+    Switch(config)# line vty 0 7	
+    Switch(config-line)# exec-timeout 2 30  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no exec-timeout" help="Set timeout value">
+  <ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/timeout_min/10/timeout_sec/0
+    vid=`expr $vid + 1`
+done
+  </ACTION>
+  		
+		<CTCDESCRIPTION>
+Use this command to set vty timeout to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default timeout is 10 minutes. Minute range is from 0 to 35791, second range is from 0 to 2147483.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set vty 0-7 exec-timeout to default value:  
+    Switch# configure terminal   
+    Switch(config)# line vty 0 7	
+    Switch(config-line)# no exec-timeout   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="login" help="Enable password checking">
+<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+    <PARAM name="local" help="Local password checking" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="authentication" help="Authentication" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="sub2" help="Name" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="default" help="Default method list" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="alname" help="An authentication list with this name (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+        </PARAM>
+    </PARAM>
+</PARAM>
+
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    if [ "${sub1}" == "" ]; then
+        cdbctl update/cdb/app/vty/$vid/login/login
+    elif [ "${sub1}" == "local" ]; then
+        cdbctl update/cdb/app/vty/$vid/login/local
+    else
+        if [ "${sub2}" == "default" ]; then
+            cdbctl update/cdb/app/vty/$vid/auth_method/default
+        else
+            cdbctl update/cdb/app/vty/$vid/auth_method/${alname}
+        fi
+    fi
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable vty password checking, you can choose local password checking or authentication.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+login local
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set vty local password checking enable:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# login local      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no login" help="Enable password checking">
+<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+    <PARAM name="local" help="Local password checking" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="authentication" help="Authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    if [ "${sub1}" != "authentication" ]; then
+        cdbctl update/cdb/app/vty/$vid/login/nologin
+    else
+		cdbctl update/cdb/app/vty/$vid/auth_method/default
+    fi
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to disable vty password checking.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+login local
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set vty local password checking disable:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# no login local    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="privilege" help="Change privilege level for line"/>
+<COMMAND name="privilege level" help="Assign default privilege level for line">
+<PARAM name="pri" help="Default privilege level for line" ptype="PRIVILEGE">
+</PARAM>
+
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/privilege/${pri}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set vty privilege level for line.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 1, range is from 1 to 4.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set vty privilege level for line to 2:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# privilege level 2   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no privilege" help="Change privilege level for line"/>
+<COMMAND name="no privilege level" help="Assign default privilege level for line">
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/privilege/1
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set vty privilege level for line to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default value is 1, range is from 1 to 4.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set vty privilege level for line to default value:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# no privilege level    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="line-password"
+        help="Set the line-password">
+<PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+<PARAM name="pin" help="User password string" ptype="NAME_STRING"/>
+
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    if [ "${encrypt}" == "8" ]; then
+        cdbctl update/cdb/app/vty/$vid/enc_passwd/${pin}
+    else
+        cdbctl update/cdb/app/vty/$vid/passwd/${pin}
+    fi
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+</COMMAND>
+
+<COMMAND name="no line-password" help="Set the line-password">
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/passwd
+    vid=`expr $vid + 1`
+done
+</ACTION>
+</COMMAND>
+
+
+<COMMAND name="line-secret" help="Set the line-secret">
+<PARAM name="pin" help="User password string" ptype="NAME_STRING"/>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+encstr=`fnconvert -c encrypt -m "${pin}"`
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/enc_passwd/$encstr
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+</COMMAND>
+
+<COMMAND name="authorization" help="Authorization configurations parameters"/>
+<COMMAND name="authorization exec"
+        help="For starting an exec (shell)" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="Default method list" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="An authorization list with this name (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    if [ "${sub1}" == "default" ]; then
+        cdbctl update/cdb/app/vty/$vid/author_method/default
+    else
+        cdbctl update/cdb/app/vty/$vid/author_method/${alname}
+    fi
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable authentication, authorization, accounting (AAA) authorization for logins.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to enable authorization for logins:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# authorization exec default      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no authorization" help="Authorization configurations parameters"/>
+
+<COMMAND name="no authorization exec"
+        help="For starting an exec (shell)" access="4">
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/author_method/default
+    vid=`expr $vid + 1`
+done
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set authorization to default method list.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set authorization to default method list:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# no authorization exec    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="accounting" help="Accounting configurations parameters"/>
+<COMMAND name="accounting exec"
+        help="For starting an exec (shell)" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="Use an accounting list with this name" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Use the default accounting list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    if [ "${sub1}" == "default" ]; then
+        cdbctl update/cdb/app/vty/$vid/account_method/default
+    else
+        cdbctl update/cdb/app/vty/$vid/account_method/${alname}
+    fi
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable authentication, authorization, accounting (AAA) accounting for logins.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to enable accounting for logins:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# accounting exec default      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no accounting" help="Accounting configurations parameters"/>
+
+<COMMAND name="no accounting exec"
+        help="For starting an exec (shell)" access="4">
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/account_method/default
+    vid=`expr $vid + 1`
+done
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set accounting exec to default method list.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set accounting exec to default method list:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# no accounting exec    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="accounting commands"
+        help="For exec (shell) commands" access="4">
+<PARAM name="sub1" help="Name" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="default" help="Use an accounting list with this name" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="alname" help="Use the default accounting list (a-zA-Z0-9._-)" ptype="AUTHLISTNAME"/>
+</PARAM>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    if [ "${sub1}" == "default" ]; then
+        cdbctl update/cdb/app/vty/$vid/accountcmd_method/default
+    else
+        cdbctl update/cdb/app/vty/$vid/accountcmd_method/${alname}
+    fi
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to enable authentication, authorization, accounting (AAA) accounting for commands.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to enable accounting for commands:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# accounting commands default      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no accounting commands"
+        help="For exec (shell) commands" access="4">
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+    cdbctl update/cdb/app/vty/$vid/accountcmd_method/default
+    vid=`expr $vid + 1`
+done
+
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set accounting commands to default method list.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set accounting commands to default method list:  
+    Switch# configure terminal    
+    Switch(config)# line vty 0 7	 
+    Switch(config-line)# no accounting commands    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+<COMMAND name="ipv6" help="IPv6 option"/>
+<COMMAND name="ipv6 access-class" help="IPv6 access class">
+    <PARAM name="acl_name" help="Specify a IPv6 access-list name, up to 20 characters" ptype="NAME_STRING"/>
+        <PARAM name="in" help="Apply acl in ingress direction" ptype="SUBCOMMAND" mode="subcommand"/>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+        cdbctl update/cdb/app/vty/$vid/ipv6_acl/${acl_name}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+echo "Notice: ACL applied on vty can only matching of source IP,destination IP,source port,or destination port for TCP packets, behaviour as WhiteList by default."
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to add IPv6 acl on line vty.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+<COMMAND name="ip" help="IP option"/>
+<COMMAND name="ip access-class" help="IPv4 access class">
+    <PARAM name="acl_name" help="Specify a IPv4 access-list name, up to 20 characters" ptype="NAME_STRING"/>
+        <PARAM name="in" help="Apply acl in ingress direction" ptype="SUBCOMMAND" mode="subcommand"/>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+        cdbctl update/cdb/app/vty/$vid/ipv4_acl/${acl_name}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    vid=`expr $vid + 1`
+done
+echo "Notice: ACL applied on vty can only matching of source IP,destination IP,source port,or destination port for TCP packets, behaviour as WhiteList by default."
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to add IPv4 acl on line vty.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+<COMMAND name="no ipv6" help="IPv6 option"/>
+<COMMAND name="no ipv6 access-class" help="IPv6 access class">
+	<PARAM name="in" help="Apply acl in ingress direction" ptype="SUBCOMMAND" mode="subcommand"/>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+        cdbctl update/cdb/app/vty/$vid/ipv6_acl/default
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to remove IPv6 acl on line vty.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+<COMMAND name="no ip" help="IPv4 option"/>
+<COMMAND name="no ip access-class" help="IPv4 access class">
+	<PARAM name="in" help="Apply acl in ingress direction" ptype="SUBCOMMAND" mode="subcommand"/>
+<ACTION>
+vid=${vstart}
+if [ "${vend}" != "" ]; then
+    endid=${vend}
+else
+    endid=${vstart}
+fi
+
+while [ $vid -le $endid ]; do
+        cdbctl update/cdb/app/vty/$vid/ipv4_acl/default
+    vid=`expr $vid + 1`
+done
+</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to remove IPv4 acl on line vty.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<!-- rsa view -->
+
+<VIEW name="RSA-key"
+    prompt="${SYSTEM_NAME}(config-rsa-key)# "
+    depth="1">
+<!--NAMESPACE ref="Configure"
+    help="false"
+    completion="false"/-->
+
+<COMMAND name="exit"
+    help="End current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_leave_rsakey_mode">${keyname} quit</ACTION>
+</COMMAND>
+
+<COMMAND name="quit"
+    help="Exit current mode and down to previous mode"
+    lock="false">
+    <ACTION builtin="clish_leave_rsakey_mode">${keyname} quit</ACTION>
+</COMMAND>
+
+<COMMAND name="end"
+    help="Exit to view mode"
+    view="Exec"
+    lock="false">
+    <ACTION builtin="clish_leave_rsakey_mode">${keyname} quit</ACTION>
+		
+		<CTCDESCRIPTION>
+To end the current configuration session and return to Privileged EXEC mode, use the end command in global configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will bring you back to Privileged EXEC mode regardless of what configuration mode or configuration sub-mode you are in.  
+This global configuration command can be used in any configuration mode.  
+Use this command when you are done configuring the system and you want to return to EXEC mode to perform verification steps.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the end command is used to exit from interface configuration mode 
+    and return to Privileged EXEC mode.    
+    Switch# configure terminal
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# end
+    Switch# show interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<!--COMMAND name="no"
+    help="Negate a command or set its defaults"/-->
+    
+<COMMAND name="reset" help="Clean current inputted RSA key string">
+<ACTION builtin="clish_chvar">rsa-key-string replace " "</ACTION>
+		
+		<CTCDESCRIPTION>
+To clear all key configurations, use the reset command in RSA key configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the reset command to clear all key configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows to clear all configurations for the key KEY1:
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)# reset    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="key" help="RSA key"/>
+
+<COMMAND name="key type" help="Specify RSA key type">
+<PARAM name="keytype" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="private" help="For RSA private key" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="public" help="For RSA public key" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION builtin="clish_chvar">rsa-key-type replace ${keytype}</ACTION>
+		
+		<CTCDESCRIPTION>
+To specify the key type, use the key type command in RSA key configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the key type command to specify the type of the key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example specifies the key type of KEY1 as public key:
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)# key type public   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="key format" help="Specify RSA key string format">
+<PARAM name="keyfmt" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="der" help="DER format" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="pem" help="PEM format" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+
+<ACTION builtin="clish_chvar">rsa-key-format replace ${keyfmt}</ACTION>
+		
+		<CTCDESCRIPTION>
+To specify the key format, use the key format command in RSA key configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the key format command to specify the key format.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default key format is DER. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example specify the key format of KEY1 as der :
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)# key format der   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show" help="Show running system information"/>
+<COMMAND name="show key" help="Show key information"/>
+<COMMAND name="show key config" help="Show current key type and format">
+<ACTION>
+echo "Current key configuration:"
+echo "  key type: ${rsa-key-type}"
+echo "  key format: ${rsa-key-format}"
+pin="${rsa-key-password}"
+encpin="${rsa-key-encpassword}"
+if [ "$pin" != "" ]; then
+    echo "  key password: unencrypted, $pin"
+elif [ "$encpin" != "" ]; then
+    echo "  key password: encrypted, $encpin"
+else
+    echo "  key password: unspecified"
+fi
+</ACTION>
+		
+		<CTCDESCRIPTION>
+To display the details of the current key configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch(config-rsa-key)# show key config 
+    Current key configuration:
+      key type: public
+      key format: der
+      key password: unspecified    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show key string" help="Show current inputted key string">
+<ACTION>
+echo "Current key string:"
+echo "${rsa-key-string}"
+</ACTION>
+		
+		<CTCDESCRIPTION>
+To display the details of the current key string.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch(config-rsa-key)# show key string 
+    Current key string:
+    rsa key key1
+    rsa-key-string    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="key string" help="RSA key string"/>
+<COMMAND name="key string end" help="Generate key and down to previous mode">
+<ACTION builtin="clish_leave_rsakey_mode">${keyname} apply</ACTION>
+		
+		<CTCDESCRIPTION>
+To exit the rsa key configuration mode to global configuration mode and apply all rsa key configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the key string end command to exit the rsa key configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows exit the rsa key configuration mode :
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)# key string end
+    Switch(config)#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="validate" help="Validation current inputted key string">
+<ACTION builtin="clish_validate_rsakey"></ACTION>
+
+		<CTCDESCRIPTION>
+To check the validation of the key strings, use the validate command in RSA key configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the validate command to clear all key configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows to validate key strings of the key KEY1:
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)# validate 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+</COMMAND>
+
+<!-- XXX: Please keep this command at the tailer -->
+<COMMAND name="GKEYLINE" help="RSA key string line">
+<ACTION builtin="clish_chvar">rsa-key-string added "${GKEYLINE}"</ACTION>
+		
+		<CTCDESCRIPTION>
+To add key strings from the screen directly, type any strings in RSA key configuration mode except the keywords in this mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Type any key string.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows to type a key string of the key KEY1:
+    Switch(config)# rsa key KEY1
+    Switch(config-rsa-key)# 00302017 4A7D385B 1234EF29 335FC973
+    Switch(config-rsa-key)# 2DD50A37 C4F4B0FD 9DADE748 429618D5    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+</VIEW>
+
+</CLISH_MODULE>

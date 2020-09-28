@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+ACL
+</CTCMODULENAME>
+	
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+
+	<COMMAND name="mac" help="MAC"> 
+	</COMMAND>
+	<COMMAND name="mac access-list" help="MAC access list"
+		view="configure-mac-acl-view"
+		viewid="acl_name=${acl_name}">
+	    <PARAM name="acl_name" help="Specify a MAC access-list name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl create/cdb/l2/acl_config/${_params}/type/mac</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to create MAC ACL and then enter MAC ACL configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the system already has an MAC ACL with the same name, this command will enter the MAC ACL configuration mode.  
+When the name is not used by any MAC ACL, this command is to create the MAC ACL firstly and then enter the MAC ACL configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create an MAC ACL named testacl and then enter the MAC ACL configuration mode.   
+    Switch(config)# mac access-list testacl   
+    Switch(config-mac-acl-testacl)#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no mac" help="MAC">
+	</COMMAND>
+	<COMMAND name="no mac access-list" help="MAC access list">
+	    <PARAM name="acl_name" help="Specify a MAC access-list name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl delete/cdb/l2/acl_config/${_params}/type/mac</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove this MAC ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the MAC ACL, and should detach MAC ACL from the interface which applied this MAC ACL.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove an MAC ACL named testacl.  
+    Switch(config)# no mac access-list testacl    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-mac-acl-view"
+	prompt="${SYSTEM_NAME}(config-mac-acl-${acl_name})# "
+	depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from ACL configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from ACL configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+	
+	
+
+    <COMMAND name="remark" help="MAC access list description"> 
+        <PARAM name="remark_str" help="Comment up to 100 characters" ptype="NAME_STRING"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/acl_config/${acl_name}/remark/add/${remark_str}/type/mac
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to add remarks for the MAC ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The remarks are up to 100 characters. The exceed parts will not be stored and will be truncated.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default is no remarks of MAC ACL.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add a remark to describe the MAC ACL.  
+    Switch(config-mac-acl-test)# remark aaaaaa
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no remark
+show mac access-list
+		</CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="no remark" help="MAC access list description">
+        <ACTION>
+		cdbctl update/cdb/l2/acl_config/${acl_name}/remark/del/type/mac
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete remarks for the MAC ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete remarks for the MAC ACL.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete the remark of the MAC ACL.    
+    Switch(config-mac-acl-test)# no remark    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+remark
+show mac access-list
+		</CTCRCMD>
+		
+    </COMMAND>
+	
+	
+
+	<COMMAND name="GACL" help="ACL sequence number (1-65535)">
+<!--	<PARAM name="seq_num" help="Sequence-number" ptype="ACL_SEQ_NUM"/> -->
+	<PARAM name="filter" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    <PARAM name="permit" help="Specify packets to permit" ptype="SUBCOMMAND" mode="subcommand" />
+	    <PARAM name="deny" help="Specify packets to reject" ptype="SUBCOMMAND" mode="subcommand"/>
+	</PARAM>
+
+	<PARAM name="src-mac" help="Source MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_mac" help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_mac_mask" test='"${mac_sub1}"="src_mac"' help="Source wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+		<PARAM name="src_mac" test='"${mac_sub1}"="host"' help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-mac" help="Destination MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_mac" help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dest_mac_mask" test='"${mac_sub2}"="dest_mac"' help="Destination wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+	    <PARAM name="dest_mac" test='"${mac_sub2}"="host"' help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="vlan" help="Vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="vlan_id_mask" test='"${vlan_sub1}"="vlan_id"' help="Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-vlan" help="Inner vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="inner_vlan_id" help="Inner vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_vlan_id_mask" test='"${vlan_sub2}"="inner_vlan_id"' help="Inner Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="cos" help="Configure COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="cos_id" help="An arbitrary COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="cos_id_mask" test='"${cos_sub1}"="cos_id"' help="Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-cos" help="Configure inner-COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="inner_cos_id" help="An arbitrary inner-COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_cos_id_mask" test='"${cos_sub2}"="inner_cos_id"' help="Inner Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+	
+	<PARAM name="untag_mode" help="Untag mode" optional="true" mode="switch" ptype="SUBCOMMAND" default="none">
+		<PARAM name="untag-vlan" help="Without vlan tag" mode="subcommand" ptype="SUBCOMMAND" optional="true"/>
+	</PARAM>
+	
+	<PARAM name="ether-type" help="Ether Type" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ether_type_value" help="Ether Type(0x600-0xffff)" ptype="ETHER_TYPE_VALUE"/>
+	</PARAM>
+	
+	<PARAM name="arp" help="Arp packets" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="arp_pkt_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="any" help="ARP and RARP Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="request" help="ARP Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="response" help="ARP Response" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rarp-request" help="RARP Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rarp-response" help="RARP Response" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+	    <PARAM name="sender-ip" help="ARP Sender IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    	<PARAM name="sender_ip_sub" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    		<PARAM name="sender_ip" help="Sender IP address" ptype="IP_ADDR"/>
+				<PARAM name="sender_ip_addrlen" help="Sender IP address with mask length" ptype="IP_ADDR_MASK"/>
+	    		<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+	    		<PARAM name="host" help="Single sender host" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	</PARAM>
+	    	<PARAM name="sender_ip_mask" test='"${sender_ip_sub}"="sender_ip"' help="Sender IP wildcard bits" ptype="IP_ADDR"/>
+            <PARAM name="sender_ip" test='"${sender_ip_sub}"="host"' help="Single sender host's IP address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="target-ip" help="ARP Target IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    	<PARAM name="target_ip_sub" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    		<PARAM name="target_ip" help="Target IP address" ptype="IP_ADDR"/>
+				<PARAM name="target_ip_addrlen" help="Target IP address with mask length" ptype="IP_ADDR_MASK"/>
+	    		<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+	    		<PARAM name="host" help="Single Target host" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	</PARAM>
+	    	<PARAM name="target_ip_mask" test='"${target_ip_sub}"="target_ip"' help="Target IP wildcard bits" ptype="IP_ADDR"/>
+            <PARAM name="target_ip" test='"${target_ip_sub}"="host"' help="Single target host's IP address" ptype="IP_ADDR"/>
+	    </PARAM>
+	</PARAM>
+
+	<PARAM name="time-range" help="Time-range" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="time_range" help="time-range value" ptype="NAME_STRING"/>
+    </PARAM>
+
+	<ACTION>
+    cmd="cdbctl create/cdb/l2/ace_config/${acl_name}/${GACL}/${filter}/type/mac/src_mac/${mac_sub1}/${src_mac}/${src_mac_mask}/dest_mac/${mac_sub2}/${dest_mac}/${dest_mac_mask}/vlan/${vlan_sub1}/${vlan_id}/${vlan_id_mask}/inner_vlan/${vlan_sub2}/${inner_vlan_id}/${inner_vlan_id_mask}/cos/${cos_sub1}/${cos_id}/${cos_id_mask}/inner_cos/${cos_sub2}/${inner_cos_id}/${inner_cos_id_mask}/untag_vlan/${untag_mode}/ether_type/${ether_type_value}/timerange/${time_range}/options//truncation//snmp_set//"
+	if test -n "${arp}"; then
+        cmd=$cmd"/arp/${arp_pkt_sub1}/${arp_op_code}/${arp_op_mask}/"
+    fi
+	
+    if test -n "${sender-ip}"; then
+		if [ ${sender_ip_sub} == "sender_ip_addrlen" ]; then
+			cmd=$cmd"sender_ip/${sender_ip_sub}/${sender_ip_addrlen}/"
+        else
+			cmd=$cmd"sender_ip/${sender_ip_sub}/${sender_ip}/${sender_ip_mask}/"
+		fi
+    fi
+
+    if test -n "${target-ip}"; then
+	    if [ ${target_ip_sub} == "target_ip_addrlen" ]; then
+			cmd=$cmd"/target_ip/${target_ip_sub}/${target_ip_addrlen}/"
+		else
+			cmd=$cmd"/target_ip/${target_ip_sub}/${target_ip}/${target_ip_mask}/"
+		fi
+    fi
+	$cmd
+    </ACTION>
+
+     
+
+        <CTCDESCRIPTION>
+Use this command to permit or deny packets matching the MAC filter.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to permit or deny packets matching the MAC filter.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete an MAC filter with sequence number 10 from an MAC ACL.  
+    Switch(config)# mac access-list testacl  
+    Switch(config-mac-acl-testacl)# 10 permit src-mac host 0.0.1 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+no sequence-num
+		</CTCRCMD>
+	</COMMAND>
+	
+	
+<COMMAND name="permit" help="Specify packets to permit">
+	<PARAM name="src-mac" help="Source MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_mac" help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_mac_mask" test='"${mac_sub1}"="src_mac"' help="Source wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+		<PARAM name="src_mac" test='"${mac_sub1}"="host"' help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-mac" help="Destination MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_mac" help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dest_mac_mask" test='"${mac_sub2}"="dest_mac"' help="Destination wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+	    <PARAM name="dest_mac" test='"${mac_sub2}"="host"' help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="vlan" help="Vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="vlan_id_mask" test='"${vlan_sub1}"="vlan_id"' help="Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-vlan" help="Inner vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="inner_vlan_id" help="Inner vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_vlan_id_mask" test='"${vlan_sub2}"="inner_vlan_id"' help="Inner Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="cos" help="Configure COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="cos_id" help="An arbitrary COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="cos_id_mask" test='"${cos_sub1}"="cos_id"' help="Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-cos" help="Configure inner-COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="inner_cos_id" help="An arbitrary inner-COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_cos_id_mask" test='"${cos_sub2}"="inner_cos_id"' help="Inner Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+	
+	<PARAM name="untag_mode" help="Untag mode" optional="true" mode="switch" ptype="SUBCOMMAND" default="none">
+		<PARAM name="untag-vlan" help="Without vlan tag" mode="subcommand" ptype="SUBCOMMAND" optional="true"/>
+	</PARAM>
+	
+	<PARAM name="ether-type" help="Ether Type" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ether_type_value" help="Ether Type(0x600-0xffff)" ptype="ETHER_TYPE_VALUE"/>
+	</PARAM>
+
+	<PARAM name="arp" help="Arp packets" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="arp_pkt_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="any" help="ARP and RARP Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="request" help="ARP Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="response" help="ARP Response" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rarp-request" help="RARP Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rarp-response" help="RARP Response" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+	    <PARAM name="sender-ip" help="ARP Sender IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    	<PARAM name="sender_ip_sub" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    		<PARAM name="sender_ip" help="Sender IP address" ptype="IP_ADDR"/>
+				<PARAM name="sender_ip_addrlen" help="Sender IP address with mask length" ptype="IP_ADDR_MASK"/>
+	    		<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+	    		<PARAM name="host" help="Single sender host" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	</PARAM>
+	    	<PARAM name="sender_ip_mask" test='"${sender_ip_sub}"="sender_ip"' help="Sender IP wildcard bits" ptype="IP_ADDR"/>
+            <PARAM name="sender_ip" test='"${sender_ip_sub}"="host"' help="Single sender host's IP address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="target-ip" help="ARP Target IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    	<PARAM name="target_ip_sub" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    		<PARAM name="target_ip" help="Target IP address" ptype="IP_ADDR"/>
+				<PARAM name="target_ip_addrlen" help="Target IP address with mask length" ptype="IP_ADDR_MASK"/>
+	    		<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+	    		<PARAM name="host" help="Single Target host" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	</PARAM>
+	    	<PARAM name="target_ip_mask" test='"${target_ip_sub}"="target_ip"' help="Target IP wildcard bits" ptype="IP_ADDR"/>
+            <PARAM name="target_ip" test='"${target_ip_sub}"="host"' help="Single target host's IP address" ptype="IP_ADDR"/>
+	    </PARAM>
+	</PARAM>
+	
+	<PARAM name="time-range" help="Time-range" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="time_range" help="time-range value" ptype="NAME_STRING"/>
+    </PARAM>
+    
+	<ACTION>
+    cmd="cdbctl create/cdb/l2/ace_config/${acl_name}/0/permit/type/mac/src_mac/${mac_sub1}/${src_mac}/${src_mac_mask}/dest_mac/${mac_sub2}/${dest_mac}/${dest_mac_mask}/vlan/${vlan_sub1}/${vlan_id}/${vlan_id_mask}/inner_vlan/${vlan_sub2}/${inner_vlan_id}/${inner_vlan_id_mask}/cos/${cos_sub1}/${cos_id}/${cos_id_mask}/inner_cos/${cos_sub2}/${inner_cos_id}/${inner_cos_id_mask}/untag_vlan/${untag_mode}/ether_type/${ether_type_value}/timerange/${time_range}/options//truncation//snmp_set//"
+	if test -n "${arp}"; then
+        cmd=$cmd"/arp/${arp_pkt_sub1}/${arp_op_code}/${arp_op_mask}/"
+    fi
+	
+    if test -n "${sender-ip}"; then
+		if [ ${sender_ip_sub} == "sender_ip_addrlen" ]; then
+			cmd=$cmd"sender_ip/${sender_ip_sub}/${sender_ip_addrlen}/"
+        else
+			cmd=$cmd"sender_ip/${sender_ip_sub}/${sender_ip}/${sender_ip_mask}/"
+		fi
+    fi
+
+    if test -n "${target-ip}"; then
+        if [ ${target_ip_sub} == "target_ip_addrlen" ]; then
+			cmd=$cmd"/target_ip/${target_ip_sub}/${target_ip_addrlen}/"
+		else
+			cmd=$cmd"/target_ip/${target_ip_sub}/${target_ip}/${target_ip_mask}/"
+		fi
+    fi
+	$cmd
+	
+    </ACTION>
+	</COMMAND>
+	
+
+	<COMMAND name="deny" help="Specify packets to reject">
+	<PARAM name="src-mac" help="Source MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="src_mac" help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="src_mac_mask" test='"${mac_sub1}"="src_mac"' help="Source wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+		<PARAM name="src_mac" test='"${mac_sub1}"="host"' help="Source host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="dest-mac" help="Destination MAC" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="mac_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dest_mac" help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="host" help="Host " ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="dest_mac_mask" test='"${mac_sub2}"="dest_mac"' help="Destination wildcard in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR_MASK"/>
+	    <PARAM name="dest_mac" test='"${mac_sub2}"="host"' help="Destination host's MAC address in HHHH.HHHH.HHHH format" ptype="ACL_MAC_ADDR"/>
+	</PARAM>
+
+	<PARAM name="vlan" help="Vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="vlan_id_mask" test='"${vlan_sub1}"="vlan_id"' help="Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-vlan" help="Inner vlan" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="vlan_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="inner_vlan_id" help="Inner vlan" ptype="VLAN_ID"/>
+			<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_vlan_id_mask" test='"${vlan_sub2}"="inner_vlan_id"' help="Inner Vlan Mask(0x0-0xfff)" ptype="VLAN_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="cos" help="Configure COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="cos_id" help="An arbitrary COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="cos_id_mask" test='"${cos_sub1}"="cos_id"' help="Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+
+	<PARAM name="inner-cos" help="Configure inner-COS value" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    <PARAM name="cos_sub2" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	        <PARAM name="inner_cos_id" help="An arbitrary inner-COS" ptype="COS_ID"/>
+	        <PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="inner_cos_id_mask" test='"${cos_sub2}"="inner_cos_id"' help="Inner Cos Mask(0x0-0x7)" ptype="COS_ID_MASK"/>
+	</PARAM>
+	
+	<PARAM name="untag_mode" help="Untag mode" optional="true" mode="switch" ptype="SUBCOMMAND" default="none">
+		<PARAM name="untag-vlan" help="Without vlan tag" mode="subcommand" ptype="SUBCOMMAND" optional="true"/>
+	</PARAM>
+	
+	<PARAM name="ether-type" help="Ether Type" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+		<PARAM name="ether_type_value" help="Ether Type(0x600-0xffff)" ptype="ETHER_TYPE_VALUE"/>
+	</PARAM>
+	
+	<PARAM name="arp" help="Arp packets" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="arp_pkt_sub1" help="Filter" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="any" help="ARP and RARP Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="request" help="ARP Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="response" help="ARP Response" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rarp-request" help="RARP Request" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rarp-response" help="RARP Response" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+	    <PARAM name="sender-ip" help="ARP Sender IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    	<PARAM name="sender_ip_sub" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    		<PARAM name="sender_ip" help="Sender IP address" ptype="IP_ADDR"/>
+				<PARAM name="sender_ip_addrlen" help="Sender IP address with mask length" ptype="IP_ADDR_MASK"/>
+	    		<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+	    		<PARAM name="host" help="Single sender host" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	</PARAM>
+	    	<PARAM name="sender_ip_mask" test='"${sender_ip_sub}"="sender_ip"' help="Sender IP wildcard bits" ptype="IP_ADDR"/>
+            <PARAM name="sender_ip" test='"${sender_ip_sub}"="host"' help="Single sender host's IP address" ptype="IP_ADDR"/>
+	    </PARAM>
+	    <PARAM name="target-ip" help="ARP Target IP Address" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+	    	<PARAM name="target_ip_sub" help="Filter" ptype="SUBCOMMAND" mode="switch">
+	    		<PARAM name="target_ip" help="Target IP address" ptype="IP_ADDR"/>
+				<PARAM name="target_ip_addrlen" help="Target IP address with mask length" ptype="IP_ADDR_MASK"/>
+	    		<PARAM name="any" help="Any" ptype="SUBCOMMAND" mode="subcommand"/>
+	    		<PARAM name="host" help="Single Target host" ptype="SUBCOMMAND" mode="subcommand"/>
+	    	</PARAM>
+	    	<PARAM name="target_ip_mask" test='"${target_ip_sub}"="target_ip"' help="Target IP wildcard bits" ptype="IP_ADDR"/>
+            <PARAM name="target_ip" test='"${target_ip_sub}"="host"' help="Single target host's IP address" ptype="IP_ADDR"/>
+	    </PARAM>
+	</PARAM>
+	
+	<PARAM name="time-range" help="Time-range" mode="subcommand" ptype="SUBCOMMAND" optional="true">
+        <PARAM name="time_range" help="time-range value" ptype="NAME_STRING"/>
+    </PARAM>
+
+	<ACTION>
+    cmd="cdbctl create/cdb/l2/ace_config/${acl_name}/0/deny/type/mac/src_mac/${mac_sub1}/${src_mac}/${src_mac_mask}/dest_mac/${mac_sub2}/${dest_mac}/${dest_mac_mask}/vlan/${vlan_sub1}/${vlan_id}/${vlan_id_mask}/inner_vlan/${vlan_sub2}/${inner_vlan_id}/${inner_vlan_id_mask}/cos/${cos_sub1}/${cos_id}/${cos_id_mask}/inner_cos/${cos_sub2}/${inner_cos_id}/${inner_cos_id_mask}/untag_vlan/${untag_mode}/ether_type/${ether_type_value}/timerange/${time_range}/options//truncation//snmp_set//"
+    if test -n "${arp}"; then
+        cmd=$cmd"/arp/${arp_pkt_sub1}/${arp_op_code}/${arp_op_mask}/"
+    fi
+	
+    if test -n "${sender-ip}"; then
+		if [ ${sender_ip_sub} == "sender_ip_addrlen" ]; then
+			cmd=$cmd"sender_ip/${sender_ip_sub}/${sender_ip_addrlen}/"
+        else
+			cmd=$cmd"sender_ip/${sender_ip_sub}/${sender_ip}/${sender_ip_mask}/"
+		fi
+    fi
+
+    if test -n "${target-ip}"; then
+        if [ ${target_ip_sub} == "target_ip_addrlen" ]; then
+			cmd=$cmd"/target_ip/${target_ip_sub}/${target_ip_addrlen}/"
+		else
+			cmd=$cmd"/target_ip/${target_ip_sub}/${target_ip}/${target_ip_mask}/"
+		fi
+    fi
+	$cmd
+	
+    </ACTION>
+	</COMMAND>
+	
+
+    <COMMAND name="no sequence-num" help="Specify the sequence-number">
+        <PARAM name="seq_num" help="Sequence-number" ptype="ACL_SEQ_NUM"/>
+		
+        <ACTION>
+		cdbctl delete/cdb/l2/ace_config/${acl_name}/${seq_num}/snmp_set//type/mac
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to delete a filter from MAC ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete a filter from MAC ACL.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete an MAC filter with sequence number 10 from an MAC ACL.  
+    Switch(config-mac-acl-testacl)# no sequence-num 10  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="mac access-list" help="MAC access list">
+	    <PARAM name="acl_name" help="Specify a MAC access-list name, up to 20 characters" ptype="NAME_STRING"/>
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="in" help="Ingress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="out" help="Egress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${direct_sub}" == "in" ]; then
+				cdbctl update/cdb/interface/${iface}/igs_mac_acl/${acl_name}
+			else
+				cdbctl update/cdb/interface/${iface}/egs_mac_acl/${acl_name}
+			fi;
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to apply MAC ACL to interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to apply MAC ACL to interface, the MAC ACL should be created first.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply MAC ACL to interface.   
+    Switch(config)# interface eth-0-2    
+    Switch(config-if-eth-0-2)# mac access-list testacl in    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no mac" help="MAC"/>
+	<COMMAND name="no mac access-list" help="MAC access list">
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="in" help="Ingress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="out" help="Egress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${direct_sub}" == "in" ]; then
+				cdbctl update/cdb/interface/${iface}/igs_mac_acl/
+			else
+				cdbctl update/cdb/interface/${iface}/egs_mac_acl/
+			fi;
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove MAC ACL from interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove MAC ACL to interface, MAC ACL need not to be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply MAC ACL to interface.  
+    Switch(config)# interface eth-0-2   
+    Switch(config-if-eth-0-2)# no mac access-list in    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Exec">
+        
+	<COMMAND name="show mac" help="MAC">
+	</COMMAND>
+	<COMMAND name="show mac access-list" help="Show MAC Access Control list">
+		<PARAM name="acl_name" help="Specify a MAC access-list name, up to 20 characters" optional="true" ptype="NAME_STRING"/>
+
+		<ACTION>
+		cdbctl show/cdb/l2/show_acl/${acl_name}/type/mac
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show the configuration of MAC ACL.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show the configuration of MAC ACL. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# show mac access-list
+    mac access-list testacl
+     10 permit src-mac host 0000.0000.0001 
+    Switch# show mac access-list testacl
+    mac access-list testacl
+     10 permit src-mac host 0000.0000.0002
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show statistic mac" help="MAC statistic">
+	</COMMAND>
+
+	<COMMAND name="show statistic mac access-list" help="MAC Access Control list">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch" default="both" optional="true">
+			<PARAM name="in" help="Ingress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="out" help="Egress Access list" mode="subcommand" ptype="SUBCOMMAND"/>
+        </PARAM>
+
+		<ACTION>
+		    if [ "${direct_sub}" != "both" ]; then
+				cdbctl show/cdb/l2/show_acl_counter/mac/${iface_name}/${direct_sub}
+			else
+				cdbctl show/cdb/l2/show_acl_counter/mac/${iface_name}
+			fi;
+	        
+	    </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show statistic MAC access list.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show statistic MAC access list, interface need to be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# show statistic mac access-list eth-0-2
+    mac access-list testacl in    
+     10 permit src-mac host 0000.0000.00001( bytes 64 packets 1 )    
+    (total bytes 64 total packets 1 )     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="clear statistic mac" help="MAC statistic">
+	</COMMAND>
+
+	<COMMAND name="clear statistic mac access-list" help="MAC Access Control list">
+	    <PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch" optional="true" default = "both">
+			<PARAM name="both" help="Both" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="in" help="Ingress Access list" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="out" help="Egress Access list" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="iface_name" help="Ethernet interface name" optional="true" ptype="IF_NAME_EA" />
+		
+
+		<ACTION>
+		cdbctl update/cdb/l2/clear_acl_counter/mac/${direction}/${iface_name}
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to clear statistic MAC access list.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear statistic MAC access list in or out or both.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    Switch# clear statistic mac access-list both eth-0-2    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show mac access-list
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

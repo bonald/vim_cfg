@@ -1,0 +1,428 @@
+package cdb;
+
+import "common.proto";
+import "tbl.proto";
+
+// TBL_INTERFACE DS_BRGIF
+message ds_brgif
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 pvid = 2;
+    required uint32 inner_native_vid = 3;
+    required uint32 qinq_type = 4;
+    required uint32 qinq_default_fwd = 5;
+    required uint32 vlan_translation_en = 6;
+    required uint32 vlan_trans_default_fwd = 7;
+    required string vlan_mapping_table = 8;
+    required uint32 dot1q_tag_native_en = 9;
+    required compose_brg_allowed_vlan_t allowed_vlan = 10;
+    required uint32 ingress_filter = 11;
+    required uint32 egress_filter = 12;
+    required uint32 tpid_type = 13;
+    required uint32 mac_learning_en = 14;
+    required uint32 oper_mac_learning_en = 15;
+    required uint32 port_security_en = 16;
+    required uint32 violate_mode = 17;
+    required uint32 mlag_is_peer_link = 18;
+    required uint32 mlag_is_port_block = 19;
+    required uint32 mlag_is_group = 20;
+    required uint32 max_mac = 21;
+    required compose_brg_allowed_vlan_t untagged_vlan = 22;
+}
+
+// TBL_INTERFACE DS_ACLQOS_IF
+message ds_aclqos_if
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 default_cos = 2;
+    required uint32 domain = 3;
+    required uint32 trust = 4;
+    required uint32 replace = 5;
+    required uint32 shape_pir = 6;
+    required uint32 queue_stats_enable = 7;
+    required string input_policy_map = 8;
+    required string output_policy_map = 9;
+    required string input_policer = 10;
+    required string output_policer = 11;
+    repeated string queue_shape_profile = 12;
+    repeated string queue_drop_profile = 13;
+    repeated uint32 queue_class = 14;
+    repeated uint32 queue_weight = 15;
+    repeated uint32 queue_drop_mode = 16;
+    repeated uint32 queue_ecn_enable = 17;
+    repeated uint32 queue_transimt_pkt = 18;
+    repeated uint32 queue_transimt_byte = 19;
+    repeated uint32 queue_drop_pkt = 20;
+    repeated uint32 queue_drop_byte = 21;
+    required uint64 queue0_transimt_pkt = 22;
+    required uint64 queue0_transimt_byte = 23;
+    required uint64 queue0_drop_pkt = 24;
+    required uint64 queue0_drop_byte = 25;
+    required uint64 queue1_transimt_pkt = 26;
+    required uint64 queue1_transimt_byte = 27;
+    required uint64 queue1_drop_pkt = 28;
+    required uint64 queue1_drop_byte = 29;
+    required uint64 queue2_transimt_pkt = 30;
+    required uint64 queue2_transimt_byte = 31;
+    required uint64 queue2_drop_pkt = 32;
+    required uint64 queue2_drop_byte = 33;
+    required uint64 queue3_transimt_pkt = 34;
+    required uint64 queue3_transimt_byte = 35;
+    required uint64 queue3_drop_pkt = 36;
+    required uint64 queue3_drop_byte = 37;
+    required uint64 queue4_transimt_pkt = 38;
+    required uint64 queue4_transimt_byte = 39;
+    required uint64 queue4_drop_pkt = 40;
+    required uint64 queue4_drop_byte = 41;
+    required uint64 queue5_transimt_pkt = 42;
+    required uint64 queue5_transimt_byte = 43;
+    required uint64 queue5_drop_pkt = 44;
+    required uint64 queue5_drop_byte = 45;
+    required uint64 queue6_transimt_pkt = 46;
+    required uint64 queue6_transimt_byte = 47;
+    required uint64 queue6_drop_pkt = 48;
+    required uint64 queue6_drop_byte = 49;
+    required uint64 queue7_transimt_pkt = 50;
+    required uint64 queue7_transimt_byte = 51;
+    required uint64 queue7_drop_pkt = 52;
+    required uint64 queue7_drop_byte = 53;
+    required uint32 phb_enable = 54;
+}
+
+// TBL_INTERFACE DS_LAG
+message ds_lag
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 mode = 2;
+    required uint32 lag_id = 3;
+    required uint32 oper_state = 4;
+    required uint32 mismatch = 5;
+    required int32 bundle_ports_count = 6;
+    required uint32 load_balance_mode = 7;
+    required uint32 is_active_backup_mode = 8;
+    required uint32 max_active_number = 9;
+    required uint32 cur_active_number = 10;
+    required uint32 cur_active_max_priority = 11;
+}
+
+// TBL_INTERFACE DS_LACP
+message ds_lacp
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 actor_port_priority = 2;
+    required uint32 actor_oper_port_key = 3;
+    required uint32 actor_port_number = 4;
+    required uint32 short_timeout = 5;
+    required uint32 actor_oper_port_state = 6;
+    required uint32 partner_admin_system_priority = 7;
+    required compose_mac_addr_t partner_admin_system = 8;
+    required uint32 partner_admin_key = 9;
+    required uint32 partner_admin_port_priority = 10;
+    required uint32 partner_admin_port_number = 11;
+    required uint32 partner_admin_port_state = 12;
+    required uint32 partner_oper_system_priority = 13;
+    required compose_mac_addr_t partner_oper_system = 14;
+    required uint32 partner_oper_key = 15;
+    required uint32 partner_oper_port_priority = 16;
+    required uint32 partner_oper_port_number = 17;
+    required uint32 partner_oper_port_state = 18;
+    required uint32 tx_lacp_count = 19;
+    required uint32 tx_error_count = 20;
+    required uint32 rx_lacp_count = 21;
+    required uint32 rx_error_count = 22;
+    required uint32 mlag_id = 23;
+    required uint32 ntt = 24;
+    required uint32 lacp_enabled = 25;
+    required uint32 ready_n = 26;
+    required uint32 port_moved = 27;
+    required uint32 periodic_tx_state = 28;
+    required uint32 receive_state = 29;
+    required uint32 mux_state = 30;
+    required uint32 selected = 31;
+}
+
+// TBL_ROUTE_IF DS_CONNECTED
+message ds_connected_key
+{
+    required compose_prefix_t address = 1;
+}
+
+message ds_connected
+{
+    required tbl_route_if_key parent_rtif = 1;
+    required ds_connected_key key = 2;
+    required compose_prefix_t destination = 3;
+    required uint32 flags_secondary = 4;
+    required uint32 flags_anycast = 5;
+    required uint32 flags_virtual = 6;
+    required uint32 flags_duplicate = 7;
+    required uint32 installed = 8;
+}
+
+// TBL_ROUTE_IF DS_CONNECTED_V6
+message ds_connected_v6_key
+{
+    required compose_prefix_t address = 1;
+}
+
+message ds_connected_v6
+{
+    required tbl_route_if_key parent_rtif = 1;
+    required ds_connected_v6_key key = 2;
+    required compose_prefix_t destination = 3;
+    required uint32 flags_secondary = 4;
+    required uint32 flags_anycast = 5;
+    required uint32 flags_virtual = 6;
+    required uint32 flags_duplicate = 7;
+    required uint32 flags_v6_global = 8;
+    required uint32 flags_v6_linklocal = 9;
+    required uint32 flags_v6_auto_linklocal = 10;
+    required uint32 flags_v6_global_eui64 = 11;
+    required uint32 flags_v6_dad_in_progress = 12;
+    required uint32 flags_v6_na_in_progress = 13;
+    required uint32 flags_v6_configured = 14;
+    required uint32 flags_v6_real = 15;
+    required uint32 installed = 16;
+    required string ifname = 17;
+    required uint32 ifindex = 18;
+    required uint32 dad_ns_send = 19;
+    required uint32 unsolicited_na = 20;
+}
+
+// TBL_ARP DS_STATIC_ROUTE_DUP_IPV4_NH
+message ds_static_route_dup_ipv4_nh_key
+{
+    required compose_addr_ipv4_t address = 1;
+}
+
+message ds_static_route_dup_ipv4_nh
+{
+    required tbl_arp_key parent_arp = 1;
+    required ds_static_route_dup_ipv4_nh_key key = 2;
+}
+
+// TBL_ROUTE_IF DS_OSPF_AUTH
+message ds_ospf_auth_key
+{
+    required uint32 id = 1;
+}
+
+message ds_ospf_auth
+{
+    required tbl_route_if_key parent_rtif = 1;
+    required ds_ospf_auth_key key = 2;
+    required string ospf_auth_md5_key = 3;
+}
+
+// TBL_INTERFACE DS_STORM_CONTROL
+message ds_storm_control
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 bcast_mode = 2;
+    required uint32 mcast_mode = 3;
+    required uint32 ucast_mode = 4;
+    required uint32 bcast_rate = 5;
+    required uint32 mcast_rate = 6;
+    required uint32 ucast_rate = 7;
+}
+
+// TBL_INTERFACE DS_OPENFLOW_IF
+message ds_openflow_if
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 enable = 2;
+    required uint32 obey_vlan_filter = 3;
+}
+
+// TBL_INTERFACE DS_DHCLIENT_IF
+message ds_dhclient_if
+{
+    required tbl_interface_key parent_if = 1;
+    required uint32 requested_flags = 2;
+    required uint32 lease = 3;
+    required uint32 status = 4;
+    required uint32 option = 5;
+    required uint32 client_flags = 6;
+    required string client_id = 7;
+    required uint32 class_flags = 8;
+    required string class_id = 9;
+    required string hostname = 10;
+    required uint32 iana_t1 = 11;
+    required uint32 iana_t2 = 12;
+}
+
+// TBL_PVLAN DS_PVLAN_COMMUNITY
+message ds_pvlan_community_key
+{
+    required uint32 community_vid = 1;
+}
+
+message ds_pvlan_community
+{
+    required tbl_pvlan_key parent_pvlan = 1;
+    required ds_pvlan_community_key key = 2;
+    required uint32 group_id = 3;
+}
+
+// TBL_INTERFACE DS_CIRCUIT_ID
+message ds_circuit_id_key
+{
+    required uint32 vid = 1;
+}
+
+message ds_circuit_id
+{
+    required tbl_interface_key parent_if = 1;
+    required ds_circuit_id_key key = 2;
+    required string circuit = 3;
+}
+
+// TBL_L2_ACTION DS_FLUSH_FDB
+message ds_flush_fdb
+{
+    required uint32 type = 1;
+    required uint32 subtype = 2;
+    required uint32 mode = 3;
+    required uint32 ifindex = 4;
+    required uint32 vid = 5;
+    required compose_mac_addr_t mac = 6;
+}
+
+// TBL_LLDP_IF DS_LLDP_NEIGHBOUR
+message ds_lldp_neighbour
+{
+    required tbl_lldp_if_key parent_lldp_if = 1;
+    required compose_lldp_msap_id_t key = 2;
+    required uint32 rx_ifindex = 3;
+    required compose_mac_addr_t mac_addr = 4;
+    required uint32 rx_ttl = 5;
+    required uint32 chassis_id_sub_type = 6;
+    required uint32 port_id_sub_type = 7;
+    required string system_name = 8;
+    required string system_desc = 9;
+    required string port_desc = 10;
+    required string ifname = 11;
+    required string vlan_name = 12;
+    required uint32 vlan_id = 13;
+    required uint32 sys_cap = 14;
+    required uint32 sys_cap_en = 15;
+    required string mant_addr = 16;
+    required string oid = 17;
+    required uint32 oid_len = 18;
+    required uint32 mgmt_addr_sub_type = 19;
+    required uint32 if_numbering = 20;
+    required uint32 if_number = 21;
+    required uint32 pvid = 22;
+    required uint32 ppvid_flag = 23;
+    required uint32 ppvid = 24;
+    required uint32 protocol_id = 25;
+    required uint32 autonego_support = 26;
+    required uint32 autonego_cap = 27;
+    required uint32 oper_mau_type = 28;
+    required uint32 link_aggr_status = 29;
+    required uint32 link_aggr_id = 30;
+    required uint32 max_frame_size = 31;
+    required uint32 power_flag = 32;
+    required uint32 power_pair = 33;
+    required uint32 power_class = 34;
+    required uint32 med_capbility = 35;
+    required uint32 med_dev_type = 36;
+    required uint32 med_policy_flag = 37;
+    required uint32 med_power_flag = 38;
+    required uint32 med_power_value = 39;
+    required uint32 med_lci_format = 40;
+    required string med_hard_ver = 41;
+    required string med_firm_ver = 42;
+    required string med_soft_ver = 43;
+    required string med_serial_ver = 44;
+    required string med_manufac_ver = 45;
+    required string med_moname_ver = 46;
+    required string med_asset_ver = 47;
+    required string med_lci_coordinate = 48;
+    required string med_lci_elin = 49;
+    required compose_lldp_civic_address_t med_lci_civic = 50;
+}
+
+// TBL_IGSP_INTF DS_MROUTER_PORT
+message ds_mrouter_port_key
+{
+    required string name = 1;
+}
+
+message ds_mrouter_port
+{
+    required tbl_igsp_intf_key parent_if = 1;
+    required ds_mrouter_port_key key = 2;
+    required uint32 type = 3;
+    required compose_sal_time_t uptime = 4;
+}
+
+// TBL_IGSP_INTF DS_QUERY
+message ds_query_key
+{
+    required compose_addr_ipv4_t group = 1;
+}
+
+message ds_query
+{
+    required tbl_igsp_intf_key parent_if = 1;
+    required ds_query_key key = 2;
+    required uint32 max_resp_time = 3;
+    required uint32 vid = 4;
+}
+
+// TBL_INTERFACE DS_L2PROTOCOL
+message ds_l2protocol_key
+{
+    required string l2pro_name = 1;
+}
+
+message ds_l2protocol
+{
+    required tbl_interface_key parent_if = 1;
+    required ds_l2protocol_key key = 2;
+    required uint32 is_standard_pro = 3;
+    required uint32 l2pro_action = 4;
+    required uint32 l2pro_vlan = 5;
+    required string l2pro_evc_name = 6;
+}
+
+// TBL_ROUTE_IF DS_ND_PREFIX
+message ds_nd_prefix
+{
+    required tbl_route_if_key parent_rtif = 1;
+    required compose_nd_prefix_key_t key = 2;
+    required uint32 config = 3;
+    required uint32 vlifetime = 4;
+    required uint32 plifetime = 5;
+    required uint32 onlink = 6;
+    required uint32 autoconfig = 7;
+}
+
+// TBL_IGSP_INTF DS_JOIN_GROUP
+message ds_join_group_key
+{
+    required compose_addr_ipv4_t group = 1;
+}
+
+message ds_join_group
+{
+    required tbl_igsp_intf_key parent_if = 1;
+    required ds_join_group_key key = 2;
+    required uint32 vid = 3;
+    required uint32 type = 4;
+}
+
+// TBL_CFM_MD DS_CFM_ERROR
+message ds_cfm_error
+{
+    required tbl_cfm_md_key parent_md = 1;
+    required compose_cfm_time_key_t key = 2;
+    required uint32 level = 3;
+    required uint32 vlan_id = 4;
+    required string md_name = 5;
+    required uint32 mep_id = 6;
+    required uint32 err_reason = 7;
+    required compose_mac_addr_t rmep_mac = 8;
+}
+

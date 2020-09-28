@@ -1,0 +1,53 @@
+# contents below built automatically by configure; do not edit by hand
+mibgroup_list_lo= \
+	mibgroup/mibII/vacm_vars.lo \
+	mibgroup/ucd-snmp/memory.lo \
+	mibgroup/ucd-snmp/vmstat.lo \
+	mibgroup/ucd-snmp/loadave.lo \
+	mibgroup/mibII/tcp.lo \
+	mibgroup/mibII/udp.lo \
+	mibgroup/mibII/icmp.lo \
+	mibgroup/mibII/snmp_mib.lo \
+	mibgroup/notification/snmpNotifyTable.lo \
+	mibgroup/notification/snmpNotifyFilterProfileTable.lo \
+	mibgroup/target/target_counters_5_5.lo \
+	mibgroup/target/snmpTargetAddrEntry.lo \
+	mibgroup/target/snmpTargetParamsEntry.lo \
+	mibgroup/target/target.lo \
+	mibgroup/util_funcs/header_generic.lo \
+	mibgroup/mibII/vacm_context.lo \
+	mibgroup/snmpv3/snmpMPDStats_5_5.lo \
+	mibgroup/snmpv3/usmStats_5_5.lo \
+	mibgroup/snmpv3/snmpEngine.lo \
+	mibgroup/snmpv3/usmUser.lo \
+	mibgroup/util_funcs/header_simple_table.lo \
+	mibgroup/mibII/kernel_linux.lo \
+	mibgroup/mibII/tcpTable.lo \
+	mibgroup/mibII/udpTable.lo \
+	mibgroup/mibII/updates.lo \
+	mibgroup/header_complex.lo \
+	mibgroup/snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable.lo \
+	mibgroup/hardware/memory/hw_mem.lo \
+	mibgroup/hardware/memory/memory_linux.lo \
+	mibgroup/hardware/cpu/cpu.lo \
+	mibgroup/hardware/cpu/cpu_linux.lo \
+	mibgroup/mibII/ip.lo \
+	mibgroup/notification-log-mib/notification_log.lo \
+	mibgroup/snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable_interface.lo \
+	mibgroup/snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable_data_access.lo \
+	mibgroup/mibII/ipAddr.lo \
+	mibgroup/mibII/at.lo \
+	mibgroup/mibII/var_route.lo \
+	mibgroup/mibII/route_write.lo \
+	mibgroup/if-mib/ifTable/ifTable.lo \
+	mibgroup/if-mib/data_access/interface.lo \
+	mibgroup/if-mib/ifTable/ifTable_interface.lo \
+	mibgroup/if-mib/ifTable/ifTable_data_access.lo \
+	mibgroup/util_funcs.lo \
+	mibgroup/if-mib/data_access/interface_linux.lo \
+	mibgroup/if-mib/data_access/interface_ioctl.lo \
+	mibgroup/ip-mib/data_access/ipaddress_common.lo \
+	mibgroup/ip-mib/data_access/ipaddress_linux.lo \
+	mibgroup/ip-mib/data_access/ipaddress_ioctl.lo
+
+# end configure generated code

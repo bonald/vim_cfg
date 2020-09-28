@@ -1,0 +1,843 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+					 http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ip sla" help="IP Service Level Agreement"/>
+	<COMMAND name="show ip sla monitor" help="IP Service Level Agreement Monitor">
+		<PARAM name="entry_id" optional="true" help="Entry number" ptype="IPSLA_ENTRY_ID">
+			<PARAM name="statistics" optional="true" help="Statistics" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="mode" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+					<PARAM name="packet" help="Display packet statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+					<PARAM name="test" help="Display test statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "packet" == ${mode} ]; then
+				cdbctl show/cdb/l3/show_ipsla/${entry_id}/packet
+			elif [ "test" == ${mode} ]; then
+				cdbctl show/cdb/l3/show_ipsla/${entry_id}/test
+			else
+				cdbctl show/cdb/l3/show_ipsla/${entry_id}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the running information of IP-SLA.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the running information of IP-SLA.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to display the running information of IP-SLA:  
+	DUT1# show ip sla monitor 1  
+	Entry 1  
+	===========================================  
+		Type                 : Echo  
+		Admin State          : Enable  
+		Destination Address  : 2.2.2.2  
+		Frequency            : 60s  
+		Timeout              : 5s  
+		Threshold            : 5000ms  
+		Interval             : 6s  
+		Packet Per Test      : 3  
+		TTL                  : 64  
+		TOS                  : 0  
+		Data Size            : 28 bytes  
+		Data Pattern         : abcdabcd  
+		Fail Percent         : 100%  
+		Packet Item Cnt      : 50  
+		Test Item Cnt        : 5  
+		Running Frequency    : 52s  
+		Running Interval     : 4s  
+		Return Code          : Unknown  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+N/A
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear ip sla" help="IP Service Level Agreement"/>
+	<COMMAND name="clear ip sla statistics" help="Statistics">
+		<PARAM name="entry_id" optional="true" help="Entry number" ptype="IPSLA_ENTRY_ID"/>
+		<ACTION>
+			cdbctl update/cdb/l3/clear_ipsla_stats/${entry_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to clear IP-SLA stats.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear IP-SLA stats.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to clear the stats info of an IP-SLA entry:  
+	DUT1# clear ip sla statistics 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+N/A
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="ip sla" help="IP Service Level Agreement"/>
+	<COMMAND name="ip sla monitor" help="IP Service Level Agreement Monitor"
+			 view="configure-ipsla-view" viewid="entry_id=${entry_id}">
+		<PARAM name="entry_id" help="Entry number" ptype="IPSLA_ENTRY_ID"/>
+		<ACTION>
+			cdbctl create/cdb/l3/ipsla_entry/${entry_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create an IP-SLA entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create an IP-SLA entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create an IP-SLA entry:  
+	DUT1(config)# ip sla monitor 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip sla monitor
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip sla" help="IP Service Level Agreement"/>
+	<COMMAND name="no ip sla monitor" help="IP Service Level Agreement">
+		<PARAM name="entry_id" help="Entry number" ptype="IPSLA_ENTRY_ID"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/ipsla_entry/${entry_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete an IP-SLA entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete an IP-SLA entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete an IP-SLA entry:  
+	DUT1(config)# no ip sla monitor 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip sla monitor
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip sla monitor schedule" help="IP SLA Monitor Entry Scheduling">
+		<PARAM name="entry_id" help="Entry number" ptype="IPSLA_ENTRY_ID"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/admin_state/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to schedule an IP-SLA entry and start probe.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to schedule an IP-SLA entry and start probe.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to schedule an IP-SLA entry and start probe:  
+	DUT1(config)# ip sla monitor schedule 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip sla monitor schedule
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip sla monitor schedule" help="IP SLA Monitor Entry Scheduling">
+		<PARAM name="entry_id" help="Entry number" ptype="IPSLA_ENTRY_ID"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/admin_state/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable an IP-SLA entry probe.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable an IP-SLA entry probe.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to disable an IP-SLA entry probe:  
+	DUT1(config)# no ip sla monitor schedule 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip sla monitor schedule
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-ipsla-view"
+	prompt="${SYSTEM_NAME}(config-ipsla-${entry_id})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="exit"
+		help="Exit from IPSLA mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from IPSLA mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="type" help="Type of entry"/>
+	<COMMAND name="type icmp-echo" help="Echo operation">
+		<PARAM name="inaddr" help="Destination IP address" ptype="IP_ADDR"/>
+		<PARAM name="source-ip" optional="true" help="Source IP" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="src_inaddr" help="Source IP" ptype="IP_ADDR"/>
+		</PARAM>
+		<PARAM name="source-interface" optional="true" help="Source interface" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="src_ifname" help="Source interface" ptype="IF_NAME_EAV"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/type/${inaddr}/source-ip/${src_inaddr}/source-interface/${src_ifname}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the type of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the type of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to disable an IP-SLA entry probe:  
+	DUT1(config-ipsla-1)# type icmp-echo 2.2.2.2 source-interface vlan200 source-ip 200.1.1.1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no type icmp-echo
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no type" help="Type of entry"/>
+	<COMMAND name="no type icmp-echo" help="Echo operation">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/type
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the type of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the type of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to disable an IP-SLA entry probe:  
+	DUT1(config-ipsla-1)# no type icmp-echo  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+type icmp-echo
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="frequency" help="Frequency of an operation">
+		<PARAM name="frequency" help="Frequency in seconds, default is 60 seconds" ptype="IPSLA_FREQUENCY"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/frequency/${frequency}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the test frequency of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the test frequency of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+60
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the test frequency of an ipsla entry:  
+	DUT1(config-ipsla-1)# frequency 80  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no frequency
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no frequency" help="Frequency of an operation">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/frequency/60
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the test frequency of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the test frequency of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the test frequency of an ipsla entry:  
+	DUT1(config-ipsla-1)# no frequency  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+frequency
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="description" help="IPSLA monitor description">
+		<PARAM name="desc" help="Characters describing this monitor" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/desc/${desc}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the description of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the description of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the description of an ipsla entry:  
+	DUT1(config-ipsla-1)# description ipsla1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no description
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no description" help="Unset description">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/desc
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the test frequency of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the test frequency of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+60
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the test frequency of an ipsla entry:  
+	DUT1(config-ipsla-1)# no description  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+description
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="timeout" help="Timeout of an operation">
+		<PARAM name="timeout" help="Timeout in seconds, default is 5 seconds" ptype="IPSLA_TIMEOUT"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/timeout/${timeout}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the timeout of an ipsla probe.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the timeout of an ipsla probe.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the timeout of an ipsla probe:  
+	DUT1(config-ipsla-1)# timeout 5  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no timeout
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no timeout" help="Timeout of an operation">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/timeout/5
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the timeout of an ipsla probe.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the timeout of an ipsla probe.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the timeout of an ipsla probe:  
+	DUT1(config-ipsla-1)# no timeout  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+timeout
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="interval" help="Time between two packets">
+		<PARAM name="interval" help="Interval in seconds, default is 6 seconds" ptype="IPSLA_INTERVAL"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/interval/${interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the probe interval of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the probe interval of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+6
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the probe interval of an ipsla entry:  
+	DUT1(config-ipsla-1)# interval 8  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no interval" help="Time between two packets">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/interval/6
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the probe interval of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the probe interval of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+6
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the probe interval of an ipsla entry:  
+	DUT1(config-ipsla-1)# no interval  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="threshold" help="Threshold of an operation">
+		<PARAM name="threshold" help="Threshold in milliseconds, default is 5000 milliseconds" ptype="IPSLA_THRESHOLD"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/threshold/${threshold}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the icmp threshold of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the icmp threshold of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the icmp threshold of an ipsla test:  
+	DUT1(config-ipsla-1)# threshold 3000  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no threshold
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no threshold" help="Threshold of an operation">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/threshold/5000
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the icmp threshold of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the icmp threshold of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the icmp threshold of an ipsla test:  
+	DUT1(config-ipsla-1)# no threshold  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+threshold
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ttl" help="Specify IPSLA test packet TTL value">
+		<PARAM name="ttl" help="TTL value, default value is 64" ptype="IPSLA_TTL"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/ttl/${ttl}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the icmp ttl of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the icmp ttl of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+64
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the icmp ttl of an ipsla test:  
+	DUT1(config-ipsla-1)# ttl 128  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ttl
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ttl" help="Specify IPSLA test packet TTL value">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/ttl/64
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the icmp ttl of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the icmp ttl of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+64
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the icmp ttl of an ipsla test:  
+	DUT1(config-ipsla-1)# no ttl  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ttl
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="tos" help="Specify IPSLA test packet tos value">
+		<PARAM name="tos" help="TOS value, default value is 0" ptype="IPSLA_TOS"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/tos/${tos}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the icmp tos of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the icmp tos of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the icmp tos of an ipsla test:  
+	DUT1(config-ipsla-1)# tos 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no tos
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no tos" help="Specify IPSLA test packet tos value">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/tos/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the icmp tos of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the icmp tos of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the icmp tos of an ipsla test:  
+	DUT1(config-ipsla-1)# no tos  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+tos
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="data-size" help="Size of payload data">
+		<PARAM name="data_size" help="Number of bytes in payload, default value is 28" ptype="IPSLA_DATA_SIZE"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/data_size/${data_size}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the icmp packet datasize of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the icmp packet datasize of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+28
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the icmp packet datasize of an ipsla test:  
+	DUT1(config-ipsla-1)# datasize 40  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no data-size
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no data-size" help="Size of payload data">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/data_size/28
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the icmp packet datasize of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the icmp packet datasize of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+28
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the icmp packet datasize of an ipsla test:  
+	DUT1(config-ipsla-1)# no datasize  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+data-size
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="data-pattern" help="Format of payload data">
+		<PARAM name="data_pattern" help="Hex-string, value range is [0, FFFFFFFF], default value is abcdabcd" ptype="IPSLA_DATA_PATTERN"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/data_pattern/${data_pattern}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the icmp packet data-pattern of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the icmp packet data-pattern of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+abcdabcd
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the icmp packet data-pattern of an ipsla test:  
+	DUT1(config-ipsla-1)# data-pattern 11aa11aa  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no data-pattern
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no data-pattern" help="Format of payload data">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/data_pattern/abcdabcd
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the icmp packet data-pattern of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the icmp packet data-pattern of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+abcdabcd
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the icmp packet data-pattern of an ipsla test:  
+	DUT1(config-ipsla-1)# no data-pattern  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+data-pattern
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="fail-percent" help="Fail percent of test">
+		<PARAM name="fail_percent" help="Value of fail percent, default is 100" ptype="IPSLA_FAIL_PERCENT"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/fail_percent/${fail_percent}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the fail-percent of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the fail-percent of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+100
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the fail-percent of an ipsla test:  
+	DUT1(config-ipsla-1)# fail-percent 90  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no fail-percent
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no fail-percent" help="Fail percent of test">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/fail_percent/100
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the fail-percent of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the fail-percent of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+100
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the fail-percent of an ipsla test:  
+	DUT1(config-ipsla-1)# no fail-percent  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+fail-percent
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="packets-per-test" help="Packets sent in one test">
+		<PARAM name="packets_per_test" help="Number of packets, default is 3" ptype="IPSLA_TEST_CNT"/>
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/packets_per_test/${packets_per_test}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the packets-per-test of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the packets-per-test of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the packets-per-test of an ipsla test:  
+	DUT1(config-ipsla-1)# packets-per-test 5  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no packets-per-test
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no packets-per-test" help="Packets sent in one test">
+		<ACTION>
+			cdbctl update/cdb/l3/ipsla_entry/${entry_id}/packets_per_test/3
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the packets-per-test of an ipsla test.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the packets-per-test of an ipsla test.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+3
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the packets-per-test of an ipsla test:  
+	DUT1(config-ipsla-1)# no packets-per-test  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+packets-per-test
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="statistics" help="Statistics configuration">
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="packet" help="Packet statistics" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="packet_cnt" help="Number of packets in statistics, default is 50" ptype="IPSLA_PACKET_CNT"/>
+			</PARAM>
+			<PARAM name="test" help="Test statistics" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="test_cnt" help="Number of tests in statistics, default is 5" ptype="IPSLA_TEST_CNT"/>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "packet" == ${mode} ]; then
+				cdbctl update/cdb/l3/ipsla_entry/${entry_id}/probe_result_config_cnt/${packet_cnt}
+			elif [ "test" == ${mode} ]; then
+				cdbctl update/cdb/l3/ipsla_entry/${entry_id}/test_result_config_cnt/${test_cnt}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the stats count of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the stats count of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+packet 50
+test   5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the stats count of an ipsla entry:  
+	DUT1(config-ipsla-1)# statistics packet 100  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no statistics
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no statistics" help="Packets sent in one test">
+		<PARAM name="mode" optional="true" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="packet" optional="true" help="Packet statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="test" optional="true" help="Test statistics" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			if [ "packet" == ${mode} ]; then
+				cdbctl update/cdb/l3/ipsla_entry/${entry_id}/probe_result_config_cnt/50
+			elif [ "test" == ${mode} ]; then
+				cdbctl update/cdb/l3/ipsla_entry/${entry_id}/test_result_config_cnt/5
+			else
+				cdbctl update/cdb/l3/ipsla_entry/${entry_id}/probe_result_config_cnt/50
+				cdbctl update/cdb/l3/ipsla_entry/${entry_id}/test_result_config_cnt/5
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the stats count of an ipsla entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset the stats count of an ipsla entry.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+packet 50
+test   5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the stats count of an ipsla entry: 
+	DUT1(config-ipsla-1)# no statistics packet 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+statistics
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

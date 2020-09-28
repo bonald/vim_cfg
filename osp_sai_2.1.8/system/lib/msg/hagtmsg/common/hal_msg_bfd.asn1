@@ -1,0 +1,93 @@
+HAL-MSG-BFD DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+
+HalMsgBFDSessionAdd ::= SEQUENCE
+{
+    gport          INTEGER,
+    srcudpport     INTEGER,
+    dstudpport     INTEGER,
+    localdisc      INTEGER,
+    remotedisc     INTEGER,
+    remotediscold  INTEGER,
+    state          INTEGER,
+    diag           INTEGER,
+    txinterval     INTEGER,
+    rxinterval     INTEGER,
+    realtx         INTEGER,
+    realrx         INTEGER,
+    txmult         INTEGER,
+    rxmult         INTEGER,
+    nhid           INTEGER,
+    nhoffset       INTEGER,
+    mac            HalMsgDefL2MacAddr,
+    vid            INTEGER,
+    ipver          INTEGER,
+    src            PrintableString, 
+    dst            PrintableString,  
+    ttl            INTEGER,
+    dscp           INTEGER,
+    updateflag     INTEGER 
+}
+
+HalMsgBFDSessionDel ::= SEQUENCE
+{
+    localdisc      INTEGER,
+    nhid           INTEGER
+}
+
+HalMsgBFDSessionGet ::= SEQUENCE
+{
+    localdisc      INTEGER
+}
+
+HalMsgBFDSessionStateReq ::= SEQUENCE
+{
+    localdisc      INTEGER,
+    remotedisc     INTEGER,
+    negtx          INTEGER,
+    negrx          INTEGER,
+    negmulti       INTEGER,
+    state          INTEGER,
+    diag           INTEGER
+}
+
+HalMsgBFDSessionStateResp ::= SEQUENCE
+{
+    localdisc      INTEGER,
+    remotedisc     INTEGER,
+    negtx          INTEGER,
+    negrx          INTEGER,
+    negmulti       INTEGER,
+    state          INTEGER,
+    diag           INTEGER
+}
+
+HalMsgBFDNexthopAdd ::= SEQUENCE
+{
+    nhid          INTEGER,
+    nhoffset      INTEGER,
+    unresolve     INTEGER,
+    gport         INTEGER,
+    vid           INTEGER,
+    ipver         INTEGER,
+    ipsa          PrintableString, 
+    ipda          PrintableString, 
+    macda         HalMsgDefL2MacAddr,
+    df            INTEGER,
+    dscp          INTEGER,
+    ttl           INTEGER,
+    ldisc       INTEGER
+}
+
+HalMsgBFDNexthopDel ::= SEQUENCE
+{
+    nhid          INTEGER
+}
+
+END

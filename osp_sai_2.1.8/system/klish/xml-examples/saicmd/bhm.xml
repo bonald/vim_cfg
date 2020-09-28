@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+BHM
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show sysmon" help="System monitor" hidden="true">
+		<ACTION>
+			cdbctl show/cdb/sys/bhm_global/hw
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show system monitor status.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display system monitor status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show system monitor configuration:  
+    Switch# show sysmon
+    System monitor enable
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	sysmon enable
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show heart-beat-monitor" help="Heart beat monitor">
+		<ACTION>
+			cdbctl show/cdb/sys/bhm_global/sw
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show heart beat monitor status.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display heart beat monitor status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show heart beat monitor configuration:  
+    Switch# show heart-beat-monitor
+    heart-beat-monitor enable
+    heart-beat-monitor reactivation: reload system
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	heart-beat-monitor enable
+	   </CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="heart-beat-monitor" help="Heart beat monitor"/>
+	<COMMAND name="no heart-beat-monitor" help="Heart beat monitor"/>
+
+	<COMMAND name="heart-beat-monitor enable" help="Enable a command">
+		<ACTION>
+				cdbctl update/cdb/sys/bhm_global/sw_watchdog_enable/1
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable heart beat monitor.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable heart beat monitor.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample how to enable heart beat monitor:  
+    Switch(config)# heart-beat-monitor enable
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+    heart-beat-monitor reactivate
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no heart-beat-monitor enable" help="Enable a command">
+		<ACTION>
+				cdbctl update/cdb/sys/bhm_global/sw_watchdog_enable/0
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable heart beat monitor.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable heart beat monitor.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample how to disable heart beat monitor:  
+    Switch(config)# no heart-beat-monitor enable
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+    heart-beat-monitor reactivate
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="heart-beat-monitor reactivate" help="Reactivate" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="reload" help="Reload system (default)" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="shutdown" help="Shutdown all ports" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="warning" help="Print warning to log" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<ACTION>
+				cdbctl update/cdb/sys/bhm_global/reactive/${type}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set heart beat monitor reaction.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set heart beat monitor reaction.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+reload
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample how to set heart beat monitor reaction to shutdown:  
+    Switch(config)# heart-beat-monitor reactivate shutdown
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+    heart-beat-monitor enable
+	   </CTCRCMD>
+
+	</COMMAND>
+
+
+	<COMMAND name="no heart-beat-monitor reactivate" help="Reactivate">
+		<ACTION>
+				cdbctl update/cdb/sys/bhm_global/reactive/reload
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set heart beat monitor reaction to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set heart beat monitor reaction to default.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+reload
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample how to set heart beat monitor reaction  to default:  
+    Switch(config)# no heart-beat-monitor reactivate
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+    heart-beat-monitor enable
+	   </CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>
+

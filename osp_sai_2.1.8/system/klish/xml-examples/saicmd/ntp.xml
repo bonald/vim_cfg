@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+NTP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+<!-- show NTP -->
+<COMMAND name="show ntp" help="NTP global">  
+    <ACTION>
+	cdbctl show/cdb/app/ntp_server
+	cdbctl show/cdb/app/ntp_cfg
+	</ACTION>
+
+		<CTCDESCRIPTION>
+This command displays the NTP configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the NTP configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows the configuration of NTP:
+    Switch# show ntp
+    Current NTP configuration: 
+    ============================================================
+    NTP access control list:
+    Unicast peer: 
+      1.1.1.1
+    Unicast server: 
+      2.2.2.2
+    Broadcast client: enabled
+    Authentication: enabled
+    Local reference clock: 
+      enabled, stratum 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ntp server
+		</CTCRCMD>  
+    
+</COMMAND>	
+
+<!-- show NTP status -->
+<COMMAND name="show ntp status" help="Show NTP status">    
+    <ACTION>
+	ntpdc -nc sysinfo 127.0.0.1
+	</ACTION>
+
+  <CTCDESCRIPTION>
+This command display the status of the Network Time Protocol (NTP).
+  </CTCDESCRIPTION>
+  <CTCUSAGE>
+Use this command to display the status of the Network Time Protocol (NTP).
+  </CTCUSAGE>
+  <CTCDEFAULT>
+None 
+  </CTCDEFAULT>
+  <CTCEXAMPLE> 
+    The following is sample output from the show ntp status command:   
+    Switch# show ntp status
+    system peer:          169.254.2.2
+    system peer mode:     client
+    leap indicator:       00
+    stratum:              6
+    precision:            -19
+    root distance:        0.00291 s
+    minimum distance:        1.00000 s
+    selection threshold:        1.50000 s
+    root dispersion:      938.66603 s
+    reference ID:         [169.254.2.2]
+    reference time:       dbeb5e37.8e09c8ef  Fri, Dec  2 2016  2:43:03.554
+    system flags:         auth monitor ntp kernel stats 
+    jitter:               938.871140 s
+    stability:            0.000 ppm
+    broadcastdelay:       5.000000 s
+    authdelay:            0.000000 s
+  </CTCEXAMPLE>
+  <CTCRCMD>
+show ntp associations
+  </CTCRCMD>
+  
+</COMMAND>	
+
+<!-- show NTP stats -->
+<COMMAND name="show ntp statistics" help="NTP I/O statistics">    
+    <ACTION>
+	ntpdc -nc iostats 127.0.0.1
+	</ACTION>
+
+		<CTCDESCRIPTION>
+This command displays the statistics of the Network Time Protocol (NTP).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the statistics of the Network Time Protocol (NTP).
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following is sample output from the show ntp statistics command:
+    Switch# show ntp statistics
+    Current NTP I/O statistics: 
+    ============================================================
+    time since reset:     175834
+    receive buffers:      10
+    free receive buffers: 9
+    used receive buffers: 0
+    low water refills:    1
+    dropped packets:      0
+    ignored packets:      0
+    received packets:     32
+    packets sent:         31
+    packets not sent:     0
+    interrupts handled:   32
+    received by int:      32
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp associations
+		</CTCRCMD>  
+    
+</COMMAND>
+
+<!-- show NTP associations -->
+<COMMAND name="show ntp associations" help="Show NTP associations">    
+    <ACTION>
+    pgrep ntpd > ntpdpro.txt
+    if [ -s "ntpdpro.txt" ]; then
+      ntpdc -nc peers 127.0.0.1
+    else
+    	echo "***Server reports data not found"
+      
+    fi
+    rm ntpdpro.txt
+	</ACTION>
+
+		<CTCDESCRIPTION>
+This command displays the status of Network Time Protocol (NTP) associations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the status of Network Time Protocol (NTP) associations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows the status of NTP associations:
+    Switch# show ntp associations
+    * synced,      + symmetric active mode, - symmetric passive mode,
+    = client mode, ^ broadcast mode,        ~ broadcast client mode
+
+    remote           local      st poll reach  delay   offset    disp
+    =======================================================================
+    *169.254.2.2     169.254.2.1      5   64  377 0.00291 -382.9913 0.04750
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp status
+		</CTCRCMD>
+  
+</COMMAND>
+
+<!-- show NTP key -->
+<COMMAND name="show ntp key" help="Authentication key pair">    
+    <ACTION>cdbctl show/cdb/app/ntp_key</ACTION>
+    
+		<CTCDESCRIPTION>
+This command displays the NTP keys.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display the NTP keys.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows the keys of NTP:
+    Switch# show ntp key
+    Current NTP key configuration: 
+    ============================================================
+           1 abcd
+       64000 KKKK
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ntp key
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<!-- clear NTP stats -->
+<COMMAND name="clear ntp" help="NTP"/> 
+
+<COMMAND name="clear ntp statistics" help="NTP I/O statistics">    
+    <ACTION>cdbctl update/cdb/app/ntp_cfg/clear_stats</ACTION>
+
+		<CTCDESCRIPTION>
+This command clear the statistics of the Network Time Protocol (NTP).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear the statistics of the Network Time Protocol (NTP).
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following is sample that clear ntp statistics:
+    Switch# clear ntp statistics
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp statistics
+		</CTCRCMD>    
+    
+</COMMAND>
+
+</VIEW>	
+	
+	
+<VIEW name="Configure">
+<COMMAND name="ntp" help="Specify NTP configuration"/>
+<COMMAND name="no ntp" help="Specify NTP configuration"/>
+
+<!-- NTP interface reload -->
+<!-- NTP Minimum Distance -->
+<COMMAND name="ntp minimum-distance" help="Minimum Distance">
+    <PARAM name="distance_value" help="Distance value time interval in milliseconds, default is 1" ptype="NTP_MIN_DISP"/>
+    <ACTION>
+    cdbctl update/cdb/app/ntp_cfg/minimum_distance/${distance_value}
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to configure the change the minimum distance between the switch and the NTP server.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to configure the change the minimum distance between the switch and the NTP server.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default value should be 1 milli-seconds 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to change minimum distance to 1000ms:
+    Switch# configure terminal
+    Switch(config)# ntp minimum-distance 1000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp status
+		</CTCRCMD> 
+    
+</COMMAND>
+
+<COMMAND name="no ntp minimum-distance" help="Minimum Distance">
+    <ACTION>
+    cdbctl update/cdb/app/ntp_cfg/minimum_distance/0
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to restore default ntp minimum distance configure.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The default value should be 1 milli-seconds.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to change minimum distance to default:
+    Switch# configure terminal
+    Switch(config-if)# no ntp minimum-distance
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp status
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<!--  NTP ucast server -->
+<COMMAND name="ntp server" help="Unicast server configuration">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="host_ip" help="IP address" ptype="IP_ADDR">
+            <PARAM name="source-ip" help="bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+                <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+            </PARAM>
+        </PARAM>
+        <PARAM name="host_ipv6" help="IPV6 address" ptype="IPV6_ADDR" />
+    </PARAM>
+    <PARAM name="key" help="Authentication key" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="key_value" help="ID of the key" ptype="NTP_TRUSTEDKEY"/>
+    </PARAM>
+    <PARAM name="version" help="NTP protocol version" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="version_value" help="NTP protocol version number" ptype="NTP_VERSION"/>
+    </PARAM>
+    <PARAM name="prefer" help="The preferred server" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <ACTION>
+    if [ ${host} == "host_ip" ]; then
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${host_ip}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+
+            cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/1
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+
+            cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/1
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        fi
+
+        if [ -n "${source-ip}" ]; then
+            cdbctl create/cdb/sys/inband_snat/1#123#${host_ip}/type/2/ifname/${bind_if}/ip/${bind_addr}/
+            if [ $? -ne 0 ]; then
+                if [ -n "${mgmt-if}" ]; then
+                    cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/0
+                else
+                    cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/0
+                fi
+                exit 1
+            fi
+        fi
+
+        cdbctl create/cdb/sys/ns_route/1#123#${host_ip}/2/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cmdstr="cdbctl create/cdb/app/ntp_server/${host_ip}"
+            if [ "${key_value}" != "" ]; then
+               cmdstr=$cmdstr"/key/${key_value}"
+            fi   
+               
+            if [ "${version_value}" != "" ]; then
+               cmdstr=$cmdstr"/version/${version_value}"       
+            fi   
+            if [ "${prefer}" != "" ]; then
+               cmdstr=$cmdstr"/${prefer}"                   
+            fi
+            
+            $cmdstr
+            if [ $? -eq 0 ]; then
+                cdbctl update/cdb/app/ntp_server/set_band/${host_ip}/$NS_BAND/
+            else
+                cdbctl delete/cdb/sys/ns_route/1#123#${host_ip}/$NS_BAND/
+                if [ -n "${source-ip}" ]; then
+                    cdbctl delete/cdb/sys/inband_snat/1#123#${host_ip}
+                fi
+                if [ -n "${mgmt-if}" ]; then
+                    cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/0
+                else
+                    cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/0
+                fi
+            fi
+        else
+            if [ -n "${source-ip}" ]; then
+                cdbctl delete/cdb/sys/inband_snat/1#123#${host_ip}
+            fi
+            if [ -n "${mgmt-if}" ]; then
+                cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/0
+            else
+                cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/0
+            fi
+        fi
+    elif [ ${host} == "host_name" ]; then
+        cmdstr="cdbctl create/cdb/app/ntp_server/${host_name}"
+        if [ "${key_value}" != "" ]; then
+           cmdstr=$cmdstr"/key/${key_value}"
+        fi   
+           
+        if [ "${version_value}" != "" ]; then
+           cmdstr=$cmdstr"/version/${version_value}"       
+        fi   
+        if [ "${prefer}" != "" ]; then
+           cmdstr=$cmdstr"/${prefer}"                
+        fi
+        
+        $cmdstr
+    elif [ ${host} == "host_ipv6" ]; then
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${host_ipv6}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+
+            cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/1
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+
+            cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/1
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        fi
+
+        cdbctl create/cdb/sys/ns_route/1#123#${host_ipv6}/2/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cmdstr="cdbctl create/cdb/app/ntp_server/${host_ipv6}"
+            if [ "${key_value}" != "" ]; then
+               cmdstr=$cmdstr"/key/${key_value}"
+            fi   
+               
+            if [ "${version_value}" != "" ]; then
+               cmdstr=$cmdstr"/version/${version_value}"       
+            fi   
+            if [ "${prefer}" != "" ]; then
+               cmdstr=$cmdstr"/${prefer}"                   
+            fi
+            
+            $cmdstr
+            if [ $? -eq 0 ]; then
+                cdbctl update/cdb/app/ntp_server/set_band/${host_ipv6}/$NS_BAND/
+            else
+                cdbctl delete/cdb/sys/ns_route/1#123#${host_ipv6}/$NS_BAND/
+
+                if [ -n "${mgmt-if}" ]; then
+                    cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/0
+                else
+                    cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/0
+                fi
+            fi
+        else
+            if [ -n "${mgmt-if}" ]; then
+                cdbctl update/cdb/app/ntp_cfg/ucastServerCount_outband/0
+            else
+                cdbctl update/cdb/app/ntp_cfg/ucastServerCount_inband/0
+            fi
+        fi
+    fi
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to allow the software clock to be synchronized by a Network Time Protocol (NTP) time server.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to allow the software clock to be synchronized by a Network Time Protocol (NTP) time server.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The server will not synchronize to this machine 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to configure a switch to allow its software clock to be 
+    synchronized with the clock by the device at IP address 172.16.22.44 using NTP version 2:
+    Switch# configure terminal
+    Switch(config)# ntp server 172.16.22.44 version 2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<COMMAND name="no ntp server" help="Unicast server configuration">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+	    <PARAM name="host_ip" help="IP address" ptype="IP_ADDR"/>
+	    <PARAM name="host_ipv6" help="IPV6 address" ptype="IPV6_ADDR" />
+    </PARAM>
+    <ACTION>
+    if [ ${host} == "host_ip" ]; then
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+        else
+            NS_BAND=inband
+        fi
+
+	if [ ${host} == "host_ip" ]; then
+            cdbctl delete/cdb/app/ntp_server/${host_ip}/$NS_BAND
+            if [ $? -eq 0 ]; then
+                cdbctl delete/cdb/sys/ns_route/1#123#${host_ip}/$NS_BAND
+                cdbctl delete/cdb/sys/inband_snat/1#123#${host_ip}
+            fi
+        fi
+    elif [ ${host} == "host_name" ]; then
+        cdbctl delete/cdb/app/ntp_server/${host_name}/$NS_BAND
+    elif [ ${host} == "host_ipv6" ]; then
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+        else
+            NS_BAND=inband
+        fi
+
+	if [ ${host} == "host_ipv6" ]; then
+            cdbctl delete/cdb/app/ntp_server/${host_ipv6}/$NS_BAND
+            if [ $? -eq 0 ]; then
+                cdbctl delete/cdb/sys/ns_route/1#123#${host_ipv6}/$NS_BAND
+            fi
+        fi
+    fi
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to restore default ntp server configure.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to restore default ntp server configure.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The server will not synchronize to this machine.  
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to restore default ntp server configure:
+    Switch# configure terminal
+    Switch(config)# no ntp server 172.16.22.44
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<!--  NTP ucast peer -->
+
+<!-- NTP suthentication enable|disable -->
+<COMMAND name="ntp authentication" help="Authentication switch">
+    <PARAM name="enable_status" help="enable status" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="enable" help="Enable authentication" ptype="SUBCOMMAND" mode="subcommand" /> 
+        <PARAM name="disable" help="Disable authentication" ptype="SUBCOMMAND" mode="subcommand" /> 
+    </PARAM>
+    <ACTION>
+    cdbctl update/cdb/app/ntp_cfg/auth_enable/${enable_status}
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to enable NTP authentication, use the ntp authentication enable command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When NTP authentication is enabled, the switch will synchronize the time with NTP servers with trusted key only.   
+For more information about trusted key, please see the ntp trustedkey command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to enables NTP authentication:
+    Switch# configure terminal
+    Switch(config)# ntp authentication enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<!-- NTP trustkey -->
+<COMMAND name="ntp trustedkey" help="Config Trusted key">
+    <PARAM name="key_value" help="Key value" ptype="NTP_TRUSTEDKEY"/>
+    <ACTION>
+    cdbctl create/cdb/app/ntp_key/trusted_key/${key_value}
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to authenticate the identity of a system to which Network Time Protocol (NTP) will synchronize.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If authentication is enabled, use this command to define one or more key numbers (corresponding 
+to the keys defined with the ntp key command) that a peer NTP system must provide in its NTP packets, 
+in order for this system to synchronize to it. This function provides protection against accidentally 
+synchronizing the system to a system that is not trusted, because the other system must know the correct 
+authentication key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to configure the system to synchronize only to systems 
+    providing authentication key 42 in its NTP packets:
+    Switch# configure terminal
+    Switch(config)# ntp authentication enable
+    Switch(config)# ntp key 42 aNiceKey
+    Switch(config)# ntp trustedkey 42
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ntp key
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<COMMAND name="no ntp trustedkey" help="Unconfig Trusted key">
+    <PARAM name="key_value" help="Key value" ptype="NTP_TRUSTEDKEY"/>
+    <ACTION>
+    cdbctl delete/cdb/app/ntp_key/trusted_key/${key_value}
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to disable authentication of the identity of the system.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If authentication is enabled, use this command to define one or more key numbers (corresponding to 
+the keys defined with the ntp key command) that a peer NTP system must provide in its NTP packets, 
+in order for this system to synchronize to it. This function provides protection against accidentally 
+synchronizing the system to a system that is not trusted, because the other system must know the 
+correct authentication key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    The following example shows how to disable authentication of the identity of the system:
+    Switch# configure terminal
+    Switch(config)# no ntp trustedkey 42
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<!-- NTP update key string -->
+<COMMAND name="ntp key" help="Authentication key pair">
+    <PARAM name="keyid" help="Key value" ptype="NTP_TRUSTEDKEY"/>
+	<PARAM name="key_string" help="Key string" ptype="STRING"/>
+    <ACTION>
+    cdbctl create/cdb/app/ntp_key/pair/${keyid}/${key_string}
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to configure value of the NTP key.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to create a value for a NTP key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    In the following example, the value 321 is given to the NTP key 123:
+    Switch# configure terminal
+    Switch(config)# ntp key 123 321
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp key
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<COMMAND name="no ntp key" help="Authentication key pair">
+    <PARAM name="keyid" help="Key value" ptype="NTP_TRUSTEDKEY"/>
+    <ACTION>
+    cdbctl delete/cdb/app/ntp_key/pair/${keyid}
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to remove the value of the NTP key.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove a value for a NTP key.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    In the following example, the value 321 is removed from the NTP key 123:
+    Switch# configure terminal
+    Switch(config)# no ntp key 123
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp key
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<!--  NTP ace config -->
+
+
+</VIEW>
+
+<!-- NTP disable under interface mode -->
+<VIEW name="configure-if-view">
+<COMMAND name="ntp" help="Specify NTP configuration"/>
+<COMMAND name="no ntp" help="Specify NTP configuration"/>
+
+<COMMAND name="ntp disable" help="Disable NTP">
+    <ACTION>
+    cdbctl update/cdb/app/ntp_if/disable/${iface}/abcd/1
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to configure Disable NTP packets from being received on the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to display information about the MLAG interface configuration and status.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, all interfaces receive NTP packets 
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    In the following example, the system is configured not to received NTP packet in 
+    interface eth-0-1:
+    Switch# configure terminal
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# ntp disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp
+		</CTCRCMD>    
+    
+</COMMAND>
+
+<COMMAND name="no ntp disable" help="Disable NTP">
+    <ACTION>
+    cdbctl update/cdb/app/ntp_if/disable/${iface}/abcd/0
+    </ACTION>
+    
+		<CTCDESCRIPTION>
+Use this command to disable the ntp disable capability.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable the ntp disable capability.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, all interfaces receive NTP packets.
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+    In the following example, the system is configured not to received NTP packet 
+    in interface eth-0-1:
+    Switch# configure terminal
+    Switch(config)# interface eth-0-1
+    Switch(config-if)# no ntp disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ntp
+		</CTCRCMD>
+    
+</COMMAND>
+
+<!-- NTP broadcast client -->
+</VIEW>
+
+</CLISH_MODULE>

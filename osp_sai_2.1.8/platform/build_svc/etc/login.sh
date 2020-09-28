@@ -1,0 +1,3 @@
+# telnetd login command 
+klish
+

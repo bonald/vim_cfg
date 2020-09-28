@@ -1,0 +1,83 @@
+SCFG DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+SCfgConfig ::= SEQUENCE
+{
+    initialDeploy       BOOLEAN,
+    zeroTouchReplace    BOOLEAN,
+    interval            INTEGER (0..MAX),
+    retryCnt            INTEGER (0..MAX),
+
+    cfgMgt              BOOLEAN,
+    cfgMgtInterval      INTEGER (0..MAX),
+
+    onDemandCfg         BOOLEAN,
+    onDemandInterval    INTEGER (0..MAX)
+}
+
+SCfgTftpAddr ::= SEQUENCE
+{
+    ifname              PrintableString,
+    vrfid               INTEGER (0..MAX),
+    tftpaddrs           PrintableString
+}
+
+SCfgUnbound ::= SEQUENCE
+{
+    ifname              PrintableString,
+    vrfid               INTEGER (0..MAX)
+}
+
+SCfgStatusReport ::= SEQUENCE
+{
+    code    INTEGER (0..MAX),
+    msg     PrintableString
+}
+
+SCfgType ::= ENUMERATED
+{
+    initNotify,
+    initAck,
+    boundNotify,
+    unBoundNotify,
+    genAck,
+    rebootCmd,
+    nMax
+}
+
+SCfgCommResp ::= SEQUENCE
+{
+    type    SCfgType,
+    id      INTEGER (0..MAX),        
+    ret     INTEGER (0..MAX),
+    msg     PrintableString
+}
+
+-- reboot after deployment
+SCfgReboot ::= SEQUENCE
+{
+    msg PrintableString
+}
+
+SCfgMsg ::= SEQUENCE
+{
+    ver INTEGER (1..3),
+    id  INTEGER (0..MAX),
+    op CHOICE
+    {
+        -- client ==> server
+        initNotify SCfgStatusReport,
+        statusReport SCfgStatusReport,
+        rebootCmd SCfgReboot,
+
+        -- server ==> client
+        boundNotify SCfgTftpAddr,
+        unBoundNotify SCfgUnbound,
+        initAck SCfgConfig,
+
+        -- server <==> client
+        genAck SCfgCommResp,
+        maxMsg SCfgCommResp  -- just for init array
+    }
+}
+
+END

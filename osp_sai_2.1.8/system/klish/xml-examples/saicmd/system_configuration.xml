@@ -1,0 +1,2570 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+SYSTEM CONFIGURATION
+</CTCMODULENAME>
+
+<VIEW name="Exec"
+    prompt="# ">
+
+<!-- Inheritance -->
+
+    <NAMESPACE ref="ping-view"
+        help="true"
+        completion="true"/>
+
+<!-- Simple enable mode commands -->
+
+    <COMMAND name="disable"
+        help="Turn off privileged commands"
+        access="1">
+        <ACTION builtin="clish_disable"/>
+    </COMMAND>
+
+    <COMMAND name="enable"
+        help="Turn on privileged commands" access="1">
+        <PARAM name="pri" optional="true" help="Enable privilege level" default="4" ptype="PRIVILEGE" />
+        <ACTION builtin="clish_enable">${pri}</ACTION>
+    </COMMAND>
+
+    <COMMAND name="logout"
+         help="Logout of the current CLI session" access="1">
+         <ACTION builtin="clish_close"/>
+    </COMMAND>
+    
+    <COMMAND name="reboot"
+        help="Halt and perform a warm restart"
+        access="4">
+<ACTION>
+cfgfile="/mnt/flash/startup-config.conf"
+tmpfile="`mktemp /tmp/config-XXXXXX`"
+hassave=""
+cdbctl buildcfg/startup/`basename $tmpfile`/cdb
+if [ "$?" != "0" ]; then
+    echo "% Generate running-config failed"
+else
+    if ! [ -f $cfgfile ]; then
+        szmsg="Startup config file is not exist. Copy running config to Startup config? [yes/no]: "
+        fnconvert -m "$szmsg" -c yesno_no
+        if [ "$?" == "0" ]; then
+            cp -fr $tmpfile $cfgfile
+        fi
+    else
+        diff -q $tmpfile $cfgfile >/dev/null
+        if [ "$?" != "0" ]; then
+            szmsg="System configuration has been modified. Save? [yes/no]: "
+            fnconvert -m "$szmsg" -c yesno_no
+            if [ "$?" == "0" ]; then
+                cp -fr $tmpfile $cfgfile
+                hassave="save"
+            fi
+        fi
+    fi
+fi
+rm -fr $tmpfile
+
+if [ $OVS_DIR ]; then
+    sh $OVS_DIR/bin/ovsdb_sync.sh 2>/dev/null
+fi
+
+szmsg="Reboot system? [confirm]"
+fnconvert -m "$szmsg" -c confirm
+if [ "$?" != "0" ]; then
+    echo "% Aborted!"
+    exit 1
+fi
+cdbctl show/cdb/app/login/reboot
+cdbctl update/cdb/sys/reboot/normal/$hassave
+</ACTION>
+
+		<CTCDESCRIPTION>
+To reload the operating system, use the reboot command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The reboot command halts the system. Use the reboot command after configuration information is entered into a file and saved to the startup configuration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is sample dialog from the reboot command.
+    Switch# reboot
+    Building configuration...
+    Reboot system? [confirm]y
+    Waiting ...
+    % Connection is closed by administrator!
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		reboot fast
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="reload" ref="reboot" access="4" help="Halt and perform a warm restart"/>
+
+    <COMMAND name="reboot fast" help="Fast boot processes, but not restart linux" access="4">
+<ACTION>
+cfgfile="/mnt/flash/startup-config.conf"
+tmpfile="`mktemp /tmp/config-XXXXXX`"
+hassave=""
+cdbctl read/cdb/sys/chip/type | grep Greatbelt > /dev/null
+if [ "$?" == "0" ]; then
+    echo "% Not supported on this product"
+    exit 1
+fi
+
+cdbctl read/cdb/sys/chip/type | grep Tsingma > /dev/null
+if [ "$?" == "0" ]; then
+    echo "% Not supported on this product"
+    exit 1
+fi
+
+cdbctl buildcfg/startup/`basename $tmpfile`/cdb
+if [ "$?" != "0" ]; then
+    echo "% Generate running-config failed"
+else
+    if ! [ -f $cfgfile ]; then
+        szmsg="Startup config file is not exist. Copy running config to Startup config? [yes/no]: "
+        fnconvert -m "$szmsg" -c yesno_no
+        if [ "$?" == "0" ]; then
+            cp -fr $tmpfile $cfgfile
+        fi
+    else
+        diff -q $tmpfile $cfgfile >/dev/null
+        if [ "$?" != "0" ]; then
+            szmsg="System configuration has been modified. Save? [yes/no]: "
+            fnconvert -m "$szmsg" -c yesno_no
+            if [ "$?" == "0" ]; then
+                cp -fr $tmpfile $cfgfile
+                hassave="save"
+            fi
+        fi
+    fi
+fi
+rm -fr $tmpfile
+
+if [ $OVS_DIR ]; then
+    sh $OVS_DIR/bin/ovsdb_sync.sh 2>/dev/null
+fi
+
+szmsg="Reboot system? [confirm]"
+fnconvert -m "$szmsg" -c confirm
+if [ "$?" != "0" ]; then
+    echo "% Aborted!"
+    exit 1
+fi
+
+cdbctl update/cdb/sys/reboot/fast/$hassave
+
+</ACTION>
+
+		<CTCDESCRIPTION>
+To fast reboot the operating system, use the reboot fast command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The reboot fast command will restart all processes and reinitialize switch chip, but not restart linux OS and not reset hardware. The fast reboot takes about 30 seconds with default startup configuration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example show how to do fast reload.
+    Switch# reboot fast
+    Building configuration...
+    Reboot system? [confirm]y
+    Waiting .. success
+    Switch# 
+    % Connection is closed by administrator!
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		reboot
+		</CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="reboot hitless" help="Reboot software, but not reset switch chip" access="4" hidden="true">
+        <ACTION>
+			cfgfile="/mnt/flash/startup-config.conf"
+			tmpfile="`mktemp /tmp/config-XXXXXX`"
+			hassave=""
+			cdbctl read/cdb/sys/chip/type | grep Greatbelt > /dev/null
+			if [ "$?" == "0" ]; then
+				echo "% Not supported on this product"
+				exit 1
+			fi
+
+			cdbctl buildcfg/startup/`basename $tmpfile`/cdb
+			if [ "$?" != "0" ]; then
+				echo "% Generate running-config failed"
+			else
+				if ! [ -f $cfgfile ]; then
+					szmsg="Startup config file is not exist. Copy running config to Startup config? [yes/no]: "
+					fnconvert -m "$szmsg" -c yesno_no
+					if [ "$?" == "0" ]; then
+						cp -fr $tmpfile $cfgfile
+					fi
+				else
+					diff -q $tmpfile $cfgfile >/dev/null
+					if [ "$?" != "0" ]; then
+						szmsg="System configuration has been modified. Save? [yes/no]: "
+						fnconvert -m "$szmsg" -c yesno_no
+						if [ "$?" == "0" ]; then
+							cp -fr $tmpfile $cfgfile
+							hassave="save"
+						fi
+					fi
+				fi
+			fi
+			rm -fr $tmpfile
+
+			if [ $OVS_DIR ]; then
+				sh $OVS_DIR/bin/ovsdb_sync.sh 2>/dev/null
+			fi
+
+			szmsg="Reboot system? [confirm]"
+			fnconvert -m "$szmsg" -c confirm
+			if [ "$?" != "0" ]; then
+				echo "% Aborted!"
+				exit 1
+			fi
+            cdbctl update/cdb/sys/reboot/hitless/$hassave
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="configure"
+        help="Enter configuration mode"/>
+
+    <COMMAND name="configure terminal"
+        help="Configure from the terminal"
+        view="Configure">
+		<ACTION>
+			startup_file="/tmp/startup_cfg_done"
+			if [ -f $startup_file ]; then
+				echo "Enter configuration commands, one per line. End with CNTL/Z."
+			fi
+		</ACTION>
+    </COMMAND>
+
+<!-- Show commands -->
+    <COMMAND name="show"
+        help="Show running system information"/>
+
+<COMMAND name="show file" help="Show filesystem information" />
+<COMMAND name="show file system" help="List file sytems">
+<ACTION>
+echo "Type        Size        Used        Free        Use%"
+echo "======================================================================"
+if [ -f /etc/debian_version ]; then
+    /bin/df -h| grep -v "Filesystem" | grep "/mnt/flash" | grep -v "/mnt/flash/boot" | grep -v "debian" | awk '{
+    printf("%-12s%-12s%-12s%-12s%s\n", "flash:", $2, $3, $4, $5);
+    }'
+    /bin/df -h| grep -v "Filesystem" | grep "/mnt/flash/boot" | awk '{
+    printf("%-12s%-12s%-12s%-12s%s\n", "flash:/boot", $2, $3, $4, $5);
+    }'
+    /bin/df -h| grep -v "Filesystem" | grep "/mnt/udisk" | awk '{
+    printf("%-12s%-12s%-12s%-12s%s\n", "udisk:", $2, $3, $4, $5);
+    }'
+else
+    df -h| grep -v "Filesystem" | grep -v "/mnt/udisk" | awk '{
+    "fnconvert -c showname -p "$6 | getline fline;
+    printf("%-12s%-12s%-12s%-12s%s\n", fline, $2, $3, $4, $5);
+    }'
+    df -h| grep -v "Filesystem" | grep "/mnt/udisk" | awk '{
+    "fnconvert -c showname -p "$6 | getline fline;
+    printf("%-12s%-12s%-12s%-12s%s\n", fline, $2, $3, $4, $5);
+    }'
+fi
+
+#df -h| grep -v "Filesystem" | grep "/mnt/udisk" >/dev/null 2>/dev/null
+#if [ "$?" == "1" ]; then
+#    echo "" | awk '{printf("%-12s%-12s%-12s%-12s%s\n", "udisk:", "0B", "0B", "0B", "100%");}'
+#fi
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show filesystem information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is to show filesystem information:
+	Switch# show file system
+    Type        Size        Used        Free        Use%
+    ======================================================================
+    flash:/     887M        56M         827M        7%
+    flash:/boot 776M        360M        412M        47%
+    udisk:      0B          0B          0B          100%
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+    <COMMAND name="show management" help="Management interface configuration" />
+    <COMMAND name="show management interface" help="Management interface status">
+        <ACTION>
+        cdbctl show/cdb/sys/show_management_if
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show management interface status
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is to show management interface status:
+	Switch# show management if
+    eth0      Link encap:Ethernet  HWaddr 00:00:01:68:00:00
+              inet addr:10.10.33.160  Bcast:10.10.33.255  Mask:255.255.255.0
+              inet6 addr: fe80::200:1ff:fe68:0/64 Scope:Link
+              UP BROADCAST RUNNING MULTICAST  MTU:9500  Metric:1
+              RX packets:365502 errors:0 dropped:0 overruns:0 frame:0
+              TX packets:300710 errors:0 dropped:0 overruns:0 carrier:0
+              collisions:0 txqueuelen:1000
+              RX bytes:31314454 (29.8 MiB)  TX bytes:19641398 (18.7 MiB)
+              Base address:0xa000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+    </COMMAND>
+    <COMMAND name="show management ip" help="Internet Protocol" />
+    <COMMAND name="show management ip address" help="Management IP address status">
+        <ACTION>
+        cdbctl show/cdb/sys/manage_if/ipv4
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show management interface ip address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is to show management interface ip address:
+	Switch# show management ip address
+    Management IP address:  10.10.39.131/23
+    Gateway:  0.0.0.0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show management arp" help="Management ARP status">
+        <ACTION>cdbctl show/cdb/sys/show_management_if/arp</ACTION>
+
+    </COMMAND>
+
+
+    <COMMAND name="show ip"
+        help="IP information"/>
+
+    <COMMAND name="show startup-config" help="Contents of startup configuration" access="4">
+        <ACTION>cat /mnt/flash/startup-config.conf</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show contents of startup configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is to show contents of startup configuration:
+	Switch# show running-config
+    Building configuration...
+    service http enable
+    !
+    aaa authentication login default local
+    !
+    username admin privilege 4 password admin
+    username centec privilege 4 password centec
+    !
+    split interface eth-0-1 10giga
+    switch interface eth-0-1 sfp
+    !
+    ns-port-forwarding local-service tcp 80
+    ns-port-forwarding local-service tcp 443
+    !
+    management ip address 10.10.39.131/23
+    !
+    spanning-tree priority 0
+    !
+    interface eth-0-1/1
+    !
+    interface eth-0-1/2
+    !
+    interface eth-0-1/3
+    !
+    interface eth-0-1/4
+    !
+    interface eth-0-2
+    !
+    interface eth-0-3
+    !
+    interface eth-0-4
+    !
+    interface eth-0-5
+    !
+    interface eth-0-6
+    !
+    interface eth-0-7
+    !
+    interface eth-0-8
+    !
+    interface eth-0-9
+    !
+    interface eth-0-10
+    !
+    interface eth-0-11
+    !
+    interface eth-0-12
+    !
+    interface eth-0-13
+    !
+    interface eth-0-14
+    !
+    interface eth-0-15
+    !
+    interface eth-0-16
+    !
+    interface eth-0-17
+    !
+    interface eth-0-18
+    !
+    interface eth-0-19
+    !
+    interface eth-0-20
+    !
+    interface eth-0-21
+    !
+    interface eth-0-22
+    !
+    interface eth-0-23
+    !
+    interface eth-0-24
+    !
+    line con 0
+     speed 115200
+     no line-password
+     no login
+    line vty 0 7
+     exec-timeout 35791 0
+     privilege level 4
+     no line-password
+     no login
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="write" help="Write startup configuration" access="4">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/startup/$configfile/cdb
+			if [ -d "/mnt/flash/startup-config.conf" ] ; then
+				echo "% Can't write configuration for startup-config.conf is directory"
+				rm -rf /tmp/$configfile
+				cdbctl update/cdb/sys/send_trap/write_failure
+			    exit 1
+			fi
+	      if [ -f /etc/debian_version ]; then
+	                space=`/bin/df -h | grep "/mnt/flash" | grep -v "/mnt/flash/boot" | grep -v "debian" | awk -F " " '{print $5}'`
+	      else
+	                space=`df -h | grep "/mnt/flash" | grep -v "/mnt/flash/boot" | grep -v "debian" | awk -F " " '{print $5}'`
+              fi
+	      if [ $space == "100%" ];then
+			echo "% Can't write configuration for no enough space"
+			rm -rf /tmp/$configfile
+			cdbctl update/cdb/sys/send_trap/write_failure
+			exit 1
+	      fi
+            cp /tmp/$configfile /mnt/flash/startup-config.conf
+			if [ "$?" != "0" ] ; then
+			    echo "% Can't write configuration"
+				rm -rf /tmp/$configfile
+				cdbctl update/cdb/sys/send_trap/write_failure
+			    exit 1
+			fi
+            rm -rf /tmp/$configfile
+			sync
+			if [ $OVS_DIR ]; then
+			    sh $OVS_DIR/bin/ovsdb_sync.sh 2>/dev/null
+			fi
+			echo "[OK]"
+            cdbctl update/cdb/sys/send_trap/write_success
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to write startup configuration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is to write startup configuration:
+	Switch# write
+    Building configuration...
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+<COMMAND name="copy running-config startup-config" ref="write" access="2" help="Copy to startup configuration"/>
+
+<COMMAND name="boot" help="Boot"/>
+
+<!-- Boot commands -->
+
+<COMMAND name="boot system" help="System image" lock="true">
+    <PARAM name="GFLASHFILE" help="System image file for next booting" ptype="STRING">
+    </PARAM>
+
+<ACTION>
+showname="${GFLASHFILE}"
+accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+if [ "$?" != "0" ] ; then
+    echo "% Invalid file name"
+    exit 1
+fi
+
+if ! [ -f $accessname ]; then
+    echo "% Please specify regular file"
+    exit
+fi
+
+if [ "`dirname $accessname`" != "/mnt/flash/boot" ]; then
+    echo "% Please move image file into directory flash:/boot"
+    exit
+fi
+
+if [ "`basename $accessname`" == "uImage" ]; then
+    echo "% Can't specify boot configuration file as system image file"
+    exit
+fi
+
+szmsg="Are you sure to use $showname as the next boot image? [confirm]"
+fnconvert -m "$szmsg" -c confirm
+if [ "$?" != "0" ]; then
+    echo "% Aborted!"
+    exit
+fi
+
+imgname="`basename $accessname`"
+cdbctl -t 60 update/cdb/sys/bootimage/flash:/$imgname
+</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the system image that the switch loads at startup in flash, use the following boot system commands in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is sample dialog from the boot system command.
+    Switch# boot system flash:/boot/CNOS-v580-v2.1.4.14.r.bin
+    Are you sure to use flash:/boot/CNOS-v580-v2.1.4.14.r.bin as the next boot image? [confirm]y
+    Waiting ......... success
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="boot system tftp:" help="System image file for next booting">
+<PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand"/>
+<PARAM name="serverip" help="Server IP" ptype="IP_ADDR"/>
+<PARAM name="image" help="Image file name" ptype="STRING"/>
+
+<ACTION>
+cdbctl update/cdb/sys/bootimage/tftp:/${serverip}/${image}
+</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the system image that the switch loads at startup in tftp, use the following boot system commands in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Management IP address in startup-config file will be used as source address when system boot via TFTP.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+ None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is sample dialog from the boot system via tftp command.
+    Switch# boot system tftp: mgmt-if 10.10.38.160 CNOS-v580-v2.1.4.14.r.bin
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="boot system tftp: ipv6" help="System image file for next booting">
+<PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand"/>
+<PARAM name="serverip" help="Server IP" ptype="IPV6_ADDR"/>
+<PARAM name="image" help="Image file name" ptype="STRING"/>
+
+<ACTION>
+    cdbctl update/cdb/l3/tftp_check/${serverip}
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+    cdbctl update/cdb/sys/bootimage/tftp6:/${serverip}/${image}
+</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the system image that the switch loads at startup in tftp, use the following boot system commands in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Management IP address in startup-config file will be used as source address when system boot via TFTP.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+ None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example is sample dialog from the boot system via tftp command.
+    Switch# boot system tftp: ipv6 mgmt-if 1000:1001::81 CNOS-v580-v2.1.4.14.r.bin
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+    <COMMAND name="show boot" help="Boot">
+        <PARAM name="image" help="Image" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+
+        <ACTION>
+            cdbctl show/cdb/sys/bootimage/${image}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To display the current image and the image the next startup will load, use the show boot command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show boot command:
+    Switch# show boot
+    The current boot image version is: CNOS-2.1.4.14
+    The current running image is: flash:/boot/CNOS-v580-v2.1.4.14.r.bin
+    The next running image is: flash:/boot/CNOS-v580-v2.1.4.14.r.bin
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+
+	<COMMAND name="boot fast" help="Image for reboot fast command" lock="true">
+		<PARAM name="GFLASHFILE" help="System image file for next booting" ptype="STRING">
+		</PARAM>
+
+		<ACTION>
+		showname="${GFLASHFILE}"
+		accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+		if [ "$?" != "0" ] ; then
+			echo "% Invalid file name"
+			exit 1
+		fi
+
+		if ! [ -f $accessname ]; then
+			echo "% Please specify regular file"
+			exit
+		fi
+
+		if [ "`dirname $accessname`" != "/mnt/flash/boot" ]; then
+			echo "% Please move image file into directory flash:/boot"
+			exit
+		fi
+
+		if [ "`basename $accessname`" == "uImage" ]; then
+			echo "% Can't specify boot configuration file as system image file"
+			exit
+		fi
+
+        echo "WARNING: This command takes about 1 minute and 110M memory, and should not be interrupt!"
+		szmsg="Are you sure to use $showname as the next fast boot image? [confirm]"
+		fnconvert -m "$szmsg" -c confirm
+		if [ "$?" != "0" ]; then
+			echo "% Aborted!"
+			exit
+		fi
+
+		imgname="`basename $accessname`"
+		cdbctl -t 300 update/cdb/sys/bootimage/fast/flash:/$imgname
+        if [ "$?" == "255" ]; then
+            echo "% Extract rootfs failed for timeout, please use 'boot system' to clear temporary memory"
+            exit
+        fi
+		</ACTION>
+			<CTCDESCRIPTION>
+To specify the fast reboot image that the switch loads at startup in flash, use the following boot system commands in Privileged EXEC mode. 
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+This command will do all actions same to boot system flash command. This command takes nearly one minute for extract and decompression rootfs from the new image is time-consuming, and will consume about 110M memory for store new rootfs. The consumed memory will be freed by boot system command or reboot fast command.
+			</CTCUSAGE>
+			<CTCDEFAULT>
+None
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+	The following example is sample dialog from the boot system command.
+	Switch# boot fast flash:/boot/CNOS-v580-v2.1.4.14.r.bin
+	Are you sure to use flash:/boot/CNOS-v580-v2.1.4.14.r.bin as the next fast boot image? [confirm]y
+	Waiting ............................................. success
+			</CTCEXAMPLE>
+			<CTCRCMD>
+			</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="clear"
+        help="Clear action"/>
+
+<!--  commands -->
+
+    <COMMAND name="show memory summary" help="Summary of memory usage in total">
+        <PARAM name="total" help="Summary of memory usage in total" ptype="SUBCOMMAND" mode="subcommand" />
+        <ACTION>cdbctl show/cdb/sys/mem_summary</ACTION>
+    </COMMAND>
+
+    <COMMAND name="show memory process" help="Memory usage of a process">
+        <PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="appcfg" help="Application configuration process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="authd" help="Authentication process" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="bhm" help="Heart Beat Monitor process" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ccs" help="Central configuration service process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="cds" help="Central data service process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="chsm" help="Chassis process" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dhcrelay" help="Dhcp relay process" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="dhcsnooping" help="Dhcp snooping process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="fea" help="Fea process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="opm" help="OAM and APS manager process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ptp" help="PTP process" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="routed" help="Route process" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="switch" help="Switch process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ssm" help="Synchronization Status Message process" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="ovs-vswitchd" help="ovs-vswitchd process" ptype="SUBCOMMAND" mode="subcommand" test='-f /usr/local/openvswitch/bin/ovs-vswitchd' />
+        </PARAM>
+        <ACTION>cdbctl show/cdb/sys/show_common/${type}/memory</ACTION>
+    </COMMAND>
+
+    <COMMAND name="show memory process all" help="All process">
+        <ACTION>
+            HAVE_OVS=`ps --cols 250 aux | grep [o]vs-vswitchd`
+            cdbctl show/cdb/sys/show_common/ccs/memory
+            cdbctl show/cdb/sys/show_common/cds/memory
+            cdbctl show/cdb/sys/show_common/switch/memory
+            cdbctl show/cdb/sys/show_common/opm/memory
+            cdbctl show/cdb/sys/show_common/routed/memory
+            cdbctl show/cdb/sys/show_common/chsm/memory
+            cdbctl show/cdb/sys/show_common/appcfg/memory
+            cdbctl show/cdb/sys/show_common/fea/memory
+            cdbctl show/cdb/sys/show_common/dhcsnooping/memory
+            cdbctl show/cdb/sys/show_common/dhcrelay/memory
+            cdbctl show/cdb/sys/show_common/authd/memory
+            cdbctl show/cdb/sys/show_common/ptp/memory
+            cdbctl show/cdb/sys/show_common/bhm/memory
+            cdbctl show/cdb/sys/show_common/ssm/memory
+            if [ -n "$HAVE_OVS" ]; then
+                cdbctl show/cdb/sys/show_common/ovs-vswitchd/memory
+            fi
+        </ACTION>
+    </COMMAND>
+
+	<COMMAND name="show cpu" help="CPU"/>
+    <COMMAND name="show cpu utilization" help="Utilizations of CPU">
+        <ACTION>
+        cdbctl show/cdb/app/cpu_utilization
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show utilizations of cpu.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show cpu utilization command:
+    Switch# show cpu utilization
+    command          usage(%)
+    -------+-----------------+----------------------------------------
+    ps                6.0
+    kmemleak          2.7
+    fea               2.4
+    cdbctl            1.0
+    ksoftirqd         0.1
+    Total            12.2
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show cpu packets" help="Packets forward to CPU">
+        <ACTION>
+            cdbctl show/cdb/sys/cpu_packets
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show packets statistics of CPU.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show cpu packets command:
+    Switch# show cpu packets
+    CPU Packet Stats:
+    
+    Type                 Rx              Tx              Total          
+    --------------------+---------------+---------------+---------------
+    BPDU                 10              3               13              
+    SLOW PROTO           0               0               0              
+    EAPOL                0               0               0              
+    LLDP                 0               0               0              
+    ERPS                 0               0               0              
+    ARP                  0               2               2              
+    DHCP                 0               0               0              
+    IGMP                 0               0               0              
+    RIP                  0               -               -              
+    OSPF                 0               -               -              
+    MACDA                0               -               -              
+    IPDA                 0               -               -              
+    MAC LIMIT            0               -               -              
+    MAC MISMATCH         0               -               -              
+    L3COPY CPU           0               -               -              
+    TTL ERROR            0               -               -              
+    Other                0               0               0              
+    Total                10              5               15              
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		clear cpu packets
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show cpu history" help="History of CPU utilizations, default per minute in last 60 minutes">
+        <PARAM name="mode" optional="true" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+            <PARAM name="per-1-min" help="Display per minute cpu usage history" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="size" optional="true" help="Display history time, default is 60 minutes" ptype="HISTORY_PER_MINUTES" default="60"/>
+            </PARAM>
+            <PARAM name="per-10-mins" help="Display per 10 minutes cpu usage history" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="bigsize" optional="true" help="Display history time, default is 72*10 minutes" ptype="HISTORY_PER_TENMINUTES" default="72"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ "per-1-min" == ${mode} ]; then
+                cdbctl show/cdb/sys/show_cpu_mem_history/cpu/1hour/${size}
+            elif [ "per-10-mins" == ${mode} ]; then
+                cdbctl show/cdb/sys/show_cpu_mem_history/cpu/12hour/${bigsize}
+            else
+                cdbctl show/cdb/sys/show_cpu_mem_history/cpu/1hour/60
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show history of cpu utilizations.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show history of cpu utilizations command:
+Centec# show cpu history per-10-mins
+                   CPU usage (last 180 minutes)
+   time  |    1    2    3    4    5    6    7    8    9    10
+(minutes)|....0....0....0....0....0....0....0....0....0....0 usage(%)
+   03:45 |=                                                    3
+   03:55 |                                                     0
+   04:05 |                                                     1
+   04:15 |==================================                  69
+   04:25 |======================                              44
+   04:35 |                                                     1
+   04:45 |                                                     1
+   04:55 |                                                     1
+   05:05 |                                                     1
+   05:15 |                                                     1
+   05:25 |                                                     1
+   05:35 |                                                     1
+   05:45 |                                                     1
+   05:55 |                                                     1
+   06:05 |                                                     1
+   06:15 |                                                     0
+   06:25 |                                                     0
+   06:35 |                                                     1
+        </CTCEXAMPLE>
+        <CTCRCMD>
+        </CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="show memory" help="Memory"/>
+
+    <COMMAND name="show memory history" help="History of memory utilizations, default per minute in last 60 minutes">
+        <PARAM name="mode" optional="true" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+            <PARAM name="per-1-min" help="Display per minute memory usage history" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="size" optional="true" help="Display history time, default is 60 minutes" ptype="HISTORY_PER_MINUTES" default="60"/>
+            </PARAM>
+            <PARAM name="per-10-mins" help="Display per 10 minutes memory usage history" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="bigsize" optional="true" help="Display history time, default is 72*10 minutes" ptype="HISTORY_PER_TENMINUTES" default="72"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ "per-1-min" == ${mode} ]; then
+                cdbctl show/cdb/sys/show_cpu_mem_history/mem/1hour/${size}
+            elif [ "per-10-mins" == ${mode} ]; then
+                cdbctl show/cdb/sys/show_cpu_mem_history/mem/12hour/${bigsize}
+            else
+                cdbctl show/cdb/sys/show_cpu_mem_history/mem/1hour/60
+            fi
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show history of memory utilizations.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show history of memory utilizations command:
+Centec# show memory history per-10-mins 
+                   Memory usage (last 180 minutes)
+   time  |    1    2    3    4    5    6    7    8    9    10
+(minutes)|....0....0....0....0....0....0....0....0....0....0 usage(%)
+   03:45 |=================                                   34
+   03:55 |=================                                   35
+   04:05 |=================                                   35
+   04:15 |=================                                   35
+   04:25 |=================                                   35
+   04:35 |=================                                   35
+   04:45 |=================                                   35
+   04:55 |=================                                   35
+   05:05 |=================                                   35
+   05:15 |=================                                   35
+   05:25 |=================                                   35
+   05:35 |=================                                   35
+   05:45 |=================                                   35
+   05:55 |=================                                   35
+   06:05 |=================                                   35
+   06:15 |=================                                   35
+   06:25 |=================                                   35
+   06:35 |=================                                   35
+        </CTCEXAMPLE>
+        <CTCRCMD>
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show process" help="Process"/>
+    <COMMAND name="show process description" help="Description of process">
+        <ACTION>cdbctl show/cdb/app/cpu_utilization/description</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show description of processes.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show process description command:
+    Switch# show process description
+    Process          Description
+    ----------------+------------------------------------------------------------
+    authd            Authentication process
+    appcfg           Application configuration process
+    bhm              Heart Beat Monitor process
+    ccs              Central configure service process
+    cds              Central data service process
+    ...
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="clear cpu" help="CPU"/>
+    <COMMAND name="clear cpu packets" help="Packets forward to CPU">
+        <ACTION>
+            cdbctl update/cdb/sys/cpu_packets
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to clear packets of CPU.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is show how to clear CPU packets statistics:
+    Switch# clear cpu packets
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		show cpu packets
+		</CTCRCMD>
+    </COMMAND>
+
+<!-- test cds commands -->
+    <COMMAND name="terminal" help="Set terminal line parameters" access="1"/>
+    <COMMAND name="terminal length" help="Set number of lines on a screen" access="1">
+        <PARAM name="lines" help="Number of lines on screen (0 for no pausing, 1 does not support)" ptype="TERM_LINES" />
+
+        <ACTION builtin="clish_terminal_length">${lines}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set number of terminal lines on a screen. Range is 0 to 512 exclude 1.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to set terminal length lines:
+	Switch# terminal length 100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="terminal no" help="Negate a command or set its defaults" access="1"/>
+    <COMMAND name="terminal no length" help="Set number of lines on a screen" access="1">
+        <PARAM name="lines" optional="true" help="Number of lines on screen (0 for no pausing)" ptype="TERM_LINES" />
+
+        <ACTION builtin="clish_terminal_length">-1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to unset number of terminal lines on a screen.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample to unset terminal length lines:
+	Switch# terminal no length
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="terminal monitor" help="Copy debug output to the current terminal line">
+        <ACTION>cdbctl update/cdb/sys/terminal_monitor/on`tty`</ACTION>
+
+		<CTCDESCRIPTION>
+To copy debug output to the current terminal line, use the terminal monitor command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the terminal monitor command:
+	Switch# terminal monitor
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+    <COMMAND name="terminal no monitor" help="Copy debug output to the current terminal line">
+        <ACTION>cdbctl update/cdb/sys/terminal_monitor/off`tty`</ACTION>
+
+		<CTCDESCRIPTION>
+To close the debug output to the current terminal line, use this command.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample close the debug output to the current terminal line:
+	Switch# terminal no monitor
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="cd" help="System command cd" access="1">
+        <PARAM name="GFILENAME" optional="true" help="Directory name" default="flash:/" ptype="STRING" />
+
+        <ACTION builtin="clish_chdir">${GFILENAME}</ACTION>
+
+		<CTCDESCRIPTION>
+Change the current directory to dir, use the cd command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The initial default file system is flash:. If you do not specify a directory on a file system, the default is the root directory on that file system.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the cd command is set the flash:/boot file system to the Flash memory:
+	Switch# cd flash:/boot
+    Switch# pwd
+    flash:/boot
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="mkdir" help="System command mkdir" access="4">
+        <PARAM name="GFILENAME" help="Directory name or file name" ptype="STRING" />
+
+        <ACTION>
+        showname="${GFILENAME}"
+        accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+        if [ "$?" != "0" ]; then
+            echo "% Invalid file name"
+            exit
+        fi
+
+		# Added by liuht for bug42307, 2016-12-28
+		prefix_dir=`expr substr "$accessname" 1 16`
+		if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+			echo "% Not support this command in flash:/boot directory"
+			exit 1
+		fi
+		
+        if [ $accessname == "/mnt/flash/startup-config.conf" ]; then
+            echo "% Cannot create startup-config.conf directory"
+            exit
+        fi
+
+        if [ -e $accessname ]; then
+            echo "% Directory or file exists"
+            exit 1
+        fi
+        mkdir $accessname
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To create a new directory in a Flash file system, use the mkdir command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is valid only for local file systems.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example creates a directory named newdir in Flash.
+    Switch# mkdir flash:/newdir
+		</CTCEXAMPLE>
+		<CTCRCMD>
+rmdir
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="rmdir" help="System command rmdir" access="4">
+        <PARAM name="GFILENAME" help="Directory name or file name" ptype="STRING" />
+
+        <ACTION>
+        showname="${GFILENAME}"
+        accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+        if [ "$?" != "0" ]; then
+            echo "% Invalid directory name"
+            exit
+        fi
+
+        if ! [ -d $accessname ]; then
+            echo "% No such directory error"
+            exit
+        fi
+
+		# Added by liuht for bug42307, 2016-12-28
+		prefix_dir=`expr substr "$accessname" 1 16`
+		if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+			echo "% Not support this command in flash:/boot directory"
+			exit 1
+		fi
+		
+        # Modified by liuht for bug 33629, 2015-06-02
+        currname="`pwd 2>/dev/null`"
+        currname="$currname""/"
+        echo $currname | grep "$accessname""/" >/dev/null
+        if [ "$?" == "0" ]; then
+            echo "% Can't delete current working directory"
+            exit
+        fi
+
+        szmsg="Are you sure to delete $showname ? [no]"
+        fnconvert -m "$szmsg" -c yesno_no
+        if [ "$?" != "0" ]; then
+            echo "% Aborted!"
+            exit
+        fi
+
+        rmdir $accessname
+        sync
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To remove an existing directory in a Flash file system or udisk device, use the rmdir command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is valid only for local file systems.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example deletes a directory named newdir.
+    Switch# rmdir flash:/newdir
+    Are you sure to delete flash:/newdir ? [no]y
+		</CTCEXAMPLE>
+		<CTCRCMD>
+mkdir
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="pwd" help="System command pwd" access="1">
+        <ACTION>
+            accessname="`pwd`"
+            if [ "$accessname" == "/mnt" ]; then
+                echo $accessname
+                exit
+            fi
+            showname=`fnconvert -p "$accessname" -c showname 2>/dev/null`
+            if [ "$?" != "0" ]; then
+                echo "% Invalid directory name"
+                exit
+            fi
+            echo $showname
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to print working directory.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example print current working directory:
+	Switch# pwd
+    flash:/
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ls" help="System command ls" access="1">
+        <PARAM name="GFILENAME" optional="true" help="Directory name or file name" default="" ptype="STRING" />
+
+        <ACTION>
+            if [ "${GFILENAME}" == "" ]; then
+                accessname="`pwd`"
+                showname=`fnconvert -p "$accessname" -c showname 2>/dev/null`
+            else
+                showname="${GFILENAME}"
+                accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+            fi
+
+            if [ "$?" != "0" ]; then
+                echo "% Invalid file name or directory name"
+                exit
+            fi
+
+            if ! [ -e $accessname ]; then
+                echo "% No such file or directory"
+                exit
+            fi
+
+            if [ -d $accessname ]; then
+                echo "Directory of $showname"
+            else
+                echo "File of $showname"
+            fi
+            echo
+            ls -go $accessname | grep -v "lost+found" | sed 's/\/mnt\/flash\///g'
+            echo
+
+            rootpath="/mnt/flash"
+            echo $accessname | grep "/mnt/flash/boot" >/dev/null 2>/dev/null
+            if [ "$?" == "0" ]; then
+                rootpath="/mnt/flash/boot"
+            fi
+            echo $accessname | grep "/mnt/udisk" >/dev/null 2>/dev/null
+            if [ "$?" == "0" ]; then
+                rootpath="/mnt/udisk"
+            fi
+            echo $accessname | grep "/mnt/cf" >/dev/null 2>/dev/null
+            if [ "$?" == "0" ]; then
+                rootpath="/mnt/cf"
+            fi
+
+            df -m | grep -v Used | awk -v rootpath="$rootpath" 'BEGIN {total=0; avail=0;} {
+                linepath=index($6, rootpath)
+                if (1 == linepath) {
+                    if (length(rootpath) == length($6)) {
+                        total = total + $2; avail = avail + $4;
+                    }
+                }
+            }
+            END {
+                if (total >= 1024) {
+                    printf("Total %.2fG bytes ", total / 1024);
+                } else {
+                    printf("Total %.2fM bytes ", total);
+                }
+
+                if (avail >= 1024) {
+                    printf("(%.2fG bytes free)\r\n", avail / 1024);
+                } else {
+                    printf("(%.2fM bytes free)\r\n", avail);
+                }
+            }'
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To display a list of files on a file system, use the ls command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the ls (Flash file system) command to display flash information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the ls command.
+    Switch# ls
+    Directory of flash:/
+
+    total 3516
+    -rw-r--r-- 1 3290555 Aug 25 10:45 bgpd_100
+    drwxr-xr-x 2    1160 Sep  9 10:29 boot
+    drwxr-xr-x 7     624 Mar 31 09:16 cold
+    drwxr-xr-x 3     296 Mar 31 09:16 conf
+    -rw-r--r-- 1    2421 Jun 10 16:34 configlic
+    -rw------- 1     147 Sep  5 14:39 dhcpsnooping
+    -rw------- 1     151 Sep  5 14:39 dhcpv6snooping
+    drwxr-xr-x 2     800 Jun 15 22:23 info
+    drwxr-xr-x 2     288 Mar 31 09:16 log
+    drwxr-xr-x 7     488 Mar 31 09:16 monitor
+    drwxr-xr-x 2     232 Sep  9 10:37 reboot-info
+    -rw-r--r-- 1    1061 Sep 10 10:35 startup-config.conf
+    -rw-r--r-- 1  264981 Sep 10 16:32 syslog
+    drwxr-xr-x 2    6112 Sep  4 17:31 syslogfile
+
+    Total 887.00M bytes (875.00M bytes free)
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+    <COMMAND name="dir" ref="ls" help="System command dir"/>
+
+<COMMAND name="copy running-config" help="Copy from current system configuration" access="2">
+    <PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="dest" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="GFILENAME" help="Copy to local file" ptype="STRING" test='"${mgmt-if}"=""' />
+        <PARAM name="GURLNAME" help="Copy to URL" ptype="STRING" />
+    </PARAM>
+
+<ACTION>
+if [ "${dest}" == "GFILENAME" ]; then
+    showname="${GFILENAME}"
+    echo "${GFILENAME}"
+    accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+    if [ "$?" != "0" ]; then
+        echo "% Invalid file name"
+        exit
+    fi
+    if [ -e $accessname ]; then
+        if ! [ -f $accessname ]; then
+            echo "% Please specify regular file"
+            exit
+        fi
+    fi
+    # Added by liuht for bug42307, 2016-12-28
+	prefix_dir=`expr substr "$accessname" 1 16`
+	if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+		echo "% Not support this command in flash:/boot directory"
+		exit 1
+	fi
+    fnconvert -m "overwrite" -p "$showname" -c fileprocconfirm
+    if [ "$?" != "0" ]; then
+        exit
+	fi
+else
+    if [ "${mgmt-if}" != "" ]; then
+        export CUR_VRF="MANG_VRF"
+    else
+        export CUR_VRF="ZERO_VRF"
+    fi
+fi
+
+configfile=config-$(date +%N)
+cdbctl buildcfg/startup/$configfile/cdb >/dev/null 2>/dev/null
+if [ "$?" != "0" ]; then
+    rm -rf /tmp/$configfile
+    echo "% Generate running-config failed"
+    exit
+fi
+
+if [ "${dest}" == "GFILENAME" ]; then
+    cp -fr /tmp/$configfile $accessname
+    if [ "$?" == "0" ]; then
+        echo "[OK]"
+    fi
+else
+	cp -fr /tmp/$configfile /tmp/running-config
+    if [ "$?" != "0" ]; then
+        rm -rf /tmp/$configfile
+        echo "% Generate running-config failed"
+        exit
+    fi
+
+    fnconvert -c url -p "/tmp/running-config" -a send -u "${GURLNAME}"
+    if [ "$?" != "0" ]; then
+        rm -rf /tmp/$configfile
+        rm -rf /tmp/running-config
+        exit 1
+    fi
+    rm -rf /tmp/running-config
+fi
+rm -rf /tmp/$configfile
+sync
+</ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="copy startup-config" help="Copy from startup configuration" access="2">
+    <PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="dest" help="Type" ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="GFILENAME" help="Copy to local file" ptype="STRING" test='"${mgmt-if}"=""' />
+        <PARAM name="GURLNAME" help="Copy to URL" ptype="STRING" />
+    </PARAM>
+
+<ACTION>
+srcname="/mnt/flash/startup-config.conf"
+if ! [ -e $srcname ]; then
+    echo "% Startup configuration file not exist"
+    exit 1
+fi
+
+if [ "${dest}" == "GFILENAME" ]; then
+    showname="${GFILENAME}"
+    accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+    if [ "$?" != "0" ]; then
+        echo "% Invalid file name"
+        exit 1
+    fi
+    if [ -e $accessname ]; then
+        if ! [ -f $accessname ]; then
+            echo "% Please specify regular file"
+            exit 1
+        fi
+
+        if [ "$accessname" == "$srcname" ] ; then
+            exit 0
+        fi
+    fi
+    # Added by liuht for bug42307, 2016-12-28
+	prefix_dir=`expr substr "$accessname" 1 16`
+	if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+		echo "% Not support this command in flash:/boot directory"
+		exit 1
+	fi
+    fnconvert -m "overwrite" -p "$showname" -c fileprocconfirm
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+else
+    if [ "${mgmt-if}" != "" ]; then
+        export CUR_VRF="MANG_VRF"
+    else
+        export CUR_VRF="ZERO_VRF"
+    fi
+fi
+
+if [ "${dest}" == "GFILENAME" ]; then
+    cp -fr $srcname $accessname
+else
+    fnconvert -c url -p "$srcname" -a send -u "${GURLNAME}"
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+fi
+sync
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to copy running-config to tftp server or dest file.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is a sample output from the command displaying how to copy running-config to tftp server.
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="copy mgmt-if" help="Management port" access="2">
+<PARAM name="GURLNAME" help="Copy from URL" ptype="STRING"/>
+<PARAM name="GFILENAME" help="Copy to local file" ptype="STRING"/>
+
+<ACTION>
+export FNPPID="`echo $PPID`"
+
+showname="${GFILENAME}"
+accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+if [ "$?" != "0" ]; then
+    echo "% Invalid file name"
+    exit 1
+fi
+if [ -e $accessname ]; then
+    if ! [ -f $accessname ]; then
+        if ! [ -d $accessname ]; then
+            echo "% Please specify regular file"
+            exit 1
+        fi
+    fi
+fi
+
+export CUR_VRF="MANG_VRF"
+fnconvert -c url -p "$accessname" -a recv -u "${GURLNAME}"
+if [ "$?" != "0" ]; then
+    exit 1
+fi
+sync
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to copy file from tftp server to local.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is a sample output from the command displaying how to copy file from tftp server to local.
+
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="copy" help="System command copy" access="4">
+<PARAM name="srcopt" help="Type" ptype="SUBCOMMAND" mode="switch">
+  <PARAM name="GFILENAME" help="Copy from local file" ptype="STRING">
+    <PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    <PARAM name="dest" help="Type" ptype="SUBCOMMAND" mode="switch">
+      <PARAM name="GFILENAME" help="Copy to local file" ptype="STRING" test='"${mgmt-if}"=""'/>
+      <PARAM name="GURLNAME" help="Copy to URL" ptype="STRING">
+          <PARAM name="source-ip" help="Bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+             <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+         </PARAM>
+     </PARAM>
+      <PARAM name="running-config" help="Update (merge with) current system configuration" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+      <PARAM name="startup-config" help="Copy to startup system configuration" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+    </PARAM>
+  </PARAM>
+  
+  <PARAM name="GURLNAME" help="Copy from URL" ptype="STRING">
+    <PARAM name="GFILENAME" help="Copy to local file" ptype="STRING"/>
+    <PARAM name="source-ip" help="Bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+         <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+    </PARAM>
+  </PARAM>  
+</PARAM>
+
+<ACTION>
+
+if [ -n "${source-ip}" ]; then
+     cdbctl create/cdb/sys/inband_snat/${GURLNAME}/ip/${bind_addr}/
+     if [ $? -ne 0 ]; then
+         exit 1
+     fi
+fi
+
+export FNPPID="`echo $PPID`"
+
+if [ "${mgmt-if}" != "" ]; then
+    export CUR_VRF="MANG_VRF"
+else
+    export CUR_VRF="ZERO_VRF"
+fi
+
+if [ "${srcopt}" == "GURLNAME" ] || [ "${dest}" == "GURLNAME" ] ; then
+    showname="${GFILENAME}"
+    accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+    if [ "$?" != "0" ]; then
+        echo "% Invalid file name"
+        exit 1
+    fi
+
+    if [ -e $accessname ]; then
+        if [ "${dest}" == "GURLNAME" ]; then
+            if ! [ -f $accessname ]; then
+                echo "% Please specify regular file"
+                exit 1
+            fi
+        else
+            if [ -f $accessname ]; then
+                echo "" > /dev/null
+            elif [ -d $accessname ]; then
+                echo "" > /dev/null
+            else
+                echo "% Please specify regular file or directory"
+                exit 1
+            fi
+        fi
+    fi
+
+    if [ "${srcopt}" == "GURLNAME" ]; then
+        fnconvert -c url -p "$accessname" -a recv -u "${GURLNAME}"
+    else
+        if ! [ -f $accessname ]; then
+            echo "% No such file error."
+            exit 1
+        fi
+        fnconvert -c url -p "$accessname" -a send -u "${GURLNAME}"
+    fi
+
+    if [ -n "${source-ip}" ]; then
+        cdbctl delete/cdb/sys/inband_snat/${GURLNAME}/ip/${bind_addr}/
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+
+    exit 0
+fi
+
+# local to local
+showname="${GFILENAME}"
+accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+if [ "$?" != "0" ]; then
+    echo "% Invalid source file name"
+    exit 1
+fi
+if ! [ -e $accessname ]; then
+    echo "% Source file not exist"
+    exit 1
+fi
+
+if ! [ -f $accessname ]; then
+    echo "% Please specify regular source file"
+    exit 1
+fi
+
+shownamedest="${GFILENAME2}"
+
+if [ "$shownamedest" == "startup-config" ]; then
+    accessnamedest="/mnt/flash/startup-config.conf"
+else
+    accessnamedest=`fnconvert -p "$shownamedest" -c accessname 2>/dev/null`
+fi
+
+if [ "$?" != "0" ]; then
+    echo "% Invalid destination file name or directory name. Name should not be on hidden format and the characters must be [0-9a-zA-Z._-]  but can not start with [.]. path length range is [1, 255]. file name length range is [1, 47]"
+    exit 1
+fi
+
+# delete tailer /
+tidx=`expr length "$accessnamedest"`
+if [ "`expr substr "$accessnamedest" $tidx 1`" == "/" ]; then
+    tlen=`expr $tidx - 1`
+    accessnamedest=`expr substr "$accessnamedest" 1 $tlen`
+fi
+
+if [ -e $accessnamedest ]; then
+    if [ -d $accessnamedest ]; then
+        # directory
+        accessnamedest=$accessnamedest"/"`basename $accessname`
+        shownamedest=`fnconvert -p "$accessnamedest" -c showname 2>/dev/null`
+    elif ! [ -f $accessnamedest ]; then
+        echo "% Please specify regular file"
+        exit 1
+    fi
+fi
+
+if [ "$accessname" == "$accessnamedest" ]; then
+    # the same file
+    exit 0
+fi
+if [ "$shownamedest" == "running-config" ]; then
+    filename="${GFILENAME}"
+    accessname=`fnconvert -p "$filename" -c accessname 2>/dev/null`
+    if [ "$?" != "0" ]; then
+        echo "% Invalid file name"
+        exit
+    fi
+
+    # If the file is a regular file, then call klish to batch execute it. refer to "source" command
+    if [ -f "$accessname" ]; then
+        klish -r $accessname
+    fi
+    exit 0
+fi
+if [ -f $accessnamedest ]; then
+    fnconvert -m "overwrite" -p "$shownamedest" -c fileprocconfirm
+    if [ "$?" != "0" ]; then
+        exit 1
+    fi
+fi
+echo "${accessname}  ${accessnamedest}"
+fnconvert -c filecopy -p "$accessname" -o "$accessnamedest"
+sync
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to copy file from local file to tftp server or local.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This is a sample output from the command displaying how to copy file from local file to tftp server.
+    Switch# copy flash:/yanghz.conf mgmt-if tftp://10.10.38.160
+    TFTP server [10.10.38.160]
+    Name of the TFTP file to access [] yanghz.conf
+    Send file to tftp://10.10.38.160/yanghz.conf
+    .
+    Sent 2177 bytes in 0.1 seconds
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="copy xmodem:" help="Copy from Xmodem" access="4">
+<PARAM name="GFILENAME" help="Copy to local file" ptype="STRING"/>
+<ACTION>
+mytty=`tty`
+if [ "$mytty" == "/dev/ttyS0" ]; then
+    echo "" > /dev/null
+elif [ "$mytty" == "/dev/ttyS1" ]; then
+    echo "" > /dev/null
+elif [ "$mytty" == "/dev/console" ]; then
+    echo "" > /dev/null
+elif [ "$mytty" == "/dev/ttyAMA0" ]; then
+    echo "" > /dev/null
+elif [ "$mytty" == "/dev/ttyAMA1" ]; then
+    echo "" > /dev/null
+elif [ "$mytty" == "/dev/ttyS000" ]; then
+    echo "" > /dev/null
+else
+    echo "% This command is only supported from the Console"
+    exit 1
+fi
+showname="${GFILENAME}"
+accessname="`fnconvert -p "$showname" -c accessname 2>/dev/null`"
+if [ "$?" != "0" ]; then
+    echo "% Invalid destination file name"
+    exit 1
+fi
+if [ -e $accessname ]; then
+    if ! [ -f $accessname ]; then
+        echo "% Please specify regular file"
+        exit 1
+    fi
+fi
+
+export FNPPID="`echo $PPID`"
+fnconvert -c url -p "$accessname" -a recv -u "xmodem:"
+if [ "$?" != "0" ]; then
+    exit 1
+fi
+sync
+exit 0
+</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to copy file from console to local disk.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+	<COMMAND name="ftp" help="Use FTP to transfer file" access="4">
+		<PARAM name="mode" optional="true" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="mgmt-if" help="Management port" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="host" help="IP address or hostname of a remote system"	ptype="NAME_STRING"/>
+
+		<ACTION>
+            cdbctl update/cdb/l3/ftp_check/${host}
+            if [ "$?" != "0" ]; then
+                exit 1
+            fi
+			if [ "mgmt-if" == ${mode} ]; then
+				cmd="ip netns exec mgmt ctcftp"
+			else
+				cmd="ctcftp"
+			fi
+
+			if [ "0.0.0.0" == ${host} ]; then
+				echo "connect: Network is unreachable"
+			else
+				cmd=$cmd" ${host}"
+				$cmd
+			fi
+		</ACTION>
+	</COMMAND>
+
+<COMMAND name="more" interrupt="True" help="System command more" access="4">
+    <PARAM name="GFILENAME" help="Text file name" ptype="STRING" />
+
+    <ACTION>
+        showname="${GFILENAME}"
+        accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+        if [ "$?" != "0" ]; then
+            echo "% Invalid file name"
+            exit
+        fi
+
+        if [ -d $accessname ]; then
+            echo "% Failed to read file $showname: Is a directory"
+            exit
+        fi
+
+        if ! [ -f $accessname ]; then
+            echo "% No such file: $showname"
+            exit
+        fi
+
+        fnconvert -p "$accessname" -c isbinfile 2>/dev/null
+        if [ "$?" == "0" ]; then
+            echo "% Can't show binary file $showname"
+            exit
+        fi
+
+        more $accessname
+    </ACTION>
+
+		<CTCDESCRIPTION>
+To display the contents of a file, use the more command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The system can only display a file in ASCII format.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following partial sample output displays the configuration file named startup-config in flash.
+	Switch# more flash:/startup-config.conf
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="delete" help="System command delete" access="4">
+    <PARAM name="GFILENAME" help="File name for delete" ptype="STRING" />
+
+    <ACTION>
+showname="${GFILENAME}"
+echo "$showname" | grep "\*" >/dev/null 2>/dev/null
+if [ "$?" == "0" ]; then
+    # delete multi files
+    echo "$showname" | grep "/" >/dev/null 2>/dev/null
+    if [ "$?" == "0" ]; then
+        # flash:/xxx*.txt
+        dname=`dirname "$showname"`
+        fname=`basename "$showname"`
+    else
+        echo "$showname" | grep ":" >/dev/null 2>/dev/null
+        if [ "$?" == "0" ]; then
+            # flash:xxx*.txt
+            dindex=`expr index "$showname" ":"`
+            tlen=`expr length "$showname"`
+            flen=`expr $tlen - $dindex`
+            findex=`expr $dindex + 1`
+            dname=`expr substr "$showname" 1 $dindex`
+            fname=`expr substr "$showname" $findex $flen`
+        else
+            # xxx*.txt
+            dname="./"
+            fname="$showname"
+        fi
+    fi
+    targetdir=`fnconvert -p "$dname" -c accessname 2>/dev/null`
+    if [ "$?" != "0" ]; then
+        echo "% Invalid directory name"
+        exit
+    fi
+    tidx=`expr length "$targetdir"`
+    if [ "`expr substr "$targetdir" $tidx 1`" == "/" ]; then
+        tlen=`expr $tidx - 1`
+        targetdir=`expr substr "$targetdir" 1 $tlen`
+    fi
+
+    szmsg="Are you sure to delete $showname ? [no]"
+    fnconvert -m "$szmsg" -c yesno_no
+    if [ "$?" != "0" ]; then
+        echo "% Aborted!"
+        exit
+    fi
+
+    cd $targetdir
+    ls -d $fname >/dev/null 2>/dev/null
+    if [ "$?" != 0 ] ; then
+        exit
+    fi
+
+    for item in `ls -d $fname`; do
+        if [ -f "$targetdir/$item" ]; then
+        	deldir="`fnconvert -p "$targetdir" -c showname`"
+        	tidx=`expr length "$deldir"`
+        	if [ "`expr substr "$deldir" $tidx 1`" == "/" ]; then
+		        echo $deldir$item
+		    else
+		    	echo $deldir/$item
+    		fi
+			prefix_dir=`expr substr "$targetdir/$item" 1 16`
+			is_ext4=`mount | grep ext4`
+			if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+				if [ -z "$is_ext4" ];then
+					mount -t ubifs -o remount -rw ubi1:boot /mnt/flash/boot/ 2>/dev/null
+				else
+					mount -t ext4 -o remount -rw /dev/boot /mnt/flash/boot/ 2>/dev/null
+				fi
+				
+				rm -fr $targetdir/$item
+				if [ -z "$is_ext4" ];then
+					mount -t ubifs -o remount -r ubi1:boot /mnt/flash/boot/ 2>/dev/null
+				else
+					mount -t ext4 -o remount -r /dev/boot /mnt/flash/boot/ 2>/dev/null
+				fi
+				
+			else
+				rm -fr $targetdir/$item
+			fi
+        fi
+    done
+    exit
+fi
+
+accessname=`fnconvert -p "$showname" -c accessname 2>/dev/null`
+if [ "$?" != "0" ]; then
+    echo "% Invalid file name"
+    exit
+fi
+
+if [ -d "$accessname" ]; then
+    echo "% Can't delete directory"
+    exit
+fi
+
+if [ ! -f "$accessname" ]; then
+    echo "% No such file"
+    exit
+fi
+
+fnconvert -m delete -c fileprocconfirm -p "$showname"
+if [ "$?" != "0" ]; then
+    exit
+fi
+
+if ! [ -e $accessname ]; then
+    exit
+fi
+
+# Added by liuht for bug42307, 2016-12-28
+prefix_dir=`expr substr "$accessname" 1 16`
+is_ext4=`mount | grep ext4`
+if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+	if [ -z "$is_ext4" ];then
+		mount -t ubifs -o remount -rw ubi1:boot /mnt/flash/boot/ 2>/dev/null
+	else
+		mount -t ext4 -o remount -rw /dev/boot /mnt/flash/boot/ 2>/dev/null
+	fi
+	
+	rm -fr $accessname
+	if [ -z "$is_ext4" ];then
+		mount -t ubifs -o remount -r ubi1:boot /mnt/flash/boot/ 2>/dev/null
+	else
+		mount -t ext4 -o remount -r /dev/boot /mnt/flash/boot/ 2>/dev/null
+	fi
+	
+else
+	rm -fr $accessname
+fi
+sync
+    </ACTION>
+
+		<CTCDESCRIPTION>
+To delete a file on the flash, use the delete command in Privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If you attempt to delete the configuration file or image, the system prompts you to confirm the deletion.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example deletes the file named test from the flash:
+	Switch# delete flash:/test
+    Are you sure to delete flash:/test? [no]y
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="rename" help="System command rename" access="4">
+<PARAM name="srcopt" help="Type" ptype="SUBCOMMAND" mode="switch">
+  <PARAM name="GFILENAME" help="Source file name or directory name" ptype="STRING">
+   <PARAM name="dest" help="Type" ptype="SUBCOMMAND" mode="switch">
+      <PARAM name="GFILENAME" help="Destination file name or directory name" ptype="STRING" test='"${mgmt-if}"=""'/>
+   </PARAM>
+  </PARAM>
+</PARAM>
+
+<ACTION>
+src_showname="${GFILENAME}"
+dst_showname="${GFILENAME2}"
+
+src_accessname=`fnconvert -p "$src_showname" -c accessname 2>/dev/null`
+if [ "$?" != "0" ]; then
+# added by tongzb for bug 45876,2017-12-22
+    echo "% Invalid source file name or directory name. Name should not be on hidden format and the characters must be [0-9a-zA-Z._-] but can not start with [.]. path length range is [1, 255]. file name length range is [1, 47]"
+    exit 1
+fi
+
+dst_accessname=`fnconvert -p "$dst_showname" -c accessname 2>/dev/null`
+if [ "$?" != "0" ]; then
+# added by tongzb for bug 45876,2017-12-22
+    echo "% Invalid destination file name or directory name. Name should not be on hidden format and the characters must be [0-9a-zA-Z._-] but can not start with [.]. path length range is [1, 255]. file name length range is [1, 47]"
+    exit 1
+fi
+
+# Added by liuht for bug42307, 2016-12-28
+prefix_dir=`expr substr "$src_accessname" 1 16`
+if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+	echo "% Not support this command in flash:/boot directory"
+	exit 1
+fi
+
+prefix_dir=`expr substr "$dst_accessname" 1 16`
+if [ "$prefix_dir" == "/mnt/flash/boot/" ]; then
+	echo "% Not support this command in flash:/boot directory"
+	exit 1
+fi
+
+if [ -d "$dst_accessname" ]; then
+    echo "% Can't overwrite directory."
+    exit
+fi
+
+bn="`basename $src_accessname`"
+bnd="`basename $dst_accessname`"
+
+if [ "$bn" == "." ]; then
+    echo "% Invalid source file or directory"
+    exit 1
+elif [ "$bn" == ".." ]; then
+    echo "% Invalid source file or directory"
+    exit
+fi
+
+if [ "$bnd" == "." ]; then
+    echo "% Invalid destination file or directory"
+    exit 1
+elif [ "$bnd" == ".." ]; then
+    echo "% Invalid destination file or directory"
+    exit
+fi
+
+if [ "$src_accessname" == "$dst_accessname" ]; then
+    exit 0
+fi
+
+if ! [ -e $src_accessname ]; then
+    echo "% No such source file or directory"
+    exit 1
+fi
+
+dn="`dirname $src_accessname`"
+if [ "$dn" == "/mnt" ]; then
+    echo "% Invalid source file or directory"
+    exit
+fi
+
+dnd="`dirname $dst_accessname`"
+if [ "$dnd" == "/mnt" ]; then
+    echo "% Invalid destination file or directory"
+    exit
+fi
+
+if [ "$src_accessname" == "/mnt/flash/boot" ]; then
+    echo "% Invalid source file or directory"
+    exit
+elif [ "$src_accessname" == "/mnt/flash/boot/" ]; then
+    echo "% Invalid source file or directory"
+    exit
+fi
+
+if [ "$dst_accessname" == "/mnt/flash/boot" ]; then
+    echo "% Invalid destination file or directory"
+    exit
+elif [ "$dst_accessname" == "/mnt/flash/boot/" ]; then
+    echo "% Invalid destination file or directory"
+    exit
+fi
+
+fnconvert -m "rename" -c fileprocconfirm -p $src_showname
+if [ "$?" != "0" ]; then
+    exit
+fi
+
+if [ -e "$dst_accessname" ]; then
+    fnconvert -m "overwrite" -c fileprocconfirm -p $dst_showname
+    if [ "$?" != "0" ]; then
+        exit
+    fi
+    rm -fr $dst_accessname
+fi
+
+echo "Renaming file, please wait..."
+mv $src_accessname $dst_accessname
+
+if [ "$?" != "0" ]; then
+    echo "% Failed to rename $src_showname to $dst_showname"
+    rm -fr $dst_accessname
+    exit 1
+fi
+
+sync
+# added by tongzb for bug 54144,2019-11-1
+echo 3 > /proc/sys/vm/drop_caches
+
+echo "Done!"
+</ACTION>
+
+		<CTCDESCRIPTION>
+To rename a file in a Class C Flash file system or udisk device, use the rename command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is valid only for local file systems.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    In the following example, the file named startup-config.conf-bak is renamed startup-config.conf-bak1.
+    Switch# rename flash:/startup-config.conf-bak flash:/startup-config.conf-bak1
+    Are you sure to rename flash:/startup-config.conf-bak ? [confirm]y
+    .
+    File system synchronization. Please waiting...
+    1061 bytes in 0.1 seconds, 10 kbytes/second
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+
+<!-- Compatible command for V350 'source'. -->
+<COMMAND name="source" help="Execute commands in batch" access="4">
+    <PARAM name="GFILENAME" help="Configuration file" ptype="STRING" />
+
+    <ACTION>
+        filename="${GFILENAME}"
+        accessname=`fnconvert -p "$filename" -c accessname 2>/dev/null`
+        if [ "$?" != "0" ]; then
+            echo "% Invalid file name"
+            exit
+        fi
+
+	# If the file is a regular file, then call klish to batch execute it.
+        if [ -f "$accessname" ]; then
+	    # XXX: not support 'source quiet' command currently, default do echo.
+	    klish -r $accessname
+        fi
+    </ACTION>
+
+		<CTCDESCRIPTION>
+Read and execute commands from filename in the shell environment.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+NONE
+		</CTCUSAGE>
+		<CTCDEFAULT>
+NONE
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+    The following is show how to source commands from a file:
+    Switch# source flash:/batch_shutdown.txt
+    Switch# configure terminal
+    Enter configuration commands, one per line. End with CNTL/Z.
+    Switch(config)# interface eth-0-1/1
+    Switch(config-if-eth-0-1/1)# shutdown
+    Switch(config-if-eth-0-1/1)# interface eth-0-1/2
+    Switch(config-if-eth-0-1/2)# shutdown
+    Switch(config-if-eth-0-1/2)# interface eth-0-1/3
+    Switch(config-if-eth-0-1/3)# shutdown
+    Switch(config-if-eth-0-1/3)# interface eth-0-1/4
+    Switch(config-if-eth-0-1/4)# shutdown
+    Switch(config-if-eth-0-1/4)# end
+    Switch# 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+</COMMAND>
+
+    <COMMAND name="config-startup-done" help="Set startup done" hidden="true">
+        <ACTION>
+        cdbctl update/cdb/sys/sys_global/startup_done/1
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="memory-threshold" help="Threshold of memory" hidden="true">
+		<PARAM name="mem_threshold1" help="When the freememory is lower than mem_threshold1, memory state is critical" ptype="MEMORY_THRESHOLD" >
+			<PARAM name="mem_threshold2" help="When the freememory is lower than mem_threshold2, memory state is alert" ptype="MEMORY_THRESHOLD" >
+				<PARAM name="mem_threshold3" help="When the freememory is lower than mem_threshold3, memory state is warning" ptype="MEMORY_THRESHOLD" />
+			</PARAM>
+		</PARAM>
+        <ACTION>
+        cdbctl update/cdb/sys/sys_global/memory_threshold1/${mem_threshold1}/memory_threshold2/${mem_threshold2}/memory_threshold3/${mem_threshold3}
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="show memory-threshold" help="Threshold of memory" hidden="true">
+        <ACTION>
+		 cdbctl show/cdb/sys/show_memory_threshold
+        </ACTION>
+
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="reset" help="System command reset" access="4"/>
+	<COMMAND name="reset factory-config" help="Reset factory configuration" access="4">
+		
+		<ACTION>
+		while true
+		do
+		echo -e "Startup-config will be overwritten with factory-config. Continue? [yes/no]:\c" 
+		read -n 1024 answer
+		case "$answer" in
+		y|yes) 	fnconvert -c filecopy -p "/mnt/flash/boot/.factory-config.conf" -o "/mnt/flash/startup-config.conf" >/dev/null 2>/dev/null
+				if [ "$?" != "0" ]; then
+					echo "% No factory configuration exist"
+				fi
+				exit
+				;;
+		n|no) echo "% Aborted!"
+				exit
+				;;
+		*) echo "% Please answer 'yes' or 'no'."
+		esac
+		done		    
+		
+        </ACTION>
+		<CTCDESCRIPTION>
+To reset factory-config.		
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to reset factory-config.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+NONE
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	Switch# reset factory-config 
+    This action will reset the saved configuration immediately.
+    The startup-config will be replaced by factory-config. Continue? [yes/no]:  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show factory-config  
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="factory-config" help="Factory configuration" hidden="true">
+		<PARAM name="write" help="Write factory configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="GFILENAME" optional="true" help="Directory name or file name" ptype="STRING" />
+		
+		<ACTION>
+		 
+		if [ -n "${GFILENAME}" ]; then
+		    echo "Building factory configuration..."
+			cdbctl update/cdb/sys/factory_config/write/${GFILENAME}
+			if [ "$?" == "0" ]; then
+				echo "[OK]"
+			fi
+			
+		else
+		    echo "Building factory configuration..." 
+			configfile=config-$(date +%N)
+			cdbctl buildcfg/startup/$configfile/cdb >/dev/null 2>/dev/null
+			if [ "$?" != "0" ]; then
+				rm -rf /tmp/$configfile
+				echo "% Generate running-config failed"
+				exit
+			fi
+	                
+			fnconvert -c filecopy -p "/tmp/$configfile" -o "/mnt/flash/boot/.factory-config.conf" >/dev/null 2>/dev/null
+			rm -rf /tmp/$configfile
+			sync
+			
+			if [ "$?" == "0" ]; then
+				echo "[OK]"
+			fi
+		fi
+		
+        </ACTION>
+		<CTCDESCRIPTION>
+
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+
+		</CTCUSAGE>
+		<CTCDEFAULT>
+
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show factory-config" help="Factory configuration" access="4">
+        <ACTION>cdbctl show/cdb/sys/factory_config</ACTION>
+		<CTCDESCRIPTION>
+To show factory-config.	
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show factory-config.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+NONE
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	Switch# show factory-config 
+	hostname Switch
+	!
+	username admin privilege 4 password admin
+	!
+	!
+	management ip address 10.10.39.161/23
+	management route add gateway 10.10.39.254
+	!
+	vlan 100
+	!
+	!
+	interface eth-0-1
+	 switchport access vlan 100
+	!
+	interface eth-0-2
+	 switchport access vlan 100
+	!
+	interface eth-0-3
+	 switchport access vlan 100
+	!
+	interface eth-0-4
+	 shutdown
+	!
+	interface eth-0-5
+	 shutdown
+	!
+	interface eth-0-6
+	 shutdown
+	!
+	interface eth-0-7
+	 shutdown
+	!
+	interface eth-0-8
+	 shutdown
+	!
+	interface eth-0-9
+	 shutdown
+	!
+	interface eth-0-10
+	 shutdown
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+   </COMMAND>
+
+	<COMMAND name="fsck" help="fsck flash on board online" hidden="true">
+		<PARAM name="partition" help="partition of emmc" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="system" help="fsck system partition" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="boot" help="fsck boot partition" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>			
+        <ACTION>
+		if [ "system" == ${partition} ]; then
+			/etc/fsck_flash.sh system
+		elif [ "boot" == ${partition} ]; then
+			/etc/fsck_flash.sh boot
+		fi		
+        </ACTION>
+		<CTCDESCRIPTION>
+To fsck flash.	
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to fsck flash when flash can not work normal.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+NONE
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		Switch# fsck system
+		prepare to fsck partition...
+		prepare to fsck partition done!
+		umount partition...
+		umount partition done!
+		fsck partition...
+		fsck partition done!
+		remount...
+		remount done!
+		done!
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+   </COMMAND>
+
+	<COMMAND name="emmc" help="emmc monitor" hidden="true">
+		<PARAM name="monitor" help="monitor the health of emmc" ptype="SUBCOMMAND" mode="subcommand"/>
+        <ACTION>
+		echo "%" `mmc extcsd read /dev/mmcblk0 | grep DEVICE_LIFE_TIME_EST_TYP_A`
+		echo "%" `mmc extcsd read /dev/mmcblk0 | grep DEVICE_LIFE_TIME_EST_TYP_B`
+		echo "%" `mmc extcsd read /dev/mmcblk0 | grep EXT_CSD_PRE_EOL_INFO`
+        </ACTION>
+		<CTCDESCRIPTION>
+To monitor the health of emmc.	
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to monitor the health of emmc.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+NONE
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		Switch# emmc monitor
+		% [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x02
+		% [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x01
+		% [EXT_CSD_PRE_EOL_INFO]: 0x01
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+   </COMMAND>
+
+    <COMMAND name="cdmnt" help="System command cd mnt" hidden="true">
+        <ACTION builtin="clish_ctc_chdir_mnt">${GFILENAME}</ACTION>
+    </COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

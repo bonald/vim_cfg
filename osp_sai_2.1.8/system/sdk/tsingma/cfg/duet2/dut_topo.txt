@@ -1,0 +1,133 @@
+################## Topo how each Mac in CTP connects with cmodel's port ###################
+# format: {valid,queue_type,eth_if_id}							  #
+# DUT1 TOPO (PE1 device)								  #
+# valid: TRUE or FALSE                                                                    #
+# queue_type: SIM_IPE_Q / SIM_FWD_Q / SIM_EPE_Q / SIM_OAM_Q / SIM_NETTX_Q / SIM_MAX_Q     #
+# eth_if_id: ethernet interface id                                                        #
+###################################### chip 0 #############################################
+[SLICE_ID]=0
+# chip2 Gmac 0-47
+{TRUE,SIM_IPE_Q,0}
+{TRUE,SIM_IPE_Q,1}
+{TRUE,SIM_IPE_Q,2}
+{TRUE,SIM_IPE_Q,3}
+{TRUE,SIM_IPE_Q,4}
+{TRUE,SIM_IPE_Q,5}
+{TRUE,SIM_IPE_Q,6}
+{TRUE,SIM_IPE_Q,7}
+{TRUE,SIM_IPE_Q,8}
+{TRUE,SIM_IPE_Q,9}
+{TRUE,SIM_IPE_Q,10}
+{TRUE,SIM_IPE_Q,11}
+{TRUE,SIM_IPE_Q,12}
+{TRUE,SIM_IPE_Q,13}
+{TRUE,SIM_IPE_Q,14}
+{TRUE,SIM_IPE_Q,15}
+{TRUE,SIM_IPE_Q,16}
+{TRUE,SIM_IPE_Q,17}
+{TRUE,SIM_IPE_Q,18}
+{TRUE,SIM_IPE_Q,19}
+{TRUE,SIM_IPE_Q,20}
+{TRUE,SIM_IPE_Q,21}
+{TRUE,SIM_IPE_Q,22}
+{TRUE,SIM_IPE_Q,23}
+{TRUE,SIM_IPE_Q,24}
+{TRUE,SIM_IPE_Q,25}
+{TRUE,SIM_IPE_Q,26}
+{TRUE,SIM_IPE_Q,27}
+{TRUE,SIM_IPE_Q,28}
+{TRUE,SIM_IPE_Q,29}
+{TRUE,SIM_IPE_Q,30}
+{TRUE,SIM_IPE_Q,31}
+{TRUE,SIM_IPE_Q,32}
+{TRUE,SIM_IPE_Q,33}
+{TRUE,SIM_IPE_Q,34}
+{TRUE,SIM_IPE_Q,35}
+{TRUE,SIM_IPE_Q,36}
+{TRUE,SIM_IPE_Q,37}
+{TRUE,SIM_IPE_Q,38}
+{TRUE,SIM_IPE_Q,39}
+{TRUE,SIM_IPE_Q,40}
+{TRUE,SIM_IPE_Q,41}
+{TRUE,SIM_IPE_Q,42}
+{TRUE,SIM_IPE_Q,43}
+{TRUE,SIM_IPE_Q,44}
+{TRUE,SIM_IPE_Q,45}
+{TRUE,SIM_IPE_Q,46}
+{TRUE,SIM_IPE_Q,47}
+# chip2 XGmac 4-11
+{TRUE,SIM_IPE_Q,48}
+{TRUE,SIM_IPE_Q,49}
+{TRUE,SIM_IPE_Q,50}
+{TRUE,SIM_IPE_Q,51}
+{TRUE,SIM_IPE_Q,52}
+{TRUE,SIM_IPE_Q,53}
+{TRUE,SIM_IPE_Q,54}
+{TRUE,SIM_IPE_Q,55}
+# cpu channel
+{TRUE,SIM_FWD_Q,204}
+############################
+###################################### slice_id 1 #############################################
+[SLICE_ID]=1
+# chip2 Gmac 0-47
+{TRUE,SIM_IPE_Q,100}
+{TRUE,SIM_IPE_Q,101}
+{TRUE,SIM_IPE_Q,102}
+{TRUE,SIM_IPE_Q,103}
+{TRUE,SIM_IPE_Q,104}
+{TRUE,SIM_IPE_Q,105}
+{TRUE,SIM_IPE_Q,106}
+{TRUE,SIM_IPE_Q,107}
+{TRUE,SIM_IPE_Q,108}
+{TRUE,SIM_IPE_Q,109}
+{TRUE,SIM_IPE_Q,110}
+{TRUE,SIM_IPE_Q,111}
+{TRUE,SIM_IPE_Q,112}
+{TRUE,SIM_IPE_Q,113}
+{TRUE,SIM_IPE_Q,114}
+{TRUE,SIM_IPE_Q,115}
+{TRUE,SIM_IPE_Q,116}
+{TRUE,SIM_IPE_Q,117}
+{TRUE,SIM_IPE_Q,118}
+{TRUE,SIM_IPE_Q,119}
+{TRUE,SIM_IPE_Q,120}
+{TRUE,SIM_IPE_Q,121}
+{TRUE,SIM_IPE_Q,122}
+{TRUE,SIM_IPE_Q,123}
+{TRUE,SIM_IPE_Q,124}
+{TRUE,SIM_IPE_Q,125}
+{TRUE,SIM_IPE_Q,126}
+{TRUE,SIM_IPE_Q,127}
+{TRUE,SIM_IPE_Q,128}
+{TRUE,SIM_IPE_Q,129}
+{TRUE,SIM_IPE_Q,130}
+{TRUE,SIM_IPE_Q,131}
+{TRUE,SIM_IPE_Q,132}
+{TRUE,SIM_IPE_Q,133}
+{TRUE,SIM_IPE_Q,134}
+{TRUE,SIM_IPE_Q,135}
+{TRUE,SIM_IPE_Q,136}
+{TRUE,SIM_IPE_Q,137}
+{TRUE,SIM_IPE_Q,138}
+{TRUE,SIM_IPE_Q,139}
+{TRUE,SIM_IPE_Q,140}
+{TRUE,SIM_IPE_Q,141}
+{TRUE,SIM_IPE_Q,142}
+{TRUE,SIM_IPE_Q,143}
+{TRUE,SIM_IPE_Q,144}
+{TRUE,SIM_IPE_Q,145}
+{TRUE,SIM_IPE_Q,146}
+{TRUE,SIM_IPE_Q,147}
+# chip2 XGmac 4-11
+{TRUE,SIM_IPE_Q,148}
+{TRUE,SIM_IPE_Q,149}
+{TRUE,SIM_IPE_Q,150}
+{TRUE,SIM_IPE_Q,151}
+{TRUE,SIM_IPE_Q,152}
+{TRUE,SIM_IPE_Q,153}
+{TRUE,SIM_IPE_Q,154}
+{TRUE,SIM_IPE_Q,155}
+
+# cpu channel
+{TRUE,SIM_FWD_Q,205}
+############################

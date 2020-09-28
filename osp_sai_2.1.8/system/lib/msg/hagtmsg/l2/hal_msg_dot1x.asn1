@@ -1,0 +1,38 @@
+HAL-MSG-L2-DOT1X DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+Dot1xAuthType ::= ENUMERATED
+{
+    portEn,
+    portDis,
+    macEn,
+    macDis,
+    portAuth,
+    portUnauth,
+    macAuth,
+    macUnauth    
+}
+
+HalMsgDot1xAuth ::= SEQUENCE
+{
+    type     Dot1xAuthType,
+    portid   INTEGER,
+    mac      HalMsgDefL2MacAddr
+}
+
+HalMsgDot1xSetPethAuth ::= SEQUENCE
+{
+    portid   INTEGER,
+    auth     INTEGER
+}
+
+HalMsgDot1xSetStatus ::= SEQUENCE
+{
+    portid   INTEGER,
+    status   INTEGER,
+    dir      INTEGER
+}
+END

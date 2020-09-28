@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/sunos-gcc/netinet
+END
+igmp.h
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/sunos-gcc/netinet/igmp.h
+END
+ip_mroute.h
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/sunos-gcc/netinet/ip_mroute.h
+END
+in.h
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/sunos-gcc/netinet/in.h
+END

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+PORT_SECURITY
+</CTCMODULENAME>	
+
+<VIEW name="Exec">
+
+    <COMMAND name="show port-security" help="Port security configuration">
+        <ACTION>
+		  cdbctl show/cdb/l2/show_psfdb/status
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the show port-security EXEC command to display the information of all ports which have configured the port-security, which includes security port, max security address, current address and violation mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The security port mode only can be l2 port, physical port or agg port; the max security address num and current address num are dynamic security address num, not include static security address num.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show port-security command:  
+    Switch# show port-security  
+    Secure Port  MaxSecureAddr  CurrentAddr  SecurityViolationMode
+                   (Count)       (Dynamic)   
+    ------------+--------------+------------+-------------------------
+    eth-0-1      1              0            protect  
+    eth-0-2      1              0            protect  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show port-security interface 
+show port-security address-table
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="show port-security address-table" help="Security MAC address table">
+        <PARAM name="type" help="Type" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="static" help="Static MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="dynamic" help="Dynamic MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+        </PARAM>
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+            </PARAM>
+            <PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+            </PARAM>
+            <PARAM name="address" help="MAC" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="mac_addr" help="MAC address" ptype="MAC_ADDR"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ ${part} == "all" ]; then
+                cdbctl show/cdb/l2/show_psfdb/address-table/${type}
+            elif [ ${part} == "interface" ]; then
+                cdbctl show/cdb/l2/show_psfdb/address-table/${type}/${part}/${if_id}
+            elif [ ${part} == "vlan" ]; then
+                cdbctl show/cdb/l2/show_psfdb/address-table/${type}/${part}/${vlan_id}
+            elif [ ${part} == "address" ]; then
+                cdbctl show/cdb/l2/show_psfdb/address-table/${type}/${part}/${mac_addr}
+			fi
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+Use the show command to display a specific port-security MAC address table of all static or dynamic entry; or display the port-security MAC address table by a specific interface or VLAN or mac.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+It can display the port-security MAC address table by a specific interface, the interface can be physical port or agg port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show port-security address-table command:  
+    Switch# show port-security address-table 
+                Security Mac Address Table
+    --------------------------------------------------
+    VLAN ID MAC Address      Type             Port    
+    -------+----------------+----------------+--------
+    1       0000.0000.0001   SecureConfigured eth-0-1 
+    1       0000.0000.0002   SecureConfigured eth-0-1 
+    1       0000.0000.0003   SecureConfigured eth-0-2 
+    1       0000.0000.0004   SecureConfigured eth-0-2   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show port-security 
+show port-security interface
+		</CTCRCMD>
+    </COMMAND>
+	
+    <COMMAND name="show port-security interface" help="Interface to use">
+       <PARAM name="if_id" help="Interface" ptype="IF_NAME_EA"/> 
+		<ACTION>
+		cdbctl show/cdb/l2/show_psfdb/interface/${if_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the show port-security EXEC command to display the port security information of one switchport.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The output command can get the status of port security, violation mode, maxinum dynamic address, current dynamic address of one port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show port-security interface command:  
+    Switch# show port-security interface eth-0-1
+	Port security                    : enabled
+	Violation mode                   : discard packet silence
+	Maximum Dynamic MAC addresses    : 1 
+	Total MAC addresses              : 2 
+	Static configured MAC addresses  : 2 
+	Dynamic learned MAC addresses    : 0 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show port-security
+show port-security address-table
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="clear port-security" help="Port security MAC"/>
+        <COMMAND name="clear port-security address-table" help="MAC address table">
+			<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="static" help="Static MAC address" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+			<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+				<PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+					<PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+				</PARAM>
+				<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"> 
+					<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+				</PARAM>
+				<PARAM name="address" help="MAC" ptype="SUBCOMMAND" mode="subcommand"> 
+					<PARAM name="mac" help="MAC address" ptype="MAC_ADDR"/>
+				</PARAM>
+			</PARAM>
+            <ACTION>
+			if [ ${part} == "all" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/psfdb/${type}
+            elif [ ${part} == "interface" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/psfdb/${type}/${part}/${if_id}
+            elif [ ${part} == "vlan" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/psfdb/${type}/${part}/${vlan_id}
+			elif [ ${part} == "address" ]; then
+                cdbctl update/cdb/action/l2_action/flush_fdb/psfdb/${type}/${part}/${mac}
+			fi
+            </ACTION>
+			
+			<CTCDESCRIPTION>
+Use the clear port-security address-table privileged EXEC command on the switch to delete all static security addresses, or all static security addresses on a particular interface or a particular vlan or a particular mac.  
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+None
+			</CTCUSAGE>
+			<CTCDEFAULT>
+None 
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+    This example shows how to remove port-security MAC address of vlan 1 from the static address table:  
+    Switch# clear port-security address-table static vlan 1  
+			</CTCEXAMPLE>
+			<CTCRCMD>
+show port-security address-table
+			</CTCRCMD>
+        </COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="switchport port-security"
+		help="Security related command">
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/brgif/port_security_en/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the switchport port-security configuration command on the switchport to set port-security enable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The command can set the port-security enable. The security-maximum and security-violation will be work only when port-security enable. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-security enable.  
+    Switch(config-if-eth-0-1) switchport port-security  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport port-security
+		</CTCRCMD>		
+	</COMMAND>
+
+	
+	<COMMAND name="no switchport port-security"
+		help="Security related command">
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/brgif/port_security_en/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use no switchport port-security configuration command on the switchport to set port-security disable.
+        </CTCDESCRIPTION>
+		<CTCUSAGE>
+The no command can set the port-security disable. When the port-security is disable, the security-maximum and security-violation will not work.   
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is disabled.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-security disable.
+    Switch(config-if-eth-0-1) no switchport port-security
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport port-security
+		</CTCRCMD>		
+	</COMMAND>
+	
+	<COMMAND name="switchport port-security mac-address" help="Secure MAC address">
+		  <PARAM name="mac" help="MAC address" ptype="MAC_ADDR"/>
+		  <PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+		  </PARAM>
+ 
+		<ACTION>
+			cdbctl create/cdb/l2/psfdb/${mac}#${vlan_id}/interface/${iface}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the switchport port-security mac-address configuration command on the switchport to set the static security fdb entry.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the port-security is not enable, the static security fdb entry is not worked.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the static security mac-address on one port.
+    Switch(config-if-eth-0-1) switchport port-security mac-address 0.0.1 vlan 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport port-security mac-address
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="no switchport port-security mac-address" help="Secure MAC address">
+	<PARAM name="mac" help="MAC address" ptype="MAC_ADDR"/>
+		  <PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+		  </PARAM>
+		<ACTION>
+			cdbctl delete/cdb/l2/psfdb/${mac}#${vlan_id}/interface/${iface}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the no command on the switchport to delete static security mac-address.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The no command can only work on switch port and it will delete the configured security mac-address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete the static security mac-address.
+    Switch(config-if-eth-0-1) no switchport port-security mac-address 0.0.1 vlan 1 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport port-security mac-address
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="switchport port-security maximum"
+		help="Maximum number of secure MAC addresses">
+          <PARAM name="maxinum" help="Maxinum number of secure dynamic MAC address, default is 1" ptype="PORT_SECURITY_MAX_NUM"/> 
+		<ACTION>
+		    cdbctl update/cdb/interface/${iface}/brgif/max_mac/${maxinum}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the switchport port-security maximum configuration command on the switchport to set the maximum security mac-address.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command can set the maximum of learnt dynamic address num, the range is 1 to 16384.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the maximum security mac-address on one port.
+    Switch(config-if-eth-0-1) switchport port-security maximum 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport port-security maximum
+		</CTCRCMD>
+	</COMMAND>	
+
+	
+	<COMMAND name="no switchport port-security maximum" help="Maximum number of secure MAC addresses, default is 1" >
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/brgif/max_mac/1 
+		</ACTION>
+		<CTCDESCRIPTION>
+Use no switchport port-security maximum configuration command on the switchport to unset the maximum security mac-address.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The no command can set the default maximum of learnt dynamic address num, the default maximum is 1.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the maximum security mac-address on one port.
+    Switch(config-if-eth-0-1) no switchport port-security maximum 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport port-security maximum
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="switchport port-security violation" help="Security violation mode">
+          <PARAM name="part1" help="Part" optional="false" ptype="SUBCOMMAND" mode="switch" default="protect">
+            <PARAM name="protect" help="Discard packet silently (default)" ptype="SUBCOMMAND" mode="subcommand"/> 
+            <PARAM name="restrict" help="Discard packet and print log" ptype="SUBCOMMAND" mode="subcommand"/> 
+            <PARAM name="shutdown" help="Discard packet, log and set the interface error-disabled" ptype="SUBCOMMAND" mode="subcommand"/> 
+          </PARAM>
+		<ACTION>
+		 if [ ${part1} == "protect" ]; then
+                    cdbctl update/cdb/interface/${iface}/brgif/violate_mode/0
+                elif [ ${part1} == "restrict" ]; then
+                    cdbctl update/cdb/interface/${iface}/brgif/violate_mode/1
+                elif [ ${part1} == "shutdown" ]; then
+                    cdbctl update/cdb/interface/${iface}/brgif/violate_mode/2
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the switchport port-security violation configuration command on the switchport to set the violation mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The violation mode of protect is discard the packet directly, the mode of restrict is discard packet and print log, the mode of shutdown is not only discard packet and print log, but also set interface errdisable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is protect.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the violation mode on one port.
+    Switch(config-if-eth-0-1) switchport port-security violation restrict
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport port-security violation
+		</CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no switchport port-security violation" help="Security violation mode" >
+		<ACTION>
+		  cdbctl update/cdb/interface/${iface}/brgif/violate_mode/0 
+		</ACTION>
+		<CTCDESCRIPTION>
+Use no switchport port-security violation configuration command on the switchport to unset the violation mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The no command can set the default port-security violation, the default violation is protect. When the violation happens, it will discard packet directly.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default is protect.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the violation mode on one port.
+    Switch(config-if-eth-0-1) no switchport port-security violation
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport port-security violation
+		</CTCRCMD>		
+	</COMMAND>
+	
+</VIEW>
+</CLISH_MODULE>

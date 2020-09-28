@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+SYSTEM CONFIGURATION IPv6
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+<!-- Inheritance -->
+    <COMMAND name="show management ipv6" help="Internet Protocol v6" />
+    <COMMAND name="show management ipv6 address" help="Management IPv6 address status">
+        <ACTION>
+        cdbctl show/cdb/sys/manage_if/ipv6/$str_linklocal
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to show management interface ip address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+     <COMMAND name="show management ipv6 neighbor" help="Management IPv6 neighbor status">
+        <ACTION>cdbctl show/cdb/sys/show_management_if/neighbor</ACTION>
+
+    </COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

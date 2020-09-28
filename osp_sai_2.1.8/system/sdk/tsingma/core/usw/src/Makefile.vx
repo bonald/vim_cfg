@@ -1,0 +1,34 @@
+include $(MK_DIR)/sys_vx.mk
+
+
+all_targets = api sys $(chipname)
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+api: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/ctc -f Makefile.vx
+
+clean_api: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/ctc -f Makefile.vx clean
+
+sys: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/sys -f Makefile.vx
+
+clean_sys: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/sys -f Makefile.vx  clean
+
+duet2: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/sys/duet2 -f Makefile.vx
+
+clean_duet2: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/sys/duet2 -f Makefile.vx clean
+
+tsingma: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/sys/tsingma -f Makefile.vx
+
+clean_tsingma: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core/usw/src/sys/tsingma -f Makefile.vx  clean
+
+.PHONY: FORCE
+FORCE:

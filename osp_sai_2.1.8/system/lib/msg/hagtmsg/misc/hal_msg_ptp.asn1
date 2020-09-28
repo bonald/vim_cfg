@@ -1,0 +1,55 @@
+HAL-MSG-PTP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES  
+    ;
+
+HalMsgPtpSetBITSClockOutputReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgPtpTimeInternal ::= SEQUENCE
+{
+    lsb         INTEGER,
+    msb         INTEGER
+}
+
+HalMsgPtpAdjustOffsetReq ::= SEQUENCE
+{
+    gchip       INTEGER,
+    offset      HalMsgPtpTimeInternal
+}
+
+HalMsgPtpAdjustFractionalFrequencyOffsetReq ::= SEQUENCE
+{
+    ffo         REAL
+}
+
+HalMsgPtpResetFractionalFrequencyOffsetReq ::= SEQUENCE
+{
+}
+
+HalMsgPtpSetGlobalEnableReq ::= SEQUENCE
+{
+    enable      INTEGER
+}
+
+HalMsgPtpTxTimeStampResp ::= SEQUENCE
+{
+    gport       INTEGER,
+    ts          HalMsgPtpTimeInternal
+}
+
+HalMsgPtpGetTaiTimeReq ::= SEQUENCE
+{
+    gchip       INTEGER
+}
+
+HalMsgPtpGetTaiTimeResp ::= SEQUENCE
+{
+    time        HalMsgPtpTimeInternal
+}
+
+END

@@ -1,0 +1,260 @@
+<div class="row">
+    <!-- options -->
+    <div class="col-lg-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ 'Options' | translate }}</div>
+            <div class="panel-body">
+                <div class="form-inline">
+                    <!-- filter -->
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;{{ 'Filter' | translate }}
+                        </span>
+                        <input type="text" class="form-control input-sm" id="file-filter" placeholder="filter" ng-model="fileFilterStr" />
+                    </div>
+                    <!-- order -->
+                    <div class="form-group">
+                        <label>{{ 'Order' | translate }}</label>
+                        <select class="form-control" ng-model="order.by" ng-options="x.display | translate for x in orderItems"></select>
+                    </div>
+                    <!-- order -->
+                    <div class="form-group">
+                        <label>{{ 'Reverse order' | translate }}</label>
+                        <input type="checkbox" ng-model="order.reverse"/>
+                    </div>
+                    <!-- select -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" ng-click="setCheckboxAll(true)">{{ 'Select all' | translate }}</button>
+                        <button type="button" class="btn btn-default" ng-click="setCheckboxAll(false)">{{ 'Clear all' | translate }}</button>
+                        <button type="button" class="btn btn-default" ng-click="setCheckboxAll('inverse')">{{ 'Inverse' | translate }}</button>
+                    </div>
+                    <!-- delete -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" ng-show="multiDelEn()" ng-click="deleteMultiFile()"><span class="glyphicon glyphicon-trash"></span>&nbsp;{{ 'Delete' | translate }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- graph -->
+    <div class="col-lg-5">
+        <div class="col-lg-6 row">
+            <div class="col-md-5">
+                <h4>boot</h4>
+                <p>{{ diskInfo.boot.used + '/' + diskInfo.boot.size }}</p>
+            </div>
+            <div class="col-md-7">
+                <canvas id="file-mgr-graph-boot" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6 row">
+            <div class="col-md-5">
+                <h4>flash</h4>
+                <p>{{ diskInfo.flash.used + '/' + diskInfo.flash.size }}</p>
+            </div>
+            <div class="col-md-7">
+                <canvas id="file-mgr-graph-flash" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ul class="nav nav-tabs">
+    <li ng-class="{'active': tabsUsed == 'flash'}"><a href="javascript:;" ng-click="changeTabs('flash')">{{ 'Flash files' | translate }}</a></li>
+    <li ng-class="{'active': tabsUsed == 'image'}"><a href="javascript:;" ng-click="changeTabs('image')">{{ 'Boot files' | translate }}</a></li>
+    <li ng-class="{'active': tabsUsed == 'start_conf'}"><a href="javascript:;" ng-click="changeTabs('start_conf')">{{ 'Startup config files' | translate }}</a></li>
+    <li ng-class="{'active': tabsUsed == 'syslog'}"><a href="javascript:;" ng-click="changeTabs('syslog')">{{ 'Log files' | translate }}</a></li>
+</ul>
+
+<!-- flash files -->
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed == 'flash'">
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-click="setCheckboxAll(MULSELCTL)" ng-model="MULSELCTL"/></th>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center">{{ 'Size' | translate }}</th>
+                    <th class="text-center">{{ 'Last modify' | translate }}</th>
+                    <th class="text-center">{{ 'Filename' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in files.flash | filter: fileFilterStr | orderBy: order.by.model:order.reverse">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSelFlash[x.filename]" /></td>
+                    <th class="text-center" scope="row">{{ $index + 1 }}</th>
+                    <td class="text-center">{{ x.size | fsize }}</td>
+                    <td class="text-center">{{ x.date + ' ' + x.time }}</td>
+                    <td class="text-center">{{ x.filename }}</td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <a href="{{ x.url }}" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Download' | translate }}"><span class="glyphicon glyphicon-download-alt"></span></a>
+                            <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="deleteFile([{type: 'flash', filename: x.filename}])"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Backup' | translate }}" ng-click="backupFile('show', x.filename)"><span class="glyphicon glyphicon-copy"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <h3 class="panel-title">{{ 'Flash files' | translate }}</h3>
+    </div>
+</div>
+
+<!-- boot files -->
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed == 'image'">
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-click="setCheckboxAll(MULSELCTL)" ng-model="MULSELCTL"/></th>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center">{{ 'Size' | translate }}</th>
+                    <th class="text-center">{{ 'Last modify' | translate }}</th>
+                    <th class="text-center">{{ 'Filename' | translate }}</th>
+                    <th class="text-center">{{ 'Current image' | translate }}</th>
+                    <th class="text-center">{{ 'Next startup image' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in files.boot | filter: fileFilterStr | orderBy: order.by.model:order.reverse">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSelBoot[x.filename]" /></td>
+                    <th class="text-center" scope="row">{{ $index + 1 }}</th>
+                    <td class="text-center">{{ x.size | fsize }}</td>
+                    <td class="text-center">{{ x.date + ' ' + x.time }}</td>
+                    <td class="text-center">{{ x.filename }}</td>
+                    <td class="text-center"><span class="glyphicon glyphicon-ok" ng-show="{{ x.filename == image.current }}"></span></td>
+                    <td class="text-center"><span class="glyphicon glyphicon-ok" ng-show="{{ x.filename == image.next }}"></span></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <a href="{{ x.url }}" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Download' | translate }}"><span class="glyphicon glyphicon-download-alt"></span></a>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}"  ng-click="deleteFile([{type: 'image', filename: x.filename}])"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Set next startup image' | translate }}" ng-hide="x.filename == image.next" ng-click="setNextStartupImage(x.filename)"><span class="glyphicon glyphicon-ok"></span></button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" ng-show="System_product != 'Tap-350'" title="{{ 'Backup' | translate }}" ng-click="backupFile('show', x.filename)"><span class="glyphicon glyphicon-copy"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <h3 class="panel-title">{{ 'Boot files' | translate }}</h3>
+    </div>
+</div>
+<!-- boot files end -->
+
+<!-- startConf files -->
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed == 'start_conf'">
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-click="setCheckboxAll(MULSELCTL)" ng-model="MULSELCTL"/></th>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center">{{ 'Size' | translate }}</th>
+                    <th class="text-center">{{ 'Last modify' | translate }}</th>
+                    <th class="text-center">{{ 'Filename' | translate }}</th>
+                    <th class="text-center">{{ 'Startup config' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in files.startConf | filter: fileFilterStr | orderBy: order.by.model:order.reverse">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSelStartConf[x.filename]" /></td>
+                    <th class="text-center" scope="row">{{ $index + 1}}</th>
+                    <td class="text-center">{{ x.size | fsize }}</td>
+                    <td class="text-center">{{ x.date + ' ' + x.time }}</td>
+                    <td class="text-center">{{ x.filename }}</td>
+                    <td class="text-center"><span class="glyphicon glyphicon-ok" ng-show="{{ x.filename == startConf.current }}"></span></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <a href="{{ x.url }}" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Download' | translate }}">
+                                <span class="glyphicon glyphicon-download-alt"></span>
+                            </a>
+                            <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-hide="{{ x.filename == startConf.current }}" ng-click="deleteFile([{type: 'start_conf', filename: x.filename}])">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Set next startup config' | translate }}" ng-hide="{{ x.filename == startConf.current }}" ng-click="setNextStartupConfig(x.filename)">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Backup' | translate }}" ng-click="backupFile('show', x.filename)">
+                                <span class="glyphicon glyphicon-copy"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <h3 class="panel-title">{{ 'Startup config files' | translate }}</h3>
+    </div>
+</div>
+<!-- startConf files end -->
+
+<!-- log files -->
+<div class="panel panel-default panel-remove-border-top" ng-show="tabsUsed == 'syslog'">
+    <div class="panel-body">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-click="setCheckboxAll(MULSELCTL)" ng-model="MULSELCTL"/></th>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center">{{ 'Size' | translate }}</th>
+                    <th class="text-center">{{ 'Last modify' | translate }}</th>
+                    <th class="text-center">{{ 'Filename' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in files.log | filter: fileFilterStr | orderBy: order.by.model:order.reverse">
+                    <td class="text-center"><input type="checkbox" ng-model="multiSelLog[x.filename]" /></td>
+                    <th class="text-center" scope="row">{{ $index + 1 }}</th>
+                    <td class="text-center">{{ x.size | fsize }}</td>
+                    <td class="text-center">{{ x.date + ' ' + x.time }}</td>
+                    <td class="text-center">{{ x.filename }}</td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <a href="{{ x.url }}" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Download' | translate }}"><span class="glyphicon glyphicon-download-alt"></span></a>
+                            <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="deleteFile([{type: 'syslog', filename: x.filename}])"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Backup' | translate }}" ng-click="backupFile('show', x.filename)"><span class="glyphicon glyphicon-copy"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <h3 class="panel-title">{{ 'Log files' | translate }}</h3>
+    </div>
+</div>
+
+
+<!-- modal -->
+<div class="modal fade" id="backupFileModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Backup' | translate }}</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" name="backupFileForm" ng-class="{true: 'has-success', false: 'has-error'}[backupFileForm.backupFilename.$valid]" novalidate>
+                    <label>{{ 'Input the backup name' | translate }}</label>
+                    <input type="text" class="form-control" name="backupFilename" ng-model="backup.backupFilename" ng-pattern="/^[0-9a-zA-Z][a-zA-Z\.\-\_0-9]{0,46}$/" required />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Close' | translate }}</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="backupFileForm.$invalid" ng-click="backupFile('submit')">{{ 'Save changes' | translate }}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- log files end -->

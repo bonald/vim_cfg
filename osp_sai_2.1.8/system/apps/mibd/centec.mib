@@ -1,0 +1,57 @@
+-- Imports declare
+
+CENTEC DEFINITIONS ::= BEGIN
+
+IMPORTS
+      SnmpAdminString
+      FROM SNMP-FRAMEWORK-MIB
+      
+      ifIndex
+      FROM IF-MIB
+      
+      TimeTicks, Counter32, OBJECT-IDENTITY,
+      mib-2, MODULE-IDENTITY, IpAddress, Counter64,
+      Unsigned32, Integer32, Gauge32, OBJECT-TYPE,
+      NOTIFICATION-TYPE
+      FROM SNMPv2-SMI
+
+      OwnerString
+      FROM RMON-MIB
+      
+      NOTIFICATION-GROUP, MODULE-COMPLIANCE, OBJECT-GROUP
+      FROM SNMPv2-CONF
+      
+      InetAddressPrefixLength, InetAddress, InetAddressType
+      FROM INET-ADDRESS-MIB
+      
+      InterfaceIndex, InterfaceIndexOrZero, ifIndex
+      FROM IF-MIB
+      
+      VrId
+      FROM VRRP-MIB      
+      
+      TestAndIncr, TimeStamp, AutonomousType,
+      PhysAddress, TEXTUAL-CONVENTION, TruthValue, DateAndTime,
+      MacAddress, RowStatus
+        FROM SNMPv2-TC
+      
+      enterprises
+        FROM SNMPv2-SMI;
+        
+-- Child OID declare
+
+centec MODULE-IDENTITY
+	LAST-UPDATED "200806260000Z"        -- June 26, 2008 at 00:00 GMT
+	ORGANIZATION
+	   ""
+	CONTACT-INFO
+	   "
+	   "
+	DESCRIPTION
+	       "The System Information of the switch"
+	::= { enterprises 27975 }
+
+------------------------------------------------------------------
+--                      Centec Identifiers                      --
+------------------------------------------------------------------
+lswdevMMib                OBJECT IDENTIFIER ::= { centec 37 }

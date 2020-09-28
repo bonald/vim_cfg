@@ -1,0 +1,931 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+MANAGEMENT
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show diagnostic-information" help="System Information for Diagnosis" access="4">
+		<ACTION>
+		HAVE_OVS=`ps --cols 250 aux | grep [o]vs-vswitchd`
+
+		echo "------------------ show version ------------------"
+		echo ""
+		cdbctl show/cdb/sys/version
+
+		echo "------------------ show clock ------------------"
+		echo ""
+		cdbctl show/cdb/sys/clock
+
+		echo "------------------ show running-config ------------------"
+		echo ""
+		configfile=config-$(date +%N)
+		cdbctl buildcfg/running/$configfile/cdb
+		rm -rf /tmp/$configfile
+
+		echo "------------------ show startup-config ------------------"
+		echo ""
+		cat /mnt/flash/startup-config.conf
+
+		echo "------------------ show reboot-info ------------------"
+		echo ""
+		cdbctl show/cdb/sys/reboot_info
+
+		echo "------------------ show memory summary total ------------------"
+		echo ""
+		cdbctl show/cdb/sys/mem_summary
+		
+		echo "------------------ show memory process all ------------------"
+		echo ""
+		cdbctl show/cdb/sys/show_common/ccs/memory
+		cdbctl show/cdb/sys/show_common/cds/memory
+		cdbctl show/cdb/sys/show_common/switch/memory
+		cdbctl show/cdb/sys/show_common/opm/memory
+		cdbctl show/cdb/sys/show_common/routed/memory
+		cdbctl show/cdb/sys/show_common/chsm/memory
+		cdbctl show/cdb/sys/show_common/appcfg/memory
+		cdbctl show/cdb/sys/show_common/fea/memory
+		cdbctl show/cdb/sys/show_common/dhcsnooping/memory
+		cdbctl show/cdb/sys/show_common/dhcrelay/memory
+		cdbctl show/cdb/sys/show_common/authd/memory
+		cdbctl show/cdb/sys/show_common/ptp/memory
+		cdbctl show/cdb/sys/show_common/bhm/memory
+		cdbctl show/cdb/sys/show_common/ssm/memory
+		if [ -n "$HAVE_OVS" ]; then
+			cdbctl show/cdb/sys/show_common/ovs-vswitchd/memory
+		fi
+
+		echo "------------------ show cpu utilization ------------------"
+		echo ""
+		cdbctl show/cdb/app/cpu_utilization
+
+		echo "------------------ show stm prefer current ------------------"
+		echo ""
+		cdbctl show/cdb/sys/show_stm/current
+		if [ -n "$HAVE_OVS" ]; then
+			cdbctl show/cdb/openflow/show_openflow_resource/current
+		fi
+		
+		echo "------------------ more flash:/cold/bhm.log ------------------"
+		echo ""
+		more /mnt/flash/cold/bhm.log
+		
+		echo "------------------ show file system ------------------"
+		echo ""
+		echo "Type        Size        Used        Free        Use%"
+		echo "======================================================================"
+		df -h| grep -v "Filesystem" | awk '{
+		"fnconvert -c showname -p "$6 | getline fline;
+		printf("%-12s%-12s%-12s%-12s%s\n", fline, $2, $3, $4, $5);
+		}'
+
+		echo "------------------ ls ------------------"
+		echo ""
+            accessname="`pwd`"
+            ls -go $accessname | grep -v "lost+found" | sed 's/\/mnt\/flash\///g'
+            echo
+            df -m | grep -v Used | awk -v rootpath="$rootpath" 'BEGIN {total=0; avail=0;} {
+                linepath=index($6, rootpath)
+                if (1 == linepath) {
+                    if (length(rootpath) == length($6)) {
+                        total = total + $2; avail = avail + $4;
+                    }
+                }
+            }
+            END {
+                if (total >= 1024) {
+                    printf("Total %.2fG bytes ", total / 1024);
+                } else {
+                    printf("Total %.2fM bytes ", total);
+                }
+
+                if (avail >= 1024) {
+                    printf("(%.2fG bytes free)\r\n", avail / 1024);
+                } else {
+                    printf("(%.2fM bytes free)\r\n", avail);
+                }
+            }'
+
+		echo "------------------ show environment ------------------"
+		echo ""
+		cdbctl show/cdb/sys/show_environment
+
+		echo "------------------ show psu-pmbus-info  ------------------"
+		echo ""
+		cdbctl show/cdb/sys/show_psu_pmbus_info
+
+		echo "------------------ show transceiver detail ------------------"
+		echo ""
+		cdbctl show/cdb/sys/show_fiber/all/detail
+
+		echo "------------------ show interface status ------------------"
+		echo ""
+		cdbctl show/cdb/interface/status
+
+		echo "------------------ show interface summary ------------------"
+		echo ""
+		cdbctl show/cdb/interface//summary
+
+		echo "------------------ show interface ------------------"
+		echo ""
+		cdbctl show/cdb/l2/show_interface
+
+		echo "------------------ show errdisable recovery ------------------"
+		echo ""
+		cdbctl show/cdb/sys/errdisable_show/recovery
+
+		echo "------------------ show channel-group summary ------------------"
+		echo ""
+		cdbctl show/cdb/interface/lag//type/summary
+
+		echo "------------------ show mac-address-table ------------------"
+		echo ""
+		cdbctl show/cdb/l2/show_fdb/all
+
+		echo "------------------ show mac-address-table add-fdb-fail ------------------"
+		echo ""
+		cdbctl show/cdb/l2/show_fdb/add-fdb-fail
+
+		# show ip igmp groups
+
+		echo "------------------ show ip route summary ------------------"
+		echo ""
+		vtysh -c "show ip route summary"
+
+		echo "------------------ show ip route ------------------"
+		echo ""
+		vtysh -c "show ip route"
+
+		echo "------------------ show ip arp ------------------"
+		echo ""
+		cdbctl show/cdb/l3/show_arp
+
+		# show vrrp
+
+		if [ -z "$HAVE_OVS" ]; then
+			echo "------------------ show mlag peer ------------------"
+			echo ""
+			cdbctl show/cdb/l2/show_mlag/peer
+
+			echo "------------------ show mlag interface ------------------"
+			echo ""
+			cdbctl show/cdb/l2/show_mlag/interface
+
+			echo "------------------ show ip igmp snooping groups ------------------"
+			echo ""
+			cdbctl show/cdb/l2/show_igsp/groups
+		fi
+
+		if [ -n "$HAVE_OVS" ]; then
+			echo "------------------ ovs-ofctl dump-meters br0 -O openflow13 ------------------"
+			echo ""
+			ovs-ofctl dump-meters br0 -O openflow13
+
+			echo "------------------ ovs-ofctl dump-flows br0 -O openflow13 ------------------"
+			echo ""
+			ovs-ofctl dump-flows br0 -O openflow13
+
+			echo "------------------ ovs-ofctl dump-groups br0 -O openflow13 ------------------"
+			echo ""
+			ovs-ofctl dump-groups br0 -O openflow13
+			
+			echo "------------------ ovs-ofctl show br0 ------------------"
+			echo ""
+			ovs-ofctl show br0
+
+			echo "------------------ show openflow controller status ------------------"
+			echo ""
+			cdbctl show/cdb/openflow/show_openflow/controller/status
+
+			echo "------------------ ovs-vsctl list bridge br0 ------------------"
+			echo ""
+			ovs-vsctl list bridge br0
+
+			echo "------------------ ovs-vsctl show ------------------"
+			echo ""
+			ovs-vsctl show
+
+			echo "------------------ ovs-vsctl list controller ------------------"
+			echo ""
+			ovs-vsctl list controller		
+		fi
+
+		echo "------------------ show logging buffer 1000 ------------------"
+		echo ""
+		cdbctl show/cdb/app/syslog_cfg/buffer/1000
+
+		echo "------------------ show poe summary ------------------"
+		echo ""
+		cdbctl show/cdb/sys/show_poe/sum/all
+
+		echo "------------------ show poe status all ------------------"
+		echo ""	
+		cdbctl show/cdb/sys/show_poe/status/all
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display diagnostic information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Diagnostic information is a batch command of some general commands for diagnostic, such as "show version", "show clock", and so on. Since diagnostic information is too long, we generally redirect diagnostic information to a file on flash.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display diagnostic information:
+    Switch# show diagnostic-information 
+    
+    ------------------ show version ------------------
+    
+    CNOS Software, E580, Version 2.0.6
+    Copyright (C) 2004-2016 Centec Networks Inc. All rights reserved.
+    The current running image is: TftpFile://10.10.38.160:osp.kcao.r.147
+    
+    DUT1 uptime is 0 days, 0 hours, 58 minutes
+    Hardware Type        : 20Q4Z
+    SDRAM size           : 1024M
+    Flash size           : 2048M
+    Hardware Version     : 1.0
+    EPLD Version         : 2.1
+    BootRom Version      : 8.1.1
+    System serial number : E130GD151005
+    
+    ------------------ show clock ------------------
+    
+    17:10:09 UTC Thu Sep 01 2016
+    
+    ------------------ show running-config ------------------
+    
+    Building configuration...
+    version 2.0.6
+    hostname DUT1
+    ......
+
+
+    This example shows how to redirect diagnostic information to a file:
+    Switch# show diagnostic-information > flash:/diag_20160901.txt
+	Switch# 
+		</CTCEXAMPLE>
+		<CTCRCMD> 
+        </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show services" help="Show service configuration">
+		<ACTION>cdbctl show/cdb/sys/sys_global/services</ACTION>
+
+		<CTCDESCRIPTION>
+		To display the networking services, use the show services command in privileged EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		This command is used to display networking services of the switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		None
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+		In the following example shows how to display networking services of the switch:  
+		Switch# show services    
+		Networking services configuration:  
+		Service Name     Status        Port       Protocol  
+		----------------+-------------+----------+----------
+		dhcp             disable       67/68      UDP       
+		http             enable        80         TCP       
+		telnet           enable        23         TCP       
+		ssh              enable        22         TCP       
+		snmp             disable       161        UDP       
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure"
+	prompt="${SYSTEM_NAME}(config)# "
+	restore="depth">
+
+<!-- Inheritance -->
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+<!-- Virtual commands -->
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+	
+	<COMMAND name="ip"
+		help="Internet Protocol (IP)">
+    </COMMAND>
+	
+	<COMMAND name="no ip"
+		help="Internet Protocol (IP)">
+    </COMMAND>
+	
+<!-- Simple configuration mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from configure mode"
+		view="Exec"
+		lock="false">
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from configure mode"
+		view="Exec"
+		lock="false">
+	</COMMAND>
+
+	<COMMAND name="hostname"
+		help="Set system's network name">
+		<PARAM name="hostname" help="This system's network name, must not exceed 63 characters" ptype="NAME_STRING"/>
+		
+		<ACTION>cdbctl update/cdb/sys/sys_global/hostname/${hostname}</ACTION>
+		
+		<CTCDESCRIPTION>
+To specify or modify the host name for the network server, use the hostname command in global configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The host name is used in prompts and default configuration filenames.  
+The name must also follow the rules for ARPANET host names. They must start with a letter, and have as interior characters only letters, digits, hyphens, and underline. Names must be 63 characters or fewer.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default host name is Switch.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example changes the host name to sandbox:  
+    Switch(config)# hostname sandbox  
+    sandbox(config)#  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no hostname"
+		help="Set system's network name">
+		<ACTION>cdbctl update/cdb/sys/sys_global/hostname/Switch</ACTION>
+		
+		<CTCDESCRIPTION>
+To restore the configuration to the default host name for the network server, use this command.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The host name is used in prompts and default configuration filenames.  
+The name must also follow the rules for ARPANET host names. They must start with a letter, and have as interior characters only letters, digits, hyphens, and underline. Names must be 63 characters or fewer.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default host name is Switch.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example changes the host name to default:  
+    sandbox(config)# no hostname     
+    Switch(config)#     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+		
+	</COMMAND>
+
+	<COMMAND name="banner" help="Define a banner" >
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="exec" help="Set EXEC process creation banner" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="login" help="Set login banner" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="text" help="c banner-text c, where 'c' is a delimiting character, only allow '0-9A-Za-z,@._-'" ptype="BANNER"/>
+        <ACTION builtin="clish_banner">${mode}/${text}</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no banner" help="Define a banner" >
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="exec" help="Set EXEC process creation banner" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="login" help="Set login banner" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+        <ACTION builtin="clish_banner">${mode}</ACTION>
+	</COMMAND>
+
+	<COMMAND name="format" help="Format a filesystem" access="4">
+		<PARAM name="partition" help="partition of flash/udisk" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="system" help="Format system partition" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="boot" help="Format boot partition" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="udisk" help="Format USB disk MSDOS file system" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>			
+        <ACTION>
+		if [ "system" == ${partition} ]; then
+			echo -n "Have you kept a backup of the files in partition system? [yes/no]: "
+			read sure
+			if [ "$sure" != "yes" ]; then
+				if [ "$sure" != "y" ]; then
+					echo "% Aborted!"
+					exit 1
+				fi	
+			fi
+			echo -n "Make sure to format partiton. [yes/no]: "
+			read sure
+			if [ "$sure" != "yes" ]; then
+				if [ "$sure" != "y" ]; then
+					echo "% Aborted!"
+					exit 1
+				fi	
+			fi
+			/etc/format_flash.sh system
+		elif [ "boot" == ${partition} ]; then
+			echo -n "Have you kept a backup of the files in partition boot? [yes/no]: "
+			read sure
+			if [ "$sure" != "yes" ]; then
+				if [ "$sure" != "y" ]; then
+					echo "% Aborted!"
+					exit 1
+				fi	
+			fi
+			echo -n "Make sure to format partiton. [yes/no] :"
+			read sure
+			if [ "$sure" != "yes" ]; then
+				if [ "$sure" != "y" ]; then
+					echo "% Aborted!"
+					exit 1
+				fi	
+			fi
+			/etc/format_flash.sh boot
+		elif [ "udisk" == ${partition} ]; then
+			mount | grep "/mnt/udisk" >/dev/null 2>/dev/null
+			if [ "$?" == "1" ]; then
+			    echo "% USB disk not detected! Please check the product supports USB interface and USB disk has been inserted!"
+			    exit 1
+			fi
+
+			RDIR="`mount | grep /mnt/udisk | awk '{print $1}'`"
+			if [ -e $RDIR ]; then
+			    echo "" > /dev/null
+			else
+			    echo "% Internal error! USB disk not detected!"
+			    exit 1
+			fi
+
+			FMTPROG=""
+			if [ -f /bin/mkfs.msdos ]; then
+			    FMTPROG="/bin/mkfs.msdos"
+			elif [ -f /bin/mkfs.vfat ]; then
+			    FMTPROG="/bin/mkfs.vfat"
+			elif [ -f /bin/mkfs.fat ]; then
+			    FMTPROG="/bin/mkfs.fat"
+			else
+			    echo "% Internal error! Can't find mkfs command!"
+			    exit 1
+			fi
+
+			echo "    WARNING: All data on udisk: will be lost!!!"
+			echo ""
+			echo "And format operation may take a while."
+
+			szmsg="Are you sure to process with format? [yes/no]: "
+			fnconvert -m "$szmsg" -c yesno_no
+			if [ "$?" != "0" ]; then
+			    echo "% Aborted!"
+			    exit 1
+			fi
+
+			umount /mnt/udisk
+			if [ "$?" != "0" ]; then
+			    echo "% Umount USB disk file system failed!"
+			    exit 1
+			fi
+
+			$FMTPROG $RDIR
+			if [ "$?" != "0" ]; then
+			    echo "% Format udisk: file system failed!"
+			    exit 1
+			fi
+
+			mount $RDIR /mnt/udisk
+			if [ "$?" != "0" ]; then
+			    echo "% Remount udisk: file system failed!"
+			    exit 1
+			fi
+
+			exit 0
+		fi		
+        </ACTION>
+		<CTCDESCRIPTION>
+To format flash/udisk.	
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to format flash when flash can not work normal or format USB mass storage device..
+		</CTCUSAGE>
+		<CTCDEFAULT>
+NONE
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		Switch# format system
+		you are a vty user! vty NO is 1
+		prepare to format partition system...
+		cache files to /tmp/back_tmp
+		cache files finished
+		resume files from /tmp/back_tmp to /mnt/flash
+		format partition system finished!
+  
+ 	      Switch(config)# format udisk:    
+ 	        WARNING: All data on udisk: will be lost!!!  
+ 	        And format operation may take a while.   
+ 	      Are you sure to process with format? [yes/no]: yes   		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+   </COMMAND>
+
+  	<COMMAND name="umount" help="Umount the file system" access="4"/>
+	<COMMAND name="umount udisk:" help="USB mass storage device" access="4">
+
+		<ACTION>
+		echo "After this operation, you can not use USB disk."
+		echo -n "Are you sure to continue?[yes/no]: "
+		read sure
+		if [ "$sure" != "yes" ]; then
+			if [ "$sure" != "y" ]; then
+				echo "% Aborted!"
+				exit 1
+			fi	
+		fi
+		/etc/unmount.sh
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To uninstall the USB mass storage device before plug out it from the switch.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+USB mass storage device must exist in the system. You can use umount command to uninstall the USB mass storage device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example umount USB mass storage device:   
+    Switch(config)# umount udisk:   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="management" help="Management interface configuration" access="4">
+	</COMMAND>	
+	<COMMAND name="no management" help="Management interface configuration" access="4">
+	</COMMAND>
+
+	<COMMAND name="management ip" help="Internet Protocol" >
+	</COMMAND>
+	<COMMAND name="no management ip" help="Internet Protocol" >
+	</COMMAND>
+
+	<COMMAND name="management ip address" help="Set address">
+		<PARAM name="addr" help="IP address" ptype="IP_ADDR_MASK"/>
+		
+		<ACTION>cdbctl update/cdb/sys/manage_if/addr/${addr}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the management IP address on the Switch.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the management ipv4 address.  
+    Switch(config)# management ip address 192.168.100.100/24   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="no management ip address" help="Set address">
+		<ACTION>cdbctl update/cdb/sys/manage_if/addr/0.0.0.0/0</ACTION>
+		
+		<CTCDESCRIPTION>
+To remove the management IP address, use the no form of this command. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example unsets the management ipv4 address.  
+    Switch(config)# no management ip address 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="management route" help="Set route" >
+	</COMMAND>
+	<COMMAND name="no management route" help="Set route" >
+	</COMMAND>
+
+	<COMMAND name="management route add" help="Set route" >
+	</COMMAND>
+
+	<COMMAND name="management route gateway" help="Set gateway">
+		<PARAM name="gateway" help="IP address" ptype="IP_ADDR"/>
+		
+		<ACTION>cdbctl update/cdb/sys/manage_if/gateway/${gateway}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the gateway on the Switch for management ip. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the gateway of 192.168.100.254 for the switch.  
+    Switch(config)# management route gateway 192.168.100.254  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="management route add gateway" help="Set gateway">
+		<PARAM name="gateway" help="IP address" ptype="IP_ADDR"/>
+		
+		<ACTION>cdbctl update/cdb/sys/manage_if/gateway/${gateway}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the gateway on the Switch for management ip. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the gateway of 192.168.100.254 for the switch.  
+    Switch(config)# management route add gateway 192.168.100.254  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+	</COMMAND>
+
+	<COMMAND name="no management route gateway" help="Set gateway">
+		<ACTION>cdbctl update/cdb/sys/manage_if/gateway/</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to delete the gateway on the Switch for management ip. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the gateway of 192.168.100.254 for the switch.  
+    Switch(config)# no management route gateway   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<!-- NS-PORT-FORWARDING BEGIN -->
+	<COMMAND name="ns-port-forwarding" help="Manipulate port forwarding between default and mgmt namespace" />
+	<COMMAND name="no ns-port-forwarding" help="Manipulate port forwarding between default and mgmt namespace" />
+
+	<COMMAND name="ns-port-forwarding local-service" help="Add local-service port mapping on mgmt namespace">
+    	<PARAM name="proto_sub" help="proto_sub" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="tcp" help="TCP port forwarding" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="udp" help="UDP port forwarding" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+		<PARAM name="port" help="Local port number to be mapped in mgmt namespace" ptype="SERVICE_PORT"/>
+		
+		<ACTION>
+		if [ ${proto_sub} == "tcp" ]; then
+		    cdbctl create/cdb/sys/ns_port_forwarding/0#0#${port}#"0.0.0.0"/ip/"0.0.0.0";
+		else
+		    cdbctl create/cdb/sys/ns_port_forwarding/0#1#${port}#"0.0.0.0"/ip/"0.0.0.0";		
+		fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set local-service port mapping on mgmt namespace.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Local-service means that daemons listen in the default namespace will be reachable from the management interface. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example sets the local-service namespace port forwarding for the switch.   
+    Switch(config)# ns-port-forwarding local-service tcp 6633 		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+		
+	<COMMAND name="no ns-port-forwarding local-service" help="Delete local-service port mapping on mgmt namespace">
+    	<PARAM name="proto_sub" help="proto_sub" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="tcp" help="TCP port forwarding" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="udp" help="UDP port forwarding" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+		<PARAM name="port" help="Local port number to be mapped in mgmt namespace" ptype="SERVICE_PORT"/>
+		
+		<ACTION>
+		if [ ${proto_sub} == "tcp" ]; then
+		    cdbctl delete/cdb/sys/ns_port_forwarding/0#0#${port}#"0.0.0.0"/ip/"0.0.0.0";
+		else
+		    cdbctl delete/cdb/sys/ns_port_forwarding/0#1#${port}#"0.0.0.0"/ip/"0.0.0.0";
+		fi
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to unset local-service port mapping on mgmt namespace.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Local-service means that daemons listen in the default namespace will be reachable from the management interface. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example unsets the local-service namespace port forwarding for the switch.   
+    Switch(config)# no ns-port-forwarding local-service tcp 6633 	
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="service telnet" help="Telnet service"/>
+	<COMMAND name="no service telnet" help="Telnet service"/>
+
+	<COMMAND name="service telnet enable" help="Enable this service">
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_disable/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service telnet enable.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Uses this command to enable telnet service.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following example set telnet service enable for the switch.  
+    Switch# configure terminal    
+    Switch(config)# service telnet enable     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show services
+		</CTCRCMD>   
+		
+	</COMMAND>
+
+	<COMMAND name="service telnet disable" help="Disable this service">
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_disable/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set service telnet disable.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Uses this command to disable telnet service. If telnet service is disabled, could enter switch with other method, e.g. console port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following example set telnet service disable for the switch.  
+    Switch# configure terminal    
+    Switch(config)# service telnet disable 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show services
+		</CTCRCMD>   
+	</COMMAND>
+
+	<COMMAND name="no service telnet enable" hidden="true" help="Disable this service">
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_disable/1</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set service telnet disable.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Uses this command to disable telnet service. If telnet service is disabled, could enter switch with other method, e.g. console port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following example set telnet service disable for the switch.  
+    Switch# configure terminal    
+    Switch(config)# no service telnet enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show services
+		</CTCRCMD>   
+	</COMMAND>
+
+	<COMMAND name="service telnet port" help="Set telnet port">
+		<PARAM name="port" help="Port number, default value is 23" ptype="SERVICE_PORT"/>
+
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_port/${port}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service telnet port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Uses this command to enable telnet service.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+23
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following example set telnet service port for the switch.  
+    Switch# configure terminal    
+    Switch(config)# service telnet port 2000     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show services
+		</CTCRCMD>   
+
+	</COMMAND>
+
+	<COMMAND name="no service telnet port" help="Set telnet port">
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_port/23</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service telnet port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Uses this command to enable telnet service.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+23
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	The following example set telnet service port to default for the switch.  
+    Switch# configure terminal    
+    Switch(config)# no service telnet port     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show services
+		</CTCRCMD>   
+
+	</COMMAND>
+
+	<COMMAND name="service telnet acl" help="Set telnet acl"   hidden="true">
+		<PARAM name="acl_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING"/>
+
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_acl/${acl_name}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service telnet acl.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE> 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>   
+	</COMMAND>
+
+	<COMMAND name="no service telnet acl" help="Set telnet acl"   hidden="true">
+		<ACTION>cdbctl update/cdb/sys/sys_global/telnet_acl//</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set service telnet acl.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>   
+	</COMMAND>
+  
+</VIEW>
+
+</CLISH_MODULE>

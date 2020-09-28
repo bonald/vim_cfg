@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+SyncE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show clock synce" help="Synchronous Ethernet (ITU-T G.826x)">
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     <PARAM name="if_name" help="Physical interface" ptype="IF_NAME_E"/>
+	    </PARAM>
+		<ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/ssm/show_ssm/
+		else
+			cdbctl show/cdb/ssm/show_ssm/${if_name}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the global information of SyncE or a special port configration.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command displays the global information of SyncE or a special port configration.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows the global state of SyncE:
+		Switch# show clock synce
+		-----------------  Global Synce Clock Configure  -----------------
+		Device ClockID                     : FA:12:F9:FF:FE:61:AE:00
+		Enable global synce                : enable
+		Enable global ssm                  : enable
+		SSM option mode                    : 1
+		Device quality                     : EEC1
+		Current quality                    : EEC1/SEC
+		Device priority                    : 100
+		Current selected interface         : N/A
+		Next selected interface            : N/A
+		Enable ssm extension               : enable
+		Clock running state                : Mast-Clock
+		Device type                        : Master-only
+		Clock remaining holdoff-time(ms)   : N/A
+		Clock remaining WTR-time(s)        : N/A
+		Clock holdoff-time(ms)             : 500
+		Clock WTR-time(s)                  : 60
+		------------------------  DPLL status  ----------------------------
+		Selected Clock Valid Status        : Invalid
+		DPLL running state                 : FreeRun
+
+		
+		The follow example shows a special port state of SyncE:
+		Switch# show clock synce eth-0-1
+		------------------------------------------------------------------------
+		Interface                           : eth-0-1
+		---------------------------  Port Configure  ---------------------------
+		Synce enable                        : enable
+		ESMC RX/TX                          : ESMC TX
+		Port up                             : enable
+		Receive quality                     : N/A
+		Send quality                        : N/A
+		Quality RX configured               : N/A
+		Quality TX configured               : N/A
+		Port priority                       : 255
+		DNU group                           : 0
+		Replace clockid                     : disable
+		Send timer running                  : disable
+		Timeout timer running               : disable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce global-enable
+clock synce enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show clock synce dnu-group" help="Synce DNU group">
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     <PARAM name="group_id" help="DNU group id" ptype="DNU_GROUP_ID"/>
+		</PARAM>
+		<ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/ssm/show_ssm/dnu-group
+		else
+			cdbctl show/cdb/ssm/show_ssm/dnu-group/${group_id}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the interfaces which belong the DNU group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+N/A
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows the interface belong to DNU group:
+		Switch# show clock synce dnu-group 
+		DNU-Group: 1
+		eth-0-1 eth-0-2 eth-0-3 eth-0-4 
+		DNU-Group: 2
+		eth-0-5 eth-0-6 eth-0-7 eth-0-8
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce dnu-group
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="clock synce" help="Synchronous Ethernet (ITU-T G.826x)" />
+	<COMMAND name="clock synce global-enable" help="Enable a synchronous equipment" >
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_global/synce_enable/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock enable globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, synce is disable on device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the synce enable on device:
+		Switch(config)# clock synce global-enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce local-priority" help="Set SSM priority value on deviece" >
+		    <PARAM name="priority_id" help="SSM priority, default value is 255" ptype="SSM_PRIORITY_ID"/>
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/local_priority/${priority_id}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority of the device.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of the priority is 255.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the priority to 1:
+		Switch(config)# clock synce local-priority 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce priority
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="clock synce local-quality" help="Set SSM quality value on device" >
+		<PARAM name="option_mode" help="Option mode" ptype="SUBCOMMAND" mode="switch">  
+			<PARAM name="option1" help="Set the device working under option1 mode (default)" ptype="SUBCOMMAND" mode="subcommand" > 
+				<PARAM name="option1_type" help="Option1 mode" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="dnu" help="Do not use this quality (default)" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="eec1" help="Synchronous Ethernet Equipment Clock type 1" ptype="SUBCOMMAND" mode="subcommand" />
+					<PARAM name="prc" help="The quality of the device is primary reference clock" ptype="SUBCOMMAND" mode="subcommand" />
+				</PARAM>
+			</PARAM>
+			<PARAM name="option2" help="Set the device working under option2 mode" ptype="SUBCOMMAND" mode="subcommand" >
+				<PARAM name="option2_type" help="Option2 mode" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="dus" help="Do not use this quality" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="eec2" help="Synchronous Ethernet Equipment Clock type 2" ptype="SUBCOMMAND" mode="subcommand" />
+					<PARAM name="prs" help="The quality of the device is primary reference clock" ptype="SUBCOMMAND" mode="subcommand" />
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+		if [ ${option_mode} == "option1" ]; then
+			cdbctl update/cdb/ssm/ssm_global/option_mode/1/system_quality/${option1_type}
+		else
+			cdbctl update/cdb/ssm/ssm_global/option_mode/2/system_quality/${option2_type}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device mode and device quality.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The device mode has option1 and option2. Under the mode of option1, the device quality of dnu, eec1, prc can be set;
+Under the mode of option2, the device quality of dns, eec2, prs can be set.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mode is option1, and default quality is dnu.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the device quality prc under option1 mode: 
+		Switch(config)# clock synce local-quality option1 prc
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no clock synce local-quality
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce master-only" help="Configure the device working under MASTER-ONLY mode" >
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/device_role/master-only
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device working on master-only mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the device working under master-only mode, it will send it's quality and not select best clock signal. By default, the clock 
+does not start master-only mode, and select best clock from all ssm port and the device itself. The device can't be set slave-only 
+mode and master-only mode at the same time.
+
+It's suggest that the "local-quality" value should be set to "prc" or "prs" if the device is configured as "master-only" mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the mode is standard.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the clock master-only: 
+		Switch(config)# clock synce master-only
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce slave-only
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="clock synce slave-only" help="Configure the device working under SLAVE-ONLY mode" >
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/device_role/slave-only
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device working on slave-only mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the device working under slave-only mode, it will select best clock signal from all ssm ports. By default, the clock doesn't start slave-only mode, and select best clock from all ssm port and the device itself. The device can't be 
+set slave-only mode and master-only mode at the same time
+ 
+If the device is configured as "slave-only" or default mode (neither slave-only mode nor master-only mode ), the "local-quality" value should not be set to "prc" or "prs".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the mode is standard.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the clock slave-only: 
+		Switch(config)# clock synce slave-only
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce master-only
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce ssm" help="Whether start SSM on device" />
+	<COMMAND name="clock synce ssm enable" help="Configure the device SSM enable">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/ssm_enable/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the synchronization status message enable in device.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, synce ssm is disabled on device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the ssm enable:
+		Switch(config)# clock synce ssm enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm extend
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce ssm extend" help="Start extend SSM enable">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/ssm_extend_enable/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device working under ssm extension mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the device working under non ssm extension mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the device working under ssm extension mode:
+		Switch(config)# clock synce ssm extend
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce hold-off" help="Set the hold-off time">
+		<PARAM name="time_value" help="Clock signal hold-off time, default value is 500ms, unit is 100ms" ptype="SYNCE_HOLDOFF_TIME"/>
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/holdoff_time/${time_value}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the hold off time globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The hold off time is the time which from the failure of signal detection to the trigger the response of the clock. The time is in order to prevent selecing clock frequently with transient signal failure.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+500ms
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the hold off time:
+		Switch(config)# clock synce hold-off 5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce wait-to-restore
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce wait-to-restore" help="Set the wait to restore time">
+		<PARAM name="time_value" help="Clock signal wait-to-restore time, default value is 1 minute, unit is minutes" ptype="SYNCE_WTR_TIME"/>
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/wtr_time/${time_value}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the wait to restore time globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The wait-to-restore time is the time which from the recovery of signal detection to the trigger the response of the clock. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1 minute
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the wait to restore time:
+		Switch(config)# clock synce wait-to-restore 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce hold-off
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce clock-id" help="Set synce clock id">
+		<PARAM name="clock_id" help="Clock id address, format is XXXX.XXXX.XXXX.XXXX" ptype="CLOCK_ID_ADDR"/>
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/device_clock_id/set/${clock_id}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device clock id globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The clock id can label unique sequence number of the device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default clock id is route-mac + FFFE.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set device clock id:
+		Switch(config)# clock synce clock-id 0000.0000.0000.0001
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="no clock synce" help="Synchronous Ethernet (ITU-T G.826x)" />
+	<COMMAND name="no clock synce global-enable" help="Disable a synchronous equipment" >
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_global/synce_enable/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the clock to default globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, synce is disable on device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the clock to default globally:
+		Switch(config)# no clock synce global-enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce local-priority" help="Set SSM priority value on deviece">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/local_priority/255
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority of the device to default.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of the priority is 255.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the priority to default:
+		Switch(config)# no clock synce local-priority
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce priority
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="no clock synce local-quality" help="Set SSM quality value on device" >
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/option_mode/1/system_quality/dnu
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device mode and device quality to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The command can set the device to option1 mode and set the quality to dnu.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mode is option1, and default quality is dnu.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the device mode and device quality to default value: 
+		Switch(config)# no clock synce local-quality
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce local-quality
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce master-only" help="Configure the device working under STANDARD mode" >
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/device_role/default-role
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device working on standard mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the device working under master-only mode, it will send it's quality and not select best clock signal.By default, the clock 
+does not start master-only mode, and select best clock from all ssm port and the device itself. The device can't be set slave-only 
+mode and master-only mode at the same time.
+
+It's suggest that the "local-quality" value should be set to "prc" or "prs" if the device is configured as "master-only" mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the mode is standard.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the clock to standard: 
+		Switch(config)# no clock synce master-only
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no clock synce slave-only
+		</CTCRCMD>
+	</COMMAND>	
+	
+	<COMMAND name="no clock synce slave-only" help="Configure the device working under STANDARD mode" >
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/device_role/default-role
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device working on standard mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the device working under slave-only mode, it will select best clock signal from all ssm ports. By default, the clock doesn't start slave-only mode, and select best clock from all ssm port and the device itself. The device can't be 
+set slave-only mode and master-only mode at the same time
+
+If the device is configured as "slave-only" or default mode (neither slave-only mode nor master-only mode ), the "local-quality"value should not be set to "prc" or "prc".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the mode is standard.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the clock standard: 
+		Switch(config)# no clock synce slave-only
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no clock synce master-only
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce ssm" help="Whether start SSM on device" />
+	<COMMAND name="no clock synce ssm enable" help="Configure the device ssm disable">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/ssm_enable/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the synchronization status message disable in device.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, synce ssm is disabled on device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the ssm disable:
+		Switch(config)# no clock synce ssm enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm extend
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce ssm extend" help="Start extend ssm disable">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/ssm_extend_enable/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the device working under ssm extension mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the device working under non ssm extension mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to unset the device working under ssm extension mode:
+		Switch(config)# no clock synce ssm extend
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce hold-off" help="Set the hold-off time">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/holdoff_time/5
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the hold off time to default value globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The hold off time is the time which from the failure of signal detection to the trigger the response of the clock. The time is in order to prevent selecing clock frequently with transient signal failure.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the hold off time:
+		Switch(config)# no clock synce hold-off 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce wait-to-restore
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce wait-to-restore" help="Set the wait-to-restore time">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/wtr_time/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the wait to restore time to default value globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The wait-to-restore time is the time which from the recovery of signal detection to the trigger the response of the clock. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the hold off time:
+		Switch(config)# no clock synce wait-to-restore
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce hold-off
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce clock-id" help="Set synce clock id">
+		<ACTION>
+		cdbctl update/cdb/ssm/ssm_global/device_clock_id/unset
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device clock id to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The clock id can label unique sequence number of the device.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default clock id is route-mac + FFFE.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set device clock id to default:
+		Switch(config)# no clock synce clock-id
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="clock" help="Manage the system clock"/>
+	<COMMAND name="clock synce" help="Synchronous Ethernet (ITU-T G.826x)"/>
+	<COMMAND name="clock synce dnu-group" help="Add a port into DNU group">
+	     <PARAM name="dnu_groupid" help="Set group id value" ptype="DNU_GROUP_ID"/>
+		 <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/dnu_group_id/${dnu_groupid}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to add one port into DNU group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By the default, port is not belong to any DNU groups. If port is added into one DNU group and one port of the DNU group is selected as clock source finally, the switcher will send DNU packets to every members of DNU group.
+DNU group must be configured both on two switches which have multi-links.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to adding port 9 into DNU group 1:
+		Switch(config-if)# clock synce dnu-group 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce enable" help="Configure a port synce enable" >
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/synce_enable/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the interface working under synchronization mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the interface working under non-synchronization mode
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set interface working under synchronization mode:
+		Switch(config-if)# clock synce enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce global-enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce extend" help="Start extend SSM" >
+		<PARAM name="replace-clockid" help="Set the replace clockid enable of port" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/replace_clockid_en/1
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the device sending own clockid under ssm extension mode, if one interface is configured replace-clockid and selected.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, interface is not configured replace-clockid, and the ClockID in packets sent out is equal to the ClockID in packets received from selected port under non ssm extension mode. If one interface is configured replace-clockid and selected, the ClockID in packets sent out is equal to the equipment's ClockID, otherwise equal to the ClockID in packets received from selected port if the interface configured replace-clockid is not selected.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set replace-clockid enable on interface:
+		Switch(config-if)# clock synce extend replace-clockid
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm extend
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clock synce priority" help="Set synce priority for a port" >
+		<PARAM name="priority_id" help="Port SSM priority, default is 255" ptype="SSM_PRIORITY_ID"/>
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/priority/${priority_id}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority of the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of the priority is 255.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the priority to 1:
+		Switch(config-if)# clock synce priority 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce local-priority
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce quality-eth" help="Forces the quality value for the ETH interface" >
+		<PARAM name="direction_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="rx" help="Set received quality value of port" ptype="SUBCOMMAND" mode="subcommand" > 
+				<PARAM name="rx_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="dnu" help="Do not use this quality (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="dus" help="Do not use for synchronization (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="eec1" help="EEC1 clock or SEC clock (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="eec2" help="EEC2 clock or st3 clock (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="prc" help="Primary reference clock (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="prov" help="Provisionable by the network operator (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="prs" help="PRS traceable (ITU-T G.811) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="smc" help="Traceable to SONET clock self timed (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="ssu-a" help="Type I or V slave clock, defined in ITU-T G.812 (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="ssu-b" help="Type VI slave clock defined in ITU-T G.812 (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="st2" help="Traceable to stratum 2 (ITU-T G.812, type II) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="st3e" help="Traceable to stratum 3E (ITU-T G.812, type III) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="stu" help="Synchronized Traceability unknown (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="tnc" help="Traceable to transit node clock (ITU-T G.812, type V) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+				</PARAM>
+			</PARAM>
+			<PARAM name="tx" help="Set sent quality value of port" ptype="SUBCOMMAND" mode="subcommand" >
+				<PARAM name="tx_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="dnu" help="Do not use this quality (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="dus" help="Do not use for synchronization (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="eec1" help="EEC1 clock or SEC clock (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="eec2" help="EEC2 clock or st3 clock (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="prc" help="Primary reference clock (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="prov" help="Provisionable by the network operator (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="prs" help="PRS traceable (ITU-T G.811) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="smc" help="Traceable to SONET clock self timed (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="ssu-a" help="Type I or V slave clock, defined in ITU-T G.812 (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="ssu-b" help="Type VI slave clock defined in ITU-T G.812 (Option1)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="st2" help="Traceable to stratum 2 (ITU-T G.812, type II) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="st3e" help="Traceable to stratum 3E (ITU-T G.812, type III) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="stu" help="Synchronized Traceability unknown (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+					<PARAM name="tnc" help="Traceable to transit node clock (ITU-T G.812, type V) (Option2)" ptype="SUBCOMMAND" mode="subcommand"/> 
+				</PARAM>
+			</PARAM>
+		</PARAM>	
+	    <ACTION>
+		if [ ${direction_type} == "rx" ]; then
+			cdbctl update/cdb/ssm/ssm_port/${iface}/force_rx_quality/${rx_type}
+		else
+			cdbctl update/cdb/ssm/ssm_port/${iface}/force_tx_quality/${tx_type}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the quality value of interface on Tx and Rx direction forcibly.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The device will send forcible quality value set on the interface on Tx direction and ignore the selected quality value. Setting forcible quality value on the interface on Rx direction, the device always consider the forcible value as
+this clock source's quality value.
+The forcible quality value set on Tx direction will be ignored if the interface is selected as best clock source or added in DNU group.
+Under option1 mode, the value includes prc, ssu-a, ssu-b, eec1 and dnu. While under option2 mode, the value includes prs, stu, st2, tnc, smc, st3e, prov, eec2 and dus.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+dnu
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set quality value on interface in Rx direction:
+		Switch(config-if)# clock synce quality-eth rx prc
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce local-quality 
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="clock synce ssm" help="Start SSM on port" />
+	<COMMAND name="clock synce ssm enable" help="Set the port whether can receive or send PDU" >
+		<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Set the port can both receive and send PDU (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rx" help="Set the port can receive PDU only" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="tx" help="Set the port can send PDU only" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/ssm_pdu_direct/1/${direction}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the interface receive and send PDU mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the interface can both receive and send PDU. The behavior that configuring both "rx" and "tx" is equal to configuring "all".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+all
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set interface can both receive and send PDU:
+		Switch(config-if)# clock synce ssm enable all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm enable
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no clock" help="Manage the system clock"/>
+	<COMMAND name="no clock synce" help="Synchronous Ethernet (ITU-T G.826x)"/>
+	<COMMAND name="no clock synce dnu-group" help="Delete a port from DNU group">
+		 <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/dnu_group_id/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to delate one port from DNU group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By the default, port is not belong to any DNU groups. If port is added into one DNU group and one port of the DNU group is selected as clock source finally, the switcher will send DNU packets to every members of DNU group.
+DNU group must be configured both on two switches which have multi-links
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to delate one port from DNU group 1:
+		Switch(config-if)# no clock synce dnu-group 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce enable" help="Configure a port synce disable" >
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/synce_enable/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the interface working under synchronization mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the interface working under non-synchronization mode
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to unset interface working under synchronization mode:
+		Switch(config-if)# no clock synce enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce global-enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce extend" help="Start extend ssm" >
+		<PARAM name="replace-clockid" help="Set the replace clockid disable of interface" ptype="SUBCOMMAND" mode="subcommand"/>
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/replace_clockid_en/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the extend replace clockid to disable.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, interface is not configured replace-clockid, and the ClockID in packets sent out is equal to the ClockID in packets received from selected port under non ssm extension mode. 
+If one interface is configured replace-clockid and selected, the ClockID in packets sent out is equal to the equipment's ClockID, otherwise equal to the ClockID in packets received from 
+selected port if the interface configured replace-clockid is not selected.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to disable the extend replace clockid:
+		Switch(config-if)# no clock synce extend replace-clockid
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm extend
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no clock synce priority" help="Set synce priority for a port" >
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/priority/255
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the priority of the interface to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the value of the priority is 255.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the priority of the interface to default value:
+		Switch(config-if)# no clock synce priority 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce local-priority
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce quality-eth" help="Forces the quality value for the ETH interface" >
+		<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="rx" help="Set received quality of port" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="tx" help="Set sent quality of port" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	    <ACTION>
+		if [ ${direction} == "rx" ]; then
+			cdbctl update/cdb/ssm/ssm_port/${iface}/force_rx_quality/na
+		else
+			cdbctl update/cdb/ssm/ssm_port/${iface}/force_tx_quality/na
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the TX or RX quality of interface to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the RX quality of interface to default value:
+		Switch(config-if)# no clock synce quality-eth rx 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce local-quality 
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no clock synce ssm" help="Whether start SSM on Port" />
+	<COMMAND name="no clock synce ssm enable" help="Set the interface whether can receive or send PDU" >
+		<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Set the port can both receive and send PDU (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rx" help="Set the port can receive PDU only" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="tx" help="Set the port can send PDU only" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	    <ACTION>
+		cdbctl update/cdb/ssm/ssm_port/${iface}/ssm_pdu_direct/0/${direction}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the interface receive and send PDU mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+By default, the interface can both receive and send PDU. The behavior that configuring both "rx" and "tx" is equal to configuring "all".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+all
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to unset interface can both receive and send PDU:
+		Switch(config-if)# no clock synce ssm enable all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clock synce ssm enable
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

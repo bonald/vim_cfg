@@ -1,0 +1,37 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: switch-trigger
+# Required-Start: $local_fs $remote_fs $network $syslog
+# Required-Stop: $local_fs $remote_fs $network $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Switch trigger
+# Description: Switch trigger
+### END INIT INFO
+
+case "$1" in
+start)
+    echo "getting switch package..."
+    /bin/get_and_unpack_image.sh
+
+    cp /switch/switch/etc/* /switch/etc/ -rf
+    rm /switch/switch -rf
+
+    cp /switch/etc/pam.d/* /etc/pam.d/ -rf
+    rm /lib/security/pam_ctc.so -rf
+    if [ ! -f /lib/security ]; then
+        mkdir -p /lib/security
+    fi
+    cp /switch/lib/security/pam_ctc.so /lib/security/pam_ctc.so -rf
+
+    # needed by ctcmore
+    cp /switch/etc/termcap /etc/ -rf
+
+    echo "start switch software..."
+    if [ -f /switch/etc/rc.sysinit.debian ]; then
+        /switch/etc/rc.sysinit.debian
+    fi
+    ;;
+esac
+
+exit 0

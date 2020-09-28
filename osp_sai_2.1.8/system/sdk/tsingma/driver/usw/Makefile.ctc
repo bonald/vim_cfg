@@ -1,0 +1,89 @@
+ifeq ($(targetbase),linux)
+include $(MK_DIR)/sys.mk
+LIB = drv
+SRCS =
+#SRCS += $(shell find ../common/src -name "*.c")
+SRCS += $(shell find src -name "*.c")
+SRCS += $(shell find ../api -name "*.c")
+
+CPPFLAGS += -I$(SDK_DIR)/dal/include
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+#CPPFLAGS += -I$(SDK_DIR)/sal/utility/include
+#CPPFLAGS += -I$(ROOT_DIR)/libctccli/include
+CPPFLAGS += -I$(ROOT_DIR)/afx/
+
+ifeq ($(BOARD),ctc-sim)
+CPPFLAGS += -I$(SDK_DIR)/../cmodel/ctckal/include
+CPPFLAGS += -I$(SDK_DIR)/../cmodel/$(CHIPNAME)/include
+CPPFLAGS += -I$(SDK_DIR)/mem_model/$(CHIPNAME)/include
+endif
+
+ifeq ($(BOARD),linux-sim)
+CPPFLAGS += -I$(SDK_DIR)/mem_model/$(CHIPNAME)/include
+endif
+
+ifeq ($(BOARD),ctc-sim)
+CPPFLAGS += -DDRVIER_WORK_PLATFORM=1
+else
+CPPFLAGS += -DDRVIER_WORK_PLATFORM=0
+endif
+
+ifneq ($(ARCH),ppc)
+#CPPFLAGS += -DCTC_HOST_IS_LITTLE_ENDIAN=1
+#CPPFLAGS += -DHOST_IS_LE=1
+else
+#CPPFLAGS += -DCTC_HOST_IS_LITTLE_ENDIAN=0
+#CPPFLAGS += -DHOST_IS_LE=0
+endif
+
+CPPFLAGS += -I$(SDK_DIR)/driver
+CPPFLAGS += -I$(SDK_DIR)/driver/api
+CPPFLAGS += -I$(SDK_DIR)/driver/usw/include
+
+ifeq ($(USW),yes)
+include $(MK_DIR)/tsingma.mk
+endif
+include $(MK_DIR)/lib.mk
+
+# Modified by Yan Xing'an, too much warning when compiling,
+# turn off Werr
+#CFLAGS += -Werror -Wall
+CFLAGS += -Wall
+endif
+
+ifeq ($(targetbase),vxworks)
+BLD_DIR=$(SDK_DIR)/build.$(CPU).$(VER)
+OBJ_DIR=$(BLD_DIR)/obj.$(BOARD)/driver
+LIB_DIR=$(BLD_DIR)/lib.$(BOARD)
+BIN_DIR=$(BLD_DIR)/bin.$(BOARD)
+ 
+
+#all_targets = common usw libdrv 
+all_targets = usw libdrv
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+#common: FORCE
+#	make -C $(SDK_DIR)/driver/common -f Makefile.vx
+#
+#clean_common: FORCE
+#	make -C $(SDK_DIR)/driver/common -f Makefile.vx  clean	
+#	
+usw: FORCE
+	make -C $(SDK_DIR)/driver/usw -f Makefile.vx
+
+clean_usw: FORCE
+	make -C $(SDK_DIR)/driver/usw -f Makefile.vx  clean		
+	
+libdrv: FORCE
+	make -f Makefile_libdrv.vx
+
+clean_libdrv: FORCE
+	make -f Makefile_libdrv.vx clean	
+		
+
+.PHONY: FORCE
+FORCE:
+endif
+

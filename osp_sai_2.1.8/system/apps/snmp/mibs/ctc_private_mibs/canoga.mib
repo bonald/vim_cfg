@@ -1,0 +1,240 @@
+-- Imports declare
+
+CP-917xCOMMON-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+      SnmpAdminString
+      FROM SNMP-FRAMEWORK-MIB
+      
+      ifIndex
+      FROM IF-MIB
+      
+      TimeTicks, Counter32, OBJECT-IDENTITY,
+      mib-2, MODULE-IDENTITY, IpAddress, Counter64,
+      Unsigned32, Integer32, Gauge32, OBJECT-TYPE,
+      NOTIFICATION-TYPE
+      FROM SNMPv2-SMI
+
+      OwnerString
+      FROM RMON-MIB
+      
+      NOTIFICATION-GROUP, MODULE-COMPLIANCE, OBJECT-GROUP
+      FROM SNMPv2-CONF
+      
+      InetAddressPrefixLength, InetAddress, InetAddressType
+      FROM INET-ADDRESS-MIB
+      
+      InterfaceIndex, InterfaceIndexOrZero, ifIndex
+      FROM IF-MIB
+      
+      VrId
+      FROM VRRP-MIB      
+      
+      TestAndIncr, TimeStamp, AutonomousType,
+      PhysAddress, TEXTUAL-CONVENTION, TruthValue, DateAndTime,
+      MacAddress, RowStatus
+        FROM SNMPv2-TC
+      
+      enterprises
+        FROM SNMPv2-SMI;
+        
+-- Child OID declare
+
+     cp917xCommon MODULE-IDENTITY
+       LAST-UPDATED "200505160000Z" -- May 16, 2005
+       ORGANIZATION "IETF IP Version 6 (IPv6) Working Group"
+       CONTACT-INFO
+               " Dave Thaler
+                 Microsoft Corporation
+                 One Microsoft Way
+                 Redmond, WA  98052-6399
+                 EMail: dthaler@microsoft.com"
+       DESCRIPTION
+               "The MIB module for management of IP Tunnels,
+               independent of the specific encapsulation scheme in
+               use.
+
+               Copyright (C) The Internet Society (2005).  This
+               version of this MIB module is part of RFC 4087;  see
+               the RFC itself for full legal notices."
+
+       REVISION     "200505160000Z" -- May 16, 2005
+       DESCRIPTION
+               "IPv4-specific objects were deprecated, including
+               tunnelIfLocalAddress, tunnelIfRemoteAddress, the
+               tunnelConfigTable, and the tunnelMIBBasicGroup.
+
+               Added IP version-agnostic objects that should be used
+               instead, including tunnelIfAddressType,
+               tunnelIfLocalInetAddress, tunnelIfRemoteInetAddress,
+               the tunnelInetConfigTable, and the
+               tunnelIMIBInetGroup.
+
+               The new tunnelIfLocalInetAddress and
+               tunnelIfRemoteInetAddress objects are read-write,
+               rather than read-only.
+
+               Updated DESCRIPTION clauses of existing version-
+               agnostic objects (e.g., tunnelIfTOS) that contained
+               IPv4-specific text to cover IPv6 as well.
+
+               Added tunnelIfFlowLabel for tunnels over IPv6.
+
+               The encapsulation method was previously an INTEGER
+               type, and is now an IANA-maintained textual
+               convention.
+
+               Published as RFC 4087."
+       REVISION     "199908241200Z" -- August 24, 1999
+       DESCRIPTION
+               "Initial version, published as RFC 2667."
+      ::= { cpMibs 27975 }
+
+------------------------------------------------------------------
+--                      Canoga Perkins Identifiers              --
+------------------------------------------------------------------
+
+cp OBJECT IDENTIFIER ::= { enterprises 919 }
+cpNotifications           OBJECT IDENTIFIER ::= { cp 0 }
+cpProducts                OBJECT IDENTIFIER ::= { cp 1 }
+cpMibs                    OBJECT IDENTIFIER ::= { cp 2 }
+cpNaming                  OBJECT IDENTIFIER ::= { cp 3 }
+
+cpDot3                    OBJECT IDENTIFIER ::= { cpProducts 1 }
+cpswitch                  OBJECT IDENTIFIER ::= { cpProducts 3 }
+
+cpnid                     OBJECT IDENTIFIER ::= { cpDot3 5 }
+
+
+cpProductNames            OBJECT IDENTIFIER ::= { cpNaming 1 }             
+cpNextGenProductNames     OBJECT IDENTIFIER ::= { cpProductNames 2 }
+cpSwitchProductNames      OBJECT IDENTIFIER ::= { cpProductNames 3 } 
+cpNetworkIntfDev          OBJECT IDENTIFIER ::= { cpNextGenProductNames 1 }
+      
+
+            
+cp9170                    OBJECT IDENTIFIER ::= { cp917xSwitchProducts 1 }  
+cp917xSwitchProducts      OBJECT IDENTIFIER ::= { cpswitch 27975 }       
+                                                         
+cp9171                    OBJECT IDENTIFIER ::= { cp917xNidProducts 1 }   
+cp917xNidProducts         OBJECT IDENTIFIER ::= { cpnid 27975 }      
+  
+system                  OBJECT IDENTIFIER ::= { cp917xCommon 1 }
+syslog                  OBJECT IDENTIFIER ::= { cp917xCommon 2 }
+mirror                  OBJECT IDENTIFIER ::= { cp917xCommon 3 }
+portSecurity            OBJECT IDENTIFIER ::= { cp917xCommon 4 }
+stormControl            OBJECT IDENTIFIER ::= { cp917xCommon 5 }
+ntp                     OBJECT IDENTIFIER ::= { cp917xCommon 6 }
+acl                     OBJECT IDENTIFIER ::= { cp917xCommon 7 }
+qos                     OBJECT IDENTIFIER ::= { cp917xCommon 8 }
+igsp                    OBJECT IDENTIFIER ::= { cp917xCommon 9 }
+linkAgg                 OBJECT IDENTIFIER ::= { cp917xCommon 10 }
+qBridgeExt              OBJECT IDENTIFIER ::= { cp917xCommon 11 }
+dot1xExt                OBJECT IDENTIFIER ::= { cp917xCommon 12 }
+timeRange               OBJECT IDENTIFIER ::= { cp917xCommon 13 }
+stpExt                  OBJECT IDENTIFIER ::= { cp917xCommon 14 }
+igmpExt                 OBJECT IDENTIFIER ::= { cp917xCommon 16 }
+boardHealthyMonitor     OBJECT IDENTIFIER ::= { cp917xCommon 17 }
+arpInsp                 OBJECT IDENTIFIER ::= { cp917xCommon 20 }
+pimsmExt                OBJECT IDENTIFIER ::= { cp917xCommon 21 }
+ospfExt                 OBJECT IDENTIFIER ::= { cp917xCommon 22 }
+user                    OBJECT IDENTIFIER ::= { cp917xCommon 30 }
+snmpExt                 OBJECT IDENTIFIER ::= { cp917xCommon 32 }
+stm                     OBJECT IDENTIFIER ::= { cp917xCommon 33 }
+dnsClient               OBJECT IDENTIFIER ::= { cp917xCommon 34 }
+ssh                     OBJECT IDENTIFIER ::= { cp917xCommon 35 }
+dhcp                    OBJECT IDENTIFIER ::= { cp917xCommon 36 }
+lswdevMMib              OBJECT IDENTIFIER ::= { cp917xCommon 37 }
+lswTrapMib              OBJECT IDENTIFIER ::= { cp917xCommon 39 }
+ipSourceGuard           OBJECT IDENTIFIER ::= { cp917xCommon 40 }
+interface               OBJECT IDENTIFIER ::= { cp917xCommon 42 }
+management              OBJECT IDENTIFIER ::= { cp917xCommon 43 }
+mvr                     OBJECT IDENTIFIER ::= { cp917xCommon 44 }
+erps                    OBJECT IDENTIFIER ::= { cp917xCommon 45 }
+prefixList              OBJECT IDENTIFIER ::= { cp917xCommon 46 }
+ipUnicast               OBJECT IDENTIFIER ::= { cp917xCommon 47 }
+vrf                     OBJECT IDENTIFIER ::= { cp917xCommon 48 }
+aaa                     OBJECT IDENTIFIER ::= { cp917xCommon 49 }
+evc                     OBJECT IDENTIFIER ::= { cp917xCommon 51 }
+qinq                    OBJECT IDENTIFIER ::= { cp917xCommon 52 }
+rmonExt                 OBJECT IDENTIFIER ::= { cp917xCommon 53 }
+routeMap                OBJECT IDENTIFIER ::= { cp917xCommon 54 }
+ripExt                  OBJECT IDENTIFIER ::= { cp917xCommon 57 }
+ldpExt                  OBJECT IDENTIFIER ::= { cp917xCommon 60 }
+bgp                     OBJECT IDENTIFIER ::= { cp917xCommon 68 }
+mpls                    OBJECT IDENTIFIER ::= { cp917xCommon 69 }
+smartlink               OBJECT IDENTIFIER ::= { cp917xCommon 70 }
+flowctrl                OBJECT IDENTIFIER ::= { cp917xCommon 71 }
+cputraffic              OBJECT IDENTIFIER ::= { cp917xCommon 72 }
+portisolate             OBJECT IDENTIFIER ::= { cp917xCommon 73 }
+phyloopback             OBJECT IDENTIFIER ::= { cp917xCommon 74 }
+monitorlink             OBJECT IDENTIFIER ::= { cp917xCommon 75 }
+                  
+-- Module declares
+-- Sub Module: CP
+
+    cp917xNidSeries           OBJECT IDENTIFIER ::= { cpNetworkIntfDev 27975 }
+    cp9171Model1 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9171-1."
+        ::= { cp917xNidSeries 1 }        
+
+    cp9171Model3 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9171-3."
+        ::= { cp917xNidSeries 3 }  
+
+    cp917xSwitchSeries           OBJECT IDENTIFIER ::= { cpSwitchProductNames 27975 }
+    cp9170Model1 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9170-1."
+        ::= { cp917xSwitchSeries 1 }
+
+    cp9170Model3 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9170-3."
+        ::= { cp917xSwitchSeries 3 }                
+
+    cp9170Model4 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9170-4."
+        ::= { cp917xSwitchSeries 4 }        
+
+    cp9170Model6 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9170-6."
+        ::= { cp917xSwitchSeries 6 }  
+        
+    cp9170Model7 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9170-7."
+        ::= { cp917xSwitchSeries 7 }  
+         
+    cp9175Model1 OBJECT-IDENTITY
+        STATUS    current
+        DESCRIPTION
+            "9175-1."
+        ::= { cp917xSwitchSeries 101 }           
+         
+memory                    OBJECT IDENTIFIER ::= { system 1 }
+systemStats               OBJECT IDENTIFIER ::= { system 2 }
+operate                   OBJECT IDENTIFIER ::= { system 3 }
+--sysImageTable             OBJECT IDENTIFIER ::= { system 4 }
+sysImageTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE  OF SysImageEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The system image management table."
+    ::= { system 4 }
+flash                     OBJECT IDENTIFIER ::= { system 5 }
+cf                        OBJECT IDENTIFIER ::= { system 6 }
+sysTrap                   OBJECT IDENTIFIER ::= { system 7 }
+time                      OBJECT IDENTIFIER ::= { system 8 }   

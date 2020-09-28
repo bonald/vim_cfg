@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+PRIVATE VLAN
+</CTCMODULENAME>
+
+  <VIEW name="Exec">
+	<COMMAND name="show private-vlan" help="Private VLAN">
+			<PARAM name="type" help="Type" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+				<PARAM name="vlan" help="Show private-vlan by primary vlan id" ptype="SUBCOMMAND" mode="subcommand" > 
+					<PARAM name="vlan_id" help="Primary Vlan ID" ptype="VLAN_ID"/>  
+				</PARAM>				
+				<PARAM name="interface" help="Show private-vlan by interface" ptype="SUBCOMMAND" mode="subcommand" > 
+				    <PARAM name="iface_name" help="Ethernet Interface Name" ptype="IF_NAME_EA"/> 
+				</PARAM>
+			</PARAM>
+			<ACTION>
+			if [ ${type} == "all" ]; then
+				cdbctl show/cdb/l2/show_pvlan
+            elif [ ${type} == "vlan" ]; then
+				cdbctl show/cdb/l2/show_pvlan/vlan/${vlan_id}
+			elif [ ${type} == "interface" ]; then
+				cdbctl show/cdb/l2/show_pvlan/interface/${iface_name}
+			fi
+			</ACTION>
+			
+	    <CTCDESCRIPTION>
+Use this show command to get the information of private-vlan, include primary vlan, secondary vlan, private-vlan type and ports.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+There are three show commands to get the information of private-vlan, show private-vlan can get the private-vlan information of all vlan; show private-vlan vlan VLAN_ID can get the 
+private-vlan information by specific vlan; show private-vlan interface IF_NAME can get the private-vlan information by specific interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information about private-vlan:  
+    Switch# show private-vlan
+	Primary      Secondary         Type              Ports     
+	--------------+---------------+-----------------+--------
+	2              N/A             isolate           eth-0-2   
+	2              1               community         eth-0-1   
+	2              3               community         eth-0-3   
+	3              1               community         eth-0-4
+	
+	Switch# show private-vlan vlan 2
+	Primary      Secondary         Type              Ports     
+	--------------+---------------+-----------------+--------
+	2              N/A             isolate           eth-0-2   
+	2              1               community         eth-0-1   
+	2              3               community         eth-0-3   
+
+	Switch# show private-vlan interface eth-0-1
+	Private vlan mode: community
+	Primary vlan id: 2
+	Community vlan id: 1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+  </VIEW>
+	
+<VIEW name="Configure">
+		
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="switchport mode private-vlan"
+		help="Set vlan mode">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="host" help="Host port" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="promiscuous" help="Promiscuous port" ptype="SUBCOMMAND" mode="subcommand" />   
+		</PARAM>
+		
+		<ACTION>
+		      cdbctl update/cdb/interface/${iface}/pvlan_type/${type}
+		</ACTION>
+		
+		 <CTCDESCRIPTION>
+Use this command to set the mode of private-vlan, the mode includes host and promiscuous, the default mode is access.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The private-vlan mode can be host or promiscuous, when the mode is set to promiscuous, the type of private-vlan only can be promiscuous; when the mode is set to
+host, the type of private-vlan can be isolate or community.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+access
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the mode of private-vlan:  
+	Switch(config-if)# switchport mode private-vlan promiscuous
+	Switch(config-if)# switchport mode private-vlan host
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport private-vlan
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="switchport private-vlan" help="Set Private Vlan">
+		<PARAM name="vlan_id" help="Primary Vlan" ptype="VLAN_ID"/>
+		<PARAM name="type" help="Type" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="community-vlan" help="Community mode" ptype="SUBCOMMAND" mode="subcommand" > 
+				<PARAM name="sub_vlan_id" help="Communtiy Vlan" ptype="VLAN_ID"/>  
+			</PARAM>				
+			<PARAM name="isolate" help="Isolate mode" ptype="SUBCOMMAND" mode="subcommand" />   
+		</PARAM>
+		
+		<ACTION>
+			if [ ${type} == "all" ]; then
+				cdbctl update/cdb/interface/${iface}/private_vlan/${vlan_id}
+            elif [ ${type} == "community-vlan" ]; then
+				cdbctl update/cdb/interface/${iface}/private_vlan/${vlan_id}/${type}/${sub_vlan_id}
+			elif [ ${type} == "isolate" ]; then
+				cdbctl update/cdb/interface/${iface}/private_vlan/${vlan_id}/${type}
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command can set private-vlan in the private-vlan mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The private-vlan mode is promiscuous, the command only can be set switchport private-vlan VLAN_ID; when private-vlan mode is host, the command can be set switchport private-vlan VLAN_ID isolate or 
+switchport private-vlan VLAN_ID community VLAN_ID. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+isolate
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set private-vlan:  
+	Switch(config-if)# switchport private-vlan 2 
+	Switch(config-if)# switchport private-vlan 2 isolate
+	Switch(config-if)# switchport private-vlan 2 community 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport mode private-vlan 
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no switchport private-vlan"
+		help=" Reset private-vlan interface to default">
+		<ACTION>
+		      cdbctl update/cdb/interface/${iface}/private_vlan/1/none
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the no command to delete private-vlan of port. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+No matter what mode or type or vlan-id is set on this interface, the no command can set the interface to default, sample as switchport mode access.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the private-vlan of interface:  
+    Switch(config-if)# no switchport private-vlan   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport mode private-vlan 
+switchport private-vlan
+		</CTCRCMD>	 	
+	</COMMAND>
+
+</VIEW>
+</CLISH_MODULE>

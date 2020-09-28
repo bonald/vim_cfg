@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+
+int ftruncate(int fildes, off_t length);
+       
+int main(int argc, char **argv)
+{
+    FILE *fp = NULL;
+    int i = 0;
+    char c = 'a';
+    FILE *fp
+    
+    if (argc != 3)
+    {
+        printf("Usage: fcreate filename size\n");
+        exit(1);
+    }
+
+    fp = fopen(argv[1], "w+");
+    if (NULL == fp)
+    {
+        printf("Error: %s\n", strerror(errno));
+        exit(1);
+    }
+
+    if (ftruncate(fileno(fp), (off_t)atoi(argv[2])) != 0)
+    {
+        printf("Error: %s\n", strerror(errno));
+        fclose(fp);
+        exit(1);
+    }
+
+    fseek(fp, 0, SEEK_SET);
+
+    for (i = 0; i < atoi(argv[2]); i++)
+    {
+        fwrite(&c, 1, 1, fp);
+        c += 1;
+    }
+
+    fclose(fp);
+    exit(0);
+}

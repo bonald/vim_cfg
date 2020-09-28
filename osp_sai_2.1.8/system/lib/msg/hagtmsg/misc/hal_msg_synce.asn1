@@ -1,0 +1,20 @@
+HAL-MSG-SYNCE DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+HalMsgSyncESetEnableReq ::= SEQUENCE
+{
+    gchip       INTEGER,
+    enable      INTEGER,
+    type        INTEGER
+}
+
+HalMsgSyncESelectPortReq ::= SEQUENCE
+{
+    gchip       INTEGER,
+    gportid     INTEGER,
+    slotidx     INTEGER,
+    portidx     INTEGER,
+    output      INTEGER,
+    type        INTEGER
+}
+
+END

@@ -1,0 +1,153 @@
+all: $(all_targets) FORCE
+dtcli: $(dtcli_targets) FORCE
+dkcli: $(dkcli_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+libsal: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/sal
+    
+ctc_shell: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/libctccli/ctc_shell/client	
+clean_libsal: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/sal clean
+
+libdal: FORCE
+#/*SYSTEM MODIFY, Added by weij for update SDK, 2017-09-11*/
+ifeq ($(ARCH),um)
+	$(CTC_MAKE) -C $(SDK_DIR)/dal -f Makefile
+else
+	$(CTC_MAKE) -C $(SDK_DIR)/dal -f Makefile.ctc
+endif
+
+clean_libdal: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal clean
+
+libdrv: FORCE
+	@echo "GEN => $@"
+	$(CTC_MAKE) -C $(SDK_DIR)/driver
+
+clean_libdrv: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/driver clean
+
+ifeq ($(auto),yes)
+libsdkcore: FORCE
+	@cd $(SDK_DIR)/script/Auto_generate_api && \
+	sh auto_generate_api.sh $(featureMode) greatbelt goldengate usw && \
+	sh gen_error.sh && \
+	sh opf2str.sh $(CHIPNAME) && \
+	$(CTC_MAKE) -C $(SDK_DIR)/core
+libdkit: FORCE
+	@cd $(SDK_DIR)/script/Auto_generate_api && \
+	sh gen_dkit_discard.sh $(CHIPNAME) && \
+        $(CTC_MAKE) -C $(SDK_DIR)/dkits -f Makefile.lib
+else
+libsdkcore: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core
+libdkit: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits -f Makefile.lib
+endif
+
+clean_libdkit:FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits -f Makefile.lib clean
+
+clean_libsdkcore: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/core clean
+
+libctcsdk: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR) -f Makefile.one_lib
+
+clean_libctcsdk: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR) -f Makefile.one_lib clean
+
+libmemmodel: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/mem_model/$(CHIPNAME)
+
+clean_libmemmodel: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/mem_model/$(CHIPNAME) clean
+
+libchipagent: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/chip_agent
+
+clean_libchipagent: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/chip_agent clean
+
+liblibctccli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/libctccli
+
+clean_liblibctccli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/libctccli clean
+
+libpkt:	FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/libpktxr
+
+clean_libpkt:	FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/libpktxr clean
+
+libmodelcpp: FORCE
+ifeq ($(cpp),yes)
+	@echo "GEN => $@"
+	$(CTC_MAKE) -C $(SDK_DIR)/../cmodel/$(CHIPNAME)/src/modelcpp -f Makefile.lib
+else
+	@echo "====> SKIP MAKE libmodelcpp.so"
+endif
+
+clean_libmodelcpp: FORCE
+	@rm -rf $(CMODEL_DIR)/build.i686.d/bin.tmp
+	$(CTC_MAKE) -C $(SDK_DIR)/../cmodel/$(CHIPNAME)/src/modelcpp -f Makefile.lib clean
+
+libctccli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli
+
+clean_libctccli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli clean
+
+libcmodel: FORCE
+	@echo "GEN => $@"
+	$(CTC_MAKE) -C $(CMODEL_DIR) -f Makefile.lib
+
+clean_libcmodel: FORCE
+	@rm -rf $(CMODEL_DIR)/build.i686.d/bin.tmp
+	$(CTC_MAKE) -C $(CMODEL_DIR) -f Makefile.lib clean
+
+libcmodelcli: FORCE
+	$(CTC_MAKE) -C $(CMODEL_DIR)/$(CHIPNAME)/ui/cmodel_cli -f Makefile
+
+clean_libcmodelcli: FORCE
+	$(CTC_MAKE) -C $(CMODEL_DIR)/$(CHIPNAME)/ui/cmodel_cli clean  -f Makefile
+  
+app:	FORCE
+ifeq ($(UNITTEST),TRUE)
+	$(CTC_MAKE) -C $(SDK_DIR)/app -f Makefile_libapp
+else
+	$(CTC_MAKE) -C $(SDK_DIR)/app  -f Makefile
+endif
+
+clean_app:	FORCE
+ifeq ($(UNITTEST),TRUE)
+	$(CTC_MAKE) -C $(SDK_DIR)/app -f Makefile_libapp clean
+else
+	$(CTC_MAKE) -C $(SDK_DIR)/app -f Makefile clean
+endif
+kdal: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal/src/linux/kernel -f Makefile
+
+clean_kdal: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal/src/linux/kernel -f Makefile clean
+
+gtest:	FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/gtest -f Makefile
+
+clean_gtest:	FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/gtest -f Makefile clean
+
+libdkcli:       FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits
+
+clean_libdkcli: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dkits clean
+
+distclean: FORCE
+	rm -rf $(BLD_DIR)
+    
+.PHONY: FORCE
+FORCE:

@@ -1,0 +1,11 @@
+prefix=
+exec_prefix=
+libdir=/ctcdata/users/sw/chenyq2/osp/system/lib/json
+includedir=/ctcdata/users/sw/chenyq2/osp/system/lib/json
+
+Name: json
+Description: JSON implementation in C
+Version: 0.12.1
+Requires:
+Libs:  -L/ctcdata/users/sw/chenyq2/osp/system/lib/json -ljson-c
+Cflags: -I/ctcdata/users/sw/chenyq2/osp/system/lib/json

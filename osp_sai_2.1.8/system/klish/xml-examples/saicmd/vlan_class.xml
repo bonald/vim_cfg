@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+VLANCLASS
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show vlan classifier" help="VLAN classification commands"/>
+	<COMMAND name="show vlan classifier rule" help="VLAN classifier rule" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		    <PARAM name="rule_id" help="VLAN classifier rule id" ptype="VLAN_CLASS_RULE_ID"/>
+		</PARAM>
+		<ACTION>
+			if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_vlanclass_rule
+			else
+                cdbctl show/cdb/l2/show_vlanclass_rule/${rule_id}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show vlan classifier rule EXEC command to display the information of all rules based mac or basec ip or based protocol.
+Use the show vlan classifier rule RULE_ID EXEC command to display the specify rule information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show vlan classifier rule command:  
+    Switch# show vlan classifier rule  
+    vlan classifier rule 0 mac 0000.0000.0001 vlan 2  
+    vlan classifier rule 1 mac 0000.0000.0002 vlan 3  
+    vlan classifier rule 4 mac 0000.0000.0003 vlan 4  
+    vlan classifier rule 100 protocol mpls vlan 9  
+    vlan classifier rule 1000 protocol arp vlan 10  
+    vlan classifier rule 4000 ip 1.1.1.2 vlan 9  
+    vlan classifier rule 4095 ip 1.1.1.1 vlan 10  
+    Switch# show vlan classifier rule 0  
+    vlan classifier rule 0 mac 0000.0000.0001 vlan 2  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan classifier rule
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show vlan classifier group" help="VLAN classifier group" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		    <PARAM name="group_id" help="VLAN classifier group id" ptype="VLAN_CLASS_GROUP_ID"/>
+		</PARAM>
+		<ACTION>
+			if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_vlanclass_group
+			else
+                cdbctl show/cdb/l2/show_vlanclass_group/${group_id}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show vlan classifier group EXEC command to display the information of all groups which added rules.
+Use the show vlan classifier group GROUP_ID EXEC command to display the specify group information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show vlan classifier group command:  
+    Switch# show vlan classifier group   
+    vlan classifier group 31 add rule 1
+    vlan classifier group 31 add rule 1000
+    vlan classifier group 31 add rule 4095
+    Switch# show vlan classifier group 31
+    vlan classifier group 31 add rule 1
+    vlan classifier group 31 add rule 1000
+    vlan classifier group 31 add rule 4095
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan classifier group
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show vlan classifier interface" help="Interface group activated on" >
+		<PARAM name="group" help="VLAN classifier group id" ptype="SUBCOMMAND" mode="subcommand"/> 
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+			<PARAM name="group_id" help="VLAN classifier group id" ptype="VLAN_CLASS_GROUP_ID"/>
+		</PARAM>
+		<ACTION>
+			if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_vlanclass_if
+			else
+                cdbctl show/cdb/l2/show_vlanclass_if/${group_id}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show vlan classifier interface group EXEC command to display the information of all interface which active vlanclass.
+Use the show vlan classifier interface group GROUP_ID EXEC command to display the interface which active the specify group vlanclass.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show vlan classifier interface group command:  
+    Switch# show vlan classifier interface group   
+    vlan classifier group 31 on interface eth-0-1, based mac
+    vlan classifier group 31 on interface eth-0-2, based ip
+    vlan classifier group 31 on interface eth-0-3, based protocol
+    Switch# show vlan classifier interface group 31
+    vlan classifier group 31 on interface eth-0-1, based mac
+    vlan classifier group 31 on interface eth-0-2, based ip
+    vlan classifier group 31 on interface eth-0-3, based protocol
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan classifier activate
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="vlan classifier" help="VLAN classification commands"/>
+	<COMMAND name="vlan classifier rule" help="VLAN classification rule commands">
+			<PARAM name="rule_id" help="VLAN classifier rule id" ptype="VLAN_CLASS_RULE_ID"/>
+			<PARAM name="rule_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="ip" help="IP address classification" ptype="SUBCOMMAND" mode="subcommand" /> 
+				<PARAM name="mac" help="MAC address classification" ptype="SUBCOMMAND" mode="subcommand" /> 
+				<PARAM name="protocol" help="Specify an ethernet protocol classification" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+			<PARAM name="macaddr" test='"${rule_type}"="mac"' help="MAC address classification" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="MAC" help="MAC address" ptype="MAC_ADDR"/>
+			</PARAM>
+			<PARAM name="ipaddr" test='"${rule_type}"="ip"' help="IP address classification" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="IP" help="IP address" ptype="IP_ADDR"/>
+			</PARAM>
+			<PARAM name="protype" test='"${rule_type}"="protocol"' help="Specify an ethernet protocol classification" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="arp" help="Protocol - ARP" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="ip" help="Protocol - IP" ptype="SUBCOMMAND" mode="subcommand" />
+					<PARAM name="ipv6" help="Protocol - IPv6" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="mpls" help="Protocol - MPLS" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="mpls-mcast" help="Protocol - MPLS multicast" ptype="SUBCOMMAND" mode="subcommand" /> 
+					<PARAM name="pppoe" help="Protocol - PPPOE" ptype="SUBCOMMAND" mode="subcommand" />
+					<PARAM name="rarp" help="Protocol - RARP" ptype="SUBCOMMAND" mode="subcommand" /> 
+			</PARAM>
+			<PARAM name="vlan" help="VLAN" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+            </PARAM>
+			<ACTION>
+			if [ "${rule_type}" == "mac" ]; then
+				cdbctl create/cdb/l2/vlanclass_rule/${rule_id}/${rule_type}/${MAC}/${vlan_id}
+			elif [ "${rule_type}" == "ip" ]; then
+				cdbctl create/cdb/l2/vlanclass_rule/${rule_id}/${rule_type}/${IP}/${vlan_id}
+			elif [ "${rule_type}" == "protocol" ]; then
+				cdbctl create/cdb/l2/vlanclass_rule/${rule_id}/${rule_type}/${protype}/${vlan_id}
+			fi;
+			</ACTION>
+			<CTCDESCRIPTION>
+The command can creat the rule ID which based mac or based ip or based protocol.
+			</CTCDESCRIPTION>
+			<CTCUSAGE>
+The rule id only can be creat only once, the rule id can not be update. If users want to reuse the rule id, please remove the it first. The range of ruleid is (0-4095).
+			</CTCUSAGE>
+			<CTCDEFAULT>
+None
+			</CTCDEFAULT>
+			<CTCEXAMPLE>
+    This is an example of how to creat vlan classifier rule:  
+    Switch(config) vlan classifier rule 0 mac 0.0.1 vlan 1  
+    Switch(config) vlan classifier rule 1 ip 1.1.1.1 vlan 1
+    Switch(config) vlan classifier rule 2 protocol mpls vlan 1
+			</CTCEXAMPLE>
+			<CTCRCMD>
+show vlan classifier rule
+			</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="vlan classifier group" help="VLAN classification group commands">
+		<PARAM name="group_id" help="VLAN classifier group id" ptype="VLAN_CLASS_GROUP_ID"/>
+		<PARAM name="group_action" help="Action" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="add" help="Add rule to a group" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="delete" help="Delete rule from a group" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<PARAM name="rule" help="VLAN classifier rule" ptype="SUBCOMMAND" mode="subcommand"> 
+            <PARAM name="rule_id" help="VLAN classifier rule id" ptype="VLAN_CLASS_RULE_ID"/>
+		</PARAM>
+		<ACTION>
+			if [ "${group_action}" == "add" ]; then
+				cdbctl create/cdb/l2/vlanclass_group/${group_id}/${rule_id}
+			elif [ "${group_action}" == "delete" ]; then
+				cdbctl delete/cdb/l2/vlanclass_group/${group_id}/${rule_id}
+			fi;
+		</ACTION>
+		<CTCDESCRIPTION>
+The "add" action command can creat the group ID, add the rule id into the groupid; the "delete" action can delete ruleid from groupid, if the ruleid is the last member of groupid, then delete the group.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The range of group id is (0-31), only one group id can be used. If the added ruleid is based protocol, then the groupid must be 31. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to add rule into groupid:  
+    Switch(config) vlan classifier group 31 add rule 0 
+    Switch(config) vlan classifier group 31 add rule 1
+    Switch(config) vlan classifier group 31 add rule 2 
+    
+    This is an example of how to delete rule from groupid: 
+    Switch(config) vlan classifier group 31 delete rule 0 
+    Switch(config) vlan classifier group 31 delete rule 1
+    Switch(config) vlan classifier group 31 delete rule 2 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan classifier group
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="no vlan classifier" help="VLAN classification commands"/>
+	<COMMAND name="no vlan classifier rule" help="VLAN classification rules commands">
+			<PARAM name="rule_id" help="VLAN classifier rule id" ptype="VLAN_CLASS_RULE_ID"/>
+			
+		<ACTION>
+			cdbctl delete/cdb/l2/vlanclass_rule/${rule_id}
+		</ACTION>
+	    <CTCDESCRIPTION>
+This command can delete the rule id.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When delete the rule id, if the rule id is added into one group, it need to delete the rule from the group.. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to delete rule id:  
+    Switch(config) no vlan classifier rule 0
+    Switch(config) no vlan classifier rule 1
+    Switch(config) no vlan classifier rule 2 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan classifier rule
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no vlan classifier rule all" help="All of VLAN classifier rules">
+		<ACTION>
+			cdbctl delete/cdb/l2/vlanclass_rule/all
+		</ACTION>
+	    <CTCDESCRIPTION>
+This command can delete the all of rule id.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When delete the rule id, if the rule id is added into one group, it need to delete the rule from the group.. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to delete rule id:  
+    Switch(config) no vlan classifier rule all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan classifier rule
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no vlan classifier group" help="VLAN classification groups commands">
+			<PARAM name="group_id" help="VLAN classifier group id" ptype="VLAN_CLASS_GROUP_ID"/>
+		<ACTION>
+			cdbctl delete/cdb/l2/vlanclass_group/${group_id}
+		</ACTION>	
+		<CTCDESCRIPTION>
+This command can delete the group id.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When delete the group id, the rules which in the groupid should be delete first, and should deactivate the vlanclass from interface. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to delete group id:  
+    Switch(config) no vlan classifier group 31
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan classifier group
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-if-view">
+	<COMMAND name="vlan" help="VLAN commands"/>
+	<COMMAND name="vlan classifier" help="VLAN classification commands"/>
+	<COMMAND name="vlan classifier activate" help="VLAN classifier activation commands">
+		<PARAM name="group_id" help="VLAN classifier group id" ptype="VLAN_CLASS_GROUP_ID"/>
+		<PARAM name="based" help="Based - specify VLAN classifier based" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="active_type" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="ip" help="IP based VLAN" ptype="SUBCOMMAND" mode="subcommand" /> 
+				<PARAM name="mac" help="MAC based VLAN" ptype="SUBCOMMAND" mode="subcommand" /> 
+				<PARAM name="protocol" help="Protocol based VLAN" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/vlanclass_group_id/${group_id}/vlanclass_active_type/${active_type}
+		</ACTION>
+	    <CTCDESCRIPTION>
+This command can activate the vlanclass group on the interface, which can based mac or based ip or based protocol.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the based type is protocol, the active group id must be 31.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to activate vlanclass group on interface:  
+    Switch(config-if) vlan classifier activate 31 based mac
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan classifier interface group
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="vlan classifier default-action" help="VLAN classifier default action">
+		<PARAM name="drop" help="Default action is drop packet" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/vlanclass_default_action/1
+		</ACTION>
+		<CTCDESCRIPTION>
+This command can set the vlanclass default action to drop, the default action is forward.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command must be configured after the vlan classifier activate based ip or mac.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Forward
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to set vlanclass default action on interface:  
+    Switch(config-if)# vlan classifier default-action drop
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no vlan" help="VLAN commands"/>
+	<COMMAND name="no vlan classifier" help="VLAN classification commands"/>
+	<COMMAND name="no vlan classifier activate" help="VLAN classifier activation commands">
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/vlanclass_group_id
+		</ACTION>
+		<CTCDESCRIPTION>
+This command will deactivate the vlanclass group on the interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to deactivate vlanclass group on interface:  
+    Switch(config-if)no vlan classifier activate
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show vlan classifier interface group
+		</CTCRCMD>		
+	</COMMAND>
+	
+	<COMMAND name="no vlan classifier default-action" help="VLAN classifier default action">
+		<PARAM name="drop" help="Default action is drop packet" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/vlanclass_default_action/0
+		</ACTION>	
+		<CTCDESCRIPTION>
+This command can set the vlanclass default action to default, the default action is forward.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Forward
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of how to set vlanclass default action to default on interface:  
+    Switch(config-if) no vlan classifier default-action drop
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

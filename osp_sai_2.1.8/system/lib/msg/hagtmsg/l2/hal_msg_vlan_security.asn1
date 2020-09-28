@@ -1,0 +1,14 @@
+HAL-MSG-VLAN-SECURITY DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- MESSAGE definitions for vlan security (BEGIN) {
+HalMsgVlanSecuritySetLimitReq ::= SEQUENCE
+{
+	vid         INTEGER,
+        maxMacNum   INTEGER,
+	action      INTEGER
+}
+
+-- } DATA STRUCTURE definitions for vlan security (END)
+
+END
+

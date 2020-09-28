@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+NAT
+</CTCMODULENAME>
+
+    <!-- show related CLIs -->
+    <VIEW name="Exec">
+		<COMMAND name="show ip nat" help="NAT information" />
+		<COMMAND name="show ip nat translations" help="Translations of NAT" >
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			<PARAM name="protocol-value" test='-n ${protocol}"' help="Protocol" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+				<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+				<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			</PARAM>
+
+			<PARAM name="local" help="Inside local IP" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			<PARAM name="local-para" test='-n ${local}"' help="Inside local IP" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="local_ip" help="Inside local IP" ptype="IP_ADDR" >
+					<PARAM name="local_port" help="Inside local layer 4 port" ptype="L4_PORT_NUM" optional="true" />
+				</PARAM>
+				<PARAM name="local_port" help="Inside local layer 4 port" ptype="L4_PORT_NUM" />
+			</PARAM>
+
+			<PARAM name="global" help="Inside global IP" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			<PARAM name="global-para" test='-n ${global}"' help="Inside global IP" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="global_ip" help="Inside global IP" ptype="IP_ADDR" >
+					<PARAM name="global_port" help="Inside global layer 4 port" ptype="L4_PORT_NUM" optional="true" />
+				</PARAM>
+				<PARAM name="global_port" help="Inside global layer 4 port" ptype="L4_PORT_NUM" />
+			</PARAM>
+
+			<PARAM name="detail" help="show detail information" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			<PARAM name="summary" help="show summary information" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+
+			<ACTION>
+				cmd="cdbctl show/cdb/l3/show_nat_session/xxx/protocol/${protocol-value}/local_ip/${local_ip}/local_port/${local_port}/global_ip/${global_ip}/global_port/${global_port}/detail/${detail}/summary/${summary}/"
+				$cmd
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="clear ip nat" help="NAT information" />
+		<COMMAND name="clear ip nat translations" help="Translations of NAT" >
+			<PARAM name="interface" help="Outside interface" ptype="SUBCOMMAND" mode="subcommand" optional="true" >
+				<PARAM name="outside_if_name" help="Outside interface" ptype="IF_NAME_EAV" />
+			</PARAM>
+
+			<ACTION>
+				cmd="cdbctl update/cdb/l3/clear_nat_session/xxx/outside_if_name/${outside_if_name}//"
+				$cmd
+			</ACTION>
+		</COMMAND>
+		
+    </VIEW>
+
+	<!-- configuration related CLIs -->
+    <!-- 
+		ip nat inside source static LOCAL-IP {GLOBAL-IP | interface}
+		ip nat inside source static [tcp | udp] LOCAL-IP LOCAL-PORT {GLOBAL-IP|interface} lobal-port
+		ip nat inside source static [tcp | udp] LOCAL-IP {GLOBAL-IP|interface} lobal-port-range
+    -->
+	<VIEW name="Configure">
+		<COMMAND name="ip nat" help="Configure IP Network Address Translation(NAT)" />
+		<COMMAND name="no ip nat" help="Configure IP Network Address Translation(NAT)" />
+		<COMMAND name="ip nat inside" help="Configure inside network address translation" />
+		<COMMAND name="no ip nat inside" help="Configure inside network address translation" />
+
+		<!-- static nat -->
+		<COMMAND name="ip nat inside source static" help="Configure static network address translation rule" >
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="switch" optional="true" >
+				<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+				<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+				<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			</PARAM>
+
+			<PARAM name="local_ip" help="Inside local IP" ptype="IP_ADDR" />
+			<PARAM name="local_port" test='-n "${protocol}" -a "${protocol}"!="icmp"' help="Inside local layer 4 port" ptype="L4_PORT_NUM" optional="true" />
+
+			<PARAM name="global" help="Global" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="global_ip" help="Inside global IP" ptype="IP_ADDR" />
+				<PARAM name="interface" help="Outside interface" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="outside_if_name" help="Outside interface" ptype="IF_NAME_EAV" />
+				</PARAM>
+			</PARAM>
+
+			<PARAM name="global_port" test='-n "${protocol}" -a -n "${local_port}" -a "${protocol}"!="icmp"' help="Inside global TCP/UDP port" ptype="L4_PORT_NUM" />
+			<PARAM name="global_port_range" test='-n "${protocol}" -a -z "${local_port}" -a "${protocol}"!="icmp"' help="Inside global TCP/UDP port range " ptype="L4_PORT_RANGE" optional="true" />
+
+			<ACTION>
+			cmd="cdbctl create/cdb/l3/nat_rule/xxx/static/protocol/${protocol}/local_ip/${local_ip}/local_port/${local_port}/global_ip/${global_ip}/global_port/${global_port}/global_port_range/${global_port_range}/outside_if_name/${outside_if_name}//"
+			$cmd
+			</ACTION>
+		</COMMAND>
+		<COMMAND name="no ip nat inside source static" help="Configure static network address translation rule" >
+			<PARAM name="protocol" help="Protocol" ptype="SUBCOMMAND" mode="switch" optional="true" >
+				<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+				<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+				<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			</PARAM>
+
+			<PARAM name="local_ip" help="Inside local IP" ptype="IP_ADDR" />
+			<PARAM name="local_port" test='-n "${protocol}" -a "${protocol}"!="icmp"' help="Inside local layer 4 port" ptype="L4_PORT_NUM" optional="true" />
+
+			<PARAM name="global" help="Global" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="global_ip" help="Inside global IP" ptype="IP_ADDR" />
+				<PARAM name="interface" help="Outside interface" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="outside_if_name" help="Outside interface" ptype="IF_NAME_EAV" />
+				</PARAM>
+			</PARAM>
+
+			<PARAM name="global_port" test='-n "${protocol}" -a -n "${local_port}" -a "${protocol}"!="icmp"' help="Inside global TCP/UDP port" ptype="L4_PORT_NUM" />
+			<PARAM name="global_port_range" test='-n "${protocol}" -a -z "${local_port}" -a "${protocol}"!="icmp"' help="Inside global TCP/UDP port range " ptype="L4_PORT_RANGE" optional="true" />
+
+			<ACTION>
+			cmd="cdbctl delete/cdb/l3/nat_rule/xxx/static/protocol/${protocol}/local_ip/${local_ip}/local_port/${local_port}/global_ip/${global_ip}/global_port/${global_port}/global_port_range/${global_port_range}/outside_if_name/${outside_if_name}//"
+			$cmd
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="ip nat pool" help="Network address translation IP pool" >
+			<PARAM name="name" help="Pool name" ptype="NAME_STRING" />
+			<PARAM name="ip_low" help="Start IP" ptype="IP_ADDR" />
+			<PARAM name="ip_high" help="End IP" ptype="IP_ADDR" />
+			<PARAM name="mask" help="IP network mask" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="netmask" help="Mask" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="mask_val" help="Mask" ptype="IP_ADDR" />
+				</PARAM>
+				<PARAM name="prefix-length" help="Prefix length" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="mask_val_len" help="Prefix length" ptype="IPV4_MASK_LEN" />
+				</PARAM>
+			</PARAM>
+
+			<ACTION>
+			cmd="cdbctl create/cdb/l3/nat_pool/${name}/ip_low/${ip_low}/ip_high/${ip_high}/ip_mask/${mask_val}/ip_mask_len/${mask_val_len}//"
+			$cmd
+			</ACTION>
+		</COMMAND>
+		<COMMAND name="no ip nat pool" help="Network address translation IP pool" >
+			<PARAM name="name" help="Pool name" ptype="NAME_STRING" />
+
+			<ACTION>
+			cmd="cdbctl delete/cdb/l3/nat_pool/${name}//"
+			$cmd
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="ip nat inside source" help="Inside source network address translation" >
+		    <!-- 
+			<PARAM name="access-list" help="Access list" ptype="SUBCOMMAND" mode="subcommand" optional="true" >
+				<PARAM name="access_list_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING" />
+			</PARAM>
+		    -->
+			<PARAM name="any" help="Any local hosts from NAT inside interface." ptype="SUBCOMMAND" mode="subcommand" />
+
+			<PARAM name="global" help="Global" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="pool" help="Network address translation IP pool" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="pool_name" help="Pool name" ptype="NAME_STRING" />
+				</PARAM>
+				<PARAM name="interface" help="Outside interface" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="outside_if_name" help="Outside interface" ptype="IF_NAME_EAV" />
+				</PARAM>
+			</PARAM>
+
+			<PARAM name="random" help="Configure port based network address translation" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+
+			<ACTION>
+			cmd="cdbctl create/cdb/l3/nat_rule/xxx/dynamic/access_list/${access_list_name}/pool/${pool_name}/outside_if_name/${outside_if_name}/random/${random}//"
+			$cmd
+			</ACTION>
+		</COMMAND>
+		<COMMAND name="no ip nat inside source" help="Inside source network address translation" >
+		    <!-- 
+			<PARAM name="access-list" help="Access list" ptype="SUBCOMMAND" mode="subcommand" optional="true" >
+				<PARAM name="access_list_name" help="Specify a IP access-list name, up to 20 characters" ptype="NAME_STRING" />
+			</PARAM>
+		    -->
+			<PARAM name="any" help="Any local hosts from NAT inside interface." ptype="SUBCOMMAND" mode="subcommand" />
+
+			<PARAM name="global" help="Global" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="pool" help="Network address translation IP pool" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="pool_name" help="Pool name" ptype="NAME_STRING" />
+				</PARAM>
+				<PARAM name="interface" help="Outside interface" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="outside_if_name" help="Outside interface" ptype="IF_NAME_EAV" />
+				</PARAM>
+			</PARAM>
+
+			<PARAM name="random" help="Configure port based network address translation" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+
+			<ACTION>
+			cmd="cdbctl delete/cdb/l3/nat_rule/xxx/dynamic/access_list/${access_list_name}/pool/${pool_name}/outside_if_name/${outside_if_name}/random/${random}//"
+			$cmd
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="ip nat translation" help="Configure translations of NAT" />
+		<COMMAND name="ip nat translation timeout" help="Timeout of network address translation" >
+			<PARAM name="type" help="xxx" ptype="SUBCOMMAND" mode="switch" optional="true" >
+		    <!-- 
+				<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+		    -->
+				<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+				<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			</PARAM>
+<!--Modified by zhush for bug 52865, 2019-07-24-->
+			<PARAM name="time" help="Timeout in seconds, default is 180s" ptype="SESSION_TIME_OUT" />
+<!--end zhush-->
+			<ACTION>
+	            if [ "${type}" = "icmp" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/timeout_icmp/${time}//"
+	            elif [ "${type}" = "tcp" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/timeout_tcp/${time}//"
+	            elif [ "${type}" = "udp" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/timeout_udp/${time}//"
+	         	else
+	                cmd="cdbctl update/cdb/l3/nat_global/timeout/${time}//"
+	            fi
+
+				$cmd
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="no ip nat translation" help="Configure translations of NAT" />
+		<COMMAND name="no ip nat translation timeout" help="Timeout of network address translation" >
+			<PARAM name="type" help="xxx" ptype="SUBCOMMAND" mode="switch" optional="true" >
+		    <!-- 
+				<PARAM name="icmp" help="Internet Control Message Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+		    -->
+				<PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+				<PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+			</PARAM>
+
+			<ACTION>
+	            if [ "${type}" = "icmp" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/timeout_icmp/0//"
+	            elif [ "${type}" = "tcp" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/timeout_tcp/0//"
+	            elif [ "${type}" = "udp" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/timeout_udp/0//"
+	         	else
+	                cmd="cdbctl update/cdb/l3/nat_global/timeout/0//"
+	            fi
+
+				$cmd
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="ip nat translation max-entries" help="Max entries of network address translation" >
+			<PARAM name="num" help="xxx" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="total_max" help="Max entries" ptype="SESSION_MAX" />
+				<PARAM name="host" help="Max entries of the local host" ptype="SUBCOMMAND" mode="subcommand" >
+					<PARAM name="host_ip" help="Local IP address" ptype="IP_ADDR" />
+					<PARAM name="host_entry_max" help="Max number of entries" ptype="SESSION_MAX" />
+				</PARAM>
+			</PARAM>
+			<ACTION>
+	            if [ "${total_max}" != "" ]; then
+	            	cmd="cdbctl update/cdb/l3/nat_global/session_limit/${total_max}//"
+	         	else
+	            	cmd="cdbctl create/cdb/l3/nat_session_limit/xxx/host/${host_ip}/${host_entry_max}//"
+	            fi
+
+				$cmd
+			</ACTION>
+		</COMMAND>
+		<COMMAND name="no ip nat translation max-entries" help="Max entries of network address translation" >
+			<PARAM name="host" help="Max entries of the local host" ptype="SUBCOMMAND" mode="subcommand" optional="true" >
+				<PARAM name="host_ip" help="Local IP address" ptype="IP_ADDR" />
+			</PARAM>
+			<ACTION>
+	            if [ "${host_ip}" != "" ]; then
+	            	cmd="cdbctl delete/cdb/l3/nat_session_limit/xxx/host/${host_ip}/0/"
+	         	else
+	            	cmd="cdbctl update/cdb/l3/nat_global/session_limit/0//"
+	            fi
+
+				$cmd
+			</ACTION>
+		</COMMAND>
+
+	</VIEW>
+
+    <VIEW name="configure-if-view">
+		<COMMAND name="ip nat enable" help="IP network address translation configuration">
+			<PARAM name="type" help="Typexxx" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="inside" help="Inside interface" ptype="SUBCOMMAND" mode="subcommand" />
+				<PARAM name="outside" help="Outside interface" ptype="SUBCOMMAND" mode="subcommand" />
+			</PARAM>
+			<ACTION>
+				if [ "${type}" = "inside" ]; then
+					cdbctl update/cdb/l3/route_if/${iface}/nat_enable/1/
+				else
+					cdbctl update/cdb/l3/route_if/${iface}/nat_enable/2/
+				fi
+			</ACTION>
+		</COMMAND>
+
+		<COMMAND name="no ip nat enable" help="IP network address translation configuration">
+			<ACTION>
+				cdbctl update/cdb/l3/route_if/${iface}/nat_enable/0/
+			</ACTION>
+		</COMMAND>
+
+    </VIEW>
+</CLISH_MODULE>
+

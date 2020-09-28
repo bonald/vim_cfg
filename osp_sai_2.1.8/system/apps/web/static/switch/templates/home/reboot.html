@@ -1,0 +1,10 @@
+<div class="alert alert-info col-md-6 col-md-offset-2" role="alert">
+    <h4>{{ 'Attention' | translate }}</h4>
+    <p>{{ "Restarting the switch, don't leave this page, after the restart, it will return the login page automatically..." | translate }}</p>
+    <div ng-class="{progress: true, 'progress-striped': vm.striped}">
+        <div ng-class="['progress-bar', vm.style]" ng-style="{width: vm.value + '%'}">
+            <div ng-if="vm.showLabel">{{vm.value}}%</div>
+        </div>
+    </div>
+</div>
+

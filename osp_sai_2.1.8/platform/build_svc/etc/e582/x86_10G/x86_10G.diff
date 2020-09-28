@@ -1,0 +1,539 @@
+Index: platform/build_svc/etc/datapath_profile/E580_48X2Q4Z.txt
+===================================================================
+--- platform/build_svc/etc/datapath_profile/E580_48X2Q4Z.txt	(revision 27350)
++++ platform/build_svc/etc/datapath_profile/E580_48X2Q4Z.txt	(working copy)
+@@ -485,16 +485,16 @@
+ [SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 76
+-[SERDES_MODE] = 0
+-[SERDES_RX_POLY] = 0
+-[SERDES_TX_POLY] = 1
+-[SERDES_SWITCH] = 0
++[SERDES_MODE] = 1
++[SERDES_RX_POLY] = 1
++[SERDES_TX_POLY] = 0
++[SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 77
+-[SERDES_MODE] = 0
+-[SERDES_RX_POLY] = 0
+-[SERDES_TX_POLY] = 1
+-[SERDES_SWITCH] = 0
++[SERDES_MODE] = 1
++[SERDES_RX_POLY] = 1
++[SERDES_TX_POLY] = 0
++[SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 78
+ [SERDES_MODE] = 0
+Index: platform/build_svc/etc/datapath_profile/E580_48X2Q4Z_100G.txt
+===================================================================
+--- platform/build_svc/etc/datapath_profile/E580_48X2Q4Z_100G.txt	(revision 27350)
++++ platform/build_svc/etc/datapath_profile/E580_48X2Q4Z_100G.txt	(working copy)
+@@ -485,16 +485,16 @@
+ [SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 76
+-[SERDES_MODE] = 0
+-[SERDES_RX_POLY] = 0
+-[SERDES_TX_POLY] = 1
+-[SERDES_SWITCH] = 0
++[SERDES_MODE] = 1
++[SERDES_RX_POLY] = 1
++[SERDES_TX_POLY] = 0
++[SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 77
+-[SERDES_MODE] = 0
+-[SERDES_RX_POLY] = 0
+-[SERDES_TX_POLY] = 1
+-[SERDES_SWITCH] = 0
++[SERDES_MODE] = 1
++[SERDES_RX_POLY] = 1
++[SERDES_TX_POLY] = 0
++[SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 78
+ [SERDES_MODE] = 0
+Index: platform/build_svc/etc/datapath_profile/E580_48X6Q.txt
+===================================================================
+--- platform/build_svc/etc/datapath_profile/E580_48X6Q.txt	(revision 27350)
++++ platform/build_svc/etc/datapath_profile/E580_48X6Q.txt	(working copy)
+@@ -317,16 +317,16 @@
+ [SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 48
+-[SERDES_MODE] = 0
+-[SERDES_RX_POLY] = 0
++[SERDES_MODE] = 1
++[SERDES_RX_POLY] = 1
+ [SERDES_TX_POLY] = 0
+-[SERDES_SWITCH] = 0
++[SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 49
+-[SERDES_MODE] = 0
+-[SERDES_RX_POLY] = 0
++[SERDES_MODE] = 1
++[SERDES_RX_POLY] = 1
+ [SERDES_TX_POLY] = 0
+-[SERDES_SWITCH] = 0
++[SERDES_SWITCH] = 1
+ 
+ [SERDES_ID] = 50
+ [SERDES_MODE] = 0
+Index: platform/build_svc/etc/e582/debian/debian_installer/installer.sh
+===================================================================
+--- platform/build_svc/etc/e582/debian/debian_installer/installer.sh	(revision 27350)
++++ platform/build_svc/etc/e582/debian/debian_installer/installer.sh	(working copy)
+@@ -154,6 +154,10 @@
+ chroot $disk_mount_point chown root:root /etc/sudoers.d/switch_sudo_user
+ chroot $disk_mount_point chmod 0640 /etc/sudoers.d/switch_sudo_user
+ 
++mv /tmp/ixgbe.ko $disk_mount_point/lib/
++chroot $disk_mount_point chown root:root /lib/ixgbe.ko
++chroot $disk_mount_point chmod 0755 /lib/ixgbe.ko
++
+ #chroot $disk_mount_point usermod -s /etc/start_klish_for_console.sh root
+ 
+ echo "127.0.0.1	`cat $disk_mount_point/etc/hostname`" >> $disk_mount_point/etc/hosts
+Index: platform/build_svc/etc/e582/debian/debian_installer/ixgbe.ko
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: platform/build_svc/etc/e582/debian/debian_installer/ixgbe.ko
+===================================================================
+--- platform/build_svc/etc/e582/debian/debian_installer/ixgbe.ko	(revision 27350)
++++ platform/build_svc/etc/e582/debian/debian_installer/ixgbe.ko	(working copy)
+
+Property changes on: platform/build_svc/etc/e582/debian/debian_installer/ixgbe.ko
+___________________________________________________________________
+Added: svn:mime-type
+## -0,0 +1 ##
++application/octet-stream
+\ No newline at end of property
+Index: platform/build_svc/etc/e582/debian/debian_installer/make_onie_installer.sh
+===================================================================
+--- platform/build_svc/etc/e582/debian/debian_installer/make_onie_installer.sh	(revision 27350)
++++ platform/build_svc/etc/e582/debian/debian_installer/make_onie_installer.sh	(working copy)
+@@ -1,5 +1,5 @@
+ #!/bin/bash
+ 
+-tar -czf archive.tar.gz grub.cfg rootfs.cpio.xz vmlinuz-3.10.28-amd64 initrd.img-3.10.28-amd64 busybox centec_cnos.deb fstab switch_sudo_user inittab mount.sh unmount.sh 80-mount-udisk.rules 90-unmount-udisk.rules start_klish_for_console.sh cnos-trigger cnos_url.conf udhcpc_def.script version modules.tar.gz
++tar -czf archive.tar.gz grub.cfg rootfs.cpio.xz vmlinuz-3.10.28-amd64 initrd.img-3.10.28-amd64 busybox centec_cnos.deb fstab switch_sudo_user inittab mount.sh unmount.sh 80-mount-udisk.rules 90-unmount-udisk.rules start_klish_for_console.sh cnos-trigger cnos_url.conf udhcpc_def.script version modules.tar.gz ixgbe.ko
+ cat installer.sh archive.tar.gz > onie-installer
+ chmod +x onie-installer
+Index: system/fea/lcm/card/lcm_e580_48x2q4z.c
+===================================================================
+--- system/fea/lcm/card/lcm_e580_48x2q4z.c	(revision 27350)
++++ system/fea/lcm/card/lcm_e580_48x2q4z.c	(working copy)
+@@ -124,7 +124,7 @@
+ #define E580_48X2Q4Z_SPPRT_TXLNK(pp_idx, epld_ver)    \
+     (E580_48X2Q4Z_ZG_PORT(pp_idx)&&(epld_ver>=E580_48X2Q4Z_EPLD_VER_SPPRT_TXLNK))
+ 
+-#ifdef _CTC_ARM_HI3535_
++#if ((defined _CTC_ARM_HI3535_) || (defined _CTC_X86_64_))
+ #define E580_48X2Q4Z_EPLD_I2C_ADDR                   0x58
+ #endif
+ /****************************************************************************
+@@ -896,7 +896,7 @@
+ static int32_t
+ _lcm_reg_e580_48x2q4z_epld(uint8 hw_ver, epld_info_t * p_epld_info)
+ {
+-#ifdef _CTC_ARM_HI3535_
++#if ((defined _CTC_ARM_HI3535_) || (defined _CTC_X86_64_))
+     p_epld_info->epld_bus_type = EPLD_I2C_TYPE;
+     p_epld_info->i2c_gen.bridge_flag = 0;
+     p_epld_info->i2c_gen.addr = E580_48X2Q4Z_EPLD_I2C_ADDR;
+@@ -2015,6 +2015,9 @@
+     //p_card->volt_cur_monitor_num = E580_48X2Q4Z_VOLT_MON_NUM;
+     //p_card->phy_interrupt_mode = GLB_PHY_INTERRUPT_MODE_EPLD;   /*get phy interrupt info from EPLD*/
+     p_card->cpu_type = GLB_CPU_PPC_P1010;
++#ifdef _CTC_X86_64_
++    p_card->cpu_type = GLB_CPU_X86_64;
++#endif
+     p_card->phy_chip_num = 0;
+ 
+     /* for some board like e350 8t12xg don't support ptp, added by jcao for bug 25500, 2013-10-25 */
+Index: system/sdk/core/goldengate/include/sys/sys_goldengate_chip.h
+===================================================================
+--- system/sdk/core/goldengate/include/sys/sys_goldengate_chip.h	(revision 27350)
++++ system/sdk/core/goldengate/include/sys/sys_goldengate_chip.h	(working copy)
+@@ -23,6 +23,7 @@
+ #include "ctc_const.h"
+ #include "ctc_chip.h"
+ #include "ctc_debug.h"
++#include "sys_goldengate_chip_global.h"
+ #include "sys_goldengate_common.h"
+ 
+ /****************************************************************
+Index: system/sdk/core/goldengate/include/sys/sys_goldengate_chip_global.h
+===================================================================
+--- system/sdk/core/goldengate/include/sys/sys_goldengate_chip_global.h	(revision 0)
++++ system/sdk/core/goldengate/include/sys/sys_goldengate_chip_global.h	(working copy)
+@@ -0,0 +1,63 @@
++/**
++ @file ctc_chip.h
++
++ @author  Copyright (C) 2011 Centec Networks Inc.  All rights reserved.
++
++ @date 2016-9-9
++
++ @version v2.0
++
++   This file contains all chip related data structure, enum, macro and proto.
++*/
++
++#ifndef _CTC_GOLDENGATE_CHIP_GLOBAL_H
++#define _CTC_GOLDENGATE_CHIP_GLOBAL_H
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/****************************************************************
++ *
++ * Header Files
++ *
++ ***************************************************************/
++
++#include "sal_types.h"
++#include "ctc_mix.h"
++
++/****************************************************************
++*
++* Defines and Macros
++*
++****************************************************************/
++extern uint8 g_lchip_num;
++extern uint8 g_ctcs_api_en;
++
++
++
++#define SYS_LCHIP_CHECK_ACTIVE_IN_THREAD(lchip)             \
++    do {                                                    \
++        int32 (op) = 0;                                     \
++        (op)=(sys_goldengate_chip_check_active(lchip));                \
++        if ((op)<0)                                         \
++        {                                                   \
++            return;                                         \
++        }                                                   \
++    } while (0)
++
++/****************************************************************
++*
++* Data Structures
++*
++****************************************************************/
++
++extern int32 sys_goldengate_chip_set_active(uint8 lchip, uint32 value);
++extern int32 sys_goldengate_chip_check_active(uint8 lchip);
++/**@} end of @defgroup chip global  */
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
++
+Index: system/sdk/core/goldengate/include/sys/sys_goldengate_port.h
+===================================================================
+--- system/sdk/core/goldengate/include/sys/sys_goldengate_port.h	(revision 27350)
++++ system/sdk/core/goldengate/include/sys/sys_goldengate_port.h	(working copy)
+@@ -151,7 +151,7 @@
+     uint32 subif_en           :1;
+     uint32 training_status    :3;
+     uint32 cl73_status        :2;   /* 0-dis, 1-en, 2-finish */
+-    uint32 rsv     :2;
++    uint32 cl73_old_status    :2;
+     uint32 link_intr_en       :1;
+     uint32 link_status        :1;
+     uint32 rsv0               :17;
+@@ -189,8 +189,10 @@
+     sal_mutex_t*          p_port_mutex;
+     uint8                 use_logic_port_check;
+ 
++    uint8                 auto_neg_restart_status;
+     CTC_INTERRUPT_EVENT_FUNC link_status_change_cb;
+     sal_task_t*  p_monitor_scan;
++    sal_task_t*  p_auto_neg_restart;
+     sys_goldengate_scan_log_t scan_log[SYS_PORT_MAX_LOG_NUM];
+     uint8 cur_log_index;
+ 
+Index: system/sdk/core/goldengate/src/sys/interface/sys_goldengate_port.c
+===================================================================
+--- system/sdk/core/goldengate/src/sys/interface/sys_goldengate_port.c	(revision 27350)
++++ system/sdk/core/goldengate/src/sys/interface/sys_goldengate_port.c	(working copy)
+@@ -1014,7 +1014,169 @@
+     return CTC_E_NONE;
+ }
+ 
++void
++_sys_goldengate_port_restart_auto_neg_thread(void* para)
++{
++    uint16 lport = 0;
++    uint16 gport = 0;
++    uint8 gchip = 0;
++    uint32 mac_en = 0;
++    uint32 auto_neg_en = 0;
++    uint32 is_up = 0;
++    sys_datapath_lport_attr_t* port_attr = NULL;
++    uint8 lchip = (uintptr)para;
++
++    while(1)
++    {
++        SYS_LCHIP_CHECK_ACTIVE_IN_THREAD(lchip);
++        sys_goldengate_get_gchip_id(lchip, &gchip);
++
++        for (lport = 0; lport < SYS_GG_MAX_PORT_NUM_PER_CHIP; lport++)
++        {
++            SYS_LCHIP_CHECK_ACTIVE_IN_THREAD(lchip);
++            if (p_port_master[lchip]->auto_neg_restart_status == 0)
++            {
++                return;
++            }
++            auto_neg_en = 0;
++            mac_en = 0;
++            is_up = 0;
++
++            gport = CTC_MAP_LPORT_TO_GPORT(gchip, lport);
++
++            /*check mac used */
++            sys_goldengate_common_get_port_capability(lchip, lport, &port_attr);
++            if (port_attr->port_type != SYS_DATAPATH_NETWORK_PORT)
++            {
++                continue;
++            }
++
++            /*check cl73 auto-neg*/
++            if ((CTC_CHIP_SERDES_XLG_MODE != port_attr->pcs_mode) && (CTC_CHIP_SERDES_CG_MODE != port_attr->pcs_mode)
++                && (CTC_CHIP_SERDES_XFI_MODE != port_attr->pcs_mode))
++            {
++                continue;
++            }
++
++            /*check auto-neg enable */
++            sys_goldengate_port_get_property(lchip, gport, CTC_PORT_PROP_AUTO_NEG_EN, &auto_neg_en);
++            if (!auto_neg_en)
++            {
++                continue;
++            }
++
++            /*check mac enable */
++            sys_goldengate_port_get_mac_en(lchip, gport, &mac_en);
++            if (!mac_en)
++            {
++                continue;
++            }
++
++            sys_goldengate_port_get_mac_link_up(lchip, gport, &is_up);
++            if(!is_up)
++            {
++                /*From auto to training, need wait more.*/
++                if((auto_neg_en == 2)&&(p_port_master[lchip]->igs_port_prop[lport].cl73_old_status == 1))
++                {
++                    p_port_master[lchip]->igs_port_prop[lport].cl73_old_status = 2;
++                }
++                else
++                {
++                   /*restart auto-negotiation*/
++                   sys_goldengate_port_set_property(lchip, gport, CTC_PORT_PROP_AUTO_NEG_EN, 0);
++                   sys_goldengate_port_set_property(lchip, gport, CTC_PORT_PROP_AUTO_NEG_EN, 1);
++                   p_port_master[lchip]->igs_port_prop[lport].cl73_old_status  = 1;
++                }
++            }
++            else
++            {
++                p_port_master[lchip]->igs_port_prop[lport].cl73_old_status = 3;
++            }
++        }
++
++        sal_task_sleep(2600);
++    }
++    return;
++}
++
++int32
++sys_goldengate_port_set_auto_neg_restart_enable(uint8 lchip, uint32 enable)
++{
++    int32 ret = 0;
++    uintptr chip_id = lchip;
++
++    SYS_PORT_INIT_CHECK();
++    enable = enable?1:0;
++
++    if (p_port_master[lchip]->auto_neg_restart_status != enable)
++    {
++        p_port_master[lchip]->auto_neg_restart_status = enable;
++        if (enable)
++        {
++            ret = sal_task_create(&(p_port_master[lchip]->p_auto_neg_restart), "ctcResAutoNeg",
++                                  SAL_DEF_TASK_STACK_SIZE, SAL_TASK_PRIO_DEF, _sys_goldengate_port_restart_auto_neg_thread, (void*)chip_id);
++            if (ret < 0)
++            {
++                return CTC_E_NOT_INIT;
++            }
++        }
++        else
++        {
++            sal_task_destroy(p_port_master[lchip]->p_auto_neg_restart);
++        }
++    }
++
++    return CTC_E_NONE;
++}
++
++int32
++sys_goldengate_port_get_auto_neg_restart_enable(uint8 lchip, uint32* p_value)
++{
++    SYS_PORT_INIT_CHECK();
++
++    *p_value = p_port_master[lchip]->auto_neg_restart_status;
++
++    return CTC_E_NONE;
++}
++
+ static int32
++_sys_goldengate_port_restart_auto_neg(uint8 lchip)
++{
++    uint16 lport = 0;
++    drv_work_platform_type_t platform_type;
++    sys_datapath_lport_attr_t* p_port_attr = NULL;
++
++    CTC_ERROR_RETURN(drv_get_platform_type(&platform_type));
++    if (platform_type != HW_PLATFORM)
++    {
++        return CTC_E_NONE;
++    }
++
++    p_port_master[lchip]->auto_neg_restart_status = 0;
++
++    for (lport = 0; lport < SYS_GG_MAX_PORT_NUM_PER_CHIP; lport++)
++    {
++        /*check mac used */
++        sys_goldengate_common_get_port_capability(lchip, lport, &p_port_attr);
++        if (p_port_attr->port_type != SYS_DATAPATH_NETWORK_PORT)
++        {
++            continue;
++        }
++        if ((p_port_attr->pcs_mode == CTC_CHIP_SERDES_XLG_MODE) || (p_port_attr->pcs_mode == CTC_CHIP_SERDES_CG_MODE)
++            || (p_port_attr->pcs_mode == CTC_CHIP_SERDES_XFI_MODE))
++        {
++            break;
++        }
++    }
++    if (lport != SYS_GG_MAX_PORT_NUM_PER_CHIP)
++    {
++        sys_goldengate_port_set_auto_neg_restart_enable(lchip, TRUE);
++    }
++
++    return CTC_E_NONE;
++}
++
++static int32
+ _sys_goldengate_port_init_nexthop(uint8 lchip)
+ {
+     uint8 lchip_tmp                = 0;
+@@ -1206,6 +1368,8 @@
+     /* !!!!!!!!!!!it should config mac according to datapath later!!!!!!!!!*/
+     CTC_ERROR_RETURN(_sys_goldengate_chan_init(lchip));
+ 
++    CTC_ERROR_RETURN(_sys_goldengate_port_restart_auto_neg(lchip));
++
+     CTC_ERROR_RETURN(_sys_goldengate_port_monitor_link(lchip));
+ 
+     CTC_ERROR_RETURN(sys_goldengate_port_flow_ctl_init(lchip));
+@@ -5753,7 +5917,8 @@
+         }
+     }
+     /* 802.3 cl73 auto neg */
+-    else
++     else if ((CTC_CHIP_SERDES_XLG_MODE == port_attr->pcs_mode) || (CTC_CHIP_SERDES_CG_MODE == port_attr->pcs_mode)
++        || (CTC_CHIP_SERDES_XFI_MODE == port_attr->pcs_mode))
+     {
+         CTC_ERROR_RETURN_WITH_PORT_UNLOCK(_sys_goldengate_port_set_cl73_auto_neg_en(lchip, gport, value));
+     }
+@@ -5807,7 +5972,8 @@
+ 
+         *p_value = value;
+     }
+-    else
++    else if ((CTC_CHIP_SERDES_XLG_MODE == port_attr->pcs_mode) || (CTC_CHIP_SERDES_CG_MODE == port_attr->pcs_mode)
++        || (CTC_CHIP_SERDES_XFI_MODE == port_attr->pcs_mode))
+     {
+         *p_value = p_port_master[lchip]->igs_port_prop[lport].cl73_status;
+     }
+@@ -11719,6 +11885,10 @@
+                     CTC_ERROR_RETURN_WITH_PORT_UNLOCK(_sys_goldengate_port_set_pause_speed_mode(lchip, port_attr->slice_id, port_attr->mac_id, port_attr->speed_mode));
+                 }
+             }
++            else if (CTC_FLAG_ISSET(ability, SYS_PORT_CL73_10GBASE_KR))
++            {
++                /*2. cfg pcs*/
++            }
+             else
+             {
+                 PORT_UNLOCK;
+Index: system/sdk/core/goldengate/src/sys/misc/sys_goldengate_chip_global.c
+===================================================================
+--- system/sdk/core/goldengate/src/sys/misc/sys_goldengate_chip_global.c	(revision 0)
++++ system/sdk/core/goldengate/src/sys/misc/sys_goldengate_chip_global.c	(working copy)
+@@ -0,0 +1,58 @@
++/**
++ @file sys_chip_global.c
++
++ @author  Copyright (C) 2011 Centec Networks Inc.  All rights reserved.
++
++ @date 2017-03-03
++
++ @version v2.0
++
++ The file contains all chip APIs of ctc layer
++*/
++
++/****************************************************************************
++ *
++* Header Files
++*
++****************************************************************************/
++#include "ctc_debug.h"
++#include "ctc_error.h"
++#include "ctc_const.h"
++#include "ctc_macro.h"
++#include "ctc_chip.h"
++#include "sys_goldengate_chip_global.h"
++
++/****************************************************************************
++ *
++* Defines and Macros
++*
++*****************************************************************************/
++#define SYS_CHIP_BITMAP_NUM     32
++
++/****************************************************************************
++ *
++* Global and Declaration
++*
++*****************************************************************************/
++uint32 goldengate_chip_valid[CTC_MAX_LOCAL_CHIP_NUM/SYS_CHIP_BITMAP_NUM+1] = {0};
++
++int32
++sys_goldengate_chip_check_active(uint8 lchip)
++{
++    if (lchip >= CTC_MAX_LOCAL_CHIP_NUM)
++    {
++        return CTC_E_INVALID_CHIP_ID;
++    }
++
++    if (CTC_IS_BIT_SET(goldengate_chip_valid[lchip/SYS_CHIP_BITMAP_NUM], lchip%SYS_CHIP_BITMAP_NUM))
++    {
++        return CTC_E_NONE;
++    }
++    else
++    {
++        return CTC_E_NOT_INIT;
++    }
++
++    return CTC_E_NONE;
++}
++

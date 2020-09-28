@@ -1,0 +1,94 @@
+HAL-MSG-IPUC DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIpv6addr,
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES    
+    ;
+
+HalMsgIPucAddDefRoute ::= SEQUENCE
+{
+    nhid            INTEGER,
+    ipv6En          INTEGER
+}
+
+HalMsgIpucAddDelVrf ::= SEQUENCE
+{
+    vrfId          INTEGER,
+    addEn          INTEGER,
+    ipv6En         INTEGER
+}
+
+HalMsgIPucEnIPv6 ::= SEQUENCE
+{
+    enable          INTEGER
+}
+
+HalIPucNexthop ::= SEQUENCE
+{
+    gportid         INTEGER,
+    vid             INTEGER,
+    oifType         INTEGER,
+    outVlanIsSvlan  INTEGER,
+    macAddr         PrintableString   
+}
+
+HalIPucNhidInfo  ::= SEQUENCE
+{
+    nhid            INTEGER,
+    l3ifid          INTEGER,
+    rtFlag          INTEGER
+}
+
+HalMsgIPucRouteAddDel ::= SEQUENCE
+{
+    vrfid           INTEGER,
+    masklen         INTEGER,
+    ipVer           INTEGER,
+    ipAddr          PrintableString,
+    nhCnt           INTEGER,
+    nhidInfo        HalIPucNhidInfo
+}
+
+HalMsgIPucAddNexthop ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    isSpec          INTEGER,
+    nhInfo          HalIPucNexthop                   
+}
+
+HalMsgIPucDelNexthop ::= SEQUENCE
+{
+    nhid           INTEGER
+}
+
+HalMsgIPucNhToUnrov ::= SEQUENCE
+{
+    nhid           INTEGER
+}
+
+HalMsgIPucNhToFwd  ::= SEQUENCE
+{
+    nhid            INTEGER,
+    nhInfo          HalIPucNexthop
+}
+
+HalMsgIPucNhUpdate  ::= SEQUENCE
+{
+    nhid            INTEGER,
+    nhInfo          HalIPucNexthop
+}
+
+--SYNC structures
+--HAGT TO HSRV structures
+HalMsgIPucRtAddFail ::= SEQUENCE
+{
+    vrfid           INTEGER,
+    masklen         INTEGER,
+    ipVer           INTEGER,
+    ipAddr          PrintableString,
+    nhid            INTEGER,
+    isEcmp          INTEGER
+}
+END

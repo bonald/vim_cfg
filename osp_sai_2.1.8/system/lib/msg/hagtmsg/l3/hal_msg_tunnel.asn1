@@ -1,0 +1,49 @@
+HAL-MSG-TUNNEL DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES
+    HalMsgIntList
+    FROM HAL-MSG-TYPES    
+    ;
+
+HalMsgTunnelDecapRt ::= SEQUENCE
+{
+    nhid            INTEGER,
+    saddr           INTEGER,
+    daddr           INTEGER,
+    mode            INTEGER,
+    ipsaValid       INTEGER
+}
+
+HalMsgTunnelPortScl ::= SEQUENCE
+{
+    enable            INTEGER,
+    memPortid       HalMsgIntList --member port
+}
+
+HalMsgTunnelEncapNhAdd ::= SEQUENCE
+{
+    nhid            INTEGER,
+    offset          INTEGER,
+    isSpec          INTEGER,
+    ttl             INTEGER,
+    dscp            INTEGER,
+    mtu             INTEGER,
+    flag            INTEGER,
+    mode            INTEGER,
+    ipsa            INTEGER,
+    ipda            INTEGER
+}
+
+HalMsgTunnelEncapNhDel ::= SEQUENCE
+{
+    nhid           INTEGER
+}
+
+HalMsgTunnelInit ::= SEQUENCE
+{
+    init          INTEGER
+}
+
+END

@@ -1,0 +1,4 @@
+::sysinit:/etc/init.d/rcS
+#::respawn:-/bin/sh
+ttyAMA0::respawn:-/switch/etc/start_klish_for_console.sh
+::shutdown:/usr/sbin/restart.sh

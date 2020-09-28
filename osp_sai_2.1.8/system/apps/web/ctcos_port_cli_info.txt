@@ -1,0 +1,6 @@
+port_connection / sub_port_connection :
+prefix ZMeg full_prefix ZmegaEthernet
+prefix GE full_prefix GigabitEthernet
+prefix XGR full_prefix TenGigE
+prefix FGE full_prefix FortyGigE
+prefix ZGig full_prefix ZGigabitEthernet

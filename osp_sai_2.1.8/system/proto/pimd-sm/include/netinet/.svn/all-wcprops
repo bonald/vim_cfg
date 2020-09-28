@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/netinet
+END
+pim_var.h
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/netinet/pim_var.h
+END
+pim.h
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/netinet/pim.h
+END

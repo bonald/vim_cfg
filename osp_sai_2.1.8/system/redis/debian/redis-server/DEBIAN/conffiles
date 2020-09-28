@@ -1,0 +1,8 @@
+/etc/default/redis-server
+/etc/init.d/redis-server
+/etc/logrotate.d/redis-server
+/etc/redis/redis-server.post-down.d/00_example
+/etc/redis/redis-server.post-up.d/00_example
+/etc/redis/redis-server.pre-down.d/00_example
+/etc/redis/redis-server.pre-up.d/00_example
+/etc/redis/redis.conf

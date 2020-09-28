@@ -1,0 +1,45 @@
+#, insmod ixgbe driver
+insmod /lib/ixgbe.ko
+
+#, cpu port config
+ifconfig eth0 promisc up
+ifconfig eth1 promisc up
+
+#, asic port config
+chip set serdes 76 ffe mode 3ap c0 3 c1 46 c2 11
+port all mac enable 
+port 0x801C cl73-auto-neg ability 10GBASE-KR 
+port 0x801C auto-neg enable
+chip set serdes 77 ffe mode 3ap c0 3 c1 46 c2 11
+port all mac enable 
+port 0x801D cl73-auto-neg ability 10GBASE-KR 
+port 0x801D auto-neg enable
+
+#, cpu forward packet
+cd /proc/net/pktgen
+echo rem_device_all > kpktgend_0
+echo add_device eth0 > kpktgend_0
+echo count 1000 > eth0
+echo start > pgctrl
+cd /proc/net/pktgen
+echo rem_device_all > kpktgend_0
+echo add_device eth1 > kpktgend_0
+echo count 1000 > eth1
+echo start > pgctrl
+
+#, asic forward packet
+packet tx ucast dest-gport 0x801C bypass length 100 dma count 1
+packet tx ucast dest-gport 0x801D bypass length 100 dma count 1
+
+#, port status
+show port mac-link
+ethtool eth0
+ethtool eth1
+
+#, packet statistics
+ifconfig eth0    /ethtool -S eth0
+ifconfig eth1    /ethtool -S eth1
+show stats mac-tx port 0x801C
+show stats mac-rx port 0x801C
+show stats mac-tx port 0x801D
+show stats mac-rx port 0x801D

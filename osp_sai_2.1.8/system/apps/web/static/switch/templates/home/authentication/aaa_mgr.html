@@ -1,0 +1,416 @@
+<!-- global conf -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'AAA Enable'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state="enable_aaa" switch-on-change="updateAAAState()" ></btn-switch>
+                </div>
+            </dd> 
+        </dl>
+    </div>
+</div>
+
+<!-- port conf -->
+<div class="panel panel-default", ng-show="enable_aaa">
+    <div class="panel-heading">
+
+
+            <div class="panel-title">{{ 'Authen Method Lists' | translate }}
+                <!-- options -->
+                <!--
+                <button style="float:right" type="button" class="btn btn-default" data-toggle="modal" data-target="#load_Authentication_Cfg" >
+                    <span class="glyphicon glyphicon-cog"></span>&nbsp;{{ 'Authentication' | translate }}
+                </button> -->
+                <!-- options end -->
+            </div>
+            
+    </div>
+    <div class="panel-body">
+        <!-- channel group table -->
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <!--<th class="text-center">{{ 'Method List Type' | translate }}</th><!-->
+                    <th class="text-center">{{ 'Name' | translate }}</th>                    
+                    <th class="text-center">{{ 'State' | translate }}</th>  
+                    <th class="text-center">{{ 'List' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>                  
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in method_list ">
+
+                    <th class="text-center">{{ $index + 1 }}</th>
+                    <!--<td class="text-center">{{ x.type }}</td><!-->
+                    <td class="text-center">{{ x.name }}</td>
+                    <td class="text-center">{{ x.state }}</td>
+
+                    <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewListDetail(x)">{{ x.method }}</a></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                           <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delMethodList(x.name)" ng-disabled="x.name == 'default'">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+							
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default", ng-show="enable_aaa">
+    <div class="panel-heading">
+    <div class="panel-title">{{ 'Author Method Lists' | translate }}
+    </div>
+    </div>
+    <div class="panel-body">
+
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <!--<th class="text-center">{{ 'Method List Type' | translate }}</th><!-->
+                    <th class="text-center">{{ 'Name' | translate }}</th>
+                    <th class="text-center">{{ 'State' | translate }}</th>
+                    <th class="text-center">{{ 'List' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="x in author_method_list">
+
+                    <th class="text-center">{{ $index + 1 }}</th>
+                    <!--<td class="text-center">{{ x.type }}</td><!-->
+                    <td class="text-center">{{ x.name }}</td>
+                    <td class="text-center">{{ x.state }}</td>
+
+                    <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewAuthorDetail(x)">{{ x.method }}</a></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delAuthorMethodList(x.name)" ng-disabled="x.name == 'default'">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default", ng-show="enable_aaa">
+    <div class="panel-heading">
+    <div class="panel-title">{{ 'ACCT_SHELL Method Lists' | translate }}
+    </div>
+    </div>
+    <div class="panel-body">
+
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <!--<th class="text-center">{{ 'Method List Type' | translate }}</th><!-->
+                    <th class="text-center">{{ 'Name' | translate }}</th>
+                    <th class="text-center">{{ 'State' | translate }}</th>
+                    <th class="text-center">{{ 'List' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="x in account_method_list">
+
+                    <th class="text-center">{{ $index + 1 }}</th>
+                    <!--<td class="text-center">{{ x.type }}</td><!-->
+                    <td class="text-center">{{ x.name }}</td>
+                    <td class="text-center">{{ x.state }}</td>
+
+                    <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewAccountListDetail(x)">{{ x.method }}</a></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delAccountMethodList(x.name)" ng-disabled="x.name == 'default'">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default", ng-show="enable_aaa">
+    <div class="panel-heading">
+    <div class="panel-title">{{ 'ACCT_COMMAND Method Lists' | translate }}
+    </div>
+    </div>
+    <div class="panel-body">
+
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <!--<th class="text-center">{{ 'Method List Type' | translate }}</th><!-->
+                    <th class="text-center">{{ 'Name' | translate }}</th>
+                    <th class="text-center">{{ 'State' | translate }}</th>
+                    <th class="text-center">{{ 'List' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="x in accountcmd_method_list">
+
+                    <th class="text-center">{{ $index + 1 }}</th>
+                    <!--<td class="text-center">{{ x.type }}</td><!-->
+                    <td class="text-center">{{ x.name }}</td>
+                    <td class="text-center">{{ x.state }}</td>
+
+                    <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewAccountcmdListDetail(x)">{{ x.method }}</a></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delAccountcmdMethodList(x.name)" ng-disabled="x.name == 'default'">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--Global Configuration | Truncation   -->
+<div class="modal fade" id="load_Authentication_Cfg" ng-init="method1 = 'none'; method2 = 'none' ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Authentication Login Configuration' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="loadBalanceModeForm" name="loadBalanceModeForm" class="form"  novalidate>
+                  <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Name' | translate }}</th>
+                        <td class="text-left col-md-6">
+
+                            <h4 class="modal-title">{{ dispMethod.name }}</h4>
+                        </td>
+                    </tr>  
+                    
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method1" ng-options="m for m in method_list_enum">
+                            </select>   
+                        </td>
+                    </tr>   
+
+                    <tr ng-hide="method1=='none'">
+                        <th class="text-center col-md-6">{{ 'Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method2" ng-options="m for m in method_list_enum">
+                            </select>   
+                        </td>
+                    </tr> 
+
+                  </table>
+                </form>
+                
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setMethodList(dispMethod.name)"  >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Global Configuration | Truncation   -->
+<div class="modal fade" id="load_authorization_Cfg" ng-init="method3 = 'none'; method4 = 'none' ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Authorization Login Configuration' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="loadBalanceModeFormAuthor" name="loadBalanceModeFormAuthor" class="form"  novalidate>
+                  <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Name' | translate }}</th>
+                        <td class="text-left col-md-6">
+
+                            <h4 class="modal-title">{{ dispMethod.name }}</h4>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Authorization Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method3" ng-options="m for m in method_list_author">
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr ng-hide="method3=='none'">
+                        <th class="text-center col-md-6">{{ 'Authorization Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method4" ng-options="m for m in method_list_author">
+                            </select>
+                        </td>
+                    </tr>
+
+                  </table>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setAuthorMethodList(dispMethod.name)"  >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Global Configuration | Truncation   -->
+<div class="modal fade" id="load_AAA_ML_ACCT_SHELL_Cfg" ng-init="method5 = 'none'; method6 = 'none' ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'ACCT_SHELL Configuration' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="loadBalanceModeFormAccount" name="loadBalanceModeFormAccount" class="form"  novalidate>
+                  <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Name' | translate }}</th>
+                        <td class="text-left col-md-6">
+
+                            <h4 class="modal-title">{{ dispMethod.name }}</h4>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'ACCT_SHELL Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method5before" ng-options="m for m in method_list_account_before">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr ng-hide="method5before=='none'">
+                        <th class="text-center col-md-6">{{ 'ACCT_SHELL Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method5" ng-options="m for m in method_list_account">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr ng-hide="method5=='none'">
+                        <th class="text-center col-md-6">{{ 'ACCT_SHELL Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method6" ng-options="m for m in method_list_account">
+                            </select>
+                        </td>
+                    </tr>
+
+                  </table>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setAccountMethodList(dispMethod.name)"  >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Global Configuration | Truncation   -->
+<div class="modal fade" id="load_AAA_ML_ACCT_COMMAND_Cfg" ng-init="method7 = 'none'; method8 = 'none' ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'ACCT_COMMAND Configuration' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="loadBalanceModeFormAccountcmd" name="loadBalanceModeFormAccountcmd" class="form"  novalidate>
+                  <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Name' | translate }}</th>
+                        <td class="text-left col-md-6">
+
+                            <h4 class="modal-title">{{ dispMethod.name }}</h4>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'ACCT_COMMAND Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method7" ng-options="m for m in method_list_accountcmd">
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr ng-hide="method7=='none'">
+                        <th class="text-center col-md-6">{{ 'ACCT_COMMAND Method List' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control"  ng-model="method8" ng-options="m for m in method_list_accountcmd">
+                            </select>
+                        </td>
+                    </tr>
+
+                  </table>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setAccountcmdMethodList(dispMethod.name)"  >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

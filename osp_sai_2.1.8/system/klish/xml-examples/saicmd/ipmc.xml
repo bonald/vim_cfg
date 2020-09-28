@@ -1,0 +1,1763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+IPMC
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+    <COMMAND name="show ip igmp interface" help="IGMP interface information">
+        <PARAM name="iface_name" optional="true" help="Router interface name" ptype="IF_NAME_EV"/>
+
+        <ACTION>
+            vtysh -c "show ip igmp interface ${iface_name}"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display igmp status of interface 
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display igmp status of interface 
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display igmp status of interface:  
+    DUT1# show ip igmp interface  
+    Interface  State          Address  V  Querier  Query Timer    Uptime  
+    eth-0-1       up     192.168.10.1  3    local     00:01:34  00:05:13  
+    eth-0-4       up     192.168.13.1  3    local     00:01:34  00:05:13  
+    vlan2         up     192.168.18.1  3    local     00:01:34  00:05:13  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip igmp interface detail" help="Detailed output">
+
+        <ACTION>
+            vtysh -c "show ip igmp interface detail"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display detailed igmp status of interface  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display detailed igmp status of interface  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display detailed igmp status of interface:  
+    DUT1# show ip igmp interface detail   
+    Interface : eth-0-1  
+    State     : up  
+    Address   : 192.168.10.1  
+    Uptime    : 00:08:09  
+    Version   : 3  
+  
+    Querier  
+    -------  
+    Querier     : local  
+    Start Count : 0  
+    Query Timer : 00:00:43  
+    Other Timer : --:--:--  
+  
+    Timers  
+    ------  
+    Group Membership Interval      : 260s  
+    Last Member Query Time         : 20s  
+    Older Host Present Interval    : 260s  
+    Other Querier Present Interval : 255s  
+    Query Interval                 : 125s  
+    Query Response Interval        : 10s  
+    Robustness Variable            : 2  
+    Startup Query Interval         : 31s  
+  
+    Flags  
+    -----  
+    All Multicast   : no  
+    Broadcast       : yes  
+    Deleted         : no  
+    Interface Index : 107  
+    Multicast       : yes  
+    Multicast Loop  : 0  
+    Promiscuous     : no  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+<!--
+    <COMMAND name="show ip igmp join" help="IGMP static join information">
+
+        <ACTION>
+            vtysh -c "show ip igmp join"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display static joined igmp groups  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display static joined igmp groups  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display static joined igmp groups:
+    DUT1# show ip igmp join  
+    Interface Address         Source          Group           Socket Uptime  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+-->
+
+    <COMMAND name="show ip igmp groups" help="IGMP groups information">
+
+        <ACTION>
+            vtysh -c "show ip igmp groups"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display dynamic joined igmp groups  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display dynamic joined igmp groups
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display dynamic joined igmp groups:  
+    DUT1# show ip igmp groups
+    Interface Address         Group           Mode Timer    Srcs V Uptime  
+    eth-0-1   192.168.10.1    224.3.2.1       ---- 00:02:35    1 2 00:01:45
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip igmp groups retransmissions" help="IGMP group retransmissions">
+
+        <ACTION>
+            vtysh -c "show ip igmp groups retransmissions"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display igmp groups retransmissions  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display igmp groups retransmissions  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display igmp groups retransmissions:  
+    DUT1# show ip igmp groups retransmissions  
+    Interface Address         Group           RetTimer Counter RetSrcs  
+    eth-0-1   192.168.10.1    224.3.2.1       --:--          0       0  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip igmp sources" help="IGMP sources information">
+
+        <ACTION>
+            vtysh -c "show ip igmp sources"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display igmp sources  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display igmp sources  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display igmp sources:  
+    DUT1# show ip igmp sources   
+    Interface Address         Group           Source          Timer Fwd Uptime    
+    eth-0-1   192.168.10.1    224.3.2.1       *               --:--   Y 00:00:11  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip igmp sources retransmissions" help="IGMP source retransmissions">
+
+        <ACTION>
+            vtysh -c "show ip igmp sources retransmissions"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display igmp sources retransmissions   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display igmp groups retransmissions  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display igmp groups retransmissions:  
+    DUT1# show ip igmp sources retransmissions   
+    Interface Address         Group           Source          Counter  
+    eth-0-1   192.168.10.1    224.3.2.1       *                     0  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="show ip pim" help="PIM information"/>
+
+    <COMMAND name="show ip pim assert" help="PIM interface assert">
+
+        <ACTION>
+            vtysh -c "show ip pim assert"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim assert information   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim assert information   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim assert information:  
+    DUT1# show ip pim assert 
+    Interface Address         Source          Group           State  Winner   Uptime   Timer
+    eth-0-1   192.168.10.1    *               224.3.2.1       NOINFO *        00:02:30 --:--
+    eth-0-2   192.168.11.1    *               224.3.2.1       NOINFO *        00:02:30 --:--
+    eth-0-2   192.168.11.1    192.168.12.3    224.3.2.1       NOINFO *        00:01:58 --:--
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim assert-internal" help="PIM interface internal assert state">
+
+        <ACTION>
+            vtysh -c "show ip pim assert-internal"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim assert internal information   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim assert internal information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim assert internal information:  
+    DUT1# show ip pim assert-internal 
+    CA:   CouldAssert
+    ECA:  Evaluate CouldAssert
+    ATD:  AssertTrackingDesired
+    eATD: Evaluate AssertTrackingDesired
+
+    Interface Address         Source          Group           CA  eCA ATD eATD
+    eth-0-1   192.168.10.1    *               224.3.2.1       no  no  yes yes 
+    eth-0-2   192.168.11.1    *               224.3.2.1       no  no  yes yes 
+    eth-0-2   192.168.11.1    192.168.12.3    224.3.2.1       no  no  no  no 
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim assert-metric" help="PIM interface assert metric">
+
+        <ACTION>
+            vtysh -c "show ip pim assert-metric"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim assert metric information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim assert metric information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim assert metric information:    
+    DUT1# show ip pim assert-metric   
+    Interface Address         Source          Group           RPT Pref Metric Address          
+    eth-0-2   192.168.11.1    *               224.3.2.1       no     0      0 192.168.11.1     
+    eth-0-2   192.168.11.1    192.168.12.3    224.3.2.1       no     0      0 192.168.11.1   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim assert-winner-metric" help="PIM interface assert winner metric">
+
+        <ACTION>
+            vtysh -c "show ip pim assert-winner-metric"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim assert winner-metric information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim assert winner-metric information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim assert winner-metric information:    
+    DUT1# show ip pim assert-winner-metric 
+    Interface Address         Source          Group           RPT Pref Metric Address        
+    eth-0-2   192.168.11.1    *               224.3.2.1       yes INFI INFI   *     
+    eth-0-2   192.168.11.1    192.168.12.3    224.3.2.1       yes INFI INFI   *    
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim interface" help="PIM interface information">
+        <PARAM name="iface_name" optional="true" help="Router interface name" ptype="IF_NAME_EV"/>
+
+        <ACTION>
+            vtysh -c "show ip pim interface ${iface_name}"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim interface status  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim interface status  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim interface status:  
+    DUT1# show ip pim interface   
+    Interface  State          Address  PIM Nbrs           PIM DR  FHR IfChannels  
+    eth-0-1       up     192.168.10.1         1            local    0          0  
+    eth-0-2       up     192.168.11.1         1            local    0          2  
+    eth-0-3       up     192.168.12.1         1            local    1          0  
+    eth-0-4       up     192.168.13.1         1            local    0          0  
+    eth-0-9       up     192.168.20.1         1            local    0          0  
+    vlan2         up     192.168.18.1         1            local    0          0  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim interface detail" help="Detailed output">
+
+        <ACTION>
+            vtysh -c "show ip pim interface detail"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display detailed pim interface status  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display detailed pim interface status  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display detailed pim interface status:  
+    DUT1# show ip pim interface detail   
+    Interface  : eth-0-1  
+    State      : up  
+    Address    : 192.168.10.1  
+  
+    PIM Neighbors  
+    -------------  
+    192.168.10.1    : up for 00:10:24, holdtime expires in 00:01:21  
+  
+    Designated Router  
+    -----------------  
+    Address   : 192.168.10.1  
+    Priority  : 1  
+    Uptime    : --:--:--  
+    Elections : 1  
+    Changes   : 0  
+  
+    Hellos  
+    ------  
+    Period         : 30  
+    Timer          : 00:00:06  
+    StatStart      : 00:10:54  
+    Receive        : 22  
+    Receive Failed : 0  
+    Send           : 21  
+    Send Failed    : 0  
+    Generation ID  : 6d2e5483  
+  
+    Flags  
+    -----  
+    All Multicast   : no  
+    Broadcast       : yes  
+    Deleted         : no  
+    Interface Index : 107  
+    Multicast       : yes  
+    Multicast Loop  : 0  
+    Promiscuous     : no  
+  
+    Join Prune Interval  
+    -------------------  
+    LAN Delay                    : yes  
+    Effective Propagation Delay  : 500 msec  
+    Effective Override Interval  : 2500 msec  
+    Join Prune Override Interval : 3000 msec  
+  
+    LAN Prune Delay  
+    ---------------  
+    Propagation Delay           : 500 msec  
+    Propagation Delay (Highest) : 500 msec  
+    Override Interval           : 2500 msec  
+    Override Interval (Highest) : 2500 msec  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim join" help="PIM interface join information">
+
+        <ACTION>
+            vtysh -c "show ip pim join"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim join information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim join information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim join information:  
+    DUT1# show ip pim join
+    Interface Address         Source          Group           State  Uptime          Expire Prune
+    eth-0-1   192.168.10.1    *               224.3.2.1       NOINFO --:--:-- --:--  --:--
+    eth-0-2   192.168.11.1    *               224.3.2.1       JOIN   00:10:04 02:57  --:--
+    eth-0-2   192.168.11.1    192.168.12.3    224.3.2.1       SGRpt  00:00:32 02:57  --:--
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim local-membership" help="PIM interface local-membership">
+
+        <ACTION>
+            vtysh -c "show ip pim local-membership"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim local-membership information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim local-membership information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim local-membership information:  
+    DUT1# show ip pim local-membership  
+    Interface  Address          Source           Group            Membership  
+    eth-0-1    192.168.10.1     *                224.3.2.1        INCLUDE    
+    eth-0-2    192.168.11.1     192.168.12.3     224.3.2.1        NOINFO   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim neighbor" help="PIM neighbor information">
+        <PARAM name="iface_name" optional="true" help="Router interface name" ptype="IF_NAME_EV"/>
+
+        <ACTION>
+            vtysh -c "show ip pim neighbor ${iface_name}"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim neighbor information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display pim neighbor information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim neighbor information:    
+    DUT1# show ip pim neighbor   
+    Interface         Neighbor    Uptime  Holdtime  DR Pri  
+    eth-0-1       192.168.10.1  00:15:32  00:01:44       1  
+    eth-0-2       192.168.11.1  00:15:31  00:01:15       1  
+    eth-0-3       192.168.12.1  00:15:31  00:01:16       1  
+    eth-0-4       192.168.13.1  00:15:31  00:01:16       1  
+    eth-0-9       192.168.20.1  00:15:31  00:01:16       1  
+    vlan2         192.168.18.1  00:15:31  00:01:16       1    
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim neighbor detail" help="Detailed output">
+
+        <ACTION>
+            vtysh -c "show ip pim neighbor detail"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display detailed pim neighbor information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display detailed pim neighbor information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display detailed pim neighbor information:    
+    DUT1# show ip pim neighbor detail   
+    Interface : eth-0-1  
+    Neighbor  : 192.168.10.1  
+        Uptime                         : 00:16:12  
+        Holdtime                       : 00:01:34  
+        DR Priority                    : 1  
+        Generation ID                  : 6d2e5483  
+        Override Interval (msec)       : 2500  
+        Propagation Delay (msec)       : 500  
+        Hello Option - Address List    : no  
+        Hello Option - DR Priority     : yes  
+        Hello Option - Generation ID   : yes  
+        Hello Option - Holdtime        : yes  
+        Hello Option - LAN Prune Delay : yes  
+        Hello Option - T-bit           : no    
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim secondary" help="PIM neighbor addresses">
+
+        <ACTION>
+            vtysh -c "show ip pim secondary"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display detailed pim neighbor secondary address  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display detailed pim neighbor secondary address  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display detailed pim neighbor secondary address:    
+    DUT1# show ip pim secondary  
+    Interface Address         Neighbor        Secondary   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim state" help="PIM state information">
+
+        <ACTION>
+            vtysh -c "show ip pim state"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display  pim state information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim state information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim state information:    
+    DUT1# show ip pim state      
+    Codes: J -> Pim Join, I -> IGMP Report, S -> Source, * -> Inherited from (*,G)  
+    Installed Source           Group            IIF      OIL  
+    1         *                224.3.2.1        eth-0-2  pimreg(I   )  
+    1         192.168.12.3     224.3.2.1        eth-0-3  pimreg( J  )  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim upstream" help="PIM upstream information">
+
+        <ACTION>
+            vtysh -c "show ip pim upstream"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim upstream information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim upstream information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim upstream information:    
+    DUT1# show ip pim upstream  
+    Iif       Source          Group           State       Uptime   JoinTimer RSTimer   KATimer   RefCnt  
+    eth-0-2   *               224.3.2.1       J           00:18:13 00:00:18  --:--:--  --:--:--       1  
+    eth-0-3   192.168.12.3    224.3.2.1       NotJ,RegJ   00:03:40 --:--:--  --:--:--  00:03:24       2  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim upstream-join-desired" help="PIM upstream information">
+
+        <ACTION>
+            vtysh -c "show ip pim upstream"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim upstream join-desired information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim upstream join-desired information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim upstream join-desired information:    
+    DUT1# show ip pim upstream-join-desired   
+    Iif       Source          Group           State       Uptime   JoinTimer RSTimer   KATimer   RefCnt  
+    eth-0-2   *               224.3.2.1       J           00:19:35 00:00:56  --:--:--  --:--:--       1  
+    eth-0-3   192.168.12.3    224.3.2.1       NotJ,RegJ   00:05:02 --:--:--  --:--:--  00:03:04       2  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim upstream-rpf" help="PIM upstream source rpf">
+
+        <ACTION>
+            vtysh -c "show ip pim upstream-rpf"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim upstream upstream-rpf information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim upstream upstream-rpf information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim upstream upstream-rpf information:    
+    DUT1# show ip pim upstream-rpf   
+    Source          Group           RpfIface RibNextHop      RpfAddress     
+    *               224.3.2.1       eth-0-2  192.168.11.1    192.168.11.1     
+    192.168.12.3    224.3.2.1       eth-0-3  0.0.0.0         0.0.0.0   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim rp-info" help="PIM RP information">
+
+        <ACTION>
+            vtysh -c "show ip pim rp-info"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim rp information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim rp information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim rp information:    
+    DUT1# show ip pim rp-info   
+    RP address       group/prefix-list   OIF         I am RP  
+    192.168.11.1     224.0.0.0/4         eth-0-2     yes   
+    192.168.11.1     224.3.0.0/8         eth-0-2     yes   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim rpf" help="PIM cached source rpf information">
+
+        <ACTION>
+            vtysh -c "show ip pim rpf"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim rpf information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim rpf information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim rpf information:    
+    DUT1# show ip pim rpf  
+    RPF Cache Refresh Delay:    50 msecs  
+    RPF Cache Refresh Timer:    0 msecs  
+    RPF Cache Refresh Requests: 6  
+    RPF Cache Refresh Events:   5  
+    RPF Cache Refresh Last:     00:25:32  
+    Nexthop Lookups:            9  
+    Nexthop Lookups Avoided:    7  
+  
+    Source          Group           RpfIface RpfAddress      RibNextHop      Metric Pref  
+    *               224.3.2.1       eth-0-2  192.168.11.1    192.168.11.1         0    0  
+    192.168.12.3    224.3.2.1       eth-0-3  0.0.0.0         0.0.0.0              0    0  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip pim nexthop" help="PIM cached nexthop rpf information">
+
+        <ACTION>
+            vtysh -c "show ip pim nexthop"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display pim nexthop information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display  pim nexthop information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display pim nexthop information:    
+    DUT1# show ip pim nexthop   
+    Number of registered addresses: 2   
+    Address         Interface      Nexthop  
+    -------------------------------------------  
+    192.168.11.1    eth-0-2        192.168.11.1   
+    192.168.12.3    eth-0-3        0.0.0.0   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="show ip multicast" help="Multicast global information">
+
+        <ACTION>
+            vtysh -c "show ip multicast"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display ip multicast information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display ip multicast information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display ip multicast information:    
+    DUT1# show ip multicast   
+    Mroute socket descriptor: 6  
+    Mroute socket uptime: 00:28:37  
+  
+    Zclient update socket: 13 failures=0  
+    Zclient lookup socket: 14 failures=0  
+  
+    Maximum highest VifIndex: 31  
+  
+    Upstream Join Timer: 60 secs  
+    Join/Prune Holdtime: 210 secs  
+    PIM ECMP: Disable  
+    PIM ECMP Rebalance: Disable  
+  
+    RPF Cache Refresh Delay:    50 msecs  
+    RPF Cache Refresh Timer:    0 msecs  
+    RPF Cache Refresh Requests: 6  
+    RPF Cache Refresh Events:   5  
+    RPF Cache Refresh Last:     00:27:37  
+    Nexthop Lookups:            9  
+    Nexthop Lookups Avoided:    7  
+  
+    Scan OIL - Last: 00:27:37  Events: 5  
+    MFC Add  - Last: 00:00:37  Events: 18  
+    MFC Del  - Last: --:--:--  Events: 0  
+  
+    Interface Address         ifi Vif  PktsIn PktsOut    BytesIn   BytesOut  
+    eth-0-1   192.168.10.1    107   1       0       0          0          0  
+    eth-0-2   192.168.11.1    108   2       0       0          0          0  
+    eth-0-3   192.168.12.1    109   3       0       0          0          0  
+    eth-0-4   192.168.13.1    110   4       0       0          0          0  
+    eth-0-9   192.168.20.1    115   5       0       0          0          0  
+    pimreg    0.0.0.0           0   0       0       0          0          0  
+    vlan2     192.168.18.1    131   6       0       0          0          0  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip mroute" help="IP multicast routing table">
+
+        <ACTION>
+            vtysh -c "show ip mroute"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display ip mroute information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display ip mroute information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display ip mroute information:    
+    DUT1# show ip mroute   
+    Source          Group           Proto  Input      Output     TTL  Uptime  
+    *               224.3.2.1       IGMP   eth-0-2    pimreg     1    00:28:05  
+                                    IGMP              eth-0-1    1    00:04:08  
+    192.168.12.3    224.3.2.1       PIM    eth-0-3    pimreg     1    00:28:34  
+                                    STAR              eth-0-1    1    00:04:08  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ip mroute count" help="Route and packet count data">
+
+        <ACTION>
+            vtysh -c "show ip mroute count"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to display ip mroute count information  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to display ip mroute count information  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to display ip mroute count information:    
+    DUT1# show ip mroute count 
+    Source          Group           LastUsed Packets Bytes WrongIf  
+    *               224.3.2.1       0        0       0          0      
+    192.168.12.3    224.3.2.1       0        1       36         1      
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear ip igmp interfaces" help="Reset IGMP interfaces">
+
+        <ACTION>
+            vtysh -c "clear ip igmp interfaces"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to reset ip igmp interfaces  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to reset ip igmp interfaces  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to reset ip igmp interfaces:    
+    DUT1# clear ip igmp interfaces  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear ip mroute" help="Reset multicast routes">
+
+        <ACTION>
+            vtysh -c "clear ip mroute"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to reset ip mroute  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to reset ip mroute  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to reset ip mroute:    
+    DUT1# clear ip mroute  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear ip pim interface" help="Reset PIM interfaces">
+
+        <ACTION>
+            vtysh -c "clear ip pim interface"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to reset ip pim interface  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to reset ip pim interface  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to reset ip pim interface:    
+    DUT1# clear ip pim interface  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear ip pim oil" help="Rescan PIM OIL (output interface list)">
+
+        <ACTION>
+            vtysh -c "clear ip pim oil"
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to reset ip pim oil  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to reset ip pim oil  
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to reset ip pim oil:    
+    DUT1# clear ip pim oil  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+       </CTCRCMD>
+    </COMMAND>
+</VIEW>
+
+
+<VIEW name="Configure">
+
+    <COMMAND name="ip multicast-routing" help="Enable IP multicast forwarding">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/mcast_route_en/1
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip multicast-routing enable  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip multicast-routing enable   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip multicast-routing enable:    
+    DUT1(config)# ip multicast-routing   
+       </CTCEXAMPLE>
+
+       <CTCRCMD>
+no ip multicast-routing
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip multicast-routing" help="Enable IP multicast forwarding">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/mcast_route_en/0
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip multicast-routing disable  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip multicast-routing disable   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip multicast-routing disable:    
+    DUT1(config)# no ip multicast-routing   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip multicast-routing
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim" help="Pim multicast routing"/>
+    <COMMAND name="no ip pim" help="Pim multicast routing"/>
+
+    <COMMAND name="ip pim register-suppress-time" help="Register Suppress Timer">
+        <PARAM name="register_suppress_time" help="Seconds, default value is 60" ptype="REG_SUPPRESS_TIME"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/register_suppress_time/${register_suppress_time}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim register-suppress-time  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim register-suppress-time   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+60
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim register-suppress-time:    
+    DUT1(config)# ip pim register-suppress-time 100  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim register-suppress-time
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim register-suppress-time" help="Register Suppress Timer">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/register_suppress_time/60
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset ip pim register-suppress-time  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset ip pim register-suppress-time   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+60
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset ip pim register-suppress-time:    
+    DUT1(config)# no ip pim register-suppress-time  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim register-suppress-time
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim keep-alive-timer" help="Keep alive Timer">
+        <PARAM name="keep_alive_time" help="Seconds, default value is 210" ptype="KEEP_ALIVE_TIME"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/keep_alive_time/${keep_alive_time}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim keep-alive-timer  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim keep-alive-timer   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+210
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim keep-alive-timer:    
+    DUT1(config)# ip pim keep-alive-timer 100  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim keep-alive-timer
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim keep-alive-timer" help="Keep alive Timer">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/keep_alive_time/210
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset ip pim keep-alive-timer  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset ip pim keep-alive-timer   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+210
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset ip pim keep-alive-timer:    
+    DUT1(config)# no ip pim keep-alive-timer   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim keep-alive-timer
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim packets" help="Packets to process at one time per fd">
+        <PARAM name="pim_packet_process" help="Number of packets, default value is 3" ptype="PIM_PACKET_PROCESS"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/pim_packet_process/${pim_packet_process}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim packet process  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim packet process   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+3
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim packet process:    
+    DUT1(config)# ip pim packets 10  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim packets
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim packets" help="Packets to process at one time per fd">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/pim_packet_process/3
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset ip pim packet process  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset ip pim packet process   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+3
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset ip pim packet process:    
+    DUT1(config)# no ip pim packets    
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim packets
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim join-prune-interval" help="Join Prune Send Interval">
+        <PARAM name="join_prune_interval" help="Seconds, default value is 60" ptype="JOIN_PRUNE_INTERVAL"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/join_prune_interval/${join_prune_interval}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim join-prune interval  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim join-prune interval   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+60
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim join-prune interval:    
+    DUT1(config)# ip pim join-prune-interval 100  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim join-prune-interval
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim join-prune-interval" help="Join Prune Send Interval">
+        
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/join_prune_interval/60
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset ip pim join-prune interval  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset ip pim join-prune interval   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+60
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset ip pim join-prune interval:    
+    DUT1(config)# no ip pim join-prune-interval  
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim join-prune-interval
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim spt-switchover" help="SPT-Switchover">
+        <PARAM name="infinity-and-beyond" help="Never switch to SPT Tree" ptype="SUBCOMMAND" mode="subcommand"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/switchover_mode/infinity
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim spt-switchover infinity enable  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim spt-switchover infinity enable   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+spt-switchover
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim spt-switchover infinity enable:    
+    DUT1(config)# ip pim spt-switchover infinity-and-beyond
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim spt-switchover
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim spt-switchover" help="SPT-Switchover">
+        <PARAM name="infinity-and-beyond" help="Never switch to SPT Tree" ptype="SUBCOMMAND" mode="subcommand"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_global/switchover_mode/immediate
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim spt-switchover enable  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim spt-switchover enable   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+spt-switchover
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim spt-switchover enable:    
+    DUT1(config)# no ip pim spt-switchover infinity-and-beyond
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim spt-switchover
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim rp" help="Rendevous Point">
+        <PARAM name="rp_addr" help="ip address of RP" ptype="IP_ADDR">
+            <PARAM name="group_range" optional="true" help="Group Address range to cover" ptype="IP_ADDR_MASK"/>
+        </PARAM>
+
+        <ACTION>
+            cdbctl create/cdb/l3/pim_static_rp/rp_addr/${rp_addr}/group/${group_range}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set ip pim static rp  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set ip pim static rp   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+spt-switchover
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set ip pim static rp:    
+    DUT1(config)# ip pim rp 192.168.11.1 224.3.3.0/24
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim rp
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim rp" help="Rendevous Point">
+        <PARAM name="rp_addr" help="ip address of RP" ptype="IP_ADDR">
+            <PARAM name="group_range" optional="true" help="Group Address range to cover" ptype="IP_ADDR_MASK"/>
+        </PARAM>
+
+        <ACTION>
+            cdbctl delete/cdb/l3/pim_static_rp/rp_addr/${rp_addr}/group/${group_range}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset ip pim static rp  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset ip pim static rp   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+spt-switchover
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset ip pim static rp:    
+    DUT1(config)# no ip pim rp 192.168.11.1 224.3.3.0/24
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim rp
+       </CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+    <COMMAND name="ip igmp" help="Enable IGMP operation">
+
+        <ACTION>
+            cdbctl create/cdb/l3/ipmc_intf/${iface}/igmp_enable
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set igmp enable on an interface  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set igmp enable on an interface   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+disable
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set igmp enable on an interface:    
+    DUT1(config-eth-0-1)# ip igmp
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip igmp
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip igmp" help="Enable IGMP operation">
+
+        <ACTION>
+            cdbctl delete/cdb/l3/ipmc_intf/${iface}/igmp_enable
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set igmp disable on an interface  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set igmp disable on an interface   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+disable
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set igmp disable on an interface:    
+    DUT1(config-eth-0-1)# no ip igmp
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip igmp
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim sm" help="Enable PIM sparse-mode operation">
+
+        <ACTION>
+            cdbctl create/cdb/l3/ipmc_intf/${iface}/pim_enable
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set pimsm enable on an interface  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set pimsm enable on an interface   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+disable
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set pimsm enable on an interface:    
+    DUT1(config-eth-0-1)# ip pim sm
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim sm
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim sm" help="Enable PIM SM operation">
+
+        <ACTION>
+            cdbctl delete/cdb/l3/ipmc_intf/${iface}/pim_enable
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set pimsm disable on an interface  
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set pimsm disable on an interface   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+disable
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set pimsm disable on an interface:    
+    DUT1(config-eth-0-1)# no ip pim sm
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim sm
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip igmp query-interval" help="IGMP host query interval">
+        <PARAM name="query_interval" help="Query interval in seconds, default is 125 seconds" ptype="IPMC_QUREY_INTERVAL"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/igmp_query_interval/${query_interval}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set igmp query-interval   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set igmp query-interval   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+125
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set igmp query-interval:    
+    DUT1(config-eth-0-1)# ip igmp query-interval 100
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip igmp query-interval
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip igmp query-interval" help="IGMP host query interval">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/igmp_query_interval/125
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset igmp query-interval   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset igmp query-interval   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+125
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset igmp query-interval:    
+    DUT1(config-eth-0-1)# no ip igmp query-interval
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip igmp query-interval
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip igmp version" help="IGMP version">
+        <PARAM name="version" help="IGMP version number, default is version 3" ptype="IGMP_VERSION"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/igmp_version/${version}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set igmp version   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set igmp version   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+3
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set igmp version:    
+    DUT1(config-eth-0-1)# ip igmp version 2
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip igmp version
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip igmp version" help="IGMP version">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/igmp_version/3
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset igmp version   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset igmp version   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+3
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset igmp version:    
+    DUT1(config-eth-0-1)# no ip igmp version
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip igmp version
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip igmp query-max-response-time" help="IGMP max query response value (seconds)">
+        <PARAM name="query_max_response_time" help="Query response value in seconds, default is 10s" ptype="IGMP_QUERY_RESP"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/igmp_query_max_response_time/${query_max_response_time}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set igmp query-max-response-time   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set igmp query-max-response-time   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+10
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set igmp query-max-response-time:    
+    DUT1(config-eth-0-1)# ip igmp query-max-response-time 20
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip igmp query-max-response-time
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip igmp query-max-response-time" help="IGMP max query response value (seconds)">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/igmp_query_max_response_time/10
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset igmp query-max-response-time   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset igmp query-max-response-time   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+10
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset igmp query-max-response-time:    
+    DUT1(config-eth-0-1)# no ip igmp query-max-response-time
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip igmp query-max-response-time
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim hello-interval" help="Hello Interval">
+        <PARAM name="hello_interval" help="Time in seconds for Hello Interval, default is 30 seconds" ptype="PIM_HELLO_INTERAVL"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/pim_hello_period/${hello_interval}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set pim hello interval   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set pim hello interval   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+30
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set pim hello interval:    
+    DUT1(config-eth-0-1)# ip pim hello-interval 20
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim hello
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim hello-holdtime" help="Hello Holdtime">
+        <PARAM name="hello_holdtime" optinal="true" help="Time in seconds for Hold Interval, default is 3.5*hello-interval" ptype="PIM_HELLO_HOLDTIME"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/pim_hello_holdtime/${hello_holdtime}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set pim hello holdtime   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set pim hello holdtime   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+3.5*hello-interval
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set pim hello holdtime:    
+    DUT1(config-eth-0-1)# ip pim hello-holdtime 
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim hello
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim hello" help="Hello Interval">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/pim_hello_period/0
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset pim hello parameter   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset pim hello parameter   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+3.5*hello-interval
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset pim hello parameter:    
+    DUT1(config-eth-0-1)# no ip pim hello
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim hello-interval
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="ip pim drpriority" help="Set the Designated Router Election Priority">
+        <PARAM name="dr_priority" help="Time in seconds for Hello Interval, default is 1" ptype="PIM_DR_PRIORITY"/>
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/pim_dr_priority/${dr_priority}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set pim drpriority   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to set pim drpriority   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+1
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to set pim drpriority:    
+    DUT1(config-eth-0-1)# ip pim drpriority 100
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip pim drpriority
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip pim drpriority" help="Set the Designated Router Election Priority">
+
+        <ACTION>
+            cdbctl update/cdb/l3/ipmc_intf/${iface}/pim_dr_priority/1
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset pim drpriority   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to unset pim drpriority   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+1
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to unset pim drpriority:    
+    DUT1(config-eth-0-1)# no ip pim drpriority
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip pim drpriority
+       </CTCRCMD>
+    </COMMAND>
+
+<!--
+    <COMMAND name="ip mroute" help="Add multicast route">
+        <PARAM name="oifname" help="Outgoing interface name" ptype="IF_NAME_EAV"/>
+        <PARAM name="group" help="Group address" ptype="IP_ADDR"/>
+        <PARAM name="source" optional="true" help="Source address" ptype="IP_ADDR"/>
+        <ACTION>
+            cdbctl create/cdb/l3/static_mroute/${iface}/oifname/${oifname}/group/${group}/source/${source}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to add static mroute   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to add static mroute   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to add static mroute   
+    DUT1(config-eth-0-1)# ip mroute eth-0-1 224.3.2.1 192.168.11.1   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+no ip mroute
+       </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ip mroute" help="Add multicast route">
+        <PARAM name="oifname" help="Outgoing interface name" ptype="IF_NAME_EAV"/>
+        <PARAM name="group" help="Group address" ptype="IP_ADDR"/>
+        <PARAM name="source" optional="true" help="Source address" ptype="IP_ADDR"/>
+        <ACTION>
+            cdbctl delete/cdb/l3/static_mroute/${iface}/oifname/${oifname}/group/${group}/source/${source}
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to delete static mroute   
+        </CTCDESCRIPTION>
+       <CTCUSAGE>
+This command is used to delete static mroute   
+       </CTCUSAGE>
+       <CTCDEFAULT>
+None
+       </CTCDEFAULT>
+       <CTCEXAMPLE>
+    This example shows how to delete static mroute   
+    DUT1(config-eth-0-1)# no ip mroute eth-0-1 224.3.2.1 192.168.11.1   
+       </CTCEXAMPLE>
+       <CTCRCMD>
+ip mroute
+       </CTCRCMD>
+    </COMMAND>
+-->
+</VIEW>
+
+</CLISH_MODULE>

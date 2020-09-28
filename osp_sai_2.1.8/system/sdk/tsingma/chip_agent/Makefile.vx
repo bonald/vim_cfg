@@ -1,0 +1,13 @@
+all_targets = src
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+src: FORCE
+	make -C $(SDK_DIR)/chip_agent/src -f Makefile.vx
+
+clean_src: FORCE
+	make -C $(SDK_DIR)/chip_agent/src -f Makefile.vx  clean
+
+.PHONY: FORCE
+FORCE:

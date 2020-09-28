@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+ACL_POLICY
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+    <COMMAND name="show policy-map" help="Show policy-map">
+        <PARAM name="pmap_name" optional="true" help="Name of policy-map to show" ptype="NAME_STRING"/>
+        
+        <ACTION>cdbctl show/cdb/l2/show_policy_map/${pmap_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show the configuration of policy-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If no policy-map name are specified, all policy-map in the system should be show.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of all the policy-map:     
+    Switch# show policy-map   
+    policy-map pm1     
+     class cm1     
+      set ccos 3     
+      redirect eth-0-4   
+    policy-map pm2   
+     class cm2   
+    Switch#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+policy-map
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="show class-map" help="Show class-map">
+        <PARAM name="cmap_name" optional="true" help="Name of class-map to show" ptype="NAME_STRING"/>
+        
+        <ACTION>cdbctl show/cdb/l2/show_class_map/${cmap_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show the configuration of class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If no class-map name are specified, all class-map in the system should be show.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of all the class-map:     
+    Switch# show class-map    
+    class-map cm1    
+     match access-list a     
+    class-map cm2     
+     match access-list a    
+     match access-list b    
+    Switch#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+class-map
+		</CTCRCMD>
+    </COMMAND>
+
+       <!--<COMMAND name="show policy-map" help="show policy-map"> </COMMAND> -->
+
+       <COMMAND name="show policy-map statistics"
+		help="Show policy-map statistics">
+	   </COMMAND>
+
+       <COMMAND name="show policy-map statistics interface" help="Select an interface">
+            <PARAM name="iface" help="Specify interface name" ptype="IF_NAME_EA"/>
+            <PARAM name="dir" help="Dir" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="input" help="Input direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="output" help="Output direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            <PARAM name="based" help="Based" ptype="SUBCOMMAND" mode="switch" default = "class-based" optional="true">
+                <PARAM name="ace-based" help="Ace-based statistics" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="class-based" help="Class-based statistics" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            <PARAM name="class" help="Specify class-map" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="class-name" help="Specify class map name" ptype="NAME_STRING"/>
+            </PARAM>
+            <ACTION>
+                cdbctl update/cdb/l2/fea_acl/
+                cdbctl update/cdb/l2/fea_acl_policy_action/flags_class_get_policer_stats/
+                usleep 100000
+                cdbctl show/cdb/l2/show_acl_policy_counters/${iface}/${dir}/${based}/${class-name}/
+            </ACTION>
+            
+        <CTCDESCRIPTION>
+Use this command to show the stats of policy-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can show policy-map based direction, ace or class
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display policy-map stats. 
+    Switch# show policy-map statistics interface eth-0-1 input 
+    Interface: eth-0-1
+    Ingress service policy: pmap1
+    Class name: cmap1(0 match 0 bytes)
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="clear policy-map" help="Policy map entry"/>
+        <COMMAND name="clear policy-map statistics" help="Statistics"/>
+        <COMMAND name="clear policy-map statistics interface" help="Select an interface">
+            <PARAM name="iface" help="Specify interface name" ptype="IF_NAME_EA"/>
+            <PARAM name="dir" help="Dir" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="input" help="Input direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="output" help="Output direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            
+            <ACTION>
+                cdbctl update/cdb/l2/clear_acl_policy/${iface}/${dir}/
+            </ACTION>
+                        
+        <CTCDESCRIPTION>
+Use this command to clear the stats of policy-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can clear policy-map based direction
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear policy-map stats. 
+    Switch#clear policy-map statistics interface eth-0-1 input
+		</CTCEXAMPLE>
+		<CTCRCMD>
+Switch# clear policy-map statistics interface eth-0-1 input 
+		</CTCRCMD>
+        </COMMAND>
+
+</VIEW>
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+
+       <COMMAND name="policy-map" help="Policy map"
+		view="configure-policy-map-view"
+		viewid="policy_map_name=${policy_map_name}">
+	    <PARAM name="policy_map_name" help="Specify a Policy-map name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl create/cdb/l2/policy_map_config/${policy_map_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to create policy map and then enter policy map configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the system already has an policy map with the same name, this command will enter the policy map configuration mode.  
+When the name is not used by any policy map, this command is to create the policy map firstly and then enter the policy map configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create an policy map named testpolicymap and then enter the policy map configuration mode.   
+    Switch(config)# policy-map testpolicymap   
+    Switch(config-policy-map-testpolicymap)#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show policy-map
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no policy-map" help="Policy map">
+	    <PARAM name="policy_map_name" help="Specify a policy map name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl delete/cdb/l2/policy_map_config/${policy_map_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove this policy map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the policy map, and should detach policy map from the interface which applied this policy map.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove an policy map named testpolicymap.  
+    Switch(config)# no ip access-list testpolicymap   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show policy-map
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="class-map" help="Class map"
+		view="configure-class-map-view"
+		viewid="class_map_name=${class_map_name}">
+	    <PARAM name="class_map_name" help="Specify a Class-map name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl create/cdb/l2/class_map_config/${class_map_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to create class map and then enter class map configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the system already has an class map with the same name, this command will enter the class map configuration mode.  
+When the name is not used by any class map, this command is to create the class map firstly and then enter the class map configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to create an class map named testclassmap and then enter the class map configuration mode.   
+    Switch(config)# class-map testclassmap   
+    Switch(config-class-map-testclassmap)#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show class-map
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no class-map" help="Class map">
+	    <PARAM name="class_map_name" help="Specify a class map name, up to 20 characters" ptype="NAME_STRING"/>
+
+	    <ACTION>cdbctl delete/cdb/l2/class_map_config/${class_map_name}</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove this class map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove the class map, and should detach class map from the interface which applied this class map.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove an class map named testclassmap.  
+    Switch(config)# no ip access-list testclassmap   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show class-map
+		</CTCRCMD>
+	</COMMAND>    
+	
+</VIEW>
+
+<VIEW name="configure-policy-map-view"
+	prompt="${SYSTEM_NAME}(config-policy-map-${policy_map_name})# "
+	depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from policy-map configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from policy-map configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+       <COMMAND name="class" help="Specify class-map" view="Configure-pmap-class-view" viewid="class_name=${class_name}">
+            <PARAM name="class_name" help="Specify class map name" ptype="NAME_STRING"/>
+            <ACTION>cdbctl create/cdb/l2/class_in_policy_config/${policy_map_name}/class/${class_name}</ACTION>
+
+            <CTCDESCRIPTION>
+Use this command to apply class-map to policy-map and then enter policy-calss configuration mode.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+If the policy-map already has an class map with the same name, this command will enter the policy-class configuration mode.  
+When the class name is not used by this policy map, this command is to apply the class firstly and then enter the policy map configuration mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply an class map named cmap1 and then enter the policy-class configuration mode.   
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-c-pmap1-cmap1)# 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+       </COMMAND>
+
+
+       <COMMAND name="no class" help="Specify class-map" >
+                <PARAM name="class_name" help="Specify class map name" ptype="NAME_STRING"/>
+            <ACTION>cdbctl delete/cdb/l2/class_in_policy_config/${policy_map_name}/class/${class_name}</ACTION>
+ 
+        <CTCDESCRIPTION>
+Use this command to unapply this class map to policy map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unapply an class map named cmap1 to policy-map.  
+    Switch(config-policy-map-pmap1)# no class cmap1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+       </COMMAND>
+
+</VIEW>
+
+
+
+
+<VIEW name="configure-class-map-view"
+	prompt="${SYSTEM_NAME}(config-class-map-${class_map_name})# "
+	depth="1">
+
+<!-- Simple configure-vlan mode commands -->
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="exit"
+		help="Exit from class-map configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from class-map configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="no match"
+		help="no match a access-list">
+	</COMMAND>
+
+	<COMMAND name="match"
+		help="match a access-list">
+	</COMMAND>
+
+	
+       <COMMAND name="match access-list" help="Specify access-list">
+            <PARAM name="acl_name" help="Specify acl map name" ptype="NAME_STRING"/>
+            <ACTION>cdbctl create/cdb/l2/acl_in_class_config/${class_map_name}/acl/${acl_name}</ACTION>
+    
+            <CTCDESCRIPTION>
+Use this command to apply acl to class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The acl group should be exist.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply an acl named acl1 to class cmap1.
+    Switch(config)# class-map cmap1
+    Switch(config-class-map-cmap1)# match access-list acl1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+       </COMMAND>
+
+
+       <COMMAND name="no match access-list" help="Specify access-list">
+                <PARAM name="acl_name" help="Specify access-list name" ptype="NAME_STRING"/>
+            <ACTION>cdbctl delete/cdb/l2/acl_in_class_config/${class_map_name}/acl/${acl_name}</ACTION>
+  
+         <CTCDESCRIPTION>
+Use this command to unapply this acl to class map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unapply an acl named acl1 to class map.  
+    Switch(config-class-map-cmap1)# no match access-list acl  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+       </COMMAND>
+
+
+</VIEW>
+
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="service-policy" help="Policy map">
+	       <PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="input" help="Ingress policy map" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="output" help="Egress policy map" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="policy_map_name" help="Specify a policy map name, up to 20 characters" ptype="NAME_STRING"/>
+
+		<ACTION>
+			if [ "${direct_sub}" == "input" ]; then
+				cdbctl update/cdb/interface/${iface}/igs_policy_map/${policy_map_name}
+			else
+				cdbctl update/cdb/interface/${iface}/egs_policy_map/${policy_map_name}
+			fi;
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to apply policy map to interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to apply policy map to interface, the policy map should be created first.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply policy to interface.   
+    DUT1(config)# interface eth-0-2    
+    DUT1(config-if-eth-0-2)# service-policy input pmap1    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show service-policy 
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no service-policy" help="Policy map">
+		<PARAM name="direct_sub" help="Direct" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="input" help="Ingress policy map" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="output" help="Egress policy map" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+
+		<ACTION>
+			if [ "${direct_sub}" == "input" ]; then
+				cdbctl update/cdb/interface/${iface}/igs_policy_map/""
+			else
+				cdbctl update/cdb/interface/${iface}/egs_policy_map/""
+			fi;
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove policy map from interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove policy map to interface, policy map need not to be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply policy map to interface.  
+    DUT1(config)# interface eth-0-2   
+    DUT1(config-if-eth-0-2)# no service-policy input    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show service-policy
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure-pmap-class-view" prompt="${SYSTEM_NAME}(config-pmap-${policy_map_name}-cmap-${class_name})# " depth="2">
+        <NAMESPACE ref="Configure-policy-map-view" help="false" completion="true"/>
+        <COMMAND name="no" help="Negate a command or set its defaults"/>
+        <COMMAND name="exit" help="End current mode and down to previous mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+        </COMMAND>
+        <COMMAND name="quit" help="End current mode and down to previous mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+        </COMMAND>
+
+    	 <COMMAND name="set"
+		help="Set a new action">
+	 </COMMAND>
+
+       <COMMAND name="no set"
+		help="Unset a new action">
+	 </COMMAND>
+
+        <COMMAND name="policer" help="Specify a policer for the classified traffic" >
+            <PARAM name="name" help="Specify a policer name" ptype="NAME_STRING"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/policer/${name}/</ACTION>
+        
+            <CTCDESCRIPTION>
+Use this command to set policer in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The policer profile should be exist.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set a policer named p1 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# policer p1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+Switch(config)# qos policer-profile pmap1
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="no policer" help="Remove the policer for the classified traffic" >
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/policer//</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to unset policer in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the policer in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no policer
+		</CTCEXAMPLE>
+		<CTCRCMD>
+Switch(config)# qos policer-profile pmap1
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="set tc" help="Set a new tc and color for the classified traffic" >
+            <PARAM name="value" help="Specify a tc value" ptype="QUEUE_ID"/>
+            <PARAM name="color" help="Color" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="color_value" help="Specify a color value" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+
+            <ACTION>
+                cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_tc/${value}/
+                cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_color/${color_value}/
+            </ACTION>
+         
+            <CTCDESCRIPTION>
+Use this command to set tc and color in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+the range of tc should be 0-7
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set tc 5 color green in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# set tc 5 color green
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="no set tc" help="Remove the tc and color for the classified traffic" >
+            <ACTION>
+			cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_tc//
+			cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_color//
+			</ACTION>
+            
+             <CTCDESCRIPTION>
+Use this command to unset tc and color in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset tc and color in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no set tc
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="set dscp" help="Set a new dscp for the classified traffic" >
+            <PARAM name="value" help="Specify a tc value" ptype="DSCP_VALUE"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_dscp/${value}/</ACTION>
+                      
+            <CTCDESCRIPTION>
+Use this command to set dscp in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The range of dscp should be 0-63
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set dscp 44 yellow in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# set dscp 44
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="no set dscp" help="Remove the new dscp for the classified traffic" >
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_dscp//</ACTION>
+                
+             <CTCDESCRIPTION>
+Use this command to unset dscp in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset dscp in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no set dscp
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+
+	 <COMMAND name="monitor"
+		help="Monitoring classified flow traffic">
+	 </COMMAND>
+
+ 	 <COMMAND name="monitor to"
+		help="Monitoring classified flow traffic to">
+	 </COMMAND>
+	 
+        <COMMAND name="monitor to session" help="Configure a mirror session" >
+            <PARAM name="sessionid" help="Mirror session number" ptype="MIRROR_ID"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/session_id/${sessionid}/</ACTION>
+                         
+            <CTCDESCRIPTION>
+Use this command to set monitor session in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set monitor session 1 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# monitor to session 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+Switch(config)# monitor session 1 destination interface eth-0-3
+		</CTCRCMD>
+        </COMMAND>
+
+    	 <COMMAND name="no monitor" help="Remove the monitor">
+	       <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/session_id//</ACTION>
+                         
+            <CTCDESCRIPTION>
+Use this command to unset monitor session in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset monitor session in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no monitor
+		</CTCEXAMPLE>
+		<CTCRCMD>
+Switch(config)# monitor session 1 destination interface eth-0-3
+		</CTCRCMD>
+	 </COMMAND>
+
+        <COMMAND name="set svid" help="Set a new svlan id for the classified traffic" >
+            <PARAM name="vlan_value" help="Vlan value" ptype="VLAN_ID"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_svlan_id/${vlan_value}/</ACTION>
+                          
+            <CTCDESCRIPTION>
+Use this command to set svlan id in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The range of vlan id should be 1-4094
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set svlan id 5 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# set svid 5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+    	 <COMMAND name="no set svid" help="Remove the svlan id for the classified traffic">
+	       <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_svlan_id//</ACTION>
+	                         
+            <CTCDESCRIPTION>
+Use this command to unset svlan id in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset svlan id in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no set svid
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	 </COMMAND>
+
+       <COMMAND name="set cvid" help="Set a new cvlan id for the classified traffic" >
+            <PARAM name="vlan_value" help="Vlan value" ptype="VLAN_ID"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_cvlan_id/${vlan_value}/</ACTION>
+                            
+            <CTCDESCRIPTION>
+Use this command to set cvid id in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The range of vlan id should be 1-4094
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set cvlan id 5 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# set cvid 5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+    	 <COMMAND name="no set cvid" help="Remove the cvlan id for the classified traffic">
+	       <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_cvlan_id//</ACTION>
+	 	                         
+            <CTCDESCRIPTION>
+Use this command to unset cvlan id in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset cvlan id in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no set cvid
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	 </COMMAND>
+
+	 <COMMAND name="set scos" help="Set a new svlan-cos for the classified traffic" >
+            <PARAM name="vlan_value" help="Vlan value" ptype="COS_ID"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_scos/${vlan_value}/</ACTION>
+                                        
+            <CTCDESCRIPTION>
+Use this command to set scos in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The range of scos should be 0-7
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set scos 5 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# set scos 5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+    	 <COMMAND name="no set scos" help="Remove the svlan cos for the classified traffic">
+	       <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_scos//</ACTION>
+	       	 	                         
+            <CTCDESCRIPTION>
+Use this command to unset scos in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset scos in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no set scos
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	 </COMMAND>
+
+ 	 <COMMAND name="set ccos" help="Set a new cvlan-cos for the classified traffic" >
+            <PARAM name="vlan_value" help="Vlan value" ptype="COS_ID"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_ccos/${vlan_value}/</ACTION>
+                                               
+            <CTCDESCRIPTION>
+Use this command to set ccos in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+The range of ccos should be 0-7
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set ccos 5 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# set ccos 5
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+        </COMMAND>
+    	 <COMMAND name="no set ccos" help="Remove the svlan cos for the classified traffic">
+	       <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/new_ccos//</ACTION>
+	       	       	 	                         
+            <CTCDESCRIPTION>
+Use this command to unset ccos in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE> 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset ccos in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no set ccos
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	 </COMMAND>
+
+        <COMMAND name="redirect" help="Set flow redirect" >
+            <PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/redirect_port_ifindex/${iface_name}/</ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to set flow redirect to interface in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set flow redirect to eth-0-3 in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# redirect eth-0-3 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no redirect
+		</CTCRCMD>
+        </COMMAND>
+
+        <COMMAND name="no redirect" help="Unset flow redirect" >
+            <ACTION>cdbctl update/cdb/l2/class_map_action_config/${policy_map_name}/pmap_class/${class_name}/redirect_port_ifindex//</ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to unset flow redirect to interface in this class-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset flow redirect in class cmap1.
+    Switch(config)# policy-map pmap1
+    Switch(config-policy-map-pmap1)# class cmap1
+    Switch(config-pmap-pmap1-cmap-cmap1)# no redirect  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+redirect
+		</CTCRCMD>
+        </COMMAND>
+	 
+</VIEW>
+
+</CLISH_MODULE>
+

@@ -1,0 +1,65 @@
+
+#ifndef __TBL_FEA_PORT_POLICER_APPLY_H__
+#define __TBL_FEA_PORT_POLICER_APPLY_H__
+
+int32
+tbl_fea_port_policer_apply_add_fea_port_policer_apply_sync(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, uint32 sync);
+
+int32
+tbl_fea_port_policer_apply_del_fea_port_policer_apply_sync(tbl_fea_port_policer_apply_key_t *p_fea_port_policer_apply_key, uint32 sync);
+
+int32
+tbl_fea_port_policer_apply_set_fea_port_policer_apply_field_sync(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, tbl_fea_port_policer_apply_field_id_t field_id, uint32 sync);
+
+int32
+tbl_fea_port_policer_apply_add_fea_port_policer_apply(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply);
+
+int32
+tbl_fea_port_policer_apply_del_fea_port_policer_apply(tbl_fea_port_policer_apply_key_t *p_fea_port_policer_apply_key);
+
+int32
+tbl_fea_port_policer_apply_set_fea_port_policer_apply_field(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, tbl_fea_port_policer_apply_field_id_t field_id);
+
+tbl_fea_port_policer_apply_t*
+tbl_fea_port_policer_apply_get_fea_port_policer_apply(tbl_fea_port_policer_apply_key_t *p_fea_port_policer_apply_key);
+
+char*
+tbl_fea_port_policer_apply_key_val2str(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, char *str, uint32 str_len);
+
+int32
+tbl_fea_port_policer_apply_key_str2val(char *str, tbl_fea_port_policer_apply_t *p_fea_port_policer_apply);
+
+int32
+tbl_fea_port_policer_apply_dump_one(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, tbl_iter_args_t *pargs);
+
+char*
+tbl_fea_port_policer_apply_key_name_dump(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, char* str);
+
+char*
+tbl_fea_port_policer_apply_key_value_dump(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, char* str);
+
+char*
+tbl_fea_port_policer_apply_field_name_dump(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, int32 field_id, char* str);
+
+char*
+tbl_fea_port_policer_apply_field_value_dump(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, int32 field_id, char* str);
+
+char**
+tbl_fea_port_policer_apply_table_dump(tbl_fea_port_policer_apply_t *p_fea_port_policer_apply, char** str);
+
+int32
+tbl_fea_port_policer_apply_table_parser(char** array, char* key_value, tbl_fea_port_policer_apply_t *p_fea_port_policer_apply);
+
+int32
+tbl_fea_port_policer_apply_iterate(TBL_ITER_CB_FUNC fn, tbl_iter_args_t *pargs);
+
+tbl_fea_port_policer_apply_master_t*
+tbl_fea_port_policer_apply_get_master();
+
+tbl_fea_port_policer_apply_master_t*
+tbl_fea_port_policer_apply_init_fea_port_policer_apply();
+
+tbl_fea_port_policer_apply_t*
+tbl_fea_port_policer_apply_get_fea_port_policer_apply_by_name(const char* ifname);
+#endif /* !__TBL_FEA_PORT_POLICER_APPLY_H__ */
+

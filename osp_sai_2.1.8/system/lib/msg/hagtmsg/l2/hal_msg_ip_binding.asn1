@@ -1,0 +1,33 @@
+HAL-MSG-L2-IP-BINDING DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES  
+    HalMsgIpv6addr,
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES  
+    ;
+
+
+HalMsgL2IPBindingReq ::= SEQUENCE
+{
+    bindingEntryHdr       INTEGER,
+    ipaddr                INTEGER, 
+    mac                   HalMsgDefL2MacAddr,
+    vid                   INTEGER,
+    portId                INTEGER
+}
+
+HalMsgL2IPBindingEnReq ::= SEQUENCE
+{
+    portList            SEQUENCE OF INTEGER,
+    enable              INTEGER 
+}
+
+
+HalMsgL2IPBindingListReq ::= SEQUENCE
+{
+    ipBingdingList          SEQUENCE OF HalMsgL2IPBindingReq
+}
+
+END

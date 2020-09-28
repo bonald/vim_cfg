@@ -1,0 +1,38 @@
+HAL-MSG-OPENFLOW-GROUP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+------------------------------------
+--  Type definitions for OpenFlow Group (BEGIN) {
+------------------------------------
+HalMsgOpenFlowGroupType ::= ENUMERATED
+{
+    groupTypeAll,
+    groupTypeSelect,
+    groupTypeIndirect,
+    groupTypeFF
+}
+
+HalMsgOpenFlowGroupAllocType ::= ENUMERATED
+{
+    groupAllocTypeMcast,
+    groupAllocTypeEcmp
+}
+------------------------------------
+--  } Type definitions for OpenFlow Group (END)
+------------------------------------
+
+------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow Group (BEGIN) {
+------------------------------------
+
+------------------------------------
+-- } DATA STRUCTURE definitions for OpenFlow Group (END)
+------------------------------------
+
+------------------------------------
+--  Message definitions for OpenFlow Group (BEGIN) {
+------------------------------------
+
+------------------------------------
+--  } Message definitions for OpenFlow Group (END)
+------------------------------------
+END

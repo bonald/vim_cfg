@@ -1,0 +1,26 @@
+
+include $(MK_DIR)/sys_vx.mk
+
+OBJ_DIR=$(OBJ_BASE_DIR)/driver
+
+LIB = drv
+
+OBJS = $(foreach n, $(CHIPNAME), $(wildcard $(OBJ_DIR)/$(n)/src/*.o))
+DEPS = $(foreach n, $(CHIPNAME), $(wildcard $(OBJ_DIR)/$(n)/src/*.d))
+ifeq ($(USW),yes)
+OBJS += $(wildcard $(OBJ_DIR)/api/*.o)  $(wildcard $(OBJ_DIR)/usw/src/*.o)
+DEPS += $(wildcard $(OBJ_DIR)/api/*.d)  $(wildcard $(OBJ_DIR)/usw/src/*.d)
+endif
+
+$(LIB_DIR)/lib$(LIB).a: $(OBJS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/lib$(LIB).a
+
+

@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+ROUTE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="clear ip" help="IP"/>
+
+	<COMMAND name="show ip route" help="IP routing table" lock="false" interrupt="true">
+		<PARAM name="type" help="show ip route by type" optional="true" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="ip" help="Network in the IP routing table to display" ptype="IP_ADDR" />
+			<PARAM name="ip_mask" help="IP prefix [network]/[length], e.g., 35.0.0.0/8" ptype="IP_ADDR_MASK" >
+				<PARAM name="is_longer-prefixes" help="longer-prefixes" optional="true" ptype="SUBCOMMAND" mode="switch" default="no" >
+					<PARAM name="longer-prefixes" help="Show route matching the specified Network/Mask pair only"  ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+  			<PARAM name="connected" help="Connected" ptype="SUBCOMMAND" mode="subcommand"/> 
+  			<PARAM name="ospf" help="Open shortest path first (OSPF)" ptype="SUBCOMMAND" mode="subcommand"/> 
+			<PARAM name="static" help="Static routes" ptype="SUBCOMMAND" mode="subcommand"/> 
+		</PARAM>
+
+	 	<CTCDESCRIPTION>
+To display the entries in the Route Information Base (RIB) table, use the show ip route command in privileged EXEC mode. 
+		</CTCDESCRIPTION>
+        <CTCUSAGE>
+To display all entries in the RIB, use this command without any arguments or keywords. 
+To display the entry in the RIB for detail, use this command with the keyword of ip or ip mask. 
+Use this command with the keyword of ip mask longer-prefixes, Show route matching the specified Network/Mask pair only.
+To display the entry in the RIB for connected route, use this command with the keyword of connected.
+To display the entry in the RIB for ospf route, use this command with the keyword of ospf.
+To display the entry in the RIB for static route, use this command with the keyword of static.
+        </CTCUSAGE>
+		<CTCDEFAULT>
+None  
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the show ip route command:  
+    Switch# show ip route  
+	Codes: K - kernel route, C - connected, S - static, R - RIP,
+	       O - OSPF, I - IS-IS, B - BGP, P - PIM, A - Babel,
+	       > - selected route, * - FIB route
+	       [*] - [AD/Metric]
+
+	C>* 1.1.1.0/24 is directly connected, eth-0-4
+	S>* 2.2.2.0/24 [1/0] via 10.1.1.2, eth-0-10
+	C>* 10.1.1.0/24 is directly connected, eth-0-10
+	    </CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+
+		<ACTION>
+			if [ "${type}" == "ip_mask" ]; then		
+				if [ ${is_longer-prefixes} == "longer-prefixes" ]; then
+					vtysh -c "show ip route ${ip_mask} longer-prefixes"
+				else
+					vtysh -c "show ip route ${ip_mask}"
+				fi
+		       elif [ "${type}" == "connected" ]; then
+				vtysh -c "show ip route connected"
+			elif [ "${type}" == "ospf" ]; then
+				vtysh -c "show ip route ospf"
+			elif [ "${type}" == "static" ]; then
+				vtysh -c "show ip route static"
+			elif [ "${type}" == "add-fib-fail" ]; then
+				cdbctl show/cdb/l3/show_ip_route/${type}
+			else
+				vtysh -c "show ip route ${ip}"
+			fi			
+		</ACTION>
+		
+	</COMMAND>
+
+	<COMMAND name="show ip route add-fib-fail" help="Routes not in hardware" lock="false" interrupt="true" hidden="false">
+		<ACTION>
+		    cdbctl show/cdb/l3/show_ip_route/add-fib-fail
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip route add-fib-fail count" help="Routes not in hardware count" lock="false" interrupt="true" hidden="false">
+		<ACTION>
+		    cdbctl show/cdb/l3/show_ip_route/add-fib-fail-count
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip route summary" help="IP routing table summary" lock="false" interrupt="true">
+
+		<CTCDESCRIPTION>
+To display the summary of Route Information Base and Forwording Information Base table, use the show ip route summary command in privileged EXEC mode. 
+		</CTCDESCRIPTION>
+        <CTCUSAGE>
+To display the summary of RIB and FIB table,use this command without any arguments or keywords.
+        </CTCUSAGE>
+		<CTCDEFAULT>
+None  
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the show ip route summary command:  
+    Switch# show ip route summary
+	Route Source         Routes               FIB  (vrf Default-IP-Routing-Table)          
+	connected            13                   13                   
+	static               26                   26                   
+	------
+	Totals               39                   39   
+	    </CTCEXAMPLE>
+	    <CTCRCMD>
+		</CTCRCMD>
+		
+		<ACTION>vtysh -c "show ip route summary"</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip interface" help="L3 interface">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL" optional="true" default="all"/>
+        <PARAM name="brief" help="Brief summary of IP status and configuration" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+		<CTCDESCRIPTION>
+Use this command to show layer3 interface information.
+		</CTCDESCRIPTION>
+        <CTCUSAGE>
+Use show ip interface to show all layer3 interface information, or use show ip interface if_name to show if_name's interface information.
+        </CTCUSAGE>
+		<CTCDEFAULT>
+None  
+	   </CTCDEFAULT>
+		<ACTION>
+			cdbctl show/cdb/l3/show_ip_if_brief/${iface_name}/${brief}
+		</ACTION>
+        <CTCEXAMPLE>
+    The following is sample output from the show ip interface command:    
+    Switch# show ip interface brief     
+    Interface             IP-Address      Status                  Protocol    
+    ---------------------+---------------+-----------------------+--------    
+    eth-0-1               10.10.1.1       up                      up          
+    eth-0-12              164.0.0.1       up                      up
+	    </CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<!-- add by zhw for show ip mroute -->  
+    <COMMAND name="show ip mroute" help="static mroutes" lock="false" interrupt="true">
+        <PARAM name="type" help="zhw" optional="true" ptype="SUBCOMMAND" mode="switch" default="no">
+            <PARAM name="source" help="Mroute source address" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="source_addr" help="Mroute source address" ptype="IP_ADDR"/>
+        
+                <PARAM name="group" help="Mroute group address" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="group_addr"   help="Mroute group address  e.g., 224.1.1.1" ptype="IP_ADDR"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            cdbctl show/cdb/l3/show_ip_mroute/source/${source_addr}/group/${group_addr}
+        </ACTION>    
+    </COMMAND>
+</VIEW>
+
+
+<VIEW name="Configure">
+
+    <COMMAND name="router" help="Enable a routing process"/>
+    <COMMAND name="no router" help="Disable a routing process"/>
+
+	<COMMAND name="ip route" help="Establish static routes">
+		<PARAM name="ip"   help="IP destination prefix, e.g., 10.0.0.0/8" ptype="IP_ADDR_MASK"/>
+		<PARAM name="part" help="Part" ptype="SUBCOMMAND" mode="switch" default = "all">
+		    <PARAM name="ipgw" help="IP address of next-hop" ptype="IP_ADDR"/>
+		    <PARAM name="null" help="Null interface" ptype="SUBCOMMAND" mode="subcommand">
+		        <PARAM name="null_value" help="Port number" optional="false" test='"${ipgw}"=""' ptype="NULL_INTERFACE_NUMBER"/>
+		    </PARAM>
+		</PARAM>
+		<PARAM name="distance" help="Distance value, default is 1" optional="true" ptype="DISTANCE"/>
+		<PARAM name="track" help="Track" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="track_id" help="Track object indentifier" ptype="TRACK_OBJECT_ID"/>
+		</PARAM>
+
+		<CTCDESCRIPTION>
+To add a permanent entry in the Route Information Base and Forwording Information Base table, use the route command in global configuration mode. 
+To establish static routes, use the ip route command in global configuration mode. To remove static routes, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To add a permanent entry in RIB, use this command with the ip mask and next-hop address (distance is not necessary). 
+The establishment of a static route is appropriate when the switch cannot dynamically build a route to the destination.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+If distance is not configured, the default value is 1.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is an example of a static route entry:  
+Switch(config)# ip route 10.1.1.1/8 192.168.2.2     
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip route
+	   </CTCRCMD>
+		<ACTION>
+		    if [ "ipgw" == ${part} ]; then
+			cdbctl create/cdb/l3/static_route_cfg/ip/${ip}/ipgw/${ipgw}/distance/${distance}/track_id/${track_id}
+		    else
+		       cdbctl create/cdb/l3/static_route_cfg/ip/${ip}/null/${null_value}/distance/${distance}/track_id/${track_id}
+		    fi
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip route" help="Establish static routes">
+		<PARAM name="ip"   help="IP destination prefix, e.g., 10.0.0.0/8" ptype="IP_ADDR_MASK"/>
+		<PARAM name="part" help="Part" ptype="SUBCOMMAND" optional="true" mode="switch" default = "ipgw">
+		    <PARAM name="ipgw" help="IP address of next-hop" optional="true" ptype="IP_ADDR"/>
+		    <PARAM name="null" help="Null interface" ptype="SUBCOMMAND" mode="subcommand">
+		        <PARAM name="null_value" help="Port number" optional="false" test='"${ipgw}"=""' ptype="NULL_INTERFACE_NUMBER"/>
+		    </PARAM>
+		</PARAM>
+		<PARAM name="track_mode" help="Track mode" optional="true" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="track" help="Track" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<CTCDESCRIPTION>
+To remove a permanent entry in the Route Information Base and Forwording Information Base table, use the route command in global configuration mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To remove a permanent entry in RIB, use this command with the ip mask and next-hop address (distance is not needed). 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+No default behavior. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is an example of a static route entry:  
+Switch(config)# no ip route 10.1.1.1/8 192.168.2.2
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip route
+	   </CTCRCMD>
+		<ACTION>
+			if [ "track" == ${track_mode} ]; then
+			    if [ "ipgw" == ${part} ]; then
+				cdbctl delete/cdb/l3/static_route_cfg/ip/${ip}/ipgw/${ipgw}/track_id
+			    else
+			       cdbctl delete/cdb/l3/static_route_cfg/ip/${ip}/null/${null_value}/track_id
+			    fi
+			else
+			    if [ "ipgw" == ${part} ]; then
+				cdbctl delete/cdb/l3/static_route_cfg/ip/${ip}/ipgw/${ipgw}
+			    else
+			       cdbctl delete/cdb/l3/static_route_cfg/ip/${ip}/null/${null_value}
+			    fi
+			fi
+		</ACTION>
+	</COMMAND>
+
+	
+	<COMMAND name="ip redirects" help="ICMP redirect messages">
+		<CTCDESCRIPTION>
+To enable send the ICMP redirect messages generated by the switch, use the ip redirects command in global configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the ip redirects command to enable send the ICMP redirect messages generated by the switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+In the following example, users enable to send the ICMP redirect message:
+Switch(config)# ip redirects
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip redirects
+		</CTCRCMD>
+		<ACTION>cdbctl update/cdb/l3/route_global/ip_redirects_global_en/1</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip redirects" help="ICMP redirect messages">
+		<CTCDESCRIPTION>
+To disable send the ICMP redirect messages generated by the switch, use the no ip redirects command in global configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the no ip redirects command to disable ICMP redirect messages generated by the switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+In the following example, users disable to send the ICMP redirect message:
+Switch(config)# no ip redirects
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip redirects
+		</CTCRCMD>
+		<ACTION>cdbctl update/cdb/l3/route_global/ip_redirects_global_en/0</ACTION>
+	</COMMAND>
+	<!-- add by zhw for mc-->
+	<COMMAND name="ip mroute" help="Establish static mroutes">
+		<PARAM name="source" help="Mroute source address" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="source_addr" help="Mroute source address" ptype="IP_ADDR"/>
+
+		<PARAM name="group" help="Mroute group address" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="group_addr"   help="Mroute group address  e.g., 224.1.1.1" ptype="IP_ADDR"/>
+
+		<PARAM name="rpf" help="Mroute rpf address" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="rpf_addr" help="Mroute rpf interface" ptype="IF_NAME_EV"/>
+						
+		<PARAM name="oif" help="Mroute outgoing interface address" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="oif_addr" help="Mroute outgoing interface list" ptype="IF_NAME_EV"/>
+		<ACTION>cdbctl update/cdb/l3/mrt/source/${source_addr}/group/${group_addr}/rpf/${rpf_addr}/oif/${oif_addr}/static/1</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="no ip mroute" help="Establish static mroutes">
+		<PARAM name="source" help="Mroute source address" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="source_addr" help="Mroute source address" ptype="IP_ADDR"/>
+
+		<PARAM name="group" help="Mroute group address" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="group_addr"   help="Mroute group address  e.g., 224.1.1.1" ptype="IP_ADDR"/>
+
+		<ACTION>cdbctl delete/cdb/l3/mrt/source/${source_addr}/group/${group_addr}</ACTION>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+		<COMMAND name="ip" help="Internet Protocol (IP)">
+        </COMMAND>
+
+        <COMMAND name="no ip" help="IP">
+        </COMMAND>
+
+	<COMMAND name="ip address" help="Address">
+		<PARAM name="ip" help="IP addres and msk [network]/[length], e.g., 192.168.1.2/24" ptype="IP_ADDR_MASK"/>
+		<PARAM name="secondary" help="Secondary IP address" optional="true" ptype="SUBCOMMAND" mode="subcommand" />
+
+		<CTCDESCRIPTION>
+To configure the ip address of the interface, use the ip adress command in interface configuration mode. 
+To set a primary or secondary IP address for an interface, use the ip address command in interface configuration mode. To remove an IP address or disable IP processing, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To configure the ip address of the interface, use this command with the ip prefix and mask. 
+An interface can have one primary IP address and multiple secondary IP addresses. Packets generated by the switch always use the primary IP address. Therefore, all switches and access servers on a segment should share the same primary network number.
+Hosts can determine subnet masks using the Internet Control Message Protocol (ICMP) mask request message. Switch respond to this request with an ICMP mask reply message.
+You can disable IP processing on a particular interface by removing its IP address with the no ip address command. If the software detects another host using one of its IP addresses, it will print an error message on the console.
+The optional secondary keyword allows you to specify up to 14 secondary addresses. Secondary addresses are treated like primary addresses, except the system never generates datagrams other than routing updates with secondary source addresses. IP broadcasts and Address Resolution Protocol (ARP) requests are handled properly, as are interface routes in the IP routing table.
+Secondary IP addresses can be used in a variety of situations. The following are the most common applications:
+There may not be enough host addresses for a particular network segment. For example, your subnet allows up to 254 hosts per logical subnet, but on one physical subnet you need 300 host addresses. Using secondary IP addresses on the switches or access servers allows you to have two logical subnets using one physical subnet.
+Many older networks were built using Level 2 bridges. The judicious use of secondary addresses can aid in the transition to a subnet and router-based network. Switches on an older, bridged segment can be easily made aware that many subnets are on that segment.
+Two subnets of a single network might otherwise be separated by another network. This situation is not permitted when subnets are in use. In these instances, the first network is extended, or layered on top of the second network using secondary addresses.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command could be configured when the interface turns into a L3 interface. The ip address of different interfaces is unique.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is an example of a static route entry:  
+Switch(config)# interface eth-0-1
+Switch(config-if-eth-0-1)# ip address 192.168.1.1/24
+Switch(config-if-eth-0-1)# ip address 192.31.7.17/24 secondary
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip address	   
+	   </CTCRCMD>
+		
+		<ACTION>
+            tmpfile="`mktemp /tmp/clearXXXXXX`"
+            cdbctl read/cdb/l3/route_if/${iface} | grep -E "dhcp_client_enable=1" > $tmpfile
+            
+      
+            if [ "$?" == "0" ]; then
+                echo "% Conflict with dhcp client function enabled on this interface"
+                rm -fr $tmpfile
+                exit 0;
+            fi
+            rm -fr $tmpfile
+      
+			cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv4/add/${ip}/${secondary}
+			if [ "$?" != "0" ]; then
+				exit 1
+			else
+				usleep 100000
+			fi		
+      
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip address" help="Address">
+		<PARAM name="ip" help="IP addres and msk [network]/[length], e.g., 192.168.1.2/24" ptype="IP_ADDR_MASK" default="all" optional="true" test='"${secondary}"=""' />
+		<PARAM name="secondary" help="Secondary IP address" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='"${ip}"!=""' />
+
+		<CTCDESCRIPTION>
+To remove the ip address of the interface, use the no ip address command in interface configuration mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To remove the ip address of the interface, use this command with the ip prefix and mask. 
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command should be configured under the L3 interface.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is an example of a static route entry:  
+Switch(config)# interface eth-0-1
+Switch(config-if-eth-0-1)# no ip address 192.168.1.1/24
+Switch(config-if-eth-0-1)# no ip address 192.31.7.17/24 secondary
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip address	   
+	   </CTCRCMD>
+
+		<ACTION>
+            tmpfile="`mktemp /tmp/clearXXXXXX`"
+            cdbctl read/cdb/l3/route_if/${iface} | grep -E "dhcp_client_enable=1" > $tmpfile
+
+            if [ "$?" == "0" -a "${ip}" == "all" -a "${secondary}" == "" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/dhcp_client_enable/0
+                rm -fr $tmpfile
+                exit 0; 
+            fi
+            rm -fr $tmpfile
+      
+			if [ "${secondary}" != "secondary" ]; then
+				cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv4/del/${ip}
+				if [ "$?" != "0" ]; then
+					exit 1
+				else
+					usleep 100000
+				fi
+			else
+				cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv4/del/${ip}/${secondary}
+				if [ "$?" != "0" ]; then
+					exit 1
+				else
+					usleep 100000
+				fi
+			fi
+      
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip redirects" help="ICMP redirect messages">
+
+		<CTCDESCRIPTION>
+To enable send the ICMP redirect messages generated by the switch, use the ip redirects command in interface configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the ip redirects command to enable send the ICMP redirect messages generated by the switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+In the following example, users enable to send the ICMP redirect message:
+Switch(config)# interface eth-0-1
+Switch(config-if-eth-0-1)# no switchport
+Switch(config-if-eth-0-1)# ip address 10.10.10.1/24
+Switch(config-if-eth-0-1)# ip redirects
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no ip redirects
+		</CTCRCMD>
+
+		<ACTION>cdbctl update/cdb/l3/route_if/${iface}/ip_redirects_en/1</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip redirects" help="ICMP redirect messages">
+		<CTCDESCRIPTION>
+To disable send the ICMP redirect messages generated by the switch, use the no ip redirects command in interface configuration mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the no ip redirects command to disable ICMP redirect messages generated by the switch.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+In the following example, users disable to send the ICMP redirect message:
+Switch(config)# interface eth-0-1
+Switch(config-if-eth-0-1)# no switchport
+Switch(config-if-eth-0-1)# ip address 10.10.10.1/24
+Switch(config-if-eth-0-1)# no ip redirects
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip redirects
+		</CTCRCMD>
+
+		<ACTION>cdbctl update/cdb/l3/route_if/${iface}/ip_redirects_en/0</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip verify" help="IP verify"/>
+	<COMMAND name="no ip verify" help="IP verify"/>
+
+	<COMMAND name="ip verify unicast" help="IP unicast">
+		<PARAM name="reverse-path" help="Reverse-path" ptype="SUBCOMMAND" mode="subcommand"/>
+		<CTCDESCRIPTION>
+To enable RPF check to the interface, use the command ip verify unicast reverse-path in interface configuration mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the command to enable reverse-path on interface.
+	   </CTCUSAGE>
+	   <CTCDEFAULT>
+disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+In the following example, users enable RPF check in interface eth-0-1:
+Switch(config)# interface eth-0-1
+Switch(config-if-eth-0-1)# no switchport
+Switch(config-if-eth-0-1)# ip address 10.10.10.1/24
+Switch(config-if-eth-0-1)# ip verify unicast reverse-path
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip verify unicast
+	   </CTCRCMD>
+
+		<ACTION>cdbctl update/cdb/l3/route_if/${iface}/unicast_rpf_en/1</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip verify unicast" help="IP unicast">
+		<PARAM name="reverse-path" help="Reverse-path" ptype="SUBCOMMAND" mode="subcommand"/>
+
+		<CTCDESCRIPTION>
+To disable RPF check to the interface, use the command no ip verify unicast reverse-path in interface configuration mode.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Use the no command to disable reverse-path on interface.
+	   </CTCUSAGE>
+	   <CTCDEFAULT>
+disable
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+In the following example, users disable RPF check in interface eth-0-1:
+Switch(config)# interface eth-0-1
+Switch(config-if-eth-0-1)# no switchport
+Switch(config-if-eth-0-1)# ip address 10.10.10.1/24
+Switch(config-if-eth-0-1)# no ip verify unicast reverse-path
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip verify unicast
+	   </CTCRCMD>
+
+		<ACTION>cdbctl update/cdb/l3/route_if/${iface}/unicast_rpf_en/0</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="multicast" help="Multicast"/>
+                       
+    <COMMAND name="multicast on" help="Multicast on">                                                                                                                                                             
+        <ACTION>       
+            cdbctl update/cdb/l3/route_if/${iface}/multicast/1
+            IFACE=`echo ${iface} | sed 's/\//_/'`   
+            sendmsg "interface $IFACE multicast on"
+        </ACTION>   
+    </COMMAND>         
+                       
+    <COMMAND name="multicast off" help="Multicast off">
+        <ACTION>       
+            cdbctl update/cdb/l3/route_if/${iface}/multicast/0
+            IFACE=`echo ${iface} | sed 's/\//_/'`   
+            sendmsg "interface $IFACE multicast off"
+        </ACTION>   
+    </COMMAND>         
+</VIEW>
+
+</CLISH_MODULE>

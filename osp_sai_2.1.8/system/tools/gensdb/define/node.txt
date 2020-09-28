@@ -1,0 +1,65 @@
+################################################################################
+# Note:
+# 1. Node定义CDB各个元素之间的层次关系，CDB包含5中元素
+#    1) DIR, 目录元素, 根目录必须是cdb
+#    2) TBL, Table元素, 必须有一个父DIR
+#    3) DS, DataStruct元素, 必须有一个父TBL/DS, 目前唯一一个3级的是 TBL_ROUTE_NODE -> DS_RIB -> DS_NEXTHOP
+#    4) ACT, Action元素, 必须有一个父DIR, 没有数据结构
+#    5) BAT, 批处理元素, 必须有一个父DIR, CDB client将其转换为TBL列表处理
+# 2. 包含DIR, TBL, DS, ACT, BAT 5项
+# 3. 项目之间以/* */分隔
+# 4. 其他注意事项
+#    1) 这里面TBL/DS的顺序必须与table.txt/ds.txt中的TBL/DS一致
+#    2) TBL/ACT需要指定Destination PM，用于cds做数据分发
+################################################################################
+/* DIR                          Parent                  Product */
+   SDIR_SDB                     NULL                    ALL
+   SDIR_SAI                     SDIR_SDB                ALL
+   SDIR_OF                      SDIR_SDB                ALL
+   SDIR_COMMON                  SDIR_SAI                ALL
+   SDIR_L2                      SDIR_SAI                ALL
+   SDIR_L3                      SDIR_SAI                ALL
+   SDIR_ACL                     SDIR_SAI                ALL
+   SDIR_QOS                     SDIR_SAI                ALL
+
+/* STBL                         Parent                  Destination PM          Product */
+   STBL_SAI_GLB                 SDIR_SAI                fea                     ALL
+   STBL_PORT_GLB                SDIR_SAI                fea                     ALL
+   STBL_PORT                    SDIR_SAI                fea                     ALL
+   STBL_HOSTIF                  SDIR_SAI                fea                     ALL
+   STBL_LAG_MEMPORT             SDIR_SAI                fea                     ALL
+   STBL_VR                      SDIR_L3                 fea                     ALL
+   STBL_RIF                     SDIR_SAI                fea                     ALL
+   STBL_NEXTHOP                 SDIR_SAI                fea                     ALL
+   STBL_NEXTHOP_GROUP           SDIR_SAI                fea                     ALL
+   STBL_NEIGHBOR                SDIR_L3                 fea                     ALL
+   STBL_VLAN                    SDIR_L2                 fea                     ALL
+   STBL_VLAN_CLASS              SDIR_L2                 fea                     ALL
+   STBL_STP                     SDIR_L2                 fea                     ALL
+   STBL_L2MC                    SDIR_L2                 fea                     ALL
+   STBL_ROUTE                   SDIR_L3                 fea                     ALL
+   STBL_VRRP_VIP                SDIR_L3                 fea                     ALL
+   STBL_COPP_TRAP               SDIR_SAI                fea                     ALL
+   STBL_COPP_GROUP              SDIR_SAI                fea                     ALL
+   STBL_COPP_REASON             SDIR_SAI                fea                     ALL
+   STBL_COPP_ENTRY              SDIR_SAI                fea                     ALL
+   STBL_ACL_GLB                 SDIR_SAI                fea                     ALL
+   STBL_ACL_PORT                SDIR_SAI                fea                     ALL
+   STBL_ACL_TBL                 SDIR_SAI                fea                     ALL
+   STBL_ACL_ENTRY               SDIR_SAI                fea                     ALL
+   STBL_ACL_TUNNEL              SDIR_SAI                fea                     ALL
+   STBL_ACL_UDF_ENTRY           SDIR_SAI                fea                     ALL
+   STBL_IPMC                    SDIR_SAI                fea                     ALL
+#   STBL_OF_FLOW_MPLS           SDIR_OF                  fea                     ALL
+#   STBL_OF_FLOW_IPV4           SDIR_OF                  fea                     ALL
+#   STBL_OF_GROUP               SDIR_OF                  fea                     ALL
+#   STBL_OF_METER               SDIR_OF                  fea                     ALL
+   STBL_NAT_FORWARD             SDIR_SAI                fea                     ALL
+   STBL_QOS_MPLS_DOMAIN			SDIR_SAI				fea						ALL
+   STBL_QOS_MPLS_FLOW			SDIR_OF					fea						ALL
+   STBL_CFM_LMEP                SDIR_SAI                fea                     ALL
+   STBL_CFM_RMEP                SDIR_SAI                fea                     ALL       
+
+/* DS                           Parent                  Product */
+
+/* ACT                          Parent                  Destination PM          Product */

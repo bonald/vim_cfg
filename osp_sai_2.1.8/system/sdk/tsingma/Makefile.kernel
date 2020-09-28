@@ -1,0 +1,113 @@
+LKMOBJDIR = $(BLD_DIR)/obj.$(BOARD)$(subst $(SDK_DIR),,$(CURDIR))
+
+obj-m = sdk_inkernel.o
+
+# cli
+CLI_SRCS = $(shell find $(SDK_DIR)/ctccli -maxdepth 1 -name "*.c")
+CLI_SRCS += $(shell find $(SDK_DIR)/ctccli/sdkcli -maxdepth 1 -name "*.c")
+ifeq ($(USW),yes)
+CLI_SRCS += $(shell find $(SDK_DIR)/ctccli/sdkcli/usw -name "*.c")
+else
+CLI_SRCS += $(foreach n, $(CHIPNAME), $(shell find $(SDK_DIR)/ctccli/sdkcli/$(n) -name "*.c"))
+endif
+CLI_SRCS += $(shell find $(SDK_DIR)/libctccli/src -name "*.c")
+
+CLI_OBJS = $(patsubst %.c,%.o,$(CLI_SRCS))
+CLI_OBJS := $(subst $(SDK_DIR)/,,$(CLI_OBJS))
+
+# core
+CORE_SRCS = $(shell find $(SDK_DIR)/core/api/src -name "*.c")
+ifeq ($(USW),yes)
+CORE_SRCS += $(shell find $(SDK_DIR)/core/usw/src -maxdepth 2 -name "*.c")
+CORE_SRCS += $(foreach n, $(CHIPNAME), $(shell find $(SDK_DIR)/core/usw/src/sys/$(n) -name "*.c"))
+else
+CORE_SRCS += $(foreach n, $(CHIPNAME), $(shell find $(SDK_DIR)/core/$(n)/src -name "*.c"))
+endif
+CORE_SRCS += $(shell find $(SDK_DIR)/core/common/src -name "*.c")
+CORE_SRCS += $(shell find $(SDK_DIR)/core/init/ -name "*.c")
+CORE_SRCS += $(shell find $(SDK_DIR)/core/app/ -name "*.c")
+
+CORE_OBJS = $(patsubst %.c,%.o,$(CORE_SRCS))
+CORE_OBJS := $(subst $(SDK_DIR)/,,$(CORE_OBJS))
+
+		
+# sal	
+SAL_SRCS = $(shell find $(SDK_DIR)/sal/src/common -name "*.c")
+SAL_SRCS += $(shell find $(SDK_DIR)/sal/src/linux_km -name "*.c")
+
+SAL_OBJS = $(patsubst %.c,%.o,$(SAL_SRCS))
+SAL_OBJS := $(subst $(SDK_DIR)/,,$(SAL_OBJS))
+
+sdk_inkernel-objs += $(SAL_OBJS)
+	
+# dal
+sdk_inkernel-objs += \
+	dal/src/linux_kernel/dal_kernel.o \
+	dal/src/common/dal_mpool.o
+
+#driver
+ifeq ($(USW),yes)
+DRV_SRCS = $(shell find $(SDK_DIR)/driver/api  -name "*.c")
+DRV_SRCS += $(shell find $(SDK_DIR)/driver/usw/src  -name "*.c")
+else
+DRV_SRCS = $(foreach n, $(CHIPNAME), $(shell find $(SDK_DIR)/driver/$(n)/src  -name "*.c"))
+endif
+DRV_OBJS = $(patsubst %.c,%.o,$(DRV_SRCS))
+DRV_OBJS := $(subst $(SDK_DIR)/,,$(DRV_OBJS))
+
+sdk_inkernel-objs += $(DRV_OBJS)
+
+#dkits
+DKITS_SRCS = $(shell find $(SDK_DIR)/dkits/ctc_dkit_cli.c)
+DKITS_SRCS += $(shell find $(SDK_DIR)/dkits/ctc_dkit_api.c)
+DKITS_SRCS += $(shell find $(SDK_DIR)/dkits/ctc_dkit_dump_cfg.c)
+ifeq ($(USW),yes)
+DKITS_SRCS += $(shell find $(SDK_DIR)/dkits/common  -name "*.c")
+DKITS_SRCS += $(shell find $(SDK_DIR)/dkits/common/dt2  -name "*.c")
+DKITS_SRCS += $(shell find $(SDK_DIR)/dkits/common/tm  -name "*.c")
+else
+DKITS_SRCS += $(foreach n, $(CHIPNAME), $(shell find $(SDK_DIR)/dkits/$(n) -name "*.c"))
+endif
+DKITS_OBJS = $(patsubst %.c,%.o,$(DKITS_SRCS))
+DKITS_OBJS := $(subst $(SDK_DIR)/,,$(DKITS_OBJS))
+
+sdk_inkernel-objs += $(DKITS_OBJS)
+
+#
+# app
+APP_SRCS = $(shell find $(SDK_DIR)/app/config  -name "*.c")
+APP_SRCS += $(shell find $(SDK_DIR)/app/sample  -name "*.c")
+APP_SRCS += $(shell find $(SDK_DIR)/app/usr  -name "*.c")
+APP_SRCS += app/ctc_app.c
+
+APP_OBJS = $(patsubst %.c,%.o,$(APP_SRCS))
+APP_OBJS := $(subst $(SDK_DIR)/,,$(APP_OBJS))
+
+sdk_inkernel-objs += $(APP_OBJS)
+
+lib-y += $(CLI_OBJS) $(CORE_OBJS)
+sdk_inkernel-objs += lib.a
+
+CORE_DIRS=$(foreach n, $(CORE_OBJS), $(shell dirname $(n)))
+CORE_DIRS+=$(foreach n, $(CLI_OBJS), $(shell dirname $(n)))
+
+all:
+ifeq ($(auto),yes)
+	@for n in $(CORE_DIRS); do mkdir -p $(BLD_DIR)/obj.$(BOARD)/$$n; done
+	@cd $(SDK_DIR)/script/Auto_generate_api && \
+	sh auto_generate_api.sh $(featureMode) greatbelt goldengate usw&& \
+	sh gen_error.sh && \
+	sh opf2str.sh $(CHIPNAME) && \
+	$(MAKE) -C $(KDIR) LKMOBJDIR=$(LKMOBJDIR)
+	@mkdir -p $(BLD_DIR)/bin.$(BOARD)
+	cp $(LKMOBJDIR)/sdk_inkernel.ko $(BLD_DIR)/bin.$(BOARD)/
+else
+	@for n in $(CORE_DIRS); do mkdir -p $(BLD_DIR)/obj.$(BOARD)/$$n; done
+	$(MAKE) -C $(KDIR) LKMOBJDIR=$(LKMOBJDIR)
+	@mkdir -p $(BLD_DIR)/bin.$(BOARD)
+	cp $(LKMOBJDIR)/sdk_inkernel.ko $(BLD_DIR)/bin.$(BOARD)/
+endif
+.PHONY: clean
+clean:
+	$(MAKE) -C $(KDIR) LKMOBJDIR=$(LKMOBJDIR) clean
+	rm -f $(BLD_DIR)/bin.$(BOARD)/sdk_inkernel.ko

@@ -1,0 +1,79 @@
+HAL-MSG-OPENFLOW-PORT DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+	FROM HAL-MSG-L2TYPES
+	;
+-------------------------------------
+--  Message definitions for OpenFlow Port (BEGIN) {
+-------------------------------------
+HalMsgOpenFlowPortEnableReq ::= SEQUENCE
+{
+    gport               INTEGER,
+    label               INTEGER,
+    l3ifid              INTEGER,    			
+    enable              INTEGER,
+	portMac              HalMsgDefL2MacAddr,
+    gchip               INTEGER
+}
+HalMsgOpenFlowPortSetProtectedVlanReq ::= SEQUENCE
+{
+    gport               INTEGER,
+    vlanId              INTEGER,
+    groupId             INTEGER,
+    enable              INTEGER
+}
+HalMsgOpenFlowPortIgnoreVlanFilterCtlReq ::= SEQUENCE
+{
+    gport               INTEGER,
+    ignoreVlanFilter    INTEGER
+}
+
+HalMsgOpenFlowPortTunnelMplsDisableReq ::= SEQUENCE
+{
+    gport                INTEGER,
+    tunnelMplsDisable    INTEGER
+}
+
+HalMsgOpenFlowPortNativeVlanConfigReq ::= SEQUENCE
+{
+    gport                   INTEGER,
+    ingressAddNativeVlan    INTEGER,
+	egressRemoveNativeVlan  INTEGER
+}
+
+HalMsgOpenFlowPortSetPacketActionReq ::= SEQUENCE
+{
+    gport               INTEGER,
+    stpAction           INTEGER,
+    lacpAction          INTEGER,
+    lldpAction          INTEGER,
+    igmpAction          INTEGER,
+    erpsAction          INTEGER,
+    dot1xAction          INTEGER,
+    arpAction           INTEGER,
+    dhcpAction          INTEGER,
+    ospfAction          INTEGER,
+    pimAction           INTEGER,
+    vrrpAction          INTEGER,
+    bgpAction           INTEGER
+}
+
+HalMsgOpenFlowPortSetConfigReq ::= SEQUENCE
+{
+    gport               INTEGER,
+    portConfig          INTEGER
+}
+
+HalMsgOpenFlowPortSetLabelReq ::= SEQUENCE
+{
+    gport               INTEGER,
+    label               INTEGER
+}
+
+-------------------------------------
+--  } Message definitions for OpenFlow Port (END)
+-------------------------------------
+
+END
+

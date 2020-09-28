@@ -1,0 +1,23 @@
+Upgrading between AQ_API versions
+---
+1. 
+  Details of changes in each release version made can be found in the file: 
+docs/AQ_API_Change_Log.txt
+
+2. 
+  Initial integration of AQ_API for a particular platform typically
+involves implementing a few platform-specific functions, and ensuring that
+the proper set of preprocessor symbols are defined.  For more information, 
+please refer to the "Platform Interface" section of the design guide PDF
+file (in docs).  
+  The copy of include/AQ_User.h contains default choices of which 
+preprocessor symbols to define.  But note that if this file was edited when
+initial integration was done for the old release version, those changes
+should be brought forward when integrating the new release version.  
+In this case, the AQ_User.h file distributed with the new version can 
+simply be overwritten with the edited copy from the older version.
+  In particular, if basic functionality that was working properly using
+the older version no longer works in the new version, please ensure that
+AQ_PHY_SUPPORTS_BLOCK_READ_WRITE is defined/undefined as appropriate for 
+the platform.
+

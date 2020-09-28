@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+Iptables Prevent
+</CTCMODULENAME>
+	
+	
+	
+<VIEW name="Exec">
+	<COMMAND name="show ip-intercept config" help="Brief status of DDos Prevent">
+		<ACTION>
+		    cdbctl show/cdb/sys/iptables_prevent/config
+		</ACTION>
+		
+	    <CTCDESCRIPTION>
+Use this command to display the ip intercept configurations.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show ip-intercept config command:    
+	Switch# show ip-intercept config 
+	Current DDoS Prevent configuration:      
+    --------------------------------+--------+--------+---------    
+    Fraggle Attack Intercept         :Enable    
+    ICMP Flood Intercept             :Enable  Maxcount:500    
+    IP Equal Intercept               :Disable    
+    MAC Equal Intercept              :Disable    
+    Small-packet Attack Intercept    :Enable  Packet Length:28    
+    Smurf Attack Intercept           :Enable    
+    SYN Flood Intercept              :Enable  Maxcount:200    
+    UDP Flood Intercept              :Disable    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ip intercept
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ip-intercept" help="DDoS Prevent"/>
+	<COMMAND name="show ip-intercept statistics" help="Statistics of DDoS Prevent">
+            <ACTION>
+                cdbctl update/cdb/sys/iptables_prevent/pkt_statistic_update/1
+				cdbctl show/cdb/sys/iptables_prevent/statistics
+            </ACTION>
+			
+	    <CTCDESCRIPTION>
+Use this command to show the statistics of the intercept packets.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following is sample output from the show ip-intercept statistics command:
+	Switch# show ip-intercept statistics 
+	Current DDoS Prevent statistics:     
+    --------------------------------------------------+---------------   
+    Resist Fraggle Attack packets number              :  0   
+    Resist ICMP Flood packets number                  :  16    
+    Resist Small-packet Attack packets number         :  0    
+    Resist Smurf Attack packets number                :  0    
+    Resist SYN Flood packets number                   :  0    
+    mgmt-if Resist Fraggle Attack packets number      :  0    
+    mgmt-if Resist ICMP Flood packets number          :  0    
+    mgmt-if Resist Small-packet Attack packets number :  0    
+    mgmt-if Resist Smurf Attack packets number        :  0    
+    mgmt-if Resist SYN Flood packets number           :  0    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear ip-intercept statistics
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear ip-intercept" help="DDoS Prevent"/>
+	<COMMAND name="clear ip-intercept statistics" help="Clear Statistics of DDoS Prevent">
+            <ACTION>
+                cdbctl update/cdb/sys/iptables_prevent/pkt_statistic_update/0
+            </ACTION>
+			
+	    <CTCDESCRIPTION>
+Use this command to clear statistic of IP intercept.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example displays how to use clear ip-intercept statistics command:
+    Switch# clear ip-intercept statistics
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip-intercept statistics
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+	<COMMAND name="ip intercept" help="DDoS Prevent">
+            <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="icmp" help="Intercept ICMP Flood Packets" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="maxcount" help="Max accept packets with pps" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                        <PARAM name="value" help="Specify pps value, default is 500" ptype="IPT_MAXCOUNT" />
+                    </PARAM>
+                </PARAM>
+				<PARAM name="ipeq" help="Intercept Destination IP equals Source IP Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="fraggle" help="Intercept Fraggle Attack Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="maceq" help="Intercept Destination MAC equals Source MAC Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="small-packet" help="Intercept Small-packet Attack Packets" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="length" help="Minimum length of accept packets, exclude layer2 header length" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                        <PARAM name="value" help="Specify length value, default is 28" ptype="IPT_LENGTH" />
+                    </PARAM>
+                </PARAM>
+                <PARAM name="smurf" help="Intercept Smurf Attack Packets" ptype="SUBCOMMAND" mode="subcommand"/>  
+				<PARAM name="tcp" help="Intercept SYN Flood Packets" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="maxcount" help="Max accept packets with pps" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                        <PARAM name="value" help="Specify pps value, default is 500" ptype="IPT_MAXCOUNT" />
+                    </PARAM>
+                </PARAM>
+				<PARAM name="udp" help="Intercept UDP Flood Packets" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="maxcount" help="Max accept packets with pps" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                        <PARAM name="value" help="Specify pps value, default is 500" ptype="IPT_MAXCOUNT" />
+                    </PARAM>
+                </PARAM>
+			</PARAM>
+
+            <ACTION>
+            case "${mode}" in
+	            "smurf")
+			        cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_smurf/1
+	            ;;
+	            
+				"fraggle")
+		            cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_fraggle/1
+	            ;;
+	            
+				"maceq")
+		            cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_maceq/1
+	            ;;
+	            
+				"ipeq")
+		            cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_ipeq/1
+	            ;;
+	            
+				"icmp")
+		            
+		            if [ "${maxcount}" != "" ]; then
+						cdbctl update/cdb/sys/iptables_prevent/icmp_rate_limit/${value}
+					else
+						cdbctl update/cdb/sys/iptables_prevent/icmp_rate_limit/500
+				    fi
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_icmp/1
+	            ;;
+	            
+				"tcp")
+					
+					if [ "${maxcount}" != "" ]; then
+						cdbctl update/cdb/sys/iptables_prevent/tcp_rate_limit/${value}
+					else
+						cdbctl update/cdb/sys/iptables_prevent/tcp_rate_limit/500
+				    fi
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_tcp/1
+	            ;;
+	            
+				"udp")
+					
+					if [ "${maxcount}" != "" ]; then
+						cdbctl update/cdb/sys/iptables_prevent/udp_rate_limit/${value}
+					else
+						cdbctl update/cdb/sys/iptables_prevent/udp_rate_limit/500
+				    fi
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_udp/1
+	            ;;
+	            
+				"small-packet")
+					
+					if [ "${length}" != "" ]; then
+						cdbctl update/cdb/sys/iptables_prevent/small_pkt_length/${value}
+					else
+						cdbctl update/cdb/sys/iptables_prevent/small_pkt_length/28
+				    fi
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_small_pkt/1
+	            ;;
+	        esac
+
+            </ACTION>
+			
+	    <CTCDESCRIPTION>
+Use ip intercept icmp command to configure the system to resist ICMP flood attack; Default maxcount is 500.
+Use ip intercept smurf command to configure the system to resist smurf attack;
+Use ip intercept fraggle command to configure the system to resist fraggle attack;
+Use ip intercept udp command to configure the system to resist udp attack; Default maxcount is 500.
+Use ip intercept tcp command to configure the system to resist SYN flood attack; Default maxcount is 500.
+Use ip intercept small-packet command to configure the system to filter the small packet; Default length is 28.
+Use ip intercept maceq command to configure the system to intercept the packet whose source MAC equals to destination MAC;
+Use ip intercept ipeq command to configure the system to intercept the packet whose source IP address equals to destination IP address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, all ip intercept are unset.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example configures the ip intercept:
+	Switch(config)# ip intercept small-packet   
+    Switch(config)# ip intercept icmp maxcount 100   
+    Switch(config)# ip intercept fraggle    
+    Switch(config)# ip intercept maceq   
+    Switch(config)# ip intercept tcp maxcount 200  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip-intercept config
+		</CTCRCMD>
+        </COMMAND>
+		
+		
+		
+		<COMMAND name="no ip intercept" help="DDoS Prevent">
+            <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="smurf" help="Intercept Smurf Attack Packets" ptype="SUBCOMMAND" mode="subcommand"/>  
+                <PARAM name="fraggle" help="Intercept Fraggle Attack Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="maceq" help="Intercept MAC address equal Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="ipeq" help="Intercept Destination IP equals Source IP Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="icmp" help="Intercept ICMP Flood Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="tcp" help="Intercept SYN Flood Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="udp" help="Intercept UDP Flood Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="small-packet" help="Intercept Small-packet Attack Packets" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+
+            <ACTION>
+            case "${mode}" in
+	            "smurf")
+			        cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_smurf/0
+	            ;;
+	            
+				"fraggle")
+		            cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_fraggle/0
+	            ;;
+	            
+				"maceq")
+		            cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_maceq/0
+	            ;;
+	            
+				"ipeq")
+		            cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_ipeq/0
+	            ;;
+	            
+				"icmp")
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_icmp/0
+	            ;;
+	            
+				"tcp")
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_tcp/0
+	            ;;
+	            
+				"udp")
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_udp/0
+	            ;;
+	            
+				"small-packet")
+					cdbctl update/cdb/sys/iptables_prevent/ipt_cfg_small_pkt/0
+	            ;;
+	        esac
+
+            </ACTION>
+			
+	    <CTCDESCRIPTION>
+Use this command to disable the IP intercept.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default ip intercept is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example unset the ip intercept icmp:  
+    Switch(config)# no ip intercept icmp  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip-intercept config
+		</CTCRCMD>
+        </COMMAND>
+
+	
+    <COMMAND name="worm-filter" help="worm-filter" hidden="true">
+         <PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch">
+             <PARAM name="tcp" help="Transmission Control Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+             <PARAM name="udp" help="User Datagram Protocol" ptype="SUBCOMMAND" mode="subcommand" />
+         </PARAM>
+				 <PARAM name="port_num" help="L4 layer port" ptype="TCP_PORT"/>
+				 <PARAM name="to" help="Port range" ptype="TCP_PORT" optional="true"/>
+				 <PARAM name="range_port_num" help="L4 layer port" ptype="TCP_PORT" optional="true" test='"${to}"="to"'/>
+         <PARAM name="wf_name" help="Worm Filter destport" ptype="NAME_STRING"/>
+         <ACTION>
+				 if [ "${mode}" == "tcp" ]; then
+						cdbctl create/cdb/l2/acl_worm_filter/${wf_name}/1/${port_num}/${range_port_num}
+				 else
+						cdbctl create/cdb/l2/acl_worm_filter/${wf_name}/0/${port_num}/${range_port_num}
+				 fi
+         </ACTION>
+    </COMMAND>
+
+	  <COMMAND name="no worm-filter" help="no worm-filter" hidden="true">
+        <PARAM name="wf_name" help="Worm Filter destport" ptype="NAME_STRING"/>
+			  <ACTION>cdbctl delete/cdb/l2/acl_worm_filter/${wf_name}</ACTION>
+    </COMMAND>
+			
+</VIEW>
+
+</CLISH_MODULE>

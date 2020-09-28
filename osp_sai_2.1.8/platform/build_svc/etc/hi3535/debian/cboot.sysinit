@@ -1,0 +1,122 @@
+#!/bin/sh
+
+######################################################################
+# Copyright (C) 2004-2015 Centec Networks. All rights reserved.
+# OSP cboot init script, which is used to bootstrap the debian system.  
+######################################################################
+
+#global constants
+FLASH="/mnt/flash"
+
+#system bootup configurations
+OS_MOUNT_POINT="/.os"
+OS_RW_DIR=/mnt/flash/.overlay_rw
+OS_RO_DIR=/.overlay_ro
+# This variable should be read from /mnt/flash/boot_config, otherwise the default value will be used
+OS_ROOTFS_PATH_REPR="flash:/rootfs.swi"
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+PATH=/switch/usr/local/ovs-vswitch/bin:$PATH
+
+#System boot
+mount -t proc none /proc
+mount -t sysfs sysfs /sys
+
+busybox --install -s
+
+mknod /dev/null c 1 3
+
+/usr/sbin/udevd --daemon 
+/usr/sbin/udevstart 
+
+echo -n "Mounting /dev/mtdblock2... "
+ubiattach /dev/ubi_ctrl -m 2 
+sleep 2
+if ! mount -t ubifs -o sync ubi0:system /mnt/flash > /dev/null 2>&1; then
+    echo "failed!"
+
+    echo "Formatting /dev/mtdblock2 ..."
+    #flash_eraseall  /dev/mtd1
+    #ubiattach /dev/ubi_ctrl -m 1 
+    sleep 1
+    ubimkvol  /dev/ubi0 -N system -s 1800MiB
+    sleep 1
+    echo -n "Mounting /dev/mtdblock2... "
+    mount -t ubifs -o sync ubi0:system /mnt/flash 
+    mkdir /mnt/flash/boot
+else
+    echo "OK!"
+fi
+
+
+echo -n "Mounting /dev/mtdblock1... "
+        ubiattach /dev/ubi_ctrl -m 1
+        sleep 1
+
+if ! mount -t ubifs -o sync ubi1:boot /mnt/flash/boot > /dev/null 2>&1; then
+    echo "failed!"
+
+    echo "Formatting /dev/mtdblock1 ..."
+    #flash_eraseall  /dev/mtd0
+    #ubiattach /dev/ubi_ctrl -m 0 
+    sleep 1
+    ubimkvol  /dev/ubi1 -N boot -s 70MiB
+    sleep 1
+    echo -n "Mounting /dev/mtdblock1... "
+    mount -t ubifs -o sync ubi1:boot /mnt/flash/boot
+else
+    echo "OK!"
+fi
+
+# enter cboot shell by user input
+echo "Enter Centec debug shell? (y/n)"
+read -t 5 -n 1 input
+if [[ "$input" == "y" || "$input" == "Y" ]]; then
+    echo -e "\nWelcome to cboot\n"
+    exec /bin/init -z
+fi
+
+# retrieve boot config
+if [ -f $FLASH/boot_config ]; then
+    boot_config=`cat /mnt/flash/boot_config 2>/dev/null | grep boot_config`
+    OS_ROOTFS_PATH_REPR=${boot_config#*=}
+fi
+
+# check if rootfs exists
+OS_ROOTFS_PATH=${OS_ROOTFS_PATH_REPR/flash://mnt/flash}
+if [ ! -f $OS_ROOTFS_PATH ]; then
+    echo "Unable to find rootfs file: $OS_ROOTFS_PATH_REPR, enter cboot shell"
+    exec /bin/init -z
+fi
+
+# boot from debian squash rootfs
+# 1. setup read-write directory
+mkdir -p $OS_RW_DIR
+#mount -t tmpfs -o size=15%,mode=0755 none $OS_RW
+#echo "[setup tmpfs overlay finished...]"
+
+# 2. setup read-only directory from squash rootfs
+losetup /dev/loop0 $OS_ROOTFS_PATH
+mkdir -p $OS_RO_DIR
+mount /dev/loop0 $OS_RO_DIR
+#echo "[mount sqsh fs finished...]"
+
+# 3. setup new mount point using aufs from read-write and read-only directories
+mkdir -p $OS_MOUNT_POINT
+mount -t aufs -o dirs=$OS_RW_DIR:$OS_RO_DIR=ro none $OS_MOUNT_POINT
+#echo "[setup newroot on aufs finished...]"
+
+# Rebind flash directory. ??
+#mount -o bind /mnt/flash /newroot/mnt/flash
+
+# export system environment variables
+ENVIRONMENT_FILE=$OS_MOUNT_POINT/etc/environment
+if [ -f $ENVIRONMENT_FILE ]; then
+    source $ENVIRONMENT_FILE
+fi
+export PATH=$PATH:$SWITCH_BIN_PATH
+
+# switch rootfs, runlevel: 5
+echo -e "\nBooting from $OS_ROOTFS_PATH_REPR"
+echo "Switching rootfs ..."
+exec /sbin/switch_root -c /dev/console $OS_MOUNT_POINT /sbin/init 5

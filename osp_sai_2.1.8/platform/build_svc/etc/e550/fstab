@@ -1,0 +1,2 @@
+LABEL=CTC-SYSTEM	/mnt/flash	ext4	defaults	0 0
+LABEL=CTC-BOOT		/mnt/flash/boot	ext4	defaults	0 0

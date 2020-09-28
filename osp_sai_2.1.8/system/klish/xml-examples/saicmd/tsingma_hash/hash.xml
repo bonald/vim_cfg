@@ -1,0 +1,1160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+HASH
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show hash-field" help="Hash field of load balance" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+	    	<PARAM name="hash_field_name" help="Hash field name" ptype="NAME_STRING"/>
+	    </PARAM>
+	    <ACTION>
+	    if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l2/show_hash_field
+		else
+			cdbctl show/cdb/l2/show_hash_field/${hash_field_name}
+		fi
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="show hash-field ecmp" help="Ecmp of system default hash field" >
+	    <ACTION>
+		cdbctl show/cdb/l2/show_hash_field/ecmp
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="show hash-field port-channel" help="Port-channel of system default hash field" >
+	    <ACTION>
+		cdbctl show/cdb/l2/show_hash_field/port-channel
+        </ACTION>
+	</COMMAND>
+	
+	<COMMAND name="show hash-value" help="Hash value of load balance" >
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+	    	<PARAM name="value_profile_name" help="Hash value name" ptype="NAME_STRING"/>
+	    </PARAM>
+		
+	    <ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l2/show_hash_value/profile
+		else
+			cdbctl show/cdb/l2/show_hash_value/profile/${value_profile_name}
+		fi
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="show hash-value global" help="Hash value global configuration" >
+	    <ACTION>
+		cdbctl show/cdb/l2/show_hash_value/global
+        </ACTION>
+	</COMMAND>
+	
+	
+	
+	<COMMAND name="show hash-value interface-applied" help="Apply hash value to interface" >
+		
+	    <ACTION>
+		cdbctl show/cdb/l2/show_hash_value/profile/applied/end
+        </ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+
+
+	
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+
+	<COMMAND name="hash-field" help="Hash field of load balance" 
+		view="configure-hash-field-view"
+		viewid="profile_name=${field_profile_name}">
+        <PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING" >
+		</PARAM>
+	<ACTION>
+	cdbctl create/cdb/l2/hash_field_profile/${field_profile_name}
+	</ACTION>
+	</COMMAND>
+
+	<COMMAND name="hash-field ecmp" help="Ecmp of system default hash field" 
+	view="configure-hash-field-view"
+	viewid="profile_name=ecmp">	
+	<ACTION>
+	cdbctl create/cdb/l2/hash_field_profile/ecmp
+	</ACTION>
+	</COMMAND>
+
+	<COMMAND name="hash-field port-channel" help="Port-channel of system default hash field" 
+	view="configure-hash-field-view"
+	viewid="profile_name=port-channel">	
+	<ACTION>
+	cdbctl create/cdb/l2/hash_field_profile/port-channel
+	</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no hash-field" help="Hash field of load balance">
+		<PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING"/>	
+	<ACTION>
+	cdbctl delete/cdb/l2/hash_field_profile/${field_profile_name}
+	</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="hash-value" help="Hash value of load balance"
+		view="configure-hash-value-view"
+		viewid="value_profile_name=${value_profile_name}">
+		<PARAM name="value_profile_name" help="Hash value name, up to 64 characters" ptype="NAME_STRING"/>
+	<ACTION>
+	cdbctl create/cdb/l2/hash_value_profile/${value_profile_name}
+	</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no hash-value" help="Hash value of load balance">
+		<PARAM name="value_profile_name" help="Hash value name, up to 64 characters" ptype="NAME_STRING"/>
+	<ACTION>
+	cdbctl delete/cdb/l2/hash_value_profile/${value_profile_name}
+	</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="hash-value global" help="Hash value global configuration"
+		view="configure-hash-value-global-view">
+	
+	<ACTION>
+	</ACTION>
+	
+	</COMMAND>
+	
+</VIEW>
+
+
+
+
+
+<VIEW name="configure-hash-field-view"
+	prompt="${SYSTEM_NAME}(config-hash-field-${profile_name})# "
+	depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from hash-field configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from hash-field configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+	
+	<COMMAND name="description" help="Hash field description"> 
+        <PARAM name="description_name" help="Description string, up to 64 characters" ptype="NAME_STRING"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/description/${description_name}
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no description" help="Hash field description"> 
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/description
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="gre" help="Generic routing encapsulation (GRE)"> 
+        <PARAM name="gre_type" help="Gre type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="gre-key" help="GRE key" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="gre-protocol" help="GRE protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="gre-key" help="GRE key" mode="subcommand" ptype="SUBCOMMAND" test='"${gre_type}"!="gre-key"' optional="true"/>
+		<PARAM name="gre-protocol" help="GRE-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${gre_type}"!="gre-protocol"' optional="true"/>
+		<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${gre_type}"!="ipda"' optional="true"/>
+		<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${gre_type}"!="ipsa"' optional="true"/>
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${gre_type}"!="src-interface"'  optional="true"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/gre_set/gre-key/${gre-key}/gre-protocol/${gre-protocol}/ipda/${ipda}/ipsa/${ipsa}/src-interface/${src-interface}/end
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no gre" help="Generic routing encapsulation (GRE)">  
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/gre_set/0
+		</ACTION>
+    </COMMAND>
+	
+	
+	<COMMAND name="l2" help="Layer 2"> 
+        <PARAM name="l2_type" help="L2 type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="vlan" help="Vlan id" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${l2_type}"!="eth-type"' optional="true"/>
+		<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${l2_type}"!="macda"' optional="true"/>
+		<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${l2_type}"!="macsa"' optional="true"/>
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${l2_type}"!="src-interface"' optional="true"/>
+		<PARAM name="vlan" help="Vlan id" mode="subcommand" ptype="SUBCOMMAND" test='"${l2_type}"!="vlan"'  optional="true"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/l2_set/eth-type/${eth-type}/macda/${macda}/macsa/${macsa}/src-interface/${src-interface}/vlan/${vlan}/end
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no l2" help="Layer 2"> 
+
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/l2_set/0
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="ip" help="Internet Protocol (IP)"> 
+        <PARAM name="ip_type" help="IP type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${ip_type}"!="destport"' optional="true"/>
+		<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${ip_type}"!="ip-protocol"' optional="true"/>
+		<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${ip_type}"!="ipda"' optional="true"/>
+		<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${ip_type}"!="ipsa"' optional="true"/>
+		<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${ip_type}"!="sourceport"'  optional="true"/>
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${ip_type}"!="src-interface"'  optional="true"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/ip_set/destport/${destport}/ip-protocol/${ip-protocol}/ipda/${ipda}/ipsa/${ipsa}/sourceport/${sourceport}/src-interface/${src-interface}/end
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no ip" help="Internet Protocol (IP)"> 
+
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/ip_set/0
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="ip disable" help="Ipv4 packets will do hash according to l2 configurations"> 
+	
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/bitmap_disable/ip/1
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip disable" help="Ipv4 packets will do hash according to l2 configurations"> 
+	
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/bitmap_disable/ip/0
+		</ACTION>
+	</COMMAND>
+	
+	
+	<COMMAND name="ipv6" help="Internet Protocol version 6 (IPv6)"> 
+        <PARAM name="ipv6_type" help="IPv6 type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${ipv6_type}"!="destport"' optional="true"/>
+		<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${ipv6_type}"!="ip-protocol"' optional="true"/>
+		<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${ipv6_type}"!="ipda"' optional="true"/>
+		<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${ipv6_type}"!="ipsa"' optional="true"/>
+		<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${ipv6_type}"!="sourceport"'  optional="true"/>
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${ipv6_type}"!="src-interface"'  optional="true"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/ipv6_set/destport/${destport}/ip-protocol/${ip-protocol}/ipda/${ipda}/ipsa/${ipsa}/sourceport/${sourceport}/src-interface/${src-interface}/end
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no ipv6" help="Internet Protocol version 6 (IPv6)"> 
+        
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/ipv6_set/0
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="ipv6 disable" help="Ipv6 packets will do hash according to l2 configurations"> 
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/bitmap_disable/ipv6/1
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ipv6 disable" help="Ipv6 packets will do hash according to l2 configurations"> 
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/bitmap_disable/ipv6/0
+		</ACTION>
+	</COMMAND>	
+	
+<!--	
+	<COMMAND name="l3vpn" help="Layer 3 virtual private network"> 
+		<PARAM name="l3vpn_type" help="Layer3 VPN type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="inner" help="L3VPN use inner header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="l3vpn_inner_type" help="Layer3 VPN Inner Type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="destport"' optional="true"/>
+				<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="ip-protocol"' optional="true"/>
+				<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="ipsa"' optional="true"/>
+				<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="sourceport"'  optional="true"/>
+			</PARAM>
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>	
+		<PARAM name="inner" help="L3VPN use inner header fields" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_type}"!="inner"' optional="true">
+			<PARAM name="l3vpn_inner_type" help="Layer3 VPN Inner Type" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+			</PARAM>
+			<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="destport"' optional="true"/>
+			<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="ip-protocol"' optional="true"/>
+			<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="ipda"' optional="true"/>
+			<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="ipsa"' optional="true"/>
+			<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_inner_type}"!="sourceport"'  optional="true"/>
+		</PARAM>	
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${l3vpn_type}"!="src-interface"' optional="true"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/l3vpn_set/inner/${inner}/${destport}/${ip-protocol}/${ipda}/${ipsa}/${sourceport}/src-interface/${src-interface}/end
+		</ACTION>
+	</COMMAND>
+
+	
+	<COMMAND name="no l3vpn" help="Layer 3 virtual private network"> 
+        
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/l3vpn_set/0
+		</ACTION>
+    </COMMAND>
+-->
+	
+	<COMMAND name="mpls" help="Multi-Protocol Label Switching (MPLS)"> 
+        <PARAM name="mpls_type" help="MPLS type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="2nd-label" help="MPLS label 1" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="3rd-label" help="MPLS label 2" mode="subcommand" ptype="SUBCOMMAND"/>
+<!--
+            <PARAM name="inner" help="MPLS use inner header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="mpls_inner_type" help="MPLS Inner Type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_inner_type}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_inner_type}"!="ipsa"' optional="true"/>
+			</PARAM>
+-->
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="top-label" help="MPLS label 0" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="2nd-label" help="MPLS label 1" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_type}"!="2nd-label"' optional="true"/>
+		<PARAM name="3rd-label" help="MPLS label 2" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_type}"!="3rd-label"' optional="true"/>
+<!--
+		<PARAM name="inner" help="MPLS use inner header fields" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_type}"!="inner"' optional="true">
+			<PARAM name="mpls_inner_type" help="MPLS Inner Type" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND"/>
+			</PARAM>
+			<PARAM name="ipda" help="Destination ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_inner_type}"!="ipda"' optional="true"/>
+			<PARAM name="ipsa" help="Source ip address" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_inner_type}"!="ipsa"' optional="true"/>
+		</PARAM>
+-->		
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_type}"!="src-interface"' optional="true"/>
+		<PARAM name="top-label" help="MPLS label 0" mode="subcommand" ptype="SUBCOMMAND" test='"${mpls_type}"!="top-label"' optional="true"/>
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/mpls_set/2nd-label/${2nd-label}/3rd-label/${3rd-label}/inner/${inner}/${ipda}/${ipsa}/src-interface/${src-interface}/top-label/${top-label}/end
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no mpls" help="Multi-Protocol Label Switching (MPLS)"> 
+        
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/mpls_set/0
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="mpls disable" help="Mpls packets will do hash according to l2 configurations"> 
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/bitmap_disable/mpls/1
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no mpls disable" help="Mpls packets will do hash according to l2 configurations"> 
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/bitmap_disable/mpls/0
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="nvgre" help="Network Virtualization using Generic Routing Encapsulation (NVGRE)"> 
+		<PARAM name="nvgre_type" help="NVGRE type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="inner-layer2" help="NVGRE use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="nvgre_inner_layer2" help="NVGRE Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="eth-type"' optional="true"/>
+				<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="macda"' optional="true"/>
+				<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="macsa"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+				<PARAM name="vsid" help="Vsid of nvgre" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+            <PARAM name="inner-layer3" help="NVGRE use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="nvgre_inner_layer3" help="NVGRE Inner Layer3 type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ip-protocol"' optional="true"/>
+				<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ipsa"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+				<PARAM name="vsid" help="Vsid of nvgre" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+            <PARAM name="outer" help="NVGRE use outer header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="nvgre_outer" help="NVGRE Outer type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="gre-protocol" help="Gre-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="gre-protocol" help="Gre-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="gre-protocol"' optional="true"/>
+				<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="ipsa"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+				<PARAM name="vsid" help="Vsid of nvgre" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="src_interface_type" help="Src Interface Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+					<PARAM name="inner-layer2" help="NVGRE use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="nvgre_inner_layer2" help="NVGRE Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="eth-type"' optional="true"/>
+						<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="macda"' optional="true"/>
+						<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="macsa"' optional="true"/>
+					</PARAM>
+					<PARAM name="inner-layer3" help="NVGRE use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="nvgre_inner_layer3" help="NVGRE Inner Layer3 type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ip-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ipsa"' optional="true"/>
+					</PARAM>
+					<PARAM name="outer" help="NVGRE use outer header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="nvgre_outer" help="NVGRE Outer type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="gre-protocol" help="Gre-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="gre-protocol" help="Gre-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="gre-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="ipsa"' optional="true"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="vsid" help="Vsid of nvgre" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+			<PARAM name="vsid" help="Vsid of nvgre" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="Vsid_type" help="Vsid Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+					<PARAM name="inner-layer2" help="NVGRE use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="nvgre_inner_layer2" help="NVGRE Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="eth-type"' optional="true"/>
+						<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="macda"' optional="true"/>
+						<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer2}"!="macsa"' optional="true"/>
+					</PARAM>
+					<PARAM name="inner-layer3" help="NVGRE use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="nvgre_inner_layer3" help="NVGRE Inner Layer3 type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ip-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_inner_layer3}"!="ipsa"' optional="true"/>
+					</PARAM>
+					<PARAM name="outer" help="NVGRE use outer header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="nvgre_outer" help="NVGRE Outer type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="gre-protocol" help="Gre-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="gre-protocol" help="Gre-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="gre-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${nvgre_outer}"!="ipsa"' optional="true"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/nvgre_set/inner-layer2/${inner-layer2}/${eth-type}/${macda}/${macsa}/inner-layer3/${inner-layer3}/${ip-protocol}/${ipda}/${ipsa}/outer/${outer}/${gre-protocol}/${ipda}/${ipsa}/vsid/${vsid}/src-interface/${src-interface}/end
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no nvgre" help="Network Virtualization using Generic Routing Encapsulation (NVGRE)"> 
+        
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/nvgre_set/0
+		</ACTION>
+    </COMMAND>
+
+<!--
+	<COMMAND name="vpls" help="Virtual private LAN service (VPLS)"> 
+		<PARAM name="vpls_type" help="VPLS type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="inner-layer2" help="VPLS use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="vpls_inner_layer2" help="VPLS Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="vlan" help="Vlan id" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="eth-type"' optional="true"/>
+				<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="macda"' optional="true"/>
+				<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="macsa"' optional="true"/>
+				<PARAM name="vlan" help="Vlan id" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="vlan"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+            <PARAM name="inner-layer3" help="VPLS use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="vpls_inner_layer3" help="VPLS Inner Layer3 Type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="destport"' optional="true"/>
+				<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="ip-protocol"' optional="true"/>
+				<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="ipsa"' optional="true"/>
+				<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="sourceport"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="src_interface_type" help="Src Interface type" ptype="SUBCOMMAND" mode="switch" optional="true">
+					<PARAM name="inner-layer2" help="VPLS use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vpls_inner_layer2" help="VPLS Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="vlan" help="Vlan id" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="eth-type"' optional="true"/>
+						<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="macda"' optional="true"/>
+						<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="macsa"' optional="true"/>
+						<PARAM name="vlan" help="Vlan id" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer2}"!="vlan"' optional="true"/>
+					</PARAM>
+					<PARAM name="inner-layer3" help="VPLS use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vpls_inner_layer3" help="VPLS Inner Layer3 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="destport"' optional="true"/>
+						<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="ip-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="ipsa"' optional="true"/>
+						<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vpls_inner_layer3}"!="sourceport"' optional="true"/>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/vpls_set/inner-layer2/${inner-layer2}/${eth-type}/${macda}/${macsa}/${vlan}/inner-layer3/${inner-layer3}/${destport}/${ip-protocol}/${ipda}/${ipsa}/${sourceport}/src-interface/${src-interface}/end
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no vpls" help="Virtual private LAN service (VPLS)"> 
+        
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/vpls_set/0
+		</ACTION>
+    </COMMAND>
+
+	
+	<COMMAND name="vpws" help="Virtual private wire service (VPWS)"> 
+        <PARAM name="vpws_type" help="VPWS type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="2nd-label" help="MPLS label 1" mode="subcommand" ptype="SUBCOMMAND"/>
+            <PARAM name="3rd-label" help="MPLS label 2" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="top-label" help="MPLS label 0" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="2nd-label" help="MPLS label 1" mode="subcommand" ptype="SUBCOMMAND" test='"${vpws_type}"!="2nd-label"' optional="true"/>
+		<PARAM name="3rd-label" help="MPLS label 2" mode="subcommand" ptype="SUBCOMMAND" test='"${vpws_type}"!="3rd-label"' optional="true"/>
+		<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND" test='"${vpws_type}"!="src-interface"' optional="true"/>
+		<PARAM name="top-label" help="MPLS label 0" mode="subcommand" ptype="SUBCOMMAND" test='"${vpws_type}"!="top-label"' optional="true"/>
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/vpws_set/2nd-label/${2nd-label}/3rd-label/${3rd-label}/src-interface/${src-interface}/top-label/${top-label}/end
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no vpws" help="Virtual private wire service (VPWS)"> 
+        
+        <ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/vpws_set/0
+		</ACTION>
+    </COMMAND>
+-->	
+	
+	<COMMAND name="vxlan" help="Virtual extensible LAN (VXLAN)"> 
+		<PARAM name="vxlan_type" help="VXLAN type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="inner-layer2" help="VXLAN use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="vxlan_inner_layer2" help="VXLAN Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="eth-type"' optional="true"/>
+				<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="macda"' optional="true"/>
+				<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="macsa"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+				<PARAM name="vni" help="Vni of vxlan" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+            <PARAM name="inner-layer3" help="VXLAN use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="vxlan_inner_layer3" help="VXLAN Inner Layer3 type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="destport"' optional="true"/>
+				<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ip-protocol"' optional="true"/>
+				<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ipsa"' optional="true"/>
+				<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="sourceport"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+				<PARAM name="vni" help="Vni of vxlan" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+            <PARAM name="outer" help="VXLAN use outer header fields" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="vxlan_outer" help="VXLAN Outer type" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+					<PARAM name="vlan" help="Vlan ID" mode="subcommand" ptype="SUBCOMMAND"/>
+				</PARAM>
+				<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="destport"' optional="true"/>
+				<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="ipda"' optional="true"/>
+				<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="ipsa"' optional="true"/>
+				<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="sourceport"' optional="true"/>
+				<PARAM name="vlan" help="Vlan ID" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="vlan"' optional="true"/>
+				
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+				<PARAM name="vni" help="Vni of vxlan" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+			<PARAM name="src-interface" help="Source interface" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="src_interface_type" help="Src Interface type" ptype="SUBCOMMAND" mode="switch" optional="true">
+					<PARAM name="inner-layer2" help="VXLAN use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vxlan_inner_layer2" help="VXLAN Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="eth-type"' optional="true"/>
+						<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="macda"' optional="true"/>
+						<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="macsa"' optional="true"/>
+					</PARAM>
+					<PARAM name="inner-layer3" help="VXLAN use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vxlan_inner_layer3" help="VXLAN Inner Layer3 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="destport"' optional="true"/>
+						<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ip-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ipsa"' optional="true"/>
+						<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="sourceport"' optional="true"/>
+					</PARAM>
+					<PARAM name="outer" help="VXLAN use outer header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vxlan_outer" help="VXLAN Outer type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="vlan" help="Vlan ID" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="destport"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="ipsa"' optional="true"/>
+						<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="sourceport"' optional="true"/>
+						<PARAM name="vlan" help="Vlan ID" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="vlan"' optional="true"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="vni" help="Vni of vxlan" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+			
+			<PARAM name="vni" help="Vni of vxlan" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="vni_type" help="VNI Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+					<PARAM name="inner-layer2" help="VXLAN use inner layer 2 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vxlan_inner_layer2" help="VXLAN Inner Layer2 Type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="eth-type" help="Ethernet type" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="eth-type"' optional="true"/>
+						<PARAM name="macda" help="Destination MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="macda"' optional="true"/>
+						<PARAM name="macsa" help="Source MAC address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer2}"!="macsa"' optional="true"/>
+					</PARAM>
+					<PARAM name="inner-layer3" help="VXLAN use inner layer 3 header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vxlan_inner_layer3" help="VXLAN Inner Layer3 type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="destport"' optional="true"/>
+						<PARAM name="ip-protocol" help="IP-protocol" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ip-protocol"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="ipsa"' optional="true"/>
+						<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_inner_layer3}"!="sourceport"' optional="true"/>
+					</PARAM>
+					<PARAM name="outer" help="VXLAN use outer header fields" mode="subcommand" ptype="SUBCOMMAND">
+						<PARAM name="vxlan_outer" help="VXLAN Outer type" ptype="SUBCOMMAND" mode="switch" >
+							<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND"/>
+							<PARAM name="vlan" help="Vlan ID" mode="subcommand" ptype="SUBCOMMAND"/>
+						</PARAM>
+						<PARAM name="destport" help="Destination port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="destport"' optional="true"/>
+						<PARAM name="ipda" help="Destination IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="ipda"' optional="true"/>
+						<PARAM name="ipsa" help="Source IP address" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="ipsa"' optional="true"/>
+						<PARAM name="sourceport" help="Source port" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="sourceport"' optional="true"/>
+						<PARAM name="vlan" help="Vlan ID" mode="subcommand" ptype="SUBCOMMAND" test='"${vxlan_outer}"!="vlan"' optional="true"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="src-interface" help="Source interface" mode="subcommand" optional="true" ptype="SUBCOMMAND"/>
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/vxlan_set/inner-layer2/${inner-layer2}/${eth-type}/${macda}/${macsa}/inner-layer3/${inner-layer3}/${destport}/${ip-protocol}/${ipda}/${ipsa}/${sourceport}/outer/${outer}/${destport}/${ipda}/${ipsa}/${sourceport}/${vlan}/src-interface/${src-interface}/vni/${vni}/end
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no vxlan" help="Virtual extensible LAN (VXLAN)"> 
+        
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/vxlan_set/0
+		</ACTION>
+    </COMMAND>
+	
+	
+	
+	<COMMAND name="hash-arithmetic" help="Hash algorithm"> 
+	</COMMAND>
+	<COMMAND name="hash-arithmetic first" help="First hash algorithm"> 
+		<PARAM name="first_type" help="First hash algorithm type" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="crc" help="Cyclical redundancy check arithmetic" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="xor" help="Exclusive or arithmetic(default)" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="second" help="Second hash algorithm" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="second_type" help="First hash algorithm type" ptype="SUBCOMMAND" mode="switch" >
+				<PARAM name="crc" help="Cyclical redundancy check arithmetic(default)" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="xor" help="Exclusive or arithmetic" mode="subcommand" ptype="SUBCOMMAND"/>
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/hash_arithmetic/${first_type}/${second_type}
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no hash-arithmetic" help="First hash algorithm"> 
+	
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/hash_arithmetic/xor/crc
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="mode" help="Symmetry mode"> 
+			<PARAM name="symmetry" help="Hash symmetry" mode="subcommand" ptype="SUBCOMMAND"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/mode_symmetry/1
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no mode" help="Symmetry mode"> 
+			<PARAM name="symmetry" help="Hash symmetry" mode="subcommand" ptype="SUBCOMMAND"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/hash_field_profile/${profile_name}/mode_symmetry/0
+		</ACTION>
+	</COMMAND>
+	   
+</VIEW>
+
+
+
+
+
+<VIEW name="configure-hash-value-view"
+	prompt="${SYSTEM_NAME}(config-hash-value-${value_profile_name})# "
+	depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from hash-value configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from hash-value configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+	
+	<COMMAND name="description" help="Hash value description"> 
+        <PARAM name="description_name" help="Description string, up to 64 characters" ptype="NAME_STRING"/>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_profile/${value_profile_name}/description/${description_name}
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no description" help="Hash field description"> 
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_profile/${value_profile_name}/description
+		</ACTION>
+    </COMMAND>
+	
+	
+	
+	<COMMAND name="port-channel" help="Linkagg load balancing for known unicast packets"> 
+		<PARAM name="channel_mode" help="Port channel mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Dynamic-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+	<!--		<PARAM name="resilient" help="Resilient-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/> -->
+			<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="static" help="Static-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" test='"${channel_mode}"!="select"' mode="subcommand" />
+		<PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING" />		
+		<PARAM name="hash-arithmetic" help="Load balancing algorithm" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="arithmetic_type" help="Port channel mode" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="first" help="Select the first algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="second" help="Select the second algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_profile/${value_profile_name}/port-channel/set/${channel_mode}/${field_profile_name}/${arithmetic_type}
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no port-channel" help="Linkagg load balancing for known unicast packets"> 
+		<PARAM name="channel_mode" help="Port channel mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Dynamic-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+	<!--    <PARAM name="resilient" help="Resilient-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/> -->
+			<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="static" help="Static-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" test='"${channel_mode}"!="select"' mode="subcommand" />
+		
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_profile/${value_profile_name}/port-channel/unset/${channel_mode}
+		</ACTION>
+    </COMMAND>
+
+	<COMMAND name="ecmp" help="Equal cost multi-path routing"> 
+		<PARAM name="ecmp_mode" help="ECMP mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Dynamic-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="flow-id" help="Flow id" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			</PARAM>	
+			<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="static" help="Static-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" test='"${ecmp_mode}"!="select"' mode="subcommand" />
+		<PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING" />
+		<PARAM name="hash-arithmetic" help="Load balancing algorithm" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="arithmetic_type" help="Port channel mode" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="first" help="Select the first algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="second" help="Select the second algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="static_ecmp_mode" help="Static ecmp mode" ptype="SUBCOMMAND" test='"${ecmp_mode}" ="static"' mode="switch" default="all" optional="true">
+			<PARAM name="l3" help="Layer 3 packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="nvgre" help="NVGRE packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="vxlan" help="VXLAN packets" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_profile/${value_profile_name}/ecmp/set/${ecmp_mode}/${flow-id}/${field_profile_name}/${arithmetic_type}/${static_ecmp_mode}/end
+		</ACTION>
+    </COMMAND>
+	
+	
+	<COMMAND name="no ecmp" help="Equal cost multi-path routing"> 
+		<PARAM name="ecmp_mode" help="Port channel mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Dynamic-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="flow-id" help="Flow id" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			</PARAM>	
+			<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="static" help="Static-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" test='"${ecmp_mode}"!="select"' mode="subcommand" />
+		<PARAM name="static_ecmp_mode" help="Static ecmp mode" ptype="SUBCOMMAND" test='"${ecmp_mode}" ="static"' mode="switch" default="all" optional="true">
+			<PARAM name="l3" help="Layer 3 packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="nvgre" help="NVGRE packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="vxlan" help="VXLAN packets" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_profile/${value_profile_name}/ecmp/unset/${ecmp_mode}/${flow-id}/${static_ecmp_mode}/end
+		</ACTION>
+    </COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-hash-value-global-view"
+	prompt="(config-hash-value-global)# "
+	depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+	</COMMAND>
+	
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+<!-- Simple configure-vlan mode commands -->
+
+	<COMMAND name="exit"
+		help="Exit from hash-value-global configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from hash-value-global configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+	
+	<COMMAND name="ecmp" help="Equal cost multi-path routing"> 
+		<PARAM name="ecmp_mode" help="Port channel mode" ptype="SUBCOMMAND" mode="switch" default="all" optional="true">
+			<PARAM name="dynamic" help="Dynamic-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="flow-id" help="Flow id" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			</PARAM>	
+			<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="static" help="Static-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" test='"${ecmp_mode}"!="select"' mode="subcommand" />
+		<PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING" />
+		<PARAM name="hash-arithmetic" help="Load balancing algorithm" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="arithmetic_type" help="Port channel mode" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="first" help="Select the first algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="second" help="Select the second algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="static_ecmp_mode" help="Static ecmp mode" ptype="SUBCOMMAND" test='"${ecmp_mode}" ="static"' mode="switch" default="all" optional="true">
+			<PARAM name="l3" help="Layer 3 packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="nvgre" help="NVGRE packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="vxlan" help="VXLAN packets" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_global/ecmp/set/${ecmp_mode}/${flow-id}/${field_profile_name}/${arithmetic_type}/${static_ecmp_mode}/end
+		</ACTION>
+    </COMMAND>
+	
+	
+	<COMMAND name="no ecmp" help="Equal cost multi-path routing"> 
+		<PARAM name="ecmp_mode" help="Port channel mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dynamic" help="Dynamic-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND">
+				<PARAM name="flow-id" help="Flow id" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+			</PARAM>	
+			<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="static" help="Static-load-balance-mode" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" test='"${ecmp_mode}"!="select"' mode="subcommand" />
+		<PARAM name="static_ecmp_mode" help="Static ecmp mode" ptype="SUBCOMMAND" test='"${ecmp_mode}" ="static"' mode="switch" default="all" optional="true">
+			<PARAM name="l3" help="Layer 3 packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="nvgre" help="NVGRE packets" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="vxlan" help="VXLAN packets" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_global/ecmp/unset/${ecmp_mode}/${flow-id}/${static_ecmp_mode}/end
+		</ACTION>
+    </COMMAND>
+
+	<COMMAND name="port-channel" help="Linkagg load balancing for known unicast packets"> 
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING" />
+		<PARAM name="hash-arithmetic" help="Load balancing algorithm" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="arithmetic_type" help="Port channel mode" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="first" help="Select the first algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="second" help="Select the second algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_global/port-channel/set/${field_profile_name}/${arithmetic_type}
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no port-channel" help="Linkagg load balancing for known unicast packets"> 
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_global/port-channel/unset
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="lbid" help="Linkagg load balancing for unknown-unicast/multicast/broadcast packets"> 
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="field_profile_name" help="Hash field name, up to 64 characters" ptype="NAME_STRING" />
+		<PARAM name="hash-arithmetic" help="Load balancing algorithm" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="arithmetic_type" help="Port channel mode" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="first" help="Select the first algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="second" help="Select the second algorithm" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		
+		
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_global/lbid/set/${field_profile_name}/${arithmetic_type}
+		</ACTION>
+    </COMMAND>
+	
+	<COMMAND name="no lbid" help="Linkagg load balancing for unknown-unicast/multicast/broadcast packets"> 
+		<PARAM name="select" help="Select hash-field" ptype="SUBCOMMAND" mode="subcommand" />
+			
+        <ACTION>
+		cdbctl update/cdb/l2/hash_value_global/lbid/unset
+		</ACTION>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="load-balance" help="Load balancing algorithm"/>
+	<COMMAND name="no load-balance" help="Load balancing algorithm"/>
+	
+	
+	<COMMAND name="load-balance hash-value" help="Hash value of load balance">
+		<PARAM name="value_profile_name" help="Hash value name string" ptype="NAME_STRING"/>
+		<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="input" help="Ingress hash value" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="output" help="Egress hash value" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/hash_value_profile_id/${value_profile_name}/${direction}
+		</ACTION>
+	</COMMAND>
+	
+
+	<COMMAND name="no load-balance hash-value" help="Hash value of load balance">
+		<PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="input" help="Ingress hash value" mode="subcommand" ptype="SUBCOMMAND"/>
+			<PARAM name="output" help="Egress hash value" mode="subcommand" ptype="SUBCOMMAND"/>
+		</PARAM>
+		<ACTION>
+		   cdbctl update/cdb/interface/${iface}/hash_value_profile_id/${direction}
+		</ACTION>
+	</COMMAND>
+
+</VIEW>
+
+
+</CLISH_MODULE>

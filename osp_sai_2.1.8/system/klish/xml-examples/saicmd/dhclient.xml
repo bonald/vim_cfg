@@ -1,0 +1,901 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+DHCP CLIENT
+</CTCMODULENAME>		
+    
+<VIEW name="Exec">
+
+<COMMAND name="show dhcp client" help="DHCP Client information">
+  <PARAM name="iface_name"  help="Ethernet interface name" ptype="IF_NAME_EAV" optional="true" >
+    <PARAM name="verbose" help="DHCP client verbose information" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+  </PARAM>
+<ACTION>
+cdbctl show/cdb/dhcp/show_dhclient/interface/${iface_name}/${verbose}
+</ACTION>
+
+<CTCDESCRIPTION>
+To show information of dhcp client on one or all interfaces, use the show dhcp client command in privileged EXEC mode.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+To see more detail information, add verbose at the last of command.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE> 
+
+The following example shows how to display DHCP client information on one interfaces:         
+Switch# show dhcp client eth-0-11        
+eth-0-11 DHCP client information:       
+  Current state: HALT          
+  Transaction ID: 0xdb1ab113           
+
+  
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp client verbose" help="DHCP client verbose information">
+<ACTION>
+cdbctl show/cdb/dhcp/show_dhclient/verbose
+</ACTION>
+
+<CTCDESCRIPTION>
+To show information of dhcp client on one or all interfaces, use the show dhcp client command in privileged EXEC mode.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+To see more detail information, add verbose at the last of command.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE> 
+The following example shows how to display DHCP client information:                      
+Switch# show dhcp client verbose                
+DHCP client informations:        
+============================================================         
+Management interface DHCP client information:         
+  Current state: HALT (timeout 14 seconds)        
+  Transaction ID: 0x5a21c405                     
+  
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="show dhcp client statistics" help="Statistics information">
+<ACTION>
+cdbctl show/cdb/dhcp/show_dhclient/statistics
+</ACTION>
+
+<CTCDESCRIPTION>
+To show statistics of DHCP client, use the show dhcp client statistics command in privileged EXEC mode.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+Use this command to show the status of DHCP client, like DHCP packets counter.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE> 
+The following example shows how to display DHCP packets statistics:                      
+Switch# show dhcp client statistics          
+DHCP client packet statistics:          
+============================================================             
+DHCP OFFERS    received: 0           
+DHCP ACKs      received: 0        
+DHCP NAKs      received: 0         
+DHCP Others    received: 0          
+DHCP DISCOVER      sent: 0         
+DHCP DECLINE       sent: 0          
+DHCP RELEASE       sent: 0        
+DHCP REQUEST       sent: 0         
+DHCP packet send failed: 0        
+  
+</CTCEXAMPLE>
+<CTCRCMD>
+</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="clear dhcp client" help="Client"/>
+<COMMAND name="clear dhcp client statistics" help="Statistics information">
+<ACTION>
+cdbctl delete/cdb/dhcp/show_dhclient/statistics
+</ACTION>
+
+<CTCDESCRIPTION>
+To clear statistics of dhcp client, use the clear dhcp client statistics command in privileged EXEC mode.
+</CTCDESCRIPTION>
+<CTCUSAGE>
+This command will clear DHCP packet counter.
+</CTCUSAGE>
+<CTCDEFAULT>
+None
+</CTCDEFAULT>
+<CTCEXAMPLE> 
+The following example shows how to clear statistics:              
+Switch# clear dhcp client statistics             
+
+</CTCEXAMPLE>
+<CTCRCMD>
+  </CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+<COMMAND name="dhcp client" help="Specify DHCP client configuration"/>
+<COMMAND name="no dhcp client" help="Specify DHCP configuration"/>
+
+<COMMAND name="dhcp client broadcast-flag" help="Set the broadcast flag">
+<ACTION>
+cdbctl update/cdb/dhcp/dhclient/broadcast/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+To specify the broadcast-flag in the DHCP message, use the dhcp client broadcast-flag command in global configuration mode. To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This flag tell DHCP server that client can receive unicast IP datagrams until been configured with an IP address. Thus server or relay agent will broadcast any messages to the client on the client’s subnet.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+Broadcast-flag will be set in DHCP message sent by client for request IP address.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to set broadcast-flag:           
+Switch(config)# dhcp client broadcast-flag         
+        
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp client broadcast-flag" help="Set the broadcast flag">
+<ACTION>
+cdbctl update/cdb/dhcp/dhclient/broadcast/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+To specify the broadcast-flag in the DHCP message, use the dhcp client broadcast-flag command in global configuration mode. To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This flag tell DHCP server that client can receive unicast IP datagrams until been configured with an IP address. Thus server or relay agent will broadcast any messages to the client on the client’s subnet.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+Broadcast-flag will be set in DHCP message sent by client for request IP address.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to delete broadcast-flag:        
+Switch(config)# no dhcp client broadcast-flag             
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="dhcp client default-router" help="Set DHCP default router related information"/>
+<COMMAND name="dhcp client default-router distance" help="Set the DHCP derived default route metric">
+<PARAM name="distance" help="Metric value, default is 254" ptype="DISTANCE"/>
+<ACTION>
+cdbctl update/cdb/dhcp/dhclient/distance/${distance}
+</ACTION>
+
+	<CTCDESCRIPTION>
+To specify the default router distance for the routes leased from DHCP server, use the dhcp client default-router distance command in global configuration mode. 
+To remove the configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  The default value for the default metric is 254.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to specify the default router distance:               
+Switch(config)# dhcp client default-router distance 233               
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp client default-router" help="Set DHCP default router related information"/>
+<COMMAND name="no dhcp client default-router distance" help="Set the DHCP derived default route metric">
+<ACTION>
+cdbctl update/cdb/dhcp/dhclient/distance/254
+</ACTION>
+
+	<CTCDESCRIPTION>
+To specify the default router distance for the routes leased from DHCP server, use the dhcp client default-router distance command in global configuration mode. 
+To remove the configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  The default value for the default metric is 254.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to use the default value of default route metric:       
+Switch(config)# no dhcp client default-router distance        
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="management ip address dhcp" help="IP Address negotiated via DHCP">
+<ACTION>
+cdbctl update/cdb/sys/manage_if/dhclient_enable/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+To acquire an IP address for management interface by DHCP, use the management IP address dhcp command in global configuration mode. To disable the function, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Use this command like IP address dhcp.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP Client is not enabled on management interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to enable dhcp client function on management interface:            
+Switch(config-if)# management ip address dhcp
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no management ip address dhcp" help="IP Address negotiated via DHCP">
+<ACTION>
+cdbctl update/cdb/sys/manage_if/dhclient_enable/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+To acquire an IP address for management interface from by DHCP, use the management IP address dhcp command in global configuration mode. To disable the function, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Use this command like IP address dhcp.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP Client is not enabled on management interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to disable dhcp client function on management interface:        
+Switch(config-if)# no management ip address dhcp          
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+<COMMAND name="dhcp client" help="Specify DHCP client configuration"/>
+<COMMAND name="no dhcp client" help="Specify DHCP configuration"/>
+
+<!-- hostname -->
+<COMMAND name="dhcp client hostname" help="Specify hostname to use">
+<PARAM name="desc" help="Hostname string" ptype="NAME_STRING"/>
+<ACTION>
+cdbctl update/cdb/interface/${iface}/dhclient_if/hostname/${desc}
+</ACTION>
+
+	<CTCDESCRIPTION>
+To specify or modify the hostname sent in the DHCP message; use the dhcp client hostname command in interface configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command should be issued before ip address dhcp command. If you issued IP address dhcp before, this command will take effect after next IP address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The host name in system will be used.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to specify name of the host:     
+Switch(config-if)# dhcp client hostname switch             
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp client hostname" help="Specify hostname to use">
+<ACTION>
+cdbctl update/cdb/interface/${iface}/dhclient_if/hostname/""
+</ACTION>
+
+	<CTCDESCRIPTION>
+To remove the hostname sent in the DHCP message, use the no dhcp client hostname.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command should be issued before ip address dhcp command. If you issued IP address dhcp before, this command will take effect after next IP address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The host name in system will be used.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to remove the last set:            
+Switch(config-if)# no dhcp client hostname                  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<!-- lease -->
+<COMMAND name="dhcp client lease" help="Requested address lease time">
+<PARAM name="days" help="Days" ptype="DAYS" />
+<PARAM name="hours" help="Hours" ptype="HOURS" optional="true" >
+  <PARAM name="minutes" help="Minutes" ptype="MINUTES" optional="true" />
+</PARAM>
+<ACTION>
+  let lease=0
+  let lease=${days}*86400
+  if [ "${hours}" != "" ]; then
+    let lease+=${hours}*3600
+  fi
+
+  if [ "${minutes}" != "" ]; then
+    let lease+=${minutes}*60
+  fi  
+
+cdbctl update/cdb/interface/${iface}/dhclient_if/lease/$lease
+
+</ACTION>
+	<CTCDESCRIPTION>
+To configure the duration of the lease for an IP address request by DHCP client, use the dhcp client lease command in interface configuration mode. To remove the configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command to specify the lease wanted by client, DHCP server may accept this request or ignore it. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+20 minutes
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to specify lease 20 minutes for dhcp client:             
+Switch(config-if)# dhcp client lease 0 0 20  
+The following example shows how to specify lease to infinite for dhcp client:             
+Switch(config-if)# dhcp client lease 0 0 0               
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp client lease infinite" help="Infinite lease">
+<ACTION>
+cdbctl update/cdb/interface/${iface}/dhclient_if/lease/0 
+</ACTION>
+
+	<CTCDESCRIPTION>
+To configure the infinite lease duration of the lease for an IP address request by DHCP client, use the dhcp client lease infinite command in interface configuration mode. 
+To remove the configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command to specify the lease wanted by client, DHCP server may accept this request or ignore it. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+20 minutes
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how specify infinite lease:         
+Switch(config-if)# dhcp client lease infinite            
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="no dhcp client lease" help="Requested address lease time">
+<ACTION>
+cdbctl update/cdb/interface/${iface}/dhclient_if/lease/1200
+</ACTION>
+
+	<CTCDESCRIPTION>
+To configure the duration of the lease for an IP address request by DHCP client, use the dhcp client lease command in interface configuration mode. 
+To remove the configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command to specify the lease wanted by client, DHCP server may accept this request or ignore it. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+20 minutes
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to remove the lease set before:       
+Switch(config-if)# no dhcp client lease          
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<!-- request -->
+<COMMAND name="dhcp client request" help="Specify options to request">
+  <PARAM name="sub2" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+ 
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/> 
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>             
+    </PARAM>    
+  </PARAM> 
+  <ACTION>
+    cdbctl update/cdb/interface/${iface}/dhclient_if/requested_flags/${classless-static-route}/${classless-static-route-ms}/${dns-nameserver}/${domain-name}/${netbios-nameserver}/${router}/${static-route}/${tftp-server-address}/${vendor-specific}
+
+   </ACTION>
+
+	<CTCDESCRIPTION>
+To request configuration parameters by DHCP, use the dhcp client request command in interface configuration mode. 
+To cancel the request, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command to request configuration form DHCP server. It can be typed many times with each option or one time with all options wanted. Note that when Option 249 coexist with option 121 then the option 121 should have high priority and option 249 should be ignored. when option 121 or option 249 coexist with option 33 then the option 33 should be ignored. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+static-route, classless-static-route, classless-static-route-ms, tftp-server-address and router is requested as default.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to request dhcp option static-route and tftp-server-address:         
+Switch(config-if)# dhcp client request static-route tftp-server-address           
+The following example shows how to request dhcp option router:           
+Switch(config-if)# dhcp client request router            
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>   
+</COMMAND>
+
+<COMMAND name="no dhcp client request" help="Specify options to request">
+  <PARAM name="sub2" help="Type" ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+ 
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>   
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/> 
+        <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>          
+    </PARAM>
+    <PARAM name="vendor-specific" help="Vendor specific option (43)" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="classless-static-route" help="Classless static route option (121)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="classless-static-route-ms" help="Microsoft classless static route option (249)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="dns-nameserver" help="DNS name server option (6)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="domain-name" help="Domain name option (15)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="netbios-nameserver" help="Netbios name server option (44)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="router" help="Default router option (3)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="static-route" help="Static route option (33)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+        <PARAM name="tftp-server-address" help="TFTP server ip address option (150)" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>             
+    </PARAM>    
+  </PARAM> 
+  <ACTION>
+
+    cdbctl delete/cdb/interface/${iface}/dhclient_if/requested_flags/${classless-static-route}/${classless-static-route-ms}/${dns-nameserver}/${domain-name}/${netbios-nameserver}/${router}/${static-route}/${tftp-server-address}/${vendor-specific}
+
+   </ACTION>
+	<CTCDESCRIPTION>
+To request configuration parameters by DHCP, use the dhcp client request command in interface configuration mode. 
+To cancel the request, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command to request configuration form DHCP server. It can be typed many times with each option or one time with all options wanted. Note that when Option 249 coexist with option 121 then the option 121 should have high priority and option 249 should be ignored. when option 121 or option 249 coexist with option 33 then the option 33 should be ignored. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+static-route, classless-static-route, classless-static-route-ms, tftp-server-address and router is requested as default.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+
+The following example shows how to cancel request of dhcp option router:
+Switch(config-if)# no dhcp client request router
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>    
+</COMMAND>
+
+
+<!-- class id -->
+<COMMAND name="dhcp client class-id" help="Specify Class-ID to use">
+<PARAM name="desc" help="Class-ID string" ptype="NAME_STRING"/>
+<ACTION>
+cdbctl update/cdb/interface/${iface}/dhclient_if/class_id/${desc}/"ascii"
+</ACTION>
+	<CTCDESCRIPTION>
+To specify a class-id for DHCP server and client, use the dhcp client class-id command in interface configuration mode. 
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Class-id used by DHCP clients to optionally identify the type and configuration of a DHCP client. Vendors and sites may choose to define specific class identifiers to convey particular configuration or other identification information about a client. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+	  No class-id is set.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to specify class-id for a interface:           
+Switch(config-if)# dhcp client class-id switch                
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>   
+</COMMAND>
+
+<COMMAND name="dhcp client class-id hex" help="Specify hexadecimal class-ID">
+<PARAM name="desc" help="Class-ID in hex" ptype="HEX"/>
+<ACTION>
+
+cdbctl update/cdb/interface/${iface}/dhclient_if/class_id/${desc}/"hex"
+</ACTION>
+	<CTCDESCRIPTION>
+To specify a class-id for DHCP server and client in hex string, use the dhcp client class-id hex command in interface configuration mode. 
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Class-id used by DHCP clients to optionally identify the type and configuration of a DHCP client. Vendors and sites may choose to define specific class identifiers to convey particular configuration or other identification information about a client. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+No class-id is set.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to specify class-id for a interface:             
+	Switch(config-if)# dhcp client class-id hex abcd             
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="no dhcp client class-id" help="Specify Class-ID to use">
+<ACTION>
+
+cdbctl update/cdb/interface/${iface}/dhclient_if/class_id/""
+</ACTION>
+	<CTCDESCRIPTION>
+To specify a class-id for DHCP server and client, use the dhcp client class-id command in interface configuration mode. 
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Class-id used by DHCP clients to optionally identify the type and configuration of a DHCP client. Vendors and sites may choose to define specific class identifiers to convey particular configuration or other identification information about a client. This command should be issued before ip address dhcp command. If you issued ip address dhcp before, this command will take effect after next ip address dhcp command. 
+	</CTCUSAGE>
+	<CTCDEFAULT>
+No class-id is set.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to specify class-id for a interface:           
+	Switch(config-if)# dhcp client class-id switch           
+	The following example shows how to delete class-id set before:            
+	Switch(config-if)# no dhcp client class-id               
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>   
+</COMMAND>
+
+
+<!-- client id -->
+<COMMAND name="dhcp client client-id" help="Specify Client-ID to use">
+  <PARAM name="iface_name"  help="Ethernet interface name" ptype="IF_NAME_EAV"/>
+  <ACTION>
+cdbctl update/cdb/interface/${iface}/dhclient_if/client_id/${iface_name}/port
+  </ACTION>
+	<CTCDESCRIPTION>
+To specify a client-id used by DHCP server and client for identifying a client, use the dhcp client client-id command in interface configuration mode.
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command should be issued before IP address dhcp command. If you issued IP address dhcp before, this command will take effect after next IP address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default client-id, format of which is like "switch-HWADDR-IFNAME", will be used.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to specify a client-id for a interface:       
+Switch(config-if)# dhcp client client-id ascii switch-client        
+The following example shows how to delete client-id set before:        
+Switch(config-if)# no dhcp client client-id            
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp client client-id ascii" help="Client-ID as ascii string">
+<PARAM name="desc" help="Client-ID in ascii" ptype="NAME_STRING"/>
+<ACTION>
+
+cdbctl update/cdb/interface/${iface}/dhclient_if/client_id/${desc}/ascii
+</ACTION>
+	<CTCDESCRIPTION>
+To specify a client-id used by DHCP server and client for identifying a client in ascii type,use the dhcp client client-id ascii command in interface configuration mode. 
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command should be issued before IP address dhcp command. If you issued IP address dhcp before, this command will take effect after next IP address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default client-id, format of which is like "switch-HWADDR-IFNAME", will be used.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to specify a client-id for a interface:            
+Switch(config-if)# dhcp client client-id ascii switch-client            
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="dhcp client client-id hex" help="Specify hexadecimal Client-ID">
+<PARAM name="desc" help="Client-ID in hex" ptype="HEX"/>
+<ACTION>
+
+cdbctl update/cdb/interface/${iface}/dhclient_if/client_id/${desc}/"hex"
+</ACTION>
+	<CTCDESCRIPTION>
+To specify a client-id used by DHCP server and client for identifying a client in ascii type,use the dhcp client client-id hex command in interface configuration mode. 
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command should be issued before IP address dhcp command. If you issued IP address dhcp before, this command will take effect after next IP address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  The default client-id, format of which is like "switch-HWADDR-IFNAME", will be used.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to specify a client-id for a interface:          
+	Switch(config-if)# dhcp client client-id hex abcd
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>  
+</COMMAND>
+
+<COMMAND name="no dhcp client client-id" help="Specify Client-ID to use">
+<ACTION>
+
+cdbctl update/cdb/interface/${iface}/dhclient_if/client_id/""
+</ACTION>
+	<CTCDESCRIPTION>
+To specify a client-id used by DHCP server and client for identifying a client, use the dhcp client client-id command in interface configuration mode. 
+To remove this configuration, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command should be issued before IP address dhcp command. If you issued IP address dhcp before, this command will take effect after next IP address dhcp command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+The default client-id, format of which is like "switch-HWADDR-IFNAME", will be used.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to specify a client-id for a interface:        
+	Switch(config-if)# dhcp client client-id ascii switch-client        
+	The following example shows how to delete client-id set before:        
+	Switch(config-if)# no dhcp client client-id        
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>  
+</COMMAND>
+
+<!-- lease -->
+<COMMAND name="ip address dhcp" help="IP Address negotiated via DHCP">
+<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcp_client_enable/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+To acquire an IP address from Dynamic Host Configuration Protocol(DHCP), use the ip address dhcp command in interface configuration mode. 
+To disable the function, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Once this command was enable on an UP interface, it will acquire IP address immediately, otherwise the DHCP function of the interface will be in SUSPEND status. The no ip address dhcp command will send a DHCPRELEASE message to server and remove any IP address.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP Client is not enabled on interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to enable dhcp client function:        
+Switch(config-if)# ip address dhcp          
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ip address dhcp" help="IP Address negotiated via DHCP">
+<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcp_client_enable/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+To acquire an IP address from Dynamic Host Configuration Protocol(DHCP), use the ip address dhcp command in interface configuration mode. 
+To disable the function, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Once this command was enable on an UP interface, it will acquire IP address immediately, otherwise the DHCP function of the interface will be in SUSPEND status. The no ip address dhcp command will send a DHCPRELEASE message to server and remove any IP address.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP Client is not enabled on interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+The following example shows how to enable dhcp client function:        
+Switch(config-if)# ip address dhcp         
+The following example shows how to disable dhcp client function:          
+Switch(config-if)# no ip address dhcp     
+
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,63 @@
+<div id = "head-bar-container" class="row">
+    <div class="row">
+        <div class="col-xs-6">
+            <img id = "head-logo" src="./images/logo_show.gif" alt="logo" /> 
+        </div>
+        <div class="col-xs-6">
+
+            <div style="margin: 20px 20px 0px 0px; float: right;">
+                <span><b>{{ 'Hi' | translate }}:&nbsp;{{ UserInfo.username }}&nbsp;&nbsp;</b></span>
+                <!-- select language -->
+                <div class="btn-group" data-toggle="buttons">
+                    <!--
+                    <label class="btn btn-default btn-xs" ng-click="changeLanguage('zh_CN')" ng-class="{'active': currentUseLanguage == 'zh_CN'}">
+                        <input type="radio" name="options" id="option1" autocomplete="off">中文
+                    </label>
+                    <label class="btn btn-default btn-xs" ng-click="changeLanguage('en_US')" ng-class="{'active': currentUseLanguage == 'en_US'}">
+                        <input type="radio" name="options" id="option2" autocomplete="off">English
+                    </label>
+                    <label class="btn btn-default btn-xs" ng-click="changeLanguage('ja_JP')" ng-class="{'active': currentUseLanguage == 'ja_JP'}">
+                        <input type="radio" name="options" id="option3" autocomplete="off">日本語
+                    </label>
+                    -->
+                </div>
+                <!-- select language end -->
+
+                <!-- logout -->
+                <div class="btn-group" data-toggle="buttons">
+                    <button class="btn btn-default btn-xs" ng-click="logout()">{{ 'Logout' | translate }}</button>
+                </div>
+                <!-- logout end -->
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div id = "head-bar-menu" class="col-md-3 col-lg-2 head-bar">
+            {{ 'Menu' | translate }}
+        </div>
+        <div id = "head-bar-body" class="col-md-9 col-lg-10 head-bar">
+            {{ '' }}
+        </div>
+    </div>
+
+    <div id="global-alert-cnt" ng-show="alertShow" class="alert-fade">
+        <div class="modal-backdrop fade in"></div>
+        <div id="global-alert" class="alert" ng-class="alertOptions.class" role="alert">
+            <h4>{{ alertOptions.title | translate }}</h4>
+            <p>{{ alertOptions.content | translate }}</p>
+        </div>
+    </div>
+
+    <div id="global-confirm-cnt" ng-show="confirmShow" class="alert-fade">
+        <div class="modal-backdrop fade in"></div>
+        <div id="global-confirm" class="alert alert-warning" role="alert">
+            <button type="button" class="close" ng-click="confirm.fnClickClose()"><span aria-hidden="true">&times;</span></button>
+            <h4>{{ 'Confirm' | translate }}</h4>
+            <p class="content">{{ confirm.content | translate }}</p>
+            <button class="conf btn btn-primary" ng-click="confirm.fnClickYes()"><span class="glyphicon glyphicon-ok"></span>&nbsp;Yes</button>
+            <button class="conf btn btn-default" ng-click="confirm.fnClickNo()"><span class="glyphicon glyphicon-remove"></span>&nbsp;No</button>
+        </div>
+    </div>
+</div>
+

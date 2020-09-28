@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+NETWORK DIAGNOSIS
+</CTCMODULENAME>
+<VIEW name="ping-view"
+	prompt="${SYSTEM_NAME}# ">
+
+<!-- commands set: ping -->
+<!-- ping, ping6, arping -->
+	<COMMAND name="ping mgmt-if" help="Management port" lock="false"	interrupt="true" access="1">
+		<PARAM name="-m" help="Set the specified interval for sending ping packets" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="interval" help="Time in milliseconds, default is 1 seconds" ptype="PING_INTERVAL"/>
+		</PARAM>
+		<PARAM name="-c" help="Set the number of ping packets" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="count" help="Number of ping packets, default is 5" ptype="PING_COUNT"/>
+		</PARAM>
+		<PARAM name="-s" help="Set the data size of ping packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="ping_size" help="The data size of ping packet, default is 56 bytes" ptype="PING_SIZE"/>
+		</PARAM>
+		<PARAM name="-f" help="Set the Don't Fragment flag in packet" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		<PARAM name="-tos" help="Set the tos in ping packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="ping_tos" help="Tos value, default is 0" ptype="PING_TOS"/>
+		</PARAM>
+		<PARAM name="-h" help="Set the TTL value in ping packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="ping_ttl" help="TTL value, default is 255" ptype="PING_TTL"/>
+		</PARAM>
+		<PARAM name="dst" help="Ping destination address or hostname"	ptype="NAME_STRING"/>
+
+		<ACTION>
+			cmd="ip netns exec mgmt ping"
+
+			# Request count
+			if test -z "${count}"; then
+				cmd=$cmd" -c 5"
+			else
+				cmd=$cmd"${ -c :count}"
+			fi
+
+			# Interval
+			if test -n "${interval}"; then
+				strinterval="${interval}"
+				inter_float=`awk "BEGIN{printf \"%0.3f\n\", $strinterval / 1000}"`
+				cmd=$cmd" -i $inter_float"
+			fi
+
+			# ping size
+			if test -n "${ping_size}"; then
+				cmd=$cmd"${ -s :ping_size}"
+			fi
+
+			# ping tos
+			if test -n "${ping_tos}"; then
+				cmd=$cmd"${ -Q :ping_tos}"
+			fi
+
+			# ping TTL
+			if test -n "${ping_ttl}"; then
+				cmd=$cmd"${ -t :ping_ttl}"
+			else
+				cmd=$cmd" -t 255"
+			fi
+
+			# ping timeout
+			if test -n "${ping_timeout}"; then
+				cmd=$cmd"${ -t :ping_timeout}"
+			fi
+
+			# ping Fragment
+			if test -n "${-f}"; then
+				cmd=$cmd" -M do"
+			else
+				cmd=$cmd" -M dont"
+			fi
+
+			if [ "0.0.0.0" == ${dst} ]; then
+				echo "connect: Network is unreachable"
+			else
+				cmd=$cmd" ${dst}"
+				$cmd
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+This command is used to ping a specific IPv4 address with management interface. 
+		</CTCDESCRIPTION>
+		
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		
+		<CTCEXAMPLE> 
+    This example shows how to ping a host from management interface.  
+    Switch# ping mgmt-if 10.10.38.160    
+    PING 10.10.38.160 (10.10.38.160) 56(84) bytes of data.  
+    64 bytes from 10.10.38.160: icmp_seq=1 ttl=64 time=0.513 ms  
+    64 bytes from 10.10.38.160: icmp_seq=2 ttl=64 time=0.229 ms  
+    64 bytes from 10.10.38.160: icmp_seq=3 ttl=64 time=0.261 ms  
+    64 bytes from 10.10.38.160: icmp_seq=4 ttl=64 time=0.265 ms   
+    64 bytes from 10.10.38.160: icmp_seq=5 ttl=64 time=0.387 ms   
+       
+    --- 10.10.38.160 ping statistics ---  
+    5 packets transmitted, 5 received, 0% packet loss, time 3999ms   
+    rtt min/avg/max/mdev = 0.229/0.331/0.513/0.105 ms   
+		</CTCEXAMPLE>
+		
+		<CTCRCMD>
+ping 
+		</CTCRCMD>
+				
+	</COMMAND>
+	
+	<COMMAND name="ping" help="Send messages to network hosts" lock="false"	interrupt="true" access="1">
+		<PARAM name="-a" help="Select source IP address, the default is the IP address of the output interface" test='"${iface-name}"=""' ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="src-address" help="Source IP address used by PING" ptype="IP_ADDR"/>
+		</PARAM>
+		
+		<PARAM name="-si" help="Set the specified interface as the source interface of ping packet" test='"${src-address}"=""' ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="iface-name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+		</PARAM>
+		
+		<PARAM name="-m" help="Set the specified interval for sending ping packets" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="interval" help="Time in milliseconds, default is 1 seconds" ptype="PING_INTERVAL"/>
+		</PARAM>
+		
+		<PARAM name="-c" help="Set the number of ping packets" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="count" help="Number of ping packets, default is 5" ptype="PING_COUNT"/>
+		</PARAM>
+		
+		<PARAM name="-s" help="Set the data size of ping packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="ping_size" help="The data size of ping packet, default is 56 bytes" ptype="PING_SIZE"/>
+		</PARAM>
+		
+		<PARAM name="-f" help="Set the Don't Fragment flag in packet" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+		
+		<PARAM name="-tos" help="Set the tos in ping packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="ping_tos" help="Tos value, default is 0" ptype="PING_TOS"/>
+		</PARAM>
+		
+		<PARAM name="-h" help="Set the TTL value in ping packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="ping_ttl" help="TTL value, default is 255" ptype="PING_TTL"/>
+		</PARAM>
+
+		<PARAM name="dst" help="Ping destination address or hostname"	ptype="NAME_STRING"/>
+		
+		<ACTION>
+			cmd="ping"
+
+			# Request count
+			if test -z "${count}"; then
+				cmd=$cmd" -c 5"
+			else
+				cmd=$cmd"${ -c :count}"
+			fi
+
+			# Request ifname
+			if test -n "${iface-name}"; then
+				strifname=`echo ${iface-name} | sed 's/\//_/'`
+				strifname_sip=`ifconfig | grep -w $strifname -A 1 | tail -1 | grep -E -o '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -1`
+                                if [ -z $strifname_sip ]; then
+                                    echo "% Can't bind to specified interface ${iface-name}" 
+                                    exit 0
+                                fi
+				cmd=$cmd" -I $strifname_sip" 
+			fi
+			
+			# Request SrcIP
+			if test -n "${src-address}"; then
+				cmd=$cmd" -I ${src-address}"
+			fi
+			
+			# Interval
+            if test -n "${interval}"; then
+                strinterval="${interval}"
+                inter_float=`awk "BEGIN{printf \"%0.3f\n\", $strinterval / 1000}"`
+                cmd=$cmd" -i $inter_float"
+            fi
+			
+			# ping size
+			if test -n "${ping_size}"; then
+				cmd=$cmd"${ -s :ping_size}"
+			fi
+			
+			# ping tos
+			if test -n "${ping_tos}"; then
+				cmd=$cmd"${ -Q :ping_tos}"	
+			fi
+			
+			# ping TTL
+			if test -n "${ping_ttl}"; then
+				cmd=$cmd"${ -t :ping_ttl}"	
+            else
+				cmd=$cmd" -t 255"
+			fi
+			
+			# ping timeout
+			if test -n "${ping_timeout}"; then
+				cmd=$cmd"${ -t :ping_timeout}"	
+			fi
+			
+			# ping Fragment
+			if test -n "${-f}"; then
+				cmd=$cmd" -M do"	
+            else 
+				cmd=$cmd" -M dont"	
+			fi
+			
+			if [ "0.0.0.0" == ${dst} ]; then
+				echo "connect: Network is unreachable"
+			else
+				cmd=$cmd" ${dst}"
+				$cmd
+			fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+This command is used to ping a specific IPv4 address. 
+		</CTCDESCRIPTION>
+		
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		
+		<CTCEXAMPLE> 
+    This example shows how to ping a host from management interface.  
+    Switch# ping 10.10.38.160    
+    PING 10.10.38.160 (10.10.38.160) 56(84) bytes of data.  
+    64 bytes from 10.10.38.160: icmp_seq=1 ttl=64 time=0.513 ms  
+    64 bytes from 10.10.38.160: icmp_seq=2 ttl=64 time=0.229 ms  
+    64 bytes from 10.10.38.160: icmp_seq=3 ttl=64 time=0.261 ms  
+    64 bytes from 10.10.38.160: icmp_seq=4 ttl=64 time=0.265 ms   
+    64 bytes from 10.10.38.160: icmp_seq=5 ttl=64 time=0.387 ms   
+       
+    --- 10.10.38.160 ping statistics ---  
+    5 packets transmitted, 5 received, 0% packet loss, time 3999ms   
+    rtt min/avg/max/mdev = 0.229/0.331/0.513/0.105 ms    
+		</CTCEXAMPLE>
+		
+		<CTCRCMD>
+ping mgmt-if 
+		</CTCRCMD>
+				
+	</COMMAND>
+
+<!-- traceroute -->
+	<COMMAND name="traceroute mgmt-if" help="Management port" lock="false" interrupt="true" access="1">
+
+        <PARAM name="-tos" help="Set the tos for IPv4 or traffic class for IPv6 in traceroute packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="traceroute_tos" help="Tos value, default is 0" ptype="PING_TOS"/>
+		</PARAM>
+        
+		<PARAM name="dst" help="Traceroute destination address or hostname" ptype="NAME_STRING"/>
+		
+		<ACTION>
+    		        cdbctl update/cdb/l3/traceroute_mgmt_ipv6/${dst}
+                        if [ "$?" != "0" ]; then
+                            exit 1
+                        fi
+			cmd="ip netns exec mgmt traceroute -i eth0"
+			
+			# Request ifname
+			if test -n "${iface-name}"; then
+				cmd=$cmd" -i ${iface-name}"
+			fi
+			
+			# Request SrcIP
+			if test -n "${src-address}"; then
+				cmd=$cmd" -s ${src-address}"
+			fi
+            
+            # ping tos
+			if test -n "${traceroute_tos}"; then
+				cmd=$cmd" -t ${traceroute_tos}"	
+			fi
+			
+			#Resolve names
+			cmd=$cmd" ${dst}"
+			$cmd
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+This command is used to traceroute the specified IPv4 address with management interface.			
+		</CTCDESCRIPTION>
+		
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		
+		<CTCEXAMPLE> 
+    The following example is sample dialog from the traceroute command using default values.  
+    Switch# traceroute mgmt-if 10.108.1.29  
+    traceroute to 10.108.1.29 (10.108.1.29), 30 hops max, 38 byte packets  
+     1  10.108.1.27 (10.108.1.27)  2998.076 ms !H  3000.361 ms !H  3007.748 ms !H  
+    
+		</CTCEXAMPLE>
+		
+		<CTCRCMD>
+traceroute 
+		</CTCRCMD>
+
+	</COMMAND>
+	
+	<COMMAND name="traceroute" help="Print the route packets trace to network host" lock="false" interrupt="true" access="1">
+		<PARAM name="-a" help="Select source IP address, the default is the IP address of the output interface" test='"${iface_name}"=""' ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="src_address" help="IP address" ptype="IP_ADDR"/>
+		</PARAM>
+		
+		<PARAM name="-si" help="Set the specified interface as the source interface of traceroute packet" test='"${src_address}"=""' ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_ALL"/>
+		</PARAM>
+        
+        <PARAM name="-tos" help="Set the tos in traceroute packet" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="traceroute_tos" help="Tos value, default is 0" ptype="PING_TOS"/>
+		</PARAM>
+		
+		<PARAM name="dst" help="Traceroute destination address or hostname" ptype="NAME_STRING"/>
+		
+		<ACTION>
+			cdbctl update/cdb/l3/traceroute/${dst}/tos/${traceroute_tos}/out_if/${iface_name}/src_address/${src_address}
+			cmd="traceroute -4"
+			# Request SrcIp
+			if [ -n "${iface_name}" ] || [ -n "${src_address}" ]; then
+				if [ -f "/tmp/clearXXXXXX" ]; then
+					line=$(cat /tmp/clearXXXXXX)
+					cmd=$cmd" -s $line"
+				else
+					exit 1
+				fi
+			fi
+			rm -fr /tmp/clearXXXXXX
+            		# ping tos
+			if test -n "${traceroute_tos}"; then
+				cmd=$cmd" -t ${traceroute_tos}"	
+			fi
+			
+			#Resolve names
+			cmd=$cmd" ${dst}"
+			$cmd
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+This command is used to traceroute the specified IPv4 address.			
+		</CTCDESCRIPTION>
+		
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		
+		<CTCEXAMPLE> 
+    The following example is sample dialog from the traceroute command using default values.  
+    Switch# traceroute 10.108.1.29  
+    traceroute to 10.108.1.29 (10.108.1.29), 30 hops max, 38 byte packets  
+     1  10.108.1.27 (10.108.1.27)  2998.076 ms !H  3000.361 ms !H  3007.748 ms !H  
+    
+		</CTCEXAMPLE>
+		
+		<CTCRCMD>
+traceroute mgmt-if 
+		</CTCRCMD>
+
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>

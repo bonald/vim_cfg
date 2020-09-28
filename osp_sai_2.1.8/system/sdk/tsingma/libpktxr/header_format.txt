@@ -1,0 +1,1413 @@
+/****************************************************************************
+ * header_format.txt   Provides all header format of CTP.
+ *
+ * Copyright:    (c)2007 Centec Networks Inc.  All rights reserved.
+ *
+ * Modify History:
+ * Revision:     R0.01.
+ * Author:       Anchor Xie.
+ * Date:         2007-04-12.
+ * Reason:       First Create.
+*****************************************************************************/
+*** Layer 2 Protocol Header Format Region Start **
+*** Ethernet Header Foramt Start **
+$TYPES CPUPKT
+$FIELD CPUPKT_EXIST                        0   0  default jump
+$FIELD CPUPKT_MACDA                        48  0  default
+$FIELD CPUPKT_MACSA                        48  0  default
+$FIELD CPUPKT_VLANEXIST                    0   1  default jump
+$FIELD CPUPKT_TPID                         16  8100  default
+$FIELD CPUPKT_VLAN                         16  23  default
+$FIELD CPUPKT_TYPE                         16  0   jump
+$FIELD CPUPKT_RES                          16  0  default jump 
+$FIELD CPUPKT_HM_HEADER_TYPE               2   0
+$FIELD CPUPKT_HM_DESTID_DISCARD            1   0  default
+$FIELD CPUPKT_HM_PACKET_OFFSET1            7   0  default
+$FIELD CPUPKT_HM_MCAST                     1   0  default
+$FIELD CPUPKT_HM_DEST_CHIPID               5   0  default
+$FIELD CPUPKT_HM_DESTID                    16  0  default
+$FIELD CPUPKT_HM_PRIORITY                  6   0  default
+$FIELD CPUPKT_HM_PACKET_TYPE               3   0  default
+$FIELD CPUPKT_HM_SOURCE_COS                3   0  default
+$FIELD CPUPKT_HM_SRC_QUEUE_SELECT          1   0  default
+$FIELD CPUPKT_HM_HEADER_HASH1              3   0  default
+$FIELD CPUPKT_HM_VPLS_PORT_TYPE            1   0  default
+$FIELD CPUPKT_HM_UNTAG_PACKET              1   0  default
+$FIELD CPUPKT_HM_SOURCE_PORT               14  0  default
+$FIELD CPUPKT_HM_SRC_VLANID                12  0  default
+$FIELD CPUPKT_HM_COLOR                     2   0  default
+$FIELD CPUPKT_HM_NEXT_HOP_PTR1             18  0  default
+$FIELD CPUPKT_HM_LEN_ADJUST_TYPE           1   0  default
+$FIELD CPUPKT_HM_CRITICAL_PACKET           1   0  default
+$FIELD CPUPKT_HM_PACKET_LEN                14  0  default
+$FIELD CPUPKT_HM_TTL_PTPOFFSET             8   0  default
+$FIELD CPUPKT_HM_HEADER_CRC                8   0  default
+$FIELD CPUPKT_HM_SRCPORT_ISID              6   0  default
+$FIELD CPUPKT_HM_PBB_SRCPORT_TYPE          3   0  default
+$FIELD CPUPKT_HM_PACKET_OFFSET2            1   0  default
+$FIELD CPUPKT_HM_SOURCE_CFI                1   0  default
+$FIELD CPUPKT_HM_NEXT_HOP_EXT              1   0  default
+$FIELD CPUPKT_HM_NEXT_HOP_PTR2             2   0  default
+$FIELD CPUPKT_HM_SVLAN_TPID_INDEX          2   0  default
+$FIELD CPUPKT_HM_DENY_REPLACE_COS          1   0  default
+$FIELD CPUPKT_HM_DENY_REPLACE_DSCP         1   0  default
+$FIELD CPUPKT_HM_SRC_SVLANID_VALID         1   0  default
+$FIELD CPUPKT_HM_SRC_CVLANID_VALID         1   0  default
+$FIELD CPUPKT_HM_SRC_CVLAN_ID              12  0  default
+$FIELD CPUPKT_HM_SRC_VLAN_PTR              16  0  default
+$FIELD CPUPKT_HM_VRFID_DESTPORT            16  0  default
+$FIELD CPUPKT_HM_L4_SRCPORT                16  0  default
+$FIELD CPUPKT_HM_SRCPORT_BUNDLEID          2   0  default
+$FIELD CPUPKT_HM_SRC_TARGED                1   0  default
+$FIELD CPUPKT_HM_USE_OUTER_VRFID           1   0  default
+$FIELD CPUPKT_HM_PFM                       2   0  default
+$FIELD CPUPKT_HM_OAM_TUNNEL_EN             1   0  default
+$FIELD CPUPKT_HM_MIRROR                    1   0  default
+$FIELD CPUPKT_HM_OPERATION_TYPE            3   0  default
+$FIELD CPUPKT_HM_HEADER_HASH2              5   0  default
+$FIELD CPUPKT_HM_IP_SA                     32  0  default
+$FIELD CPUPKT_GB_SRCPORT_15_14             2   0  default
+$FIELD CPUPKT_GB_PACKET_OFFSET             8   0  default
+$FIELD CPUPKT_GB_MCAST                     1   0  default
+$FIELD CPUPKT_GB_DEST_CHIPID               5   0  default
+$FIELD CPUPKT_GB_DESTID                    16  0  default
+$FIELD CPUPKT_GB_PRIORITY                  6   0  default
+$FIELD CPUPKT_GB_PACKET_TYPE               3   0  default
+$FIELD CPUPKT_GB_SOURCE_COS                3   0  default
+$FIELD CPUPKT_GB_SRC_QUEUE_SELECT          1   0  default
+$FIELD CPUPKT_GB_HEADER_HASH2_0            3   0  default
+$FIELD CPUPKT_GB_LOGIC_PORT_TYPE           1   0  default
+$FIELD CPUPKT_GB_SRC_CTAG_OFFSET_TYPE      1   0  default
+$FIELD CPUPKT_GB_SRCPORT                   14  0  default
+$FIELD CPUPKT_GB_SRC_VLANID                12  0  default
+$FIELD CPUPKT_GB_COLOR                     2   0  default
+$FIELD CPUPKT_GB_NEXT_HOP_PTR              18  0  default
+$FIELD CPUPKT_GB_LEN_ADJUST_TYPE           1   0  default
+$FIELD CPUPKT_GB_CRITICAL_PACKET           1   0  default
+$FIELD CPUPKT_GB_RXTXFCL_22_17             6   0  default
+$FIELD CPUPKT_GB_DM_TS_36_29               8   0  default
+$FIELD CPUPKT_GB_TTL                       8   0  default
+$FIELD CPUPKT_GB_FROM_FABRIC               1   0  default
+$FIELD CPUPKT_GB_BYPASS_INGRESS_EDITING    1   0  default
+$FIELD CPUPKT_GB_SRCPORT_EXT               1   0  default
+$FIELD CPUPKT_GB_LOOPBACK_DISCARD          1   0  default
+$FIELD CPUPKT_GB_HEADER_CRC                4   0  default
+$FIELD CPUPKT_GB_SRCPORT_ISID              6   0  default
+$FIELD CPUPKT_GB_PBB_SRCPORT_TYPE          3   0  default
+$FIELD CPUPKT_GB_VLAN_TAG_OPERATION_VALID  1   0  default
+$FIELD CPUPKT_GB_SOURCE_CFI                1   0  default
+$FIELD CPUPKT_GB_NEXT_HOP_EXT              1   0  default
+$FIELD CPUPKT_GB_NON_CRC                   1   0  default
+$FIELD CPUPKT_GB_FROM_CPU_OR_OAM           1   0  default
+$FIELD CPUPKT_GB_SVLAN_TPID_INDEX          2   0  default
+$FIELD CPUPKT_GB_STAG_ACTION               2   0  default
+$FIELD CPUPKT_GB_SRC_SVLANID_VALID         1   0  default
+$FIELD CPUPKT_GB_SRC_CVLANID_VALID         1   0  default
+$FIELD CPUPKT_GB_SRC_CVLAN_ID              12  0  default
+$FIELD CPUPKT_GB_LM_DOWN_DISABLE           1  0  default
+$FIELD CPUPKT_GB_INGRESS_EDIT_EN           1  0  default
+$FIELD CPUPKT_GB_OUTER_VLAN_IS_CVLAN       1  0  default
+$FIELD CPUPKT_GB_SRC_VLAN_PTR              13  0  default
+$FIELD CPUPKT_GB_FID                       16  0  default
+$FIELD CPUPKT_GB_LOGIC_SRCPORT             16  0  default
+$FIELD CPUPKT_GB_RXTX_FCL3                 1   0  default
+$FIELD CPUPKT_GB_CUT_THROUGH               1   0  default
+$FIELD CPUPKT_GB_RXTX_FCL2_1               2   0  default
+$FIELD CPUPKT_GB_MUX_LENGTH_TYPE           2   0  default
+$FIELD CPUPKT_GB_OAM_TUNNEL_EN             1   0  default
+$FIELD CPUPKT_GB_RXTX_FCL0                 1   0  default
+$FIELD CPUPKT_GB_OPERATION_TYPE            3   0  default
+$FIELD CPUPKT_GB_HEADER_HASH7_3            5   0  default
+$FIELD CPUPKT_GB_IP_SA                     32  0  default
+
+$FIELD CPUPKT_GG_PACKET_OFFSET             8   0  default
+$FIELD CPUPKT_GG_MCAST                     1   0  default
+$FIELD CPUPKT_GG_DEST_CHIPID               5   0  default
+$FIELD CPUPKT_GG_DESTID                    12  0  default
+$FIELD CPUPKT_GG_PRIORITY                  6   0  default
+$FIELD CPUPKT_GG_PACKET_TYPE               3   0  default
+$FIELD CPUPKT_GG_SOURCE_COS                3   0  default
+$FIELD CPUPKT_GG_HEADER_HASH               8   0  default
+$FIELD CPUPKT_GG_LOGIC_PORT_TYPE           1   0  default
+$FIELD CPUPKT_GG_SRCPORT                   16  0  default
+$FIELD CPUPKT_GG_SRC_VLANID                12  0  default
+$FIELD CPUPKT_GG_COLOR                     2   0  default
+$FIELD CPUPKT_GG_NEXT_HOP_PTR              18  0  default
+$FIELD CPUPKT_GG_LEN_ADJUST_TYPE           3   0  default
+$FIELD CPUPKT_GG_CRITICAL_PACKET           1   0  default
+$FIELD CPUPKT_GG_IS_LEAF                   1   0  default
+$FIELD CPUPKT_GG_SOURCE_CFI                1   0  default
+$FIELD CPUPKT_GG_NEXT_HOP_EXT              1   0  default
+$FIELD CPUPKT_GG_PORT_MACSA_EN             1   0  default
+$FIELD CPUPKT_GG_FROMCPULMUPDISABLE        1   0  default
+$FIELD CPUPKT_GG_SVLAN_TAG_OPERATION_VALID 1   0  default
+$FIELD CPUPKT_GG_SOURCEPORTEXTENDER        1   0  default
+$FIELD CPUPKT_GG_FROM_FABRIC               1   0  default
+$FIELD CPUPKT_GG_BYPASS_INGRESS_EDITING    1   0  default
+$FIELD CPUPKT_GG_DSNEXTHOP_BYPASSALL       1   0  default
+$FIELD CPUPKT_GG_FROMCPULMDOWNDISABLE      1   0  default
+$FIELD CPUPKT_GG_INGRESS_EDIT_EN           1   0  default
+$FIELD CPUPKT_GG_OUTER_VLAN_IS_CVLAN       1   0  default
+$FIELD CPUPKT_GG_FROM_CPU_OR_OAM           1   0  default
+$FIELD CPUPKT_GG_SVLAN_TPID_INDEX          2   0  default
+$FIELD CPUPKT_GG_SRC_VLAN_PTR              13  0  default
+$FIELD CPUPKT_GG_MUX_LENGTH_TYPE           2   0  default
+$FIELD CPUPKT_GG_OAM_TUNNEL_EN             1   0  default
+$FIELD CPUPKT_GG_BRIDGE_OP                 1   0  default
+$FIELD CPUPKT_GG_MAC_LEARNING_EN           1   0  default
+$FIELD CPUPKT_GG_DEBUG_SESSION_EN          1   0  default
+$FIELD CPUPKT_GG_KEEP_OLD_HEADER           1   0  default
+$FIELD CPUPKT_GG_STAG_ACTION               2   0  default
+$FIELD CPUPKT_GG_MAC_KNOWN                 1   0  default
+$FIELD CPUPKT_GG_OAM_USE_FID               1   0  default
+$FIELD CPUPKT_GG_FID                       14  0  default
+$FIELD CPUPKT_GG_LOGIC_SRCPORT             14  0  default
+$FIELD CPUPKT_GG_TTL                       8   0  default
+$FIELD CPUPKT_GG_OPERATION_TYPE            3   0  default
+$FIELD CPUPKT_GG_PTPTS_RXTXFCL             24  0  default
+$FIELD CPUPKT_GG_TS_0_37_HIGH              6   0  default
+$FIELD CPUPKT_GG_TS_0_37_LOW               32  0  default
+$FIELD CPUPKT_GG_SRC_DSCP                  6   0  default
+$FIELD CPUPKT_GG_U1_MODE                   0   0  default jump
+
+$FIELD CPUPKT_GG_L3_OFFSET                 7   0  default
+$FIELD CPUPKT_GG_ECMPHASH                  8   0  default
+$FIELD CPUPKT_GG_ACLDSCPVALID              1   0  default
+$FIELD CPUPKT_GG_ISIPV4                    1   0  default
+$FIELD CPUPKT_GG_ACLDSCP                   6   0  default
+$FIELD CPUPKT_GG_ECNAWARE                  1   0  default
+$FIELD CPUPKT_GG_ECNEN                     1   0  default
+$FIELD CPUPKT_GG_PBBCHECKDISCARD           1   0  default
+$FIELD CPUPKT_GG_CTAGACTION                2   0  default
+$FIELD CPUPKT_GG_SRC_CTAG_COS              3   0  default
+$FIELD CPUPKT_GG_SRC_CTAG_CFI              1   0  default
+$FIELD CPUPKT_GG_SRC_CTAG_OFFSET_TYPE      1   0  default
+$FIELD CPUPKT_GG_PBB_SRCPORT_TYPE          3   0  default
+$FIELD CPUPKT_GG_SRCPORT_ISOLATEID         6   0  default
+$FIELD CPUPKT_GG_SRCCVLANID                12  0  default
+$FIELD CPUPKT_GG_ISIDVALID                 1   0  default
+$FIELD CPUPKT_GG_CTAG_OP_VALID             1   0  default
+$FIELD CPUPKT_GG_CONGESTION_VALID          1   0  default
+$FIELD CPUPKT_GG_NORMAL_ISELOOPPKT         1   0  default
+$FIELD CPUPKT_GG_METADATA_VALID            2   0  default
+$FIELD CPUPKT_GG_METADATA                  14   0  default jump
+
+$FIELD CPUPKT_GG_OAM_RXOAM                     1    0  default
+$FIELD CPUPKT_GG_OAM_MEPINDEX                  13   0  default
+$FIELD CPUPKT_GG_OAM_OAM_TYPE                  4    0  default
+$FIELD CPUPKT_GG_OAM_LINKOAM                   1    0  default
+$FIELD CPUPKT_GG_OAM_LOCALPHYPORT              9    0  default
+$FIELD CPUPKT_GG_OAM_GAL_EXIST                 1    0  default
+$FIELD CPUPKT_GG_OAM_ENTROPY_LABEL_EXIST       1    0  default
+$FIELD CPUPKT_GG_OAM_ISUP                      1    0  default
+$FIELD CPUPKT_GG_OAM_DMEN                      1    0  default
+$FIELD CPUPKT_GG_OAM_LM_RECEICED_PKT           1    0  default
+$FIELD CPUPKT_GG_OAM_RXFCB                     32   0  default
+$FIELD CPUPKT_GG_OAM_RXTXFCL                   8    0  default
+$FIELD CPUPKT_GG_OAM_ISELOOPPKT                1    0  default jump
+
+$FIELD CPUPKT_GG_DM_RESERVE                65    0  default
+$FIELD CPUPKT_GG_DM_OFFSET                 8    0  default
+$FIELD CPUPKT_GG_DM_ISELOOPPKT             1    0  default jump
+
+$FIELD CPUPKT_GG_LM_PKTTYPE                2     0  default
+$FIELD CPUPKT_GG_LM_TXFCB                  32    0  default
+$FIELD CPUPKT_GG_LM_RXFCB                  32    0  default
+$FIELD CPUPKT_GG_LM_RXTXFCL                8     0  default jump
+
+$FIELD CPUPKT_GG_PTP_RESERVE               54     0  default
+$FIELD CPUPKT_GG_PTP_SEQID                 2     0  default
+$FIELD CPUPKT_GG_PTP_DEEP_PARSER           1     0  default
+$FIELD CPUPKT_GG_PTP_IS_L2PTP              1     0  default
+$FIELD CPUPKT_GG_PTP_IS_L4PTP              1     0  default
+$FIELD CPUPKT_GG_PTP_CAPTURE_TS            1     0  default
+$FIELD CPUPKT_GG_PTP_REPLACE_TS            1     0  default
+$FIELD CPUPKT_GG_PTP_APPLY_EGRESS_ASY_DELAY 1     0  default
+$FIELD CPUPKT_GG_PTP_UP_RES_TIME           1     0  default
+$FIELD CPUPKT_GG_PTP_OP_MODE               2     0  default
+$FIELD CPUPKT_GG_PTP_OFFSET                8     0  default
+$FIELD CPUPKT_GG_PTP_ISELOOPPKT            1    0  default jump
+
+$FIELD CPUPKT_GG_C2C_RESERVE               57     0  default
+$FIELD CPUPKT_GG_C2C_SGMAC_STRIP_HEADER     1     0  default
+$FIELD CPUPKT_GG_C2C_C2C_CHECK_DISABLE      1     0  default
+$FIELD CPUPKT_GG_C2C_ISELOOPPKT             1     0  default
+$FIELD CPUPKT_GG_C2C_STACKING_SRCPORT      14     0  default jump
+
+
+$FIELD CPUPKT_DT2_PACKET_OFFSET             8   0  default
+$FIELD CPUPKT_DT2_MCAST                     1   0  default
+$FIELD CPUPKT_DT2_SPANPKT                   1   0  default
+$FIELD CPUPKT_DT2_TOCPU                     1   0  default
+$FIELD CPUPKT_DT2_DEST_CHIPID               7   0  default
+$FIELD CPUPKT_DT2_DESTID                    9   0  default
+$FIELD CPUPKT_DT2_TERMINATE_SGT_HDR         1   0  default
+$FIELD CPUPKT_DT2_PRIORITY                  4   0  default
+$FIELD CPUPKT_DT2_PACKET_TYPE               3   0  default
+$FIELD CPUPKT_DT2_SOURCE_STAG_COS           3   0  default
+$FIELD CPUPKT_DT2_HEADER_HASH               8   0  default
+$FIELD CPUPKT_DT2_LOGIC_PORT_TYPE           1   0  default
+$FIELD CPUPKT_DT2_SRCPORT                   16  0  default
+$FIELD CPUPKT_DT2_SRC_SVLANID               12  0  default
+$FIELD CPUPKT_DT2_COLOR                     2   0  default
+$FIELD CPUPKT_DT2_NEXT_HOP_PTR              18  0  default
+$FIELD CPUPKT_DT2_FROM_LAG                  1   0  default
+$FIELD CPUPKT_DT2_CRITICAL_PACKET           1   0  default
+$FIELD CPUPKT_DT2_IS_LEAF                   1   0  default
+$FIELD CPUPKT_DT2_SOURCE_CFI                1   0  default
+$FIELD CPUPKT_DT2_NEXT_HOP_EXT              1   0  default
+$FIELD CPUPKT_DT2_PORT_MACSA_EN             1   0  default
+$FIELD CPUPKT_DT2_FROMCPULMUPDISABLE        1   0  default
+$FIELD CPUPKT_DT2_SVLAN_TAG_OPERATION_VALID 1   0  default
+$FIELD CPUPKT_DT2_SOURCEPORTEXTENDER        1   0  default
+$FIELD CPUPKT_DT2_FROM_FABRIC               1   0  default
+$FIELD CPUPKT_DT2_BYPASS_INGRESS_EDITING    1   0  default
+$FIELD CPUPKT_DT2_DSNEXTHOP_BYPASSALL       1   0  default
+$FIELD CPUPKT_DT2_FROMCPULMDOWNDISABLE      1   0  default
+$FIELD CPUPKT_DT2_INGRESS_EDIT_EN           1   0  default
+$FIELD CPUPKT_DT2_OUTER_VLAN_IS_CVLAN       1   0  default
+$FIELD CPUPKT_DT2_FROM_CPU_OR_OAM           1   0  default
+$FIELD CPUPKT_DT2_SVLAN_TPID_INDEX          2   0  default
+$FIELD CPUPKT_DT2_SRC_VLAN_PTR              13  0  default
+$FIELD CPUPKT_DT2_MUX_LENGTH_TYPE           2   0  default
+$FIELD CPUPKT_DT2_OAM_TUNNEL_EN             1   0  default
+$FIELD CPUPKT_DT2_BRIDGE_OP                 1   0  default
+$FIELD CPUPKT_DT2_MAC_LEARNING_EN           1   0  default
+$FIELD CPUPKT_DT2_DEBUG_SESSION_EN          1   0  default
+$FIELD CPUPKT_DT2_ILOOP_FROM_CPU            1   0  default
+$FIELD CPUPKT_DT2_STAG_ACTION               2   0  default
+$FIELD CPUPKT_DT2_MAC_KNOWN                 1   0  default
+$FIELD CPUPKT_DT2_OAM_USE_FID               1   0  default
+$FIELD CPUPKT_DT2_FID                       14  0  default
+$FIELD CPUPKT_DT2_LOGIC_SRCPORT             14  0  default
+$FIELD CPUPKT_DT2_TTL                       8   0  default
+$FIELD CPUPKT_DT2_OPERATION_TYPE            3   0  default
+
+$FIELD CPUPKT_DT2_U3_MODE                   0   0  default jump
+
+$FIELD CPUPKT_DT2_U3_OAM_RXTXFCL             24  0  default jump
+
+$FIELD CPUPKT_DT2_U3_OTHER_I2E_SRC_CID_VALID  1  0  default
+$FIELD CPUPKT_DT2_U3_OTHER_I2E_SRC_CID       16  0  default
+$FIELD CPUPKT_DT2_U3_OTHER_PKT_WITH_CID_HDR   1  0  default
+$FIELD CPUPKT_DT2_U3_OTHER_SRC_CID_HDR_OFFSET_TYPE       2  0  default
+$FIELD CPUPKT_DT2_U3_OTHER_TRUNCATE_LEN_PROFILE          4  0  default
+
+$FIELD CPUPKT_DT2_LOCAL_PHY_PORT             8   0  default
+$FIELD CPUPKT_DT2_TS_0_36_HIGH              32   0  default
+
+$FIELD CPUPKT_DT2_SRC_DSCP                  6   0  default
+
+$FIELD CPUPKT_DT2_U1_MODE                   0   0  default jump
+
+$FIELD CPUPKT_DT2_NORMAL_RES                9  0  default
+$FIELD CPUPKT_DT2_IS_SPAN_PKT               1   0  default
+$FIELD CPUPKT_DT2_ACL_STAG_COS_VALID        1   0  default
+$FIELD CPUPKT_DT2_ACL_CTAG_COS_VALID        1   0  default
+$FIELD CPUPKT_DT2_ACL_STAG_CFI_VALID        1   0  default
+$FIELD CPUPKT_DT2_ACL_CTAG_CFI_VALID        1   0  default
+$FIELD CPUPKT_DT2_DOT1AE_ENCRYPTED          1   0  default
+$FIELD CPUPKT_DT2_ECMPHASH                  8   0  default
+$FIELD CPUPKT_DT2_ACL_DSCP_VALID            1     0  default 
+$FIELD CPUPKT_DT2_SRC_DSCP_VALID            1     0  default
+$FIELD CPUPKT_DT2_CNACTION                  2   0  default
+$FIELD CPUPKT_DT2_PBBCHECKDISCARD           1   0  default
+$FIELD CPUPKT_DT2_CTAGACTION                2   0  default
+$FIELD CPUPKT_DT2_SRC_CTAG_COS              3   0  default
+$FIELD CPUPKT_DT2_SRC_CTAG_CFI              1   0  default
+$FIELD CPUPKT_DT2_SRC_CTAG_OFFSET_TYPE      1   0  default
+$FIELD CPUPKT_DT2_SRCPORT_ISOLATEID         6   0  default
+$FIELD CPUPKT_DT2_SRCCVLANID                12  0  default
+$FIELD CPUPKT_DT2_ISIDVALID                 1   0  default
+$FIELD CPUPKT_DT2_CTAG_OP_VALID             1   0  default
+$FIELD CPUPKT_DT2_MICRO_BURST_VALID         1   0  default
+$FIELD CPUPKT_DT2_METADATA_TYPE             2   0  default
+$FIELD CPUPKT_DT2_METADATA                  14   0  default 
+$FIELD CPUPKT_DT2_NO_DOT1AE_ENCRYPT         1   0  default
+$FIELD CPUPKT_DT2_NEED_DOT1AE_ENCRYPT       1   0  default jump
+
+$FIELD CPUPKT_DT2_OAM_RES                       9    0  default
+$FIELD CPUPKT_DT2_OAM_RXOAM                     1    0  default
+$FIELD CPUPKT_DT2_OAM_MEPINDEX                  13   0  default
+$FIELD CPUPKT_DT2_OAM_OAM_TYPE                  4    0  default
+$FIELD CPUPKT_DT2_OAM_LINKOAM                   1    0  default
+$FIELD CPUPKT_DT2_OAM_ILOOPTOAGGUPMEP           1    0  default
+$FIELD CPUPKT_DT2_OAM_GAL_EXIST                 1    0  default
+$FIELD CPUPKT_DT2_OAM_USE_OAM_TTL               1    0  default
+$FIELD CPUPKT_DT2_OAM_ISUP                      1    0  default
+$FIELD CPUPKT_DT2_OAM_DMEN                      1    0  default
+$FIELD CPUPKT_DT2_OAM_LM_RECEICED_PKT           1    0  default
+$FIELD CPUPKT_DT2_OAM_RXFCB                     32   0  default
+$FIELD CPUPKT_DT2_OAM_RXTXFCL                   8    0  default jump
+
+$FIELD CPUPKT_DT2_DM_RESERVE                66   0  default
+$FIELD CPUPKT_DT2_DM_OFFSET                 8    0  default jump
+
+$FIELD CPUPKT_DT2_LM_PKTTYPE                2     0  default
+$FIELD CPUPKT_DT2_LM_TXFCB                  32    0  default
+$FIELD CPUPKT_DT2_LM_RXFCB                  32    0  default
+$FIELD CPUPKT_DT2_LM_RXTXFCL                8     0  default jump
+
+$FIELD CPUPKT_DT2_PTP_RESERVE               28     0  default
+$FIELD CPUPKT_DT2_PTP_TS_62_37              25     0  default
+$FIELD CPUPKT_DT2_PTP_TS_0_4                5     0  default
+$FIELD CPUPKT_DT2_PTP_DEEP_PARSER           1     0  default
+$FIELD CPUPKT_DT2_PTP_IS_L2PTP              1     0  default
+$FIELD CPUPKT_DT2_PTP_IS_L4PTP              1     0  default
+$FIELD CPUPKT_DT2_PTP_REPLACE_TS            1     0  default
+$FIELD CPUPKT_DT2_PTP_APPLY_EGRESS_ASY_DELAY 1     0  default
+$FIELD CPUPKT_DT2_PTP_UP_RES_TIME           1     0  default
+$FIELD CPUPKT_DT2_PTP_OFFSET                8     0  default
+$FIELD CPUPKT_DT2_PTP_ACL_DSCP_VALID        1     0  default 
+$FIELD CPUPKT_DT2_PTP_SRC_DSCP_VALID        1     0  default jump
+
+$FIELD CPUPKT_DT2_C2C_RESERVE               55     0  default
+$FIELD CPUPKT_DT2_C2C_NEIGHBOR_DISCOVER_PACKET     1     0  default
+$FIELD CPUPKT_DT2_C2C_SGMAC_STRIP_HEADER     1     0  default
+$FIELD CPUPKT_DT2_C2C_C2C_CHECK_DISABLE      1     0  default
+$FIELD CPUPKT_DT2_C2C_STACKING_SRCPORT      16     0  default jump
+
+
+$FIELD CPUPKT_PKT_TYPE                     0   0  default nextp 
+$FIELD CPUPKT_UDT                          0   0  default udt
+
+$TYPES WIRELESSDOT11
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$FIELD DOT11_FRAME_CTL                16  0 default
+$FIELD DOT11_DURA_BIT_15              1  0 default
+$FIELD DOT11_DURA_BIT_14              1  0 default
+$FIELD DOT11_DURA_BIT_0_TO_13        14  0 default
+$FIELD DOT11_MAX_MAC_NUM              0  0 default repeat
+$FIELD DOT11_MAC_ADDR                48  0 jump
+$FIELD DOT11_SEQ_CTL_EXIST            0  0 jump
+$FIELD DOT11_SEQ_CTL                 16  0 default 
+$FIELD DOT11_MAC_ADDR4_EXIST          0  0 default jump
+$FIELD DOT11_MAC_ADDR4               48  0 default 
+$FIELD DOT11_QOS_CTL_EXIST            0  0 default jump
+$FIELD DOT11_QOS_CTL                 16  0 default
+$FIELD DOT11_HT_CTL_EXIST             0  0 default jump
+$FIELD DOT11_HT_CTL                  32  0 default
+$FIELD DOT11_PAYLOAD_EXIST             0  0 default jump
+$FIELD DOT11_LLC_EXIST             0  0 default jump
+$FIELD DOT11_LLC_CHARACTER          48 0 default
+$FIELD DOT11_LLC_VLAN_EXIST             0  0 default jump
+$FIELD DOT11_LLC_VLAN_TAG          48 0 default
+$FIELD DOT11_LLC_TYPE          16 0 default nextp
+$FIELD DOT11_UDT                     0   0  default udt
+
+
+
+$TYPES ETHERNET
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$FIELD ETH_MAC_DA               48  0
+$FIELD ETH_MAC_SA               48  0
+$FIELD ETH_MAX_VNUM             0   0  default 
+$FIELD ETH_TPID                 16  0  exist
+$FIELD ETH_COS                  3   0
+$FIELD ETH_DEI                  1   0
+$FIELD ETH_VLAN_ID              12  1  jump default
+$FIELD ETH_LEN_TYPE             16  0  default nextp
+$FIELD ETH_DSAP                 8   0  exist nextp
+$FIELD ETH_SSAP                 8   0
+$FIELD ETH_CTL0                 8   0
+$FIELD ETH_CTL1                 8   0  exist
+$FIELD ETH_OUI                  24  0  exist
+$FIELD ETH_L2_TYPE              16  0  nextp
+$FIELD ETH_UDT                  0   0  default udt
+*** Layer 2 Protocol Header Format Region End **
+
+**** Payload Type head Begin****
+$TYPES PKT_PAYLOAD
+$FIELD PKT_PAYLOAD_LEN          0   0  default repeat jump
+$FIELD PKT_PAYLOAD_DATA         8   0  jump
+$FIELD PKT_PAYLOAD_UDT          0   0  default udt
+**** Payload Type head End****
+
+$TYPES MACSECTAG
+$FIELD MACSEC_TCI_VER               1   0 default
+$FIELD MACSEC_TCI_ES                1   0 default
+$FIELD MACSEC_TCI_SC                1   0 default
+$FIELD MACSEC_TCI_SCB               1   0 default
+$FIELD MACSEC_TCI_E                 1   0 default
+$FIELD MACSEC_TCI_C                 1   0 default
+$FIELD MACSEC_AN                    2   0 default
+$FIELD MACSEC_SL                    8   0 default
+$FIELD MACSEC_PN                    32  0 default jump
+$FIELD MACSEC_SCI                   64  0 default
+$FIELD MACSEC_PAYLOAD               0   0 default nextp
+$FIELD MACSEC_UDT                   0   0 default udt
+
+$TYPES SGTCMD
+$FIELD SGTCMD_VER                   8   0 default
+$FIELD SGTCMD_LENGTH                8   0 default
+$FIELD SGTCMD_SGT_LEN               4   0 default
+$FIELD SGTCMD_SGT_OPT_TYPE         12   0 default
+$FIELD SGTCMD_SGT_VALUE            16   0 default
+$FIELD SGTCMD_NEXT_TYPE            16   0 default nextp
+$FIELD SGTCMD_UDT                   0   0 default udt
+
+
+$TYPES NSH
+$FIELD NSH_VER                  2   0  default
+$FIELD NSH_FLAG_O               1   0  default
+$FIELD NSH_FLAG_C               1   0  default
+$FIELD NSH_FLAG_RES             6   0  default
+$FIELD NSH_LEN                  6   0  default
+$FIELD NSH_MD_TYPE              8   0  default
+$FIELD NSH_NEXT_PROTOCOL        8   0  default
+$FIELD NSH_SERVICE_PATH_ID      24  0  default
+$FIELD NSH_SERVICE_INDEX        8   0  default
+$FIELD NSH_MANDATORY_1         32   0  default
+$FIELD NSH_MANDATORY_2         32   0  default
+$FIELD NSH_MANDATORY_3         32   0  default
+$FIELD NSH_MANDATORY_4         32   0  default nextp
+$FIELD NSH_UDT                  0   0  default udt
+
+$TYPES SLPR
+$FIELD SLPR_SUBTYPE                  8   3  default jump
+$FIELD SLPR_EFM_FLAGS                16  0  
+$FIELD SLPR_EFM_CODE                 8   0  default
+$FIELD SLPR_EFM_PLD_LEN              0   0  repeat
+$FIELD SLPR_EFM_PLD_DATA             8   0  jump default
+$FIELD SLPR_LACP_VER                 8   1  default
+$FIELD SLPR_LACP_ACT_INFO            8   1  default
+$FIELD SLPR_LACP_ACT_INFO_LEN        8   14 default
+$FIELD SLPR_LACP_ACT_SYS_PRI         16  0  
+$FIELD SLPR_LACP_ACT_SYS             48  0  
+$FIELD SLPR_LACP_ACT_KEY             16  0  
+$FIELD SLPR_LACP_ACT_PORT_PRI        16  0  
+$FIELD SLPR_LACP_ACT_PORT            16  0  
+$FIELD SLPR_LACP_ACT_STATE           8   0  
+$FIELD SLPR_LACP_RES0                24  0  
+$FIELD SLPR_LACP_PART_INFO           8   2  default
+$FIELD SLPR_LACP_PART_INFO_LEN       8   14 default
+$FIELD SLPR_LACP_PART_SYS_PRI        16  0  
+$FIELD SLPR_LACP_PART_SYS            48  0  
+$FIELD SLPR_LACP_PART_KEY            16  0  
+$FIELD SLPR_LACP_PART_PORT_PRI       16  0  
+$FIELD SLPR_LACP_PART_PORT           16  0  
+$FIELD SLPR_LACP_PART_STATE          8   0  
+$FIELD SLPR_LACP_RES1                24  0  
+$FIELD SLPR_LACP_COLL_INFO           8   3  default
+$FIELD SLPR_LACP_COLL_INFO_LEN       8   10 default
+$FIELD SLPR_LACP_COLL_MAX_DE         16  0  
+$FIELD SLPR_LACP_RES2                96  0  
+$FIELD SLPR_LACP_TERM                8   0  
+$FIELD SLPR_LACP_TERM_LEN            8   0  
+$FIELD SLPR_LACP_RES3                400 0  
+$FIELD SLPR_UDT                      0   0  default udt
+                                
+
+$TYPES TRILL
+$FIELD TRILL_VER                2   0  default
+$FIELD TRILL_RES                2   0  default
+$FIELD TRILL_MUL                1   0
+$FIELD TRILL_OL                 5   0  default repeat
+$FIELD TRILL_HC                 6   0  
+$FIELD TRILL_EG_RB_NAME         16  0  
+$FIELD TRILL_IN_RB_NAME         16  0  
+$FIELD TRILL_OP                 32  0  jump exist
+$FIELD TRILL_NEXTP              0   1  default jump
+$FIELD TRILL_UDT                0   0  default udt
+
+$TYPES RBCHANNEL
+$FIELD CHAN_VER                 4   0  default
+$FIELD CHAN_PROTOTOL            12  0  default 
+$FIELD CHAN_FLAGS               12  0  default
+$FIELD CHAN_ERR                 4   0  default nextp
+$FIELD CHAN_UDT                 0   0  default udt
+
+
+$TYPES MPLS
+$FIELD LABEL                    20  0
+$FIELD LAB_EXP                  3   0  default
+$FIELD LAB_S                    1   0
+$FIELD LAB_TTL                  8   64 default jump
+$FIELD LAB_NEXTP                0   5  default nextp
+$FIELD LAB_PAYLOAD_LEN          0   0  default repeat jump
+$FIELD LAB_PAYLOAD_DATA         8   0  jump
+$FIELD MPLS_UDT                 0   0  default udt
+
+$TYPES ACH
+$FIELD ACH_HEADER               4   1  default
+$FIELD ACH_VERSION              4   0  default
+$FIELD ACH_RESERVE              8   0  default
+$FIELD ACH_CHANNELTYPE          16  0  nextp
+$FIELD ACH_UDT                  0   0  default udt
+
+
+$TYPES MPLSLM
+$FIELD MPLSLM_VERSION            4    1  default
+$FIELD MPLSLM_FLAGS              4    0         
+$FIELD MPLSLM_CTL_CODE           8    0         
+$FIELD MPLSLM_MSG_LENG           16   0       
+$FIELD MPLSLM_DFLAGS             4    0             
+$FIELD MPLSLM_OTF                4    0             
+$FIELD MPLSLM_RES                24   0             
+$FIELD MPLSLM_SESS_ID            26   0             
+$FIELD MPLSLM_DS                 6    0             
+$FIELD MPLSLM_ORI_TMSTMP         64   0             
+$FIELD MPLSLM_CNT1               64   0             
+$FIELD MPLSLM_CNT2               64   0             
+$FIELD MPLSLM_CNT3               64   0             
+$FIELD MPLSLM_CNT4               64   0             
+$FIELD MPLSLM_TLV_TYPE           8    0  exist jump
+$FIELD MPLSLM_TLV_LEN            8    0  default repeat
+$FIELD MPLSLM_TLV_VALUE          8    0  default jump
+$FIELD MPLSLM_UDT                0    0  default udt
+
+$TYPES MPLSDM
+$FIELD MPLSDM_VERSION            4    1  default
+$FIELD MPLSDM_FLAGS              4    0         
+$FIELD MPLSDM_CTL_CODE           8    0         
+$FIELD MPLSDM_MSG_LENG           16   0       
+$FIELD MPLSDM_QTF                4    0             
+$FIELD MPLSDM_RTF                4    0             
+$FIELD MPLSDM_RPTF               4    0             
+$FIELD MPLSDM_RES                20   0             
+$FIELD MPLSDM_SESS_ID            24   0             
+$FIELD MPLSDM_DS                 8    0             
+$FIELD MPLSDM_TMSTMP1            64   0             
+$FIELD MPLSDM_TMSTMP2            64   0             
+$FIELD MPLSDM_TMSTMP3            64   0             
+$FIELD MPLSDM_TMSTMP4            64   0             
+$FIELD MPLSDM_TLV_TYPE           8    0  exist jump
+$FIELD MPLSDM_TLV_LEN            8    0  default repeat
+$FIELD MPLSDM_TLV_VALUE          8    0  default jump
+$FIELD MPLSDM_UDT                0    0  default udt
+
+$TYPES MPLSLDM
+$FIELD MPLSLDM_VERSION           4    1  default
+$FIELD MPLSLDM_FLAGS             4    0         
+$FIELD MPLSLDM_CTL_CODE          8    0         
+$FIELD MPLSLDM_MSG_LENG          16   0       
+$FIELD MPLSLDM_DFLAGS            4    0             
+$FIELD MPLSLDM_QTF               4    0             
+$FIELD MPLSLDM_RTF               4    0             
+$FIELD MPLSLDM_RPTF              4    0             
+$FIELD MPLSLDM_RES               16   0             
+$FIELD MPLSLDM_SESS_ID           24   0             
+$FIELD MPLSLDM_DS                8    0             
+$FIELD MPLSLDM_TMSTMP1           64   0             
+$FIELD MPLSLDM_TMSTMP2           64   0             
+$FIELD MPLSLDM_TMSTMP3           64   0             
+$FIELD MPLSLDM_TMSTMP4           64   0             
+$FIELD MPLSLDM_CNT1              64   0             
+$FIELD MPLSLDM_CNT2              64   0             
+$FIELD MPLSLDM_CNT3              64   0             
+$FIELD MPLSLDM_CNT4              64   0             
+$FIELD MPLSLDM_TLV_TYPE          8    0  exist jump
+$FIELD MPLSLDM_TLV_LEN           8    0  default repeat
+$FIELD MPLSLDM_TLV_VALUE         8    0  default jump
+$FIELD MPLSLDM_UDT               0    0  default udt
+
+$TYPES CSF
+$FIELD CSF_VERSION              8   0  default
+$FIELD CSF_RESERVE1             8   0  default
+$FIELD CSF_FLAG                 8   0  default
+$FIELD CSF_RESERVE2             8   0  default
+$FIELD CSF_TLV_LEN              8   0  default
+$FIELD CSF_UDT                  0   0  default udt
+
+$TYPES CW
+$FIELD CW_HEADER                4   0  default
+$FIELD CW_FLAGS                 4   0  default
+$FIELD CW_FRAG                  2   0  default
+$FIELD CW_LENGTH                6   0  default
+$FIELD CW_SEQUENCE              16  0  default
+$FIELD CW_NEXTP                 0   0  default nextp
+$FIELD CW_UDT                   0   0  default udt
+
+$TYPES L2H
+$FIELD L2H_MACDA                48  0
+$FIELD L2H_MACSA                48  0
+$FIELD L2H_MAXVNUM              0   0  default repeat
+$FIELD L2H_TYPE_ID              16  0  exist
+$FIELD L2H_VLAN_COS             3   0
+$FIELD L2H_VLAN_DEI             1   0
+$FIELD L2H_VLAN_ID              12  1  jump default
+$FIELD L2H_LEN_TYPE             16  0  nextp
+$FIELD L2H_UDT                  0   0  default udt
+
+
+$TYPES CFM
+$FIELD CFM_MD_LEVEL                       3   0  default
+$FIELD CFM_VER                            5   0  default
+$FIELD CFM_OP_CODE                        8   2  default
+$FIELD CFM_FLAGS                          8   0  default
+$FIELD CFM_FIRST_TLV_OFFSET               8   4  default jump
+
+$FIELD CFM_PAYLOAD_LEN                    0   0  default repeat jump 
+$FIELD CFM_PAYLOAD_DATA                   8   0  jump
+
+$FIELD CFM_CCM_SEQ_NUM                    32  0  default
+$FIELD CFM_CCM_MAIN_ASS_END_POINT_ID      16  58 default
+$FIELD CFM_CCM_MAIN_DOMAIN_NAME_FORMAT    8   4  default jump
+$FIELD CFM_CCM_MAIN_DOMAIN_NAME_LEN       8   8  default repeat
+$FIELD CFM_CCM_MAIN_DOMAIN_NAME_STR       8   63 default jump
+$FIELD CFM_CCM_SHORT_MA_NAME_FORMAT       8   2  default jump
+$FIELD CFM_CCM_SHORT_MA_NAME_LEN          8   3  default repeat jump
+$FIELD CFM_CCM_SHORT_MA_NAME_STR          8   63 jump
+$FIELD CFM_CCM_MAID_ZERO_PAD              8   0  exist   jump
+$FIELD CFM_CCM_TXFCF                      32  0  default
+$FIELD CFM_CCM_RXFCB                      32  0  default
+$FIELD CFM_CCM_TXFCB                      32  0  default
+$FIELD CFM_CCM_RESERVED                   32  0  default jump
+
+$FIELD CFM_LB_TP                          0   0  default
+$FIELD CFM_LB_ID                          32  1  default jump
+
+$FIELD CFM_LT_ID                          32  1  default
+$FIELD CFM_LT_TTL                         8   3e default jump
+$FIELD CFM_LTM_ORI_MAC                    48  0  default
+$FIELD CFM_LTM_TAR_MAC                    48  0  default jump
+$FIELD CFM_LTR_RL_ACT                     8   1  default jump
+
+$FIELD CFM_LM_TXFCF                       32  0  default
+$FIELD CFM_LM_RXFCF                       32  0  default
+$FIELD CFM_LM_TXFCB                       32  0  default jump
+
+$FIELD CFM_APS_LEN                        0   0  default repeat
+$FIELD CFM_APS_DATA                       8   8  jump
+
+$FIELD CFM_DM_TX_STPF                     64  0  default
+$FIELD CFM_DM_RX_STPF                     64  0  default
+$FIELD CFM_DM_TX_STPB                     64  0  exist
+$FIELD CFM_DM_RX_STPB                     64  0  jump
+
+$FIELD CFM_SLM_SRC_MEPID                  16  0  default
+$FIELD CFM_SLM_RESP_MEPID                 16  0  default
+$FIELD CFM_SLM_TESTID                     32  0  default
+$FIELD CFM_SLM_TXFCF                      32  0  default
+$FIELD CFM_SLM_TXFCB                      32  0  default jump
+
+$FIELD CFM_TLV_TYPE                       8   0  default jump
+$FIELD CFM_TLV_LEN                        16  0  default repeat
+$FIELD CFM_TLV_VALUE                      8   0  default jump
+$FIELD CFM_TP_LBM_TLV_TYPE                8   21 default
+$FIELD CFM_TP_LBM_TLV_LEN                 16  19 default
+$FIELD CFM_TP_LBM_TLV_SUBTYPE             8   1  default
+$FIELD CFM_TP_LBM_TLV_MEPID               16  0 
+$FIELD CFM_TP_LBM_TLV_ZERO                184 0  default
+
+$FIELD CFM_UDT                            0   0  default udt
+
+$TYPES PBB
+$FIELD PBB_ITAG_PCP           3   0  default
+$FIELD PBB_ITAG_DEI           1   0  default
+$FIELD PBB_ITAG_NCA           1   0  default
+$FIELD PBB_ITAG_RES1          1   0  default
+$FIELD PBB_ITAG_RES2          2   0  default
+$FIELD PBB_ITAG_ISID          24  0  default
+$FIELD PBB_ITAG_CMAC_DA       48  0  default
+$FIELD PBB_ITAG_CMAC_SA       48  0  default
+$FIELD PBB_STAG_TPID          16  0  exist
+$FIELD PBB_STAG_COS           3   0  default
+$FIELD PBB_STAG_DEI           1   0  default
+$FIELD PBB_STAG_VLANID        12  0  default
+$FIELD PBB_CTAG_TPID          16  0  exist
+$FIELD PBB_CTAG_COS           3   0  default
+$FIELD PBB_CTAG_DEI           1   0  default
+$FIELD PBB_CTAG_VLANID        12  0  default
+$FIELD PBB_LEN_TYPE           16  0  nextp
+$FIELD PBB_UDT                0   0  default udt
+                                   
+$TYPES ETAG                        
+$FIELD ETAG_PCP               3   0   
+$FIELD ETAG_DEI               1   0 
+$FIELD ETAG_ING_E_CID         12  0 
+$FIELD ETAG_RES1              2   0  default
+$FIELD ETAG_E_CID             14  0 
+$FIELD ETAG_RES2              16  0  default
+$FIELD ETAG_STAG_TPID         16  0  exist
+$FIELD ETAG_STAG_COS          3   0  default
+$FIELD ETAG_STAG_DEI          1   0  default
+$FIELD ETAG_STAG_VLANID       12  0  default
+$FIELD ETAG_CTAG_TPID         16  0  exist
+$FIELD ETAG_CTAG_COS          3   0  default
+$FIELD ETAG_CTAG_DEI          1   0  default
+$FIELD ETAG_CTAG_VLANID       12  0  default
+$FIELD ETAG_LEN_TYPE          16  0  nextp
+$FIELD ETAG_UDT               0   0  default udt
+
+
+$TYPES FIP
+$FIELD FIP_VER                4   0  default
+$FIELD FIP_RES1               12  0  
+$FIELD FIP_PAYLOAD_LEN        0   0  default repeat jump
+$FIELD FIP_PAYLOAD_DATA       32  0  jump
+$FIELD FIP_UDT                0   0  default udt
+
+
+$TYPES FCOE           
+$FIELD FCOE_VER               4   0  default
+$FIELD FCOE_RES1              100 0  
+$FIELD FCOE_SOF               8   0  
+$FIELD FCOE_R_CTL             8   0  
+$FIELD FCOE_D_ID              24  0 
+$FIELD FCOE_CS_CTL            8   0 
+$FIELD FCOE_S_ID              24  0 
+$FIELD FCOE_TYPE              8   0 
+$FIELD FCOE_F_CTL             24  0 
+$FIELD FCOE_SEQ_ID            8   0 
+$FIELD FCOE_DF_CTL            8   0 
+$FIELD FCOE_SEQ_CNT           16  0 
+$FIELD FCOE_CX_ID             16  0 
+$FIELD FCOE_RX_ID             16  0 
+$FIELD FCOE_PARA              32  0 
+$FIELD FCOE_PAYLOAD_LEN       0   0  default repeat jump
+$FIELD FCOE_PAYLOAD_DATA      32  0  jump
+$FIELD FCOE_EOF               8   0  
+$FIELD FCOE_RES2              24  0  default
+$FIELD FCOE_UDT               0   0  default udt
+                           
+$TYPES CCM
+$FIELD MEL                    3   0  default
+$FIELD VER                    5   0  default
+$FIELD OPCODE                 8   1  default
+$FIELD FLAGS                  8   0  default
+$FIELD TLV_OFF                8   46 default
+$FIELD SEQ_NUM                32  0  default
+$FIELD MEP_ID                 16  0  default
+$FIELD MEG_ID                 384 0  default
+$FIELD TX_FCF                 32  0  default
+$FIELD RX_FCB                 32  0  default
+$FIELD TX_FCB                 32  0  default
+$FIELD RESERVED               32  0  default
+$FIELD END_TLV                8   0  default jump
+$FIELD TLV_TYPE               8   0  default
+$FIELD TLV_LEN                16  1  default repeat
+$FIELD TLV_VALUE              8   0  default jump
+$FIELD CCM_PAYLOAD            8   0  exist jump
+$FIELD CCM_UDT                0   0  default udt
+
+$TYPES GRE
+$FIELD GRE_CBIT               1   0  default
+$FIELD GRE_RBIT               1   0  default
+$FIELD GRE_KBIT               1   0  default
+$FIELD GRE_SBIT               1   0  default
+$FIELD GRE_RES0               9   0  default
+$FIELD GRE_VER                3   0  default
+$FIELD GRE_PROT               16  0  default nextp jump
+$FIELD GRE_CHECKSUM           16  0  default
+$FIELD GRE_RES1               16  0  default jump
+$FIELD GRE_KEY                32  0  default jump
+$FIELD GRE_SEQ                32  0  default
+$FIELD GRE_UDT                0   0  default udt
+
+$TYPES EAPOL
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$FIELD EAPOL_VER                   8   1  default
+$FIELD EAPOL_TYPE                  8   0
+$FIELD EAPOL_LEN                   16  0  jump
+$FIELD EAP_PACKET_CODE             8   0
+$FIELD EAP_PACKET_ID               8   0
+$FIELD EAP_PACKET_LEN              16  0  repeat jump
+$FIELD EAP_PACKET_TYPE             8   0  jump
+$FIELD EAP_PACKET_DATA             8   0  jump
+$FIELD EAP_MD5_CHALL_VALUE_SIZE    8   10 repeat default
+$FIELD EAP_MD5_CHALL_VALUE         8   0  jump
+$FIELD EAP_MD5_CHALL_NAME_LEN      0   0  repeat 
+$FIELD EAP_MD5_CHALL_NAME          8   0  default jump
+$FIELD EAPOL_UDT                   0   0  default udt
+
+*** Layer 3 Protocol Header Format Region Start **
+$TYPES IPV4
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$FIELD IPV4_VER             4   4  default
+$FIELD IPV4_IHL             4   5  default
+$FIELD IPV4_TOS             8   0  default
+$FIELD IPV4_LEN             16  0  default
+$FIELD IPV4_ID              16  0  default
+$FIELD IPV4_FLG             3   0  default
+$FIELD IPV4_FRAGO           13  0  default
+$FIELD IPV4_TTL             8   ff default
+$FIELD IPV4_PAYLOAD_FORCE   0   0  default 
+$FIELD IPV4_PROTO           8   ff default nextp
+$FIELD IPV4_CHKSM           16  0  default
+$FIELD IPV4_SA              32  0
+$FIELD IPV4_DA              32  0  jump
+$FIELD IPV4_OPT             0   0  default
+$FIELD IPV4_PAYLOAD_LEN     0   0  default repeat jump
+$FIELD IPV4_PAYLOAD         8   0  jump
+$FIELD IPV4_UDT             0   0  default udt
+
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6
+$FIELD IPV6_VER             4   6  default
+$FIELD IPV6_TRA_CLASS       8   0
+$FIELD IPV6_FLOW_LBL        20  1  default
+$FIELD IPV6_PAYL_LEN        16  0  default
+$FIELD IPV6_NEXT_HDR        8   3b default nextp
+$FIELD IPV6_HOP_LIMIT       8   ff default
+$FIELD IPV6_SA              128 0
+$FIELD IPV6_DA              128 0  jump
+$FIELD IPV6_PAYLOAD_LEN     0   0  default repeat jump
+$FIELD IPV6_PAYLOAD         8   0  jump
+$FIELD IPV6_UDT             0   0  default udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6_HBH_OPT_HEADER
+$FIELD IPV6_HBH_OPT_HEADER_NEXT_HEADER                      8   3b default nextp
+$FIELD IPV6_HBH_OPT_HEADER_EXT_LENGTHER                     8   0  
+$FIELD IPV6_HBH_OPT_HEADER_OPTION_TYPE                      8   0  jump
+$FIELD IPV6_HBH_OPT_HEADER_JUM_PAYL_OPTION_LEN              8   4  default
+$FIELD IPV6_HBH_OPT_HEADER_JUM_PAYL_LEN                     32  0  jump
+$FIELD IPV6_HBH_OPT_HEADER_ROUT_ALT_OPTION_LEN              8   2  default
+$FIELD IPV6_HBH_OPT_HEADER_ROUT_ALT_VALUE                   8   0  jump default
+$FIELD IPV6_HBH_OPT_HEADER_PADN_OPTION_LEN                  8   0  repeat
+$FIELD IPV6_HBH_OPT_HEADER_PADN_OPTION_DATA                 8   0  jump exist
+$FIELD IPV6_HBH_OPT_HEADER_UDT                              0   0  udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6_DEST_OPT_HEADER
+$FIELD IPV6_DEST_OPT_HEADER_NEXT_HEADER                     8   3b default nextp
+$FIELD IPV6_DEST_OPT_HEADER_EXT_LENGTHER                    8   0
+$FIELD IPV6_DEST_OPT_HEADER_OPTION_TYPE                     8   0  jump
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_LEN              8   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_FLAG             4   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_RES              4   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_PRE_LEN          8   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SEQ_NUM          16  0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_LIFETIME         32  0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SUB_OPTION_NUM   0   0  default repeat
+$FIELD IPV6_DEST_OPT_HEADER_BIND_UP_OPTION_SUB_OPTION       32  0  jump
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_LEN             8   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_STATUS          8   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SEQ_NUM         16  0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_LIFETIME        32  0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_REFRESH         32  0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SUB_OPTION_NUM  0   0  default repeat
+$FIELD IPV6_DEST_OPT_HEADER_BIND_ACK_OPTION_SUB_OPTION      32  0  jump
+$FIELD IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_LEN             8   0
+$FIELD IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_SUB_OPTION_NUM  0   0  default repeat
+$FIELD IPV6_DEST_OPT_HEADER_BIND_REQ_OPTION_SUB_OPTION      32  0  jump
+$FIELD IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_LEN            8   0
+$FIELD IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_HOME_ADDR      128 0
+$FIELD IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_SUB_OPTION_NUM 0   0  default repeat
+$FIELD IPV6_DEST_OPT_HEADER_HOME_ADDR_OPTION_SUB_OPTION     32  0  jump
+$FIELD IPV6_DEST_OPT_HEADER_UDT                             0   0  udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6_ROUT_HEADER
+$FIELD IPV6_ROUT_HEADER_NEXT_HEADER             8   3b default nextp
+$FIELD IPV6_ROUT_HEADER_EXT_LENGTHER            8   0
+$FIELD IPV6_ROUT_HEADER_ROUT_TYPE               8   0  jump
+$FIELD IPV6_ROUT_HEADER_SEG_LEFT                8   0
+$FIELD IPV6_ROUT_HEADER_ROUT_TYPE_SPEC_DATA_NUM 0   0  default repeat
+$FIELD IPV6_ROUT_HEADER_ROUT_TYPE_SPEC_DATA     8   0  jump
+$FIELD IPV6_ROUT_TYPE0_HEADER_SEG_LEFT          8   0
+$FIELD IPV6_ROUT_TYPE0_HEADER_RES               32  0
+$FIELD IPV6_ROUT_TYPE0_HEADER_ADDR_NUM          0   0  default repeat
+$FIELD IPV6_ROUT_TYPE0_HEADER_ADDR              128 0  jump
+$FIELD IPV6_ROUT_HEADER_UDT                     0   0  udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6_FRAG_HEADER
+$FIELD IPV6_FRAG_HEADER_NEXT_HEADER             8   3b default nextp
+$FIELD IPV6_FRAG_HEADER_RES_1                   8   0
+$FIELD IPV6_FRAG_HEADER_FRAG_OFFSET             13  0
+$FIELD IPV6_FRAG_HEADER_RES_2                   2   0
+$FIELD IPV6_FRAG_HEADER_MORE_FRAG_FLAG          1   0
+$FIELD IPV6_FRAG_HEADER_ID                      32  0
+$FIELD IPV6_FRAG_HEADER_UDT                     0   0  udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6_AUTHEN_HEADER
+$FIELD IPV6_AUTHEN_HEADER_NEXT_HEADER           8   3b default nextp
+$FIELD IPV6_AUTHEN_HEADER_PAYL_LEN              8   0
+$FIELD IPV6_AUTHEN_HEADER_RES                   16  0
+$FIELD IPV6_AUTHEN_HEADER_SEUC_PARA_INDEX       32  0
+$FIELD IPV6_AUTHEN_HEADER_SEQ_NUM               32  0
+$FIELD IPV6_AUTHEN_HEADER_AUTHEN_DATA_NUM       0   0  default repeat
+$FIELD IPV6_AUTHEN_HEADER_AUTHEN_DATA           8   0  jump
+$FIELD IPV6_AUTHEN_HEADER_UDT                   0   0  udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IPV6_ENCAP_SEUC_PAYL_HEADER
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_SEUC_PARA_INDEX  32  0
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_SEQ_NUM          32  0
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_PAYL_DATA_NUM    0   0  default repeat
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_PAYL_DATA        8   0  jump
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING_NUM      0   0  default repeat
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING          8   0  jump
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_PADDING_LEN      8   0
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_NEXT_HEADER      8   3b default nextp
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_AUTHEN_DATA_NUM  0   0  default repeat
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_AUTHEN_DATA      8   0  jump
+$FIELD IPV6_ENCAP_SEUC_PAYL_HEADER_UDT              0   0  udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES VRRP
+$FIELD VRRP_VER             4   2  default
+$FIELD VRRP_TYPE            4   1  default
+$FIELD VRRP_VIR_RTR_ID      8   0
+$FIELD VRRP_PRIORITY        8   64 default
+$FIELD VRRP_COUNT_IP_ADDR   8   0  repeat
+$FIELD VRRP_AUTH_TYPE       8   0
+$FIELD VRRP_ADVER_INT       8   1  default
+$FIELD VRRP_CHKSM           16  0  default
+$FIELD VRRP_IP_ADDR         32  0  jump
+$FIELD VRRP_AUTH_DATA1      32  0  default
+$FIELD VRRP_AUTH_DATA2      32  0  default
+$FIELD VRRP_UDT             0   0  default udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES TCP
+$FIELD TCP_USE_PAYLOAD      0   0  default jump
+$FIELD TCP_SOURCE_PORT      16  0
+$FIELD TCP_DEST_PORT        16  0
+$FIELD TCP_SEQUENCE_NUM     32  0
+$FIELD TCP_ACKNOW_NUM       32  0
+$FIELD TCP_DATA_OFFSET      4   0
+$FIELD TCP_RESERVED         6   0
+$FIELD TCP_URG              1   0
+$FIELD TCP_ACK              1   0
+$FIELD TCP_PSH              1   0
+$FIELD TCP_RST              1   0
+$FIELD TCP_SYN              1   0
+$FIELD TCP_FIN              1   0
+$FIELD TCP_WINDOW           16  0
+$FIELD TCP_CHECKSUM         16  0
+$FIELD TCP_URGENT_POINT     16  0
+$FIELD TCP_OPTION           32  0 nextp
+$FIELD TCP_UDT              0   0 udt
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES UDP
+$FIELD UDP_USE_PAYLOAD                       0    0  default jump
+$FIELD UDP_SOURCE_PORT                       16   0
+$FIELD UDP_VXLANHEADER                       0    0  default
+$FIELD UDP_CAPWAPHEADER                       0    0  default
+$FIELD UDP_OTWAMPHEADER                       0    0  default
+$FIELD UDP_DEST_PORT                         16   0  nextp 
+$FIELD UDP_LENGTH                            16   0
+$FIELD UDP_CHECKSUM                          16   0  default
+$FIELD UDP_UDT                               0    0  default udt
+
+
+
+$TYPES VXLAN
+$FIELD VXLAN_BITFLAGS                     8      8   default 
+$FIELD VXLAN_RESERVED1                    24     0   default 
+$FIELD VXLAN_VNIID                        24     0   default 
+$FIELD VXLAN_PAYLOADMODE                  0      1   default  
+$FIELD VXLAN_RESERVED2                     8      0   default nextp jump
+$FIELD VXLAN_PAYLOADLEN                    0      0   default repeat 
+$FIELD VXLAN_PAYLOAD                       8     0   jump
+$FIELD VXLAN_UDT                               0    0  default udt
+
+$TYPES OSPF
+$FIELD OSPF_VER                              8    0 
+$FIELD OSPF_TYPE                             8    0
+$FIELD OSPF_LEN                              16   0
+$FIELD OSPF_ROU_ID                           32   0
+$FIELD OSPF_ARE_ID                           32   0
+$FIELD OSPF_CHKSM                            16   0
+$FIELD OSPF_AU_TYPE                          16   0
+$FIELD OSPF_AU_DATA                          64   0  jump
+$FIELD OSPF_HELLO_MASK                       32   0  
+$FIELD OSPF_HELLO_INT                        16   0
+$FIELD OSPF_HELLO_OPT                        8    0
+$FIELD OSPF_HELLO_RTR_PRIO                   8    0
+$FIELD OSPF_HELLO_ROUT_DEA_INT               32   0
+$FIELD OSPF_HELLO_DES_ROUT                   32   0
+$FIELD OSPF_HELLO_BAK_DES_ROUT               32   0
+$FIELD OSPF_HELLO_NEIG                       32   0  exist jump
+$FIELD OSPF_DBDES_INT_MTU                    16   0  
+$FIELD OSPF_DBDES_OPT                        8    0
+$FIELD OSPF_DBDES_RES                        5    0
+$FIELD OSPF_DBDES_I                          1    0
+$FIELD OSPF_DBDES_M                          1    0
+$FIELD OSPF_DBDES_MS                         1    0
+$FIELD OSPF_DBDES_MSG_SEQ                    32   0
+$FIELD OSPF_DBDES_LSA                        160  0  exist jump 
+$FIELD OSPF_LSR_LS_TYPE                      32   0  exist
+$FIELD OSPF_LSR_LS_ID                        32   0
+$FIELD OSPF_LSR_ADV_ROUT                     32   0  jump
+$FIELD OSPF_LSA                              160  0  
+$FIELD OSPF_UDT                              0    0  default udt
+                                                  
+
+
+$TYPES L2TP
+$FIELD L2TP_T                                1    0
+$FIELD L2TP_L                                1    0
+$FIELD L2TP_X1                               2    0
+$FIELD L2TP_S                                1    0
+$FIELD L2TP_X2                               1    0
+$FIELD L2TP_O                                1    0
+$FIELD L2TP_P                                1    0
+$FIELD L2TP_X3                               4    0
+$FIELD L2TP_VER                              4    0  jump
+$FIELD L2TP_LENGTH                           16   0  
+$FIELD L2TP_TUNL_ID                          16   0
+$FIELD L2TP_SESS_ID                          16   0  jump
+$FIELD L2TP_NS                               16   0  
+$FIELD L2TP_NR                               16   0  jump
+$FIELD L2TP_OFF_SZ                           16   0  repeat
+$FIELD L2TP_OFF_PAD                          8    0  jump
+$FIELD L2TP_AVP_M                            1    0  exist
+$FIELD L2TP_AVP_H                            1    0
+$FIELD L2TP_AVP_RSVD                         4    0
+$FIELD L2TP_AVP_LENGTH                       10   0  length
+$FIELD L2TP_AVP_VND_ID                       16   0
+$FIELD L2TP_AVP_TYPE                         16   0
+$FIELD L2TP_AVP_VALUE                        8    0  jump
+$FIELD L2TP_UDT                              0    0  default udt
+
+$TYPES DHCP
+$FIELD DHCP_OP                               8    0
+$FIELD DHCP_HTYPE                            8    0
+$FIELD DHCP_HLEN                             8    0
+$FIELD DHCP_HOPS                             8    0
+$FIELD DHCP_XID                              32   0
+$FIELD DHCP_SECS                             16   0
+$FIELD DHCP_FLAGS                            16   0
+$FIELD DHCP_CIADDR                           32   0
+$FIELD DHCP_YIADDR                           32   0
+$FIELD DHCP_SYIADDR                          32   0
+$FIELD DHCP_GIADDR                           32   0
+$FIELD DHCP_CHADDR                           128  0
+$FIELD DHCP_SNAME                            512  0
+$FIELD DHCP_FILE                             1024 0
+$FIELD DHCP_MAGIC_COOK                       32   0
+$FIELD DHCP_OPT_TYPE                         8    0  exist jump
+$FIELD DHCP_OPT_REQ_IP_ADDR_LEN              8    4  default
+$FIELD DHCP_OPT_REQ_IP_ADDR                  32   0  jump
+$FIELD DHCP_OPT_MESSAGE_TYPE_LEN             8    1  default
+$FIELD DHCP_OPT_MESSAGE_TYPE                 8    0  jump
+$FIELD DHCP_OPT_PARA_REQ_LEN                 8    0  repeat
+$FIELD DHCP_OPT_PARA_REQ_DATA                8    0  jump
+$FIELD DHCP_OPT_AGE_INFO_LEN                 8    0  default jump
+$FIELD DHCP_OPT_AGE_INFO_SUB_SEQ1            8    1  default
+$FIELD DHCP_OPT_AGE_INFO_SUB_SEQ1_LEN        8    0  repeat
+$FIELD DHCP_OPT_AGE_INFO_SUB_SEQ1_DATA       8    0  jump
+$FIELD DHCP_OPT_AGE_INFO_SUB_SEQ2            8    2  default
+$FIELD DHCP_OPT_AGE_INFO_SUB_SEQ2_LEN        8    0  repeat
+$FIELD DHCP_OPT_AGE_INFO_SUB_SEQ2_DATA       8    0  jump
+$FIELD DHCP_OPT_TIME_LEN                     8    4  default
+$FIELD DHCP_OPT_TIME_DATA                    32   0  jump
+$FIELD DHCP_OPT_PAYLOAD_LEN                  0    0  default repeat jump
+$FIELD DHCP_OPT_PAYLOAD                      8    0  jump
+$FIELD DHCP_UDT                              0    0  default udt
+
+
+$TYPES RIP
+$FIELD RIP_CMD                               8    0
+$FIELD RIP_VER                               8    0
+$FIELD RIP_EXTEND                            16   0  jump
+$FIELD RIP_ENTRY_NUM                         0    0  default repeat
+$FIELD RIP_ADDR_FAMILY_ID                    16   0  jump
+$FIELD RIP_ROUT_TAG                          16   0
+$FIELD RIP_IP_ADDR                           32   0
+$FIELD RIP_SUBNET_MASK                       32   0
+$FIELD RIP_NEXT_HOP                          32   0
+$FIELD RIP_METRIC                            32   0  jump
+$FIELD RIP_ADDR_FAMILY_TYPEFF_AUT_TYPE       16   0  jump
+$FIELD RIP_ADDR_FAMILY_TYPEFF_AUT_INFO       128  0  jump
+$FIELD RIP_MD5_DIG_OFFSET                    16   0
+$FIELD RIP_MD5_KEY_ID                        8    0
+$FIELD RIP_MD5_AUTH_DATA_LEN                 8    0
+$FIELD RIP_MD5_SEQ_NUM                       32   0
+$FIELD RIP_MD5_ZERO_PADD                     64   0  default jump
+$FIELD RIP_UDT                               0    0  default udt
+
+$TYPES RADIUS
+$FIELD RADIUS_CODE                           8    0
+$FIELD RADIUS_ID                             8    0
+$FIELD RADIUS_LEN                            16   0
+$FIELD RADIUS_AUTH                           128  0
+$FIELD RADIUS_ATTRI_TYPE                     8    0
+$FIELD RADIUS_ATTRI_LEN                      8    0  repeat jump
+$FIELD RADIUS_ATTRI_DATA                     8    0  jump
+$FIELD RADIUS_ATTRI_NUM                      0    0  jump
+$FIELD RADIUS_UDT                            0    0  default udt
+
+$TYPES LDP
+$FIELD LDP_VERSION                           16   1  default
+$FIELD LDP_PDU_LEN                           16   0  default
+$FIELD LDP_LSR_ID                            32   0  default
+$FIELD LDP_LBL_SPC_ID                        16   0  default
+$FIELD LDP_MSG_TYPE                          16   0  default
+$FIELD LDP_MSG_LEN                           16   0  default
+$FIELD LDP_MSG_ID                            32   0  default
+$FIELD LDP_CMMN_TLV_TYPE                     16   0  default
+$FIELD LDP_CMMN_TLV_LEN                      16   0  default
+$FIELD LDP_CMMN_TLV_HLD_TIME                 16   0  default
+$FIELD LDP_CMMN_RESV                         16   0  default
+$FIELD LDP_IPV4_TLV_TYPE                     16   0  default
+$FIELD LDP_IPV4_TLV_LEN                      16   0  default
+$FIELD LDP_IPV4_TRANS_ADDR                   32   0  default
+$FIELD LDP_UDT                               0    0  default udt
+
+$TYPES BFD
+$FIELD BFD_VERSION                           3    1  default
+$FIELD BFD_DIAG                              5    0         
+$FIELD BFD_STATUS                            2    1  default
+$FIELD BFD_FLAGS                             6    0          
+$FIELD BFD_MULTIPLE                          8    3  default
+$FIELD BFD_LENGTH                            8    18 default
+$FIELD BFD_MYDISCRI                          32   0  
+$FIELD BFD_YOURDISCRI                        32   0  
+$FIELD BFD_MINTXVAL                          32   0  
+$FIELD BFD_MINRXVAL                          32   0  
+$FIELD BFD_ECHOVAL                           32   0  default nextp
+$FIELD BFD_UDT                               0    0  default udt
+
+$TYPES PTP
+$FIELD PTP_TRANS_SPE                         4    0  
+$FIELD PTP_MSG_TYPE                          4    0  
+$FIELD PTP_RES0                              4    0  default
+$FIELD PTP_VER                               4    2  default        
+$FIELD PTP_MSG_LEN                           16   0  
+$FIELD PTP_DM_NUM                            8    0  
+$FIELD PTP_RES1                              8    0  
+$FIELD PTP_FLAGS                             16   0  
+$FIELD PTP_CORR                              64   0  
+$FIELD PTP_RES2                              32   0  
+$FIELD PTP_SRC_PT_ID                         80   0  
+$FIELD PTP_SEQ_ID                            16   0  
+$FIELD PTP_CTRL                              8    0  
+$FIELD PTP_LOG_MSG_INT                       8    0  jump
+$FIELD PTP_AM_ORG_TMSTMP                     80   0
+$FIELD PTP_AM_CURR_UTC_OFFSET                16   0
+$FIELD PTP_AM_RES                            8    0
+$FIELD PTP_AM_GRANMST_P1                     8    0
+$FIELD PTP_AM_GRANMST_CLKQLT                 32   0
+$FIELD PTP_AM_GRANMST_P2                     8    0
+$FIELD PTP_AM_GRANMST_ID                     64   0
+$FIELD PTP_AM_STP_RM                         16   0
+$FIELD PTP_AM_TIME_SRC                       8    0  jump
+$FIELD PTP_SDRM_ORG_TMSTMP                   80   0  jump
+$FIELD PTP_FUM_PRC_ORG_TMSTMP                80   0  jump
+$FIELD PTP_DRM_REC_TMSTMP                    80   0
+$FIELD PTP_DRM_REQ_PT_ID                     80   0  jump
+$FIELD PTP_PRQM_ORG_TMPSTMP                  80   0
+$FIELD PTP_PRQM_RES                          80   0  jump
+$FIELD PTP_PRSM_REQ_RCPT_TMSTMP              80   0
+$FIELD PTP_PRSM_REQ_PT_ID                    80   0  jump
+$FIELD PTP_PRFUM_RES_ORG_TMSTMP              80   0
+$FIELD PTP_PRFUM_REQ_PT_ID                   80   0  jump
+$FIELD PTP_SM_TGT_PT_ID                      80   0
+$FIELD PTP_SM_TLV_TYPE                       16   0
+$FIELD PTP_SM_TLV_LEN                        16   0  default repeat jump
+$FIELD PTP_SM_TLV_VALUE                      8    0  default jump
+$FIELD PTP_MM_TGT_PT_ID                      80   0
+$FIELD PTP_MM_START_BOUND_HOP                8    0
+$FIELD PTP_MM_BOUND_HOP                      8    0
+$FIELD PTP_MM_RES0                           4    0
+$FIELD PTP_MM_ACTION                         4    0
+$FIELD PTP_MM_RES1                           8    0
+$FIELD PTP_MM_TLV_TYPE                       16   0  
+$FIELD PTP_MM_TLV_LEN                        16   0  default repeat jump
+$FIELD PTP_MM_TLV_VALUE                      8    0  default jump
+$FIELD PTP_UDT                               0    0  default udt
+
+$TYPES CAPWAP
+$FIELD CAPWAP_PRE_VER                        4    0  default
+$FIELD CAPWAP_PRE_TYPE                       4    0  default jump
+$FIELD CAPWAP_HLEN                           5    0  default
+$FIELD CAPWAP_RID                            5    0  default
+$FIELD CAPWAP_WBID                           5    0  default nextp
+$FIELD CAPWAP_T                              1    0  default 
+$FIELD CAPWAP_F                              1    0  default
+$FIELD CAPWAP_L                              1    0  default
+$FIELD CAPWAP_W                              1    0  default
+$FIELD CAPWAP_M                              1    0  default
+$FIELD CAPWAP_K                              1    0  default
+$FIELD CAPWAP_FLAGS                          3    0  default
+$FIELD CAPWAP_FRAGMENT_ID                    16   0  default
+$FIELD CAPWAP_FRAG_OFFSET                    13   0  default 
+$FIELD CAPWAP_RES                            3    0  default jump
+$FIELD CAPWAP_RAD_MAC_ADDR                   64   0  default jump
+$FIELD CAPWAP_WIR_SPEC_INFO                  32   0  default 
+$FIELD CAPWAP_PAYLOAD_LEN                    0    0  default repeat jump
+$FIELD CAPWAP_PAYLOAD_DATA                   8    0  jump
+$FIELD CAPWAP_ONLY_USE_PAYLOAD               0    0  default jump
+$FIELD CAPWAP_80211_PAYLOAD                  0    0  default nextp
+$FIELD CAPWAP_UDT                            0    0  default udt
+
+
+$TYPES DTLS
+$FIELD DTLS_RES                              24    0  default
+$FIELD DTLS_CONTENT_TYPE                     8     0  default
+$FIELD DTLS_VER                              16    0  default
+$FIELD DTLS_EPOCH                            16    0  default
+$FIELD DTLS_SEQ                              48    0  default
+$FIELD DTLS_LENGTH                           16    0  default
+$FIELD DTLS_PAYLOAD_LEN                      0     0  default repeat jump
+$FIELD DTLS_PAYLOAD_DATA                     8     0  jump
+$FIELD DTLS_UDT                              0     0  default udt
+
+$TYPES LLC
+$FIELD LLC_VLAN_EXIST           0   0  jump
+$FIELD LLC_VLAN_DSAP            8   0  
+$FIELD LLC_VLAN_SSAP            8   0
+$FIELD LLC_VLAN_CTL0            8   0
+$FIELD LLC_VLAN_CTL1            8   0  
+$FIELD LLC_VLAN_OUI             16  0  
+$FIELD LLC_TPID                 16  0  
+$FIELD LLC_COS                  3   0  default
+$FIELD LLC_DEI                  1   0  default
+$FIELD LLC_VLAN_ID              12  1  default
+$FIELD LLC_DSAP                 8   0  exist nextp
+$FIELD LLC_SSAP                 8   0
+$FIELD LLC_CTL0                 8   0
+$FIELD LLC_CTL1                 8   0  
+$FIELD LLC_OUI                  16  0  exist
+$FIELD LLC_L2_TYPE              16  0  nextp
+$FIELD LLC_UDT                  0   0  default udt
+
+
+$TYPES TWAMP
+$FIELD TWAMP_SEQ_NUM            32   0  
+$FIELD TWAMP_TS                 64   0  
+$FIELD TWAMP_ERR_ESTIMATE       16   0
+$FIELD TWAMP_MBZ                16   0
+$FIELD TWAMP_RX_TS              64   0
+$FIELD TWAMP_SENDER_SEQ_NUM     32   0
+$FIELD TWAMP_SENDER_TS          64   0
+$FIELD TWAMP_SENDER_ERR_ESTIMATE       16   0
+$FIELD TWAMP_SENDER_MBZ         16   0
+$FIELD TWAMP_SENDER_TTL         16   0
+$FIELD TWAMP_PAYLOAD_LEN        0    0  default repeat jump
+$FIELD TWAMP_PAYLOAD_DATA       8    0  jump
+$FIELD TWAMP_UDT                0    0  default udt
+
+$TYPES OWAMP
+$FIELD OWAMP_SEQ_NUM            32   0  
+$FIELD OWAMP_TS                 64   0  
+$FIELD OWAMP_ERR_ESTIMATE       16   0
+$FIELD OWAMP_PAYLOAD_LEN        0    0  default repeat jump
+$FIELD OWAMP_PAYLOAD_DATA       8    0  jump
+$FIELD OWAMP_UDT                0    0  default udt
+
+
+keyword keyword-name bit-len default-value exist jump dec nextp length repeat user-define-type
+$TYPES IGMP
+$FIELD IGMP_TYPE                     8    0    jump
+$FIELD IGMP_RESP_CODE                8    0
+$FIELD IGMP_CHKSM                    16   0
+$FIELD IGMP_GROUP_ADDR               32   0
+$FIELD IGMP_VERSION                  0    0    default jump
+$FIELD IGMPV3_QUE_RESV               4    0
+$FIELD IGMPV3_QUE_SFLAG              1    0
+$FIELD IGMPV3_QUE_QRV                3    0
+$FIELD IGMPV3_QUE_QQIC               8    0
+$FIELD IGMPV3_QUE_NUM_OF_SRC         16   0    repeat jump
+$FIELD IGMPV3_QUE_SRC_ADDR           32   0    jump
+$FIELD IGMPV3_REP_RESERVER1          8    0    default
+$FIELD IGMPV3_REP_CHKSM              16   0
+$FIELD IGMPV3_REP_RESERVER2          16   0    default
+$FIELD IGMPV3_REP_NUM_OF_REC         16   0    jump
+$FIELD IGMPV3_REP_RECORD_TYPE        8    0    exist 
+$FIELD IGMPV3_REP_AUX_DATA_LEN       8    0
+$FIELD IGMPV3_REP_NUM_OF_SRC         16   0    repeat 
+$FIELD IGMPV3_REP_MUL_ADDR           32   0   
+$FIELD IGMPV3_REP_SRC_ADDR           32   0    jump
+$FIELD IGMPV3_REP_AUX_DATA_LEN2      0    0    repeat
+$FIELD IGMPV3_REP_AUX_DATA           32   0    jump
+$FIELD IGMP_UDT                      0    0    udt
+
+$TYPES ICMP
+$FIELD ICMP_TYPE                  8    0
+$FIELD ICMP_CODE                  8    0    default
+$FIELD ICMP_CHECKSUM              16   0    default jump
+$FIELD ICMP_PPM_POINTER           8    0    default
+$FIELD ICMP_ECHO_IDE              16   0    default
+$FIELD ICMP_ECHO_SEQ_NUM          16   0    default
+$FIELD ICMP_ECHO_DATA_REP         0    0    default repeat
+$FIELD ICMP_ECHO_DATA             8    0    default jump
+$FIELD ICMP_UDT                   0    0    udt
+        
+$TYPES ICMPV6
+$FIELD ICMPV6_TYPE                  8    0
+$FIELD ICMPV6_CODE                  8    0    default
+$FIELD ICMPV6_CHECKSUM              16   0    default jump
+$FIELD ICMPV6_ECHO_IDE              16   0    default
+$FIELD ICMPV6_ECHO_SEQ_NUM          16   0    default
+$FIELD ICMPV6_ECHO_DATA_REP         0    0    repeat
+$FIELD ICMPV6_ECHO_DATA             8    0    default jump
+$FIELD ICMPV6_RS_RESERVED           32   0    default jump
+$FIELD ICMPV6_RA_CHL                8    0
+$FIELD ICMPV6_RA_M                  1    0
+$FIELD ICMPV6_RA_O                  1    0
+$FIELD ICMPV6_RA_RESERVED           6    0    default
+$FIELD ICMPV6_RA_ROUT_LT            16   0
+$FIELD ICMPV6_RA_REA_TIME           32   0
+$FIELD ICMPV6_RA_RET_TIME           32   0    jump
+$FIELD ICMPV6_NS_RESERVED           32   0    default
+$FIELD ICMPV6_NS_TAR_ADDR           128  0    jump
+$FIELD ICMPV6_NA_R                  1    0
+$FIELD ICMPV6_NA_S                  1    0
+$FIELD ICMPV6_NA_O                  1    0
+$FIELD ICMPV6_NA_RESERVED           29   0    default
+$FIELD ICMPV6_NA_TAR_ADDR           128  0    jump
+$FIELD ICMPV6_RM_RESERVED           32   0
+$FIELD ICMPV6_RM_TAR_ADDR           128  0
+$FIELD ICMPV6_RM_DES_ADDR           128  0    jump
+$FIELD ICMPV6_OPT_NUM               0    0    repeat jump
+$FIELD ICMPV6_OPT_TYPE              8    0
+$FIELD ICMPV6_OPT_LEN               8    0    jump
+$FIELD ICMPV6_OPT_LINK_LAY_ADDR     48   0    jump
+$FIELD ICMPV6_OPT_PRE_LEN           8    0
+$FIELD ICMPV6_OPT_PRE_L             1    0
+$FIELD ICMPV6_OPT_PRE_A             1    0
+$FIELD ICMPV6_OPT_PRE_RESERVED1     6    0    default
+$FIELD ICMPV6_OPT_PRE_VLD_LT        32   0
+$FIELD ICMPV6_OPT_PRE_PRE_LT        32   0
+$FIELD ICMPV6_OPT_PRE_RESERVED2     32   0    default
+$FIELD ICMPV6_OPT_PRE_PREFIX        128  0    jump
+$FIELD ICMPV6_OPT_MTU_RESERVED      16   0    default
+$FIELD ICMPV6_OPT_MTU_MTU           32   0    jump
+$FIELD ICMPV6_MLD_MAX_RES           16   0    default
+$FIELD ICMPV6_MLD_RESERVE           16   0    default 
+$FIELD ICMPV6_MLD_MULT_ADDR         128  0    default 
+$FIELD ICMPV6_UDT                   0    0    udt
+
+$TYPES ARP
+$FIELD ARP_HARD_TYPE                 16   1    default
+$FIELD ARP_PROT_TYPE                 16   0800 default
+$FIELD ARP_HARD_ADDR                 8    6    default
+$FIELD ARP_PROT_ADDR                 8    4    default
+$FIELD ARP_OPERATION                 16   0    default
+$FIELD ARP_SRC_MAC                   48   0    default
+$FIELD ARP_SRC_IP                    32   0    default
+$FIELD ARP_DEST_MAC                  48   0    default
+$FIELD ARP_DEST_IP                   32   0    default
+$FIELD ARP_UDT                       0    0    default udt
+
+$TYPES STP
+$FIELD STP_PROT_ID                      16   0    default
+$FIELD STP_PROT_VER_ID                  8    3    default
+$FIELD STP_BPDU_TYPE                    8    2    default
+$FIELD STP_BPDU_FLAGS                   8    0    
+$FIELD STP_ROOT_ID                      64   0    
+$FIELD STP_ROOT_PATH_COST               32   0    
+$FIELD STP_BRI_ID                       64   0    
+$FIELD STP_PORT_ID                      16   0    
+$FIELD STP_MSG_AGE                      16   0    
+$FIELD STP_MAX_AGE                      16   0    
+$FIELD STP_HELLO_TIME                   16   0    
+$FIELD STP_FWD_DELAY                    16   0    
+$FIELD STP_R_VER_1_LENGTH               8    0    exist
+$FIELD STP_R_M_VER_3_LENGTH             16   0    exist
+$FIELD STP_R_M_CFG_ID_FMT_SEL           8    0    
+$FIELD STP_R_M_CFG_NAME                 256  0    
+$FIELD STP_R_M_CFG_REVISION             16   0    
+$FIELD STP_R_M_CFG_DGST                 128  0    
+$FIELD STP_R_M_CIST_INTNL_RT_PTH_COST   32   0    
+$FIELD STP_R_M_CIST_BRIDGE_ID           64   0    
+$FIELD STP_R_M_REMAIN_HOP               8    0    
+$FIELD STP_R_M_MSTI_CFG_NUM             0    0    jump repeat
+$FIELD STP_R_M_MSTI_FLG                 8    0    
+$FIELD STP_R_M_MSTI_RGN_RT_ID           64   0    
+$FIELD STP_R_M_MSTI_INTNL_RT_PTH_COST   32   0    
+$FIELD STP_R_M_MSTI_BRIDGE_PRI          8    0    
+$FIELD STP_R_M_MSTI_PORT_PRI            8    0    
+$FIELD STP_R_M_MSTI_REMAIN_HOP          8    0    default jump
+$FIELD STP_UDT                          0    0    default udt
+
+$TYPES IPV6_ENCAP_IPV6_HEADER

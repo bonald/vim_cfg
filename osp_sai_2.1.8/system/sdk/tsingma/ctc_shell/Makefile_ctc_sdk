@@ -1,0 +1,34 @@
+######################################set linux compile env #############################
+######################################set linux compile env #############################
+ifeq ($(targetbase),linux)
+include $(MK_DIR)/sys.mk
+
+__LIB_DIR := $(LIB_DIR)
+
+PROG = ctc_shell
+
+SRCS = $(wildcard *.c)
+
+ifeq ($(CPU), x86_64)
+else
+ifneq ($(M64), TRUE)
+LD_FLAGS += -m32
+endif
+endif
+
+ifeq ($(ARCH),mips)
+LD_FLAGS += -mabi=n32
+endif
+
+ifeq ($(ARCH),um)
+DEP_LIBS = $(LIBSAL)
+LD_LIBS = -L$(__LIB_DIR) -L$(LIB_DIR) -lpthread
+else
+DEP_LIBS = $(LIBSAL)
+LD_LIBS = -L$(__LIB_DIR) -L$(LIB_DIR) -lpthread -lrt
+endif
+
+include $(MK_DIR)/prog.mk
+endif
+
+

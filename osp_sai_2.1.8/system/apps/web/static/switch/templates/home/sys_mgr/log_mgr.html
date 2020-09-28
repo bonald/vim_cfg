@@ -1,0 +1,297 @@
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="{{logConfiguration}}">
+            <a href="javascript:;" ng-click="navTabs='log_conf'; logConfiguration='active'; searchClass1='';searchClass2='';load()">{{'Global Configuration' | translate}}</a></li>   
+        <li role="presentation" class="{{searchClass1}}">
+            <a href="javascript:;" ng-click="navTabs='search_module'; searchClass1='active'; searchClass2='';logConfiguration='';load()">{{'Module lookup' | translate}}</a></li>
+        <li role="presentation" class="{{searchClass2}}">
+            <a href="javascript:;" ng-click="navTabs='search_word'; searchClass2='active'; searchClass1='';logConfiguration='';load()">{{'Keyword lookup' | translate}}</a></li>
+    </ul>
+  
+    <hr />
+
+    <div id="search_module" ng-show="navTabs=='search_module'">
+        <table><tr><td>{{'According Severity' | translate}} &nbsp</td><td>
+        <select class="form-control" ng-change="severityChange(severitySel)"
+                ng-model="severitySel" ng-options="m for m in severity">
+        </select>
+        </td></tr>
+        <tr><td> {{'According Module' | translate }} &nbsp</td><td>
+        <select class="form-control" ng-change="moduleChange(moduleSel)"
+                ng-model="moduleSel" ng-options="m for m in module" >
+        </select>
+        </td></tr>
+        </table>
+    </div>
+    <div id="search_word" ng-show="navTabs=='search_word'">
+        <form class="form-inline">
+            <div class="form-group">
+                <label>{{'Keyword' | translate}}</label>
+                <input type="text" class="form-control" id="sel2" placeholder="System"
+                       ng-change="keywordChange(keyword)" ng-model="keyword">
+            </div>
+        </form>
+    </div>
+
+    <div id="log_conf" class="panel panel-default" ng-show="navTabs=='log_conf'">
+      <div class="panel-heading">
+          <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+      </div>
+      
+      <div class="panel-body">
+        <form id="logGlobalConfForm" name="logGlobalConfForm" class="form"  novalidate>
+        
+        <dl>
+         <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Enable the log server'  | translate }}</div>
+            <div class="col-md-2">
+                <btn-switch switch-state="enableLogServer" switch-on-change="changeLogServerStatus()" ></btn-switch>
+            </div>
+        </dd> 
+        </dl>
+        
+        <dl>        
+        <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Enable the log file'  | translate }}</div>
+            <div class="col-md-2">
+                <btn-switch switch-state="enableLogCache" switch-on-change="changeLogCacheStatus()" ></btn-switch>
+            </div>
+        </dd>  
+        </dl>
+
+        <dl>
+        <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Enable the log merge'  | translate }}</div>
+            <div class="col-md-2">
+                <btn-switch switch-state="enableLogMerge" switch-on-change="changeLogMergeStatus()" ></btn-switch>
+            </div>
+        </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Level of system timestamp'  | translate }}</div>
+                <div class="col-md-2">
+                 <select class="form-control" ng-change="timeLogLevelChange(timeLogLevelSel)"
+                      ng-model="timeLogLevelSel" ng-options="m for m in timeLevel">
+                 </select>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Level of cache logs'  | translate }}</div>
+                <div class="col-md-2">
+                <select class="form-control" ng-change="cacheLogLevelChange(cacheLogLevelSel)"
+                      ng-model="cacheLogLevelSel" ng-options="m for m in logLevel">
+                </select>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Level of system logs'  | translate }}</div>
+                <div class="col-md-2">
+                 <select class="form-control" ng-change="sysLogLevelChange(sysLogLevelSel)"
+                      ng-model="sysLogLevelSel" ng-options="m for m in logLevel">
+                 </select>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Level of severity logs'  | translate }}</div>
+                <div class="col-md-2">
+                 <select class="form-control" ng-change="severityLogLevelChange(severityLogLevelSel)"
+                      ng-model="severityLogLevelSel" ng-options="m for m in logLevel">
+                 </select>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Size of the log buffer'  | translate }}</div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[logGlobalConfForm.logBuffer.$valid]">
+                  <input type="number" name="logBuffer" class="form-control" placeholder="10 ~ 1000" ng-model="logBufferSize" ng-min="10" ng-max="1000"  required />            
+                </div>                
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="updateLogBufferSize(logBufferSize)" ng-disabled="logGlobalConfForm.logBuffer.$invalid"  >{{ 'Submit' | translate }}</button>   
+                </div>
+            </dd> 
+        </dl>   
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Address of the log servers'  | translate }}</div>
+                <div class="col-md-2">
+                 <select class="form-control" ng-model="srvVrfsel" ng-options="m for m in vrfIds">
+                 </select>
+                </div>                
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[logGlobalConfForm.logServer.$valid]">
+                    <input type="text" name="logServer" class="form-control" placeholder="A.B.C.D    Address of server" ng-model="serverAddr" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addLogserver()" ng-disabled="logGlobalConfForm.logServer.$invalid "  >{{ 'Submit' | translate }}</button>   
+                </div>                
+            </dd> 
+        </dl> 
+        
+        </form>
+      
+      </div>      
+    </div>    
+
+    <div class="panel panel-default" ng-show="navTabs=='log_conf' && logSrvDict.length!=0">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Log Server Information' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <div ng-hide="initLoading">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">{{ '#' | translate }}</th>
+                            <th class="text-center">{{ 'Server address' | translate }}</th>
+                            <th class="text-center">{{ 'VRF' | translate }}</th>  
+                            <th class="text-center">{{ 'Options' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="(ip, vrf) in logSrvDict">
+                            <th class="text-center">{{ $index + 1 }}</th>
+                            <td class="text-center" >{{ ip }}</td>
+                            <td class="text-center">{{ (vrf=='0')?"default":"mgmt" }}</td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-xs">
+                                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delLogserver(ip, vrf)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+                <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+            </div>
+        </div>
+    </div>
+     
+   <div id="log_conf1" class="panel panel-default" ng-show="navTabs=='log_conf'">
+      <div class="panel-heading">
+          <h3 class="panel-title">{{ 'Log Statistics' | translate }}</h3>
+      </div>
+      <div class="panel-body">
+
+        <dl >
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Enable the log server'  | translate }}</div>
+                <div class="col-md-3">{{ configure.enable_to_server=='1'?'Enable':'Disable' }}</div>
+            </dd> 
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Enable the log file'  | translate }}</div>
+                <div class="col-md-3">{{ configure.enable_to_file=='1'?'Enable':'Disable' }}</div>
+            </dd>
+
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Enable the log merge '  | translate }}</div>
+                <div class="col-md-3">{{ configure.enable_merge=='1'?'Enable':'Disable' }}</div>
+            </dd>
+<!--  
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Enable to diag '  | translate }}</div>
+                <div class="col-md-3">{{ configure.enable_to_diag=='1'?'Enable':'Disable' }}</div>
+            </dd>      
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Enable to trap '  | translate }}</div>
+                <div class="col-md-3">{{ configure.enable_to_trap=='1'?'Enable':'Disable' }}</div>
+            </dd>
+
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Merge timeout '  | translate }}</div>
+                <div class="col-md-3">{{ configure.merge_timeout }}</div>
+            </dd> 
+
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Merge fifosize '  | translate }}</div>
+                <div class="col-md-3">{{ configure.merge_fifosize }} </div>
+            </dd> 
+-->
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Level of cache logs '  | translate }}</div>
+                <div class="col-md-3">{{ configure.module_severity }} </div>
+            </dd>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Level of system logs'  | translate }}</div>
+                <div class="col-md-3">{{ configure.file_severity }} </div>
+            </dd>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Level of severity logs '  | translate }}</div>
+                <div class="col-md-3">{{ configure.server_severity }} </div>
+            </dd>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Size of the log buffer '  | translate }}</div>
+                <div class="col-md-3">{{ configure.logging_lines }} </div>
+            </dd>  
+    
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Timestamp '  | translate }}</div>
+                <div class="col-md-3">{{ configure.timestamp }} </div>
+            </dd>
+           
+        </dl>                
+      </div>      
+    </div>        
+
+<hr/>
+<div class="btn-group row" role="group" aria-label="..." ng-hide="navTabs=='log_conf'">
+    <button type="button" class="btn btn-default" ng-model="button1" ng-click="load()">{{'Update' | translate }}</button>
+    <button type="button" class="btn btn-default" ng-model="button2" ng-click="flush()">{{'Flush' | translate }}</button>
+</div>
+
+<br></br>
+
+  <div class="panel panel-default" ng-hide="navTabs=='log_conf'">
+      <div class="panel-heading">
+          <h3 class="panel-title">{{ 'Log information' | translate }}</h3>
+      </div>
+      <div class="panel-body">
+          <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+              <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+          </div>
+          <table class="table table-hover margin: 10px;" ng-hide="initLoading">
+              <thead>
+                  <tr>
+                      <th class="text-center col-md-1">{{ 'Time' | translate }}</th>
+                      <th class="text-center col-md-2">{{ 'Module' | translate }}</th>
+                      <th class="text-center col-md-2">{{ 'Event' | translate }}</th>
+                      <th class="text-center col-md-1">{{ 'Severity' | translate }}</th>
+                      <th class="text-center col-md-4">{{ 'Content' | translate }}</th>
+                  </tr>
+              </thead>
+              <tbody>
+          <tr ng-repeat="x in display">
+                      <td class="text-center">{{ x.time }}</td>
+                      <td class="text-center">{{ x.module }}</td>
+                      <td class="text-center">{{ x.event }}</td>
+                      <td class="text-center">{{ x.severity }}</td>
+          <td class="text-center">{{ x.log }}</td>
+                  </tr>
+              </tbody>
+          </table>
+          <div>
+              <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+          </div>
+      </div>
+      
+  </div>
+
+</div>
+
+ 

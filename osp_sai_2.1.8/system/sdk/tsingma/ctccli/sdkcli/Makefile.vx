@@ -1,0 +1,52 @@
+include $(MK_DIR)/sys_vx.mk
+OBJ_DIR=$(OBJ_BASE_DIR)/ctccli/sdkcli
+
+TEMP=$(OBJ_DIR)
+TEMP2=$(subst \,QQQ,$(TEMP))
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/dal/include
+CPPFLAGS += -I$(SDK_DIR)/ctccli/sdkcli
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/ctccli/sdkcli/$(n))
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/ctccli/diagcli/$(n))
+CPPFLAGS += -I$(SDK_DIR)/core/switch
+CPPFLAGS += -I$(SDK_DIR)/core/app
+CPPFLAGS += -I$(SDK_DIR)/core/api/include
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+ifeq ($(USW),yes)
+CPPFLAGS += -I$(SDK_DIR)/core/usw/include
+CPPFLAGS += -I$(SDK_DIR)/core/usw/include/ctc
+CPPFLAGS += -I$(SDK_DIR)/core/usw/include/sys
+else
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include)
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include/ctc)
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include/sys)
+endif
+CPPFLAGS += -I$(SDK_DIR)/libctccli/include
+CPPFLAGS += -I$(SDK_DIR)/mem_model/include
+CPPFLAGS += -I$(SDK_DIR)/driver
+
+
+SRC =  $(wildcard *.c)
+OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
+DEPS = $(patsubst %.c,%.d,$(wildcard *.c))
+
+all: $(OBJS)
+
+$(OBJ_DIR)/%.o: %.c
+	$(shell mkdir -p $(OBJ_DIR))
+	@echo "CC  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.d: %.c
+	$(shell mkdir -p $(dir $@))
+	@echo "CX  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)"
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $< | sed "s#\($*\)\.o[ :]*#$(TEMP2)/\1.o $(TEMP2)/\1.d: #g"| sed "s#QQQ#\\\\#g" > $@
+
+
+#include $(OBJ_DIR)/$(DEPS)
+
+.PHONY: clean
+clean:
+	rm -rf $(OBJ_DIR)/$(OBJS) $(OBJ_DIR)/$(DEPS)
+
+CFLAGS += -Werror -Wall

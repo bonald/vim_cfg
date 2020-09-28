@@ -1,0 +1,362 @@
+HAL-MSG-COMM-IF DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList,
+    HalMsgSyncPortItem,
+    HalMsgSyncPortPhyItem
+    FROM HAL-MSG-TYPES
+
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+
+--system variables
+HalMsgIFSetSystemMac ::= SEQUENCE
+{
+    rmac     HalMsgDefL2MacAddr
+}
+
+HalMsgIFSetRMACPrefix ::= SEQUENCE
+{
+    prefixType      INTEGER,
+    rmacPrefix      HalMsgDefL2MacAddr
+}
+
+HalMsgIFSetFrameSize ::= SEQUENCE
+{
+    frameSize         INTEGER,
+    jumboFrameSize    INTEGER
+}
+
+HalMsgIFSetJumboFrame ::= SEQUENCE
+{
+    gportid          INTEGER,
+    enable           INTEGER
+}
+
+--physical interface attribute
+HalIFPhyTypeDefine ::= ENUMERATED
+{
+    speed,
+    duplex,
+    phyEnable,
+    media,
+	unidir,
+	fec,
+    max
+}
+
+HalIFPOETypeDefine ::= ENUMERATED
+{
+    enable,
+    budget,
+    priority,
+    max
+}
+
+HalMsgIFSetSerDesMode ::= SEQUENCE
+{
+	portno               INTEGER,
+	slotno               INTEGER,
+	setserdesmodeflag    INTEGER
+}
+
+HalMsgIFSetFlowCtrlDir ::= SEQUENCE
+{
+    portno         INTEGER,
+    subportno      INTEGER,
+    slotno         INTEGER,
+    gport          INTEGER,
+    dir            INTEGER,
+    enable         INTEGER
+}
+
+HalMsgIFSetFlowCtrlEnable ::= SEQUENCE
+{
+    enable         INTEGER
+}
+
+
+HalMsgIFSetPhyProp ::= SEQUENCE
+{
+    type      HalIFPhyTypeDefine,
+    gport     INTEGER,
+    portno    INTEGER,
+    subportno INTEGER,
+    slotno    INTEGER,
+    value     INTEGER
+}
+
+HalMsgIFSetPOEProp ::= SEQUENCE
+{
+    type      HalIFPOETypeDefine,
+    portno    INTEGER,
+    subportno INTEGER,
+    slotno    INTEGER,
+    value     INTEGER
+}
+
+HalMsgIFSetHagtDbMedia ::= SEQUENCE
+{
+	gport     INTEGER,
+	mediaType INTEGER
+}
+
+--create port, destroy port
+HalMsgIFCreatePort ::= SEQUENCE
+{
+    gportid   INTEGER,
+    framesize INTEGER,
+    slotno    INTEGER,
+    portno    INTEGER,
+    subportno INTEGER,
+    --1=create port, 0=destroy port
+    enable    INTEGER,
+    portmac   HalMsgDefL2MacAddr
+}
+
+--set port flag, running or linkdown
+HalMsgIFSetPortFlag ::= SEQUENCE
+{
+    gportid  HalMsgIntList,
+    flag     INTEGER,
+    --1=set flag, 0=unset flag
+    enable   INTEGER
+}
+
+--set port to routed
+HalMsgIFSetPortRouted ::= SEQUENCE
+{
+    routeEn        INTEGER,
+    unTagDefVid    INTEGER,
+    l3ifid         INTEGER, --only for routed port, agg member must not create l3if
+    gportid        INTEGER, --only for routed port to create l3if
+    memportid      HalMsgIntList
+}
+
+HalMsgIFSetStatsIntval ::= SEQUENCE
+{
+    type        INTEGER,
+    gportid        INTEGER, --phy port or agg port
+    intval      INTEGER
+}
+
+--get link status
+HalMsgIFGetLinkStatus ::= SEQUENCE
+{
+    slotno        INTEGER
+}
+
+HalMsgFlowCtrl ::= SEQUENCE
+{
+    flowCtrlSend INTEGER,
+    flowCtrlRecv INTEGER
+}
+
+HalMsgIFSetLinkStatus ::= SEQUENCE
+{
+    slotno        INTEGER,
+    portno        INTEGER,
+	  subportno     INTEGER,
+    duplex        INTEGER,
+    speed         INTEGER,
+    linkStatus    INTEGER,
+    media         INTEGER,
+    flowCtrl      HalMsgFlowCtrl
+}
+
+HalMsgIFWriteCRCErrorLog ::= SEQUENCE
+{
+    gportid      INTEGER,
+    newCRCno     OCTET STRING,
+    totalCRCno   OCTET STRING
+}
+
+--for vlan related
+HalMsgIFSetPortUntagPvid ::= SEQUENCE
+{
+    port              HalMsgIntList,
+    untagPvid         INTEGER,
+    untagSvlan        INTEGER
+}
+
+HalMsgIFSetDefaultPvid ::= SEQUENCE
+{
+    port         HalMsgIntList,
+    vid          INTEGER
+}
+
+HalMsgIFSetVlanFilter ::= SEQUENCE
+{
+    gportid       HalMsgIntList,
+    filterDir     INTEGER,
+    filterEnable  INTEGER
+}
+
+HalMsgIFSetVlanPortType ::= SEQUENCE
+{
+    gportid       HalMsgIntList,
+    portType      INTEGER,
+    filterType    INTEGER,
+    filterEnable  INTEGER
+}
+
+HalMsgIFSetStackPort ::= SEQUENCE
+{
+    gportid      INTEGER,
+    trunk        INTEGER,
+    add          INTEGER
+}
+
+--sync structures
+HalMsgIFSyncSystemAttri ::= SEQUENCE
+{
+    frameSize      INTEGER,
+    jumboFrameSize INTEGER,
+    svlanTpid1     INTEGER,
+    svlanTpid2     INTEGER,
+    routemac       HalMsgDefL2MacAddr,
+    rmacPrefix     SEQUENCE OF HalMsgIFSetRMACPrefix
+}
+
+HalMsgIFPhySyncItem ::= SEQUENCE
+{
+    gport         INTEGER,
+    portno        INTEGER,
+    subportno     INTEGER,
+    speed         INTEGER,
+    duplex        INTEGER,
+    phyEnable     INTEGER,
+    poeEnable     INTEGER,
+    poeBudget     INTEGER,
+    media         INTEGER,
+    poePriority   INTEGER,
+    stackTrunk    INTEGER,
+    flowCtrl      HalMsgFlowCtrl
+}
+
+HalMsgIFPhySync  ::= SEQUENCE
+{
+    slotno        INTEGER,
+    phySyncList   SEQUENCE OF HalMsgIFPhySyncItem
+}
+
+HalMsgStackPortSyncItem ::= SEQUENCE
+{
+    gport         INTEGER,
+    stackTrunk    INTEGER
+}
+
+HalMsgStackPortSync  ::= SEQUENCE
+{
+    stackSyncList   SEQUENCE OF HalMsgStackPortSyncItem
+}
+
+HalMsgIFAttriSyncItem ::= SEQUENCE
+{
+    portno           INTEGER,
+    defVlan          INTEGER,
+    portType         INTEGER,
+    filterType       INTEGER,
+    slotno           INTEGER,
+    slotportno       INTEGER,
+    subportno        INTEGER,
+    flagBmp          INTEGER,
+    frameSize        INTEGER
+}
+
+HalMsgIFAttriSync   ::= SEQUENCE
+{
+    l2ifList        SEQUENCE OF HalMsgIFAttriSyncItem
+}
+
+----------------------------------------------------------
+--these following structures are only for bridge uc
+HalMsgCOMMIfFDBBucketReq ::= SEQUENCE
+{
+    rate             INTEGER,
+    size             INTEGER
+}
+
+HalMsgCOMMIfSetEnReq ::= SEQUENCE
+{
+    enable        INTEGER,
+    portNo        INTEGER,
+    slotNo        INTEGER
+}
+
+HalMsgCOMMIfSetMacSecExceptReq ::= SEQUENCE
+{
+    enable           HalMsgIntList,
+    port             HalMsgIntList
+}
+
+HalMsgCOMMIfSetMacSecDiscReq ::= SEQUENCE
+{
+    enable           HalMsgIntList,
+    port             HalMsgIntList,
+    mode             HalMsgIntList
+}
+
+HalMsgCOMMIfSetMacSecConfigReq ::= SEQUENCE
+{
+    enable           INTEGER,
+    port             INTEGER,
+    vioMode          INTEGER,
+    maxMacNum        INTEGER,
+    configBmp        INTEGER
+}
+
+HalMsgCOMMIfSetMacSecConfigListReq ::= SEQUENCE
+{
+    configList     SEQUENCE OF HalMsgCOMMIfSetMacSecConfigReq
+}
+
+HalMsgIFSetTpidValue ::= SEQUENCE
+{
+    type           INTEGER,
+    value          INTEGER
+}
+
+HalMsgIFSetTpidType ::= SEQUENCE
+{
+    port         HalMsgIntList,
+    type         INTEGER
+}
+HalMsgCOMMIfSetPortIsolateGroupReq ::= SEQUENCE
+{
+    isolatePortList       SEQUENCE OF INTEGER,
+    groupID               INTEGER
+}
+
+HalMsgCOMMIfSetPortIsolateModeReq ::= SEQUENCE
+{
+    mode                  INTEGER
+}
+
+HalMsgCOMMIfSetPVlanReq ::= SEQUENCE
+{
+    pVlanPortList         SEQUENCE OF INTEGER,
+    mode                  INTEGER,
+    groupID               INTEGER
+}
+HalMsgIfSetVlanRangeEn ::= SEQUENCE
+{
+    gportid       HalMsgIntList,
+    group         INTEGER,
+    enable        INTEGER
+}
+
+HalMsgIfSetCrcCheckEn ::= SEQUENCE
+{
+    gportid       INTEGER,
+    enable        INTEGER
+}
+
+HalMsgIfSetCrcRecalcEn ::= SEQUENCE
+{
+    gportid       INTEGER,
+    enable        INTEGER
+}
+
+END

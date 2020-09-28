@@ -1,0 +1,7 @@
+HAL-MSG-L3TYPES DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+HalMsgIpv6addr   ::= PrintableString
+HalMsgIpv4addr   ::= INTEGER
+HalMsgL3mcPortStr ::= PrintableString
+
+END

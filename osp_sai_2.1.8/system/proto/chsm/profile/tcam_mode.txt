@@ -1,0 +1,4 @@
+#this file is only used for storing tcam allocation profile mode.
+#0=default, 1=access, 2=ipv4 route, 3=vlan, 4=l2vpn 5=ipv6.
+
+[PROFILE_MODE] = 0

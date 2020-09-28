@@ -1,0 +1,3 @@
+
+int32
+tbl_openflow_tunnel_local_ip_cnt_get_openflow_tunnel_local_ip_cnt_count();

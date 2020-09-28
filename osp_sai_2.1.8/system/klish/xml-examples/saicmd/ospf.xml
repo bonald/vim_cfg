@@ -1,0 +1,1486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+OSPF
+</CTCMODULENAME>
+
+
+	
+<VIEW name="Exec">
+
+	<COMMAND name="clear ip ospf" help="OSPF information">
+	</COMMAND>
+
+	<COMMAND name="clear ip ospf interface" help="Interface information">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL" optional="true"/>	
+
+		<ACTION>
+			IFACE=`echo ${iface_name} | sed 's/\//_/'`
+			vtysh -c "clear ip ospf interface $IFACE"
+		</ACTION>
+	
+	</COMMAND>
+
+
+	<COMMAND name="clear ip ospf process" help="Reset OSPF process">
+		<ACTION>
+			vtysh -c "clear ip ospf process"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf" help="OSPF information">
+		<ACTION>
+			vtysh -c "show ip ospf"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display general information about Open Shortest Path First (OSPF) routing processes, use the show ip ospf command in user EXEC or privileged EXEC mode.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The no debug ospf zebra command disables the display of debug information related to the ospf interface or redistribute of zebra.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is sample output from the show ip ospf command:
+Switch# show ip ospf 
+ OSPF Routing Process, Router ID: 1.1.1.1
+ Supports only single TOS (TOS0) routes
+ This implementation conforms to RFC2328
+ RFC1583Compatibility flag is disabled
+ OpaqueCapability flag is disabled
+ Initial SPF scheduling delay 200 millisec(s)
+ Minimum hold time between consecutive SPFs 1000 millisec(s)
+ Maximum hold time between consecutive SPFs 10000 millisec(s)
+ Hold time multiplier is currently 1
+ SPF algorithm last executed 26m51s ago
+ Last SPF duration 198 usecs
+ SPF timer is inactive
+ Refresh timer 10 secs
+ This router is an ASBR (injecting external routing information)
+ Number of external LSA 1. Checksum Sum 0x0000cefe
+ Number of opaque AS LSA 0. Checksum Sum 0x00000000
+ Number of areas attached to this router: 1
+
+ Area ID: 0.0.0.0 (Backbone)
+   Number of interfaces in this area: Total: 2, Active: 2
+   Number of fully adjacent neighbors in this area: 0
+   Area has no authentication
+   SPF algorithm executed 12 times
+   Number of LSA 2
+   Number of router LSA 1. Checksum Sum 0x00004f0e
+   Number of network LSA 1. Checksum Sum 0x000079ac
+   Number of summary LSA 0. Checksum Sum 0x00000000
+   Number of ASBR summary LSA 0. Checksum Sum 0x00000000
+   Number of NSSA LSA 0. Checksum Sum 0x00000000
+   Number of opaque link LSA 0. Checksum Sum 0x00000000
+   Number of opaque area LSA 0. Checksum Sum 0x00000000
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+
+	<COMMAND name="show ip ospf border-routers" help="for this area">
+		<ACTION>
+			vtysh -c "show ip ospf border-routers"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database" help="Database summary">
+		<ACTION>
+			vtysh -c "show ip ospf database"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display lists of information related to the Open Shortest Path First (OSPF) database for a specific router, use the show ip ospf database command in EXEC mode.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The various forms of this command deliver information about different OSPF link state advertisements.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is sample output from the show ip ospf database command when no arguments or keywords are used:
+Switch# show ip ospf database 
+
+       OSPF Router with ID (1.1.1.1)
+
+                Router Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age  Seq#       CkSum  Link count
+1.1.1.1         1.1.1.1         1758 0x80000007 0x4f0e 2
+
+                Net Link States (Area 0.0.0.0)
+
+Link ID         ADV Router      Age  Seq#       CkSum
+17.1.1.2        1.1.1.1         2237 0x80000002 0x79ac
+
+                AS External Link States
+
+Link ID         ADV Router      Age  Seq#       CkSum  Route
+0.0.0.0         1.1.1.1         1757 0x80000001 0xcefe E2 0.0.0.0/0 [0x0]
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+
+	<COMMAND name="show ip ospf database asbr-summary" help="ASBR summary link states">
+		<PARAM name="asbr_info" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="link_id" help="Link State ID (as an IP address)" ptype="IP_ADDR"/>
+		</PARAM>
+
+		<ACTION>
+			vtysh -c "show ip ospf database asbr-summary ${link_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database asbr-summary adv-router" help="Advertising Router link states">
+		<PARAM name="adv_id" help="Advertising Router (as an IP address)" ptype="IP_ADDR"/>
+
+		<ACTION>
+			vtysh -c "show ip ospf database asbr-summary adv-router ${adv_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database asbr-summary self-originate" help="Self-originated link states">
+
+		<ACTION>
+			vtysh -c "show ip ospf database asbr-summary self-originate"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database external" help="External link states">
+		<PARAM name="external_info" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="link_id" help="Link State ID (as an IP address)" ptype="IP_ADDR"/>
+		</PARAM>
+
+		<ACTION>
+			vtysh -c "show ip ospf database external ${link_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database external adv-router" help="Advertising Router link states">
+		<PARAM name="adv_id" help="Advertising Router (as an IP address)" ptype="IP_ADDR"/>
+
+		<ACTION>
+			vtysh -c "show ip ospf database external adv-router ${adv_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database external self-originate" help="Self-originated link states">
+
+		<ACTION>
+			vtysh -c "show ip ospf database external self-originate"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database network" help="Network link states">
+		<PARAM name="network_info" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="link_id" help="Link State ID (as an IP address)" ptype="IP_ADDR"/>
+		</PARAM>
+
+		<ACTION>
+			vtysh -c "show ip ospf database network ${link_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database network adv-router" help="Advertising Router link states">
+		<PARAM name="adv_id" help="Advertising Router (as an IP address)" ptype="IP_ADDR"/>
+
+		<ACTION>
+			vtysh -c "show ip ospf database network adv-router ${adv_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database network self-originate" help="Self-originated link states">
+
+		<ACTION>
+			vtysh -c "show ip ospf database network self-originate"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database router" help="Router link states">
+		<PARAM name="router_info" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="link_id" help="Link State ID (as an IP address)" ptype="IP_ADDR"/>
+		</PARAM>
+
+		<ACTION>
+			vtysh -c "show ip ospf database router ${link_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database router adv-router" help="Advertising Router link states">
+		<PARAM name="adv_id" help="Advertising Router (as an IP address)" ptype="IP_ADDR"/>
+
+		<ACTION>
+			vtysh -c "show ip ospf database router adv-router ${adv_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database router self-originate" help="Self-originated link states">
+
+		<ACTION>
+			vtysh -c "show ip ospf database router self-originate"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database summary" help="Router link states">
+		<PARAM name="router_info" help="OSPF Neighbor State Machine" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="link_id" help="Link State ID (as an IP address)" ptype="IP_ADDR"/>
+		</PARAM>
+
+		<ACTION>
+			vtysh -c "show ip ospf database summary ${link_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database summary adv-router" help="Advertising Router link states">
+		<PARAM name="adv_id" help="Advertising Router (as an IP address)" ptype="IP_ADDR"/>
+
+		<ACTION>
+			vtysh -c "show ip ospf database summary adv-router ${adv_id}"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database summary self-originate" help="Self-originated link states">
+
+		<ACTION>
+			vtysh -c "show ip ospf database summary self-originate"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database max-age" help="LSAs in MaxAge lists">
+
+		<ACTION>
+			vtysh -c "show ip ospf database max-age"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip ospf database self-originate" help="Self-originated link states">
+
+		<ACTION>
+			vtysh -c "show ip ospf database self-originate"
+		</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="show ip ospf interface" help="Interface information">
+		<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_ALL" optional="true"/>	
+		<ACTION>
+			IFACE=`echo ${iface_name} | sed 's/\//_/'`
+			vtysh -c "show ip ospf interface $IFACE"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display Open Shortest Path First (OSPF)-related interface information, use the show ip ospf interface command in EXEC mode.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+None
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is sample output of the show ip ospf interface command when eth-0-3 is specified:
+Switch# show ip ospf interface eth-0-17
+eth-0-17 is up
+  ifindex 121, MTU 1514 bytes, BW 0 Kbit UP,BROADCAST,RUNNING,MULTICAST
+  Internet Address 17.1.1.3/24, Broadcast 17.1.1.255, Area 0.0.0.0
+  MTU mismatch detection:enabled
+  Router ID 1.1.1.1, Network Type BROADCAST, Cost: 10
+  Transmit Delay is 1 sec, State DR, Priority 1
+  Designated Router (ID) 1.1.1.1, Interface Address 17.1.1.3
+  No backup designated router on this network
+  Multicast group memberships: OSPFAllRouters OSPFDesignatedRouters
+  Timer intervals configured, Hello 10s, Dead 40s, Wait 40s, Retransmit 5
+    Hello due in 0.384s
+  Neighbor Count is 0, Adjacent neighbor count is 0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	
+ <!--
+-->
+
+	<COMMAND name="show ip ospf neighbor" help="Neighbor list">
+		<ACTION>
+			vtysh -c "show ip ospf neighbor"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display Open Shortest Path First (OSPF)-neighbor information on a per-interface basis, use the show ip ospf neighbor command in privileged EXEC mode.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+None
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following is sample output from the show ip ospf neighbor command showing a single line of summary information for each neighbor:
+Switch# show ip ospf neighbor
+
+    Neighbor ID Pri State           Dead Time Address         Interface         
+   RXmtL RqstL DBsmL
+2.2.2.2           1 Full/Backup       39.320s 17.1.1.2        eth-0-17:17.1.1.3 
+       3     0     0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="show ip ospf route" help="OSPF routing table">
+		<ACTION>
+			vtysh -c "show ip ospf route"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display the of routes used by OSPF, use the show ip ospf route command in privileged EXEC mode.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+None
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example shows how to use show ip ospf route command.
+Switch# show ip ospf route 
+============ OSPF network routing table ============
+N    17.1.1.0/24           [10] area: 0.0.0.0
+                           directly attached to eth-0-17
+N    171.1.1.1/32          [10] area: 0.0.0.0
+                           directly attached to loopback1
+
+============ OSPF router routing table =============
+
+============ OSPF external routing table ===========
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show ip ospf virtual-link" help="Display OSPF virtual link information">
+
+	<ACTION>
+		vtysh -c "show ip ospf virtual-link"
+	</ACTION>
+	</COMMAND>
+
+ 
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="router ospf" help="Start OSPF configuration" view="configure-ospf-view">
+
+		<CTCDESCRIPTION>
+To configure an Open Shortest Path First (OSPF) routing process, use the router ospf command in global configuration mode. To terminate an OSPF routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+You can create OSPF routing processes by this command.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+No OSPF routing process is defined.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example configures to create the OSPF routing process:
+Switch(config)# router ospf
+Switch(config-router)#
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+network area
+	   </CTCRCMD>
+
+		<ACTION>
+			cdbctl create/cdb/l3/ospf/create_ospf
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no router ospf" help="Start OSPF configuration">
+
+		<CTCDESCRIPTION>
+To configure an Open Shortest Path First (OSPF) routing process, use the router ospf command in global configuration mode. To terminate an OSPF routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+You can remove OSPF routing processes by this command.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+No OSPF routing process is defined.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example configures to remove the OSPF routing process:
+Switch(config)# no router ospf
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no network area
+	   </CTCRCMD>
+
+		<ACTION>
+			cdbctl delete/cdb/l3/ospf/remove_ospf
+		</ACTION>
+	</COMMAND>
+
+</VIEW>
+
+<!-- 
+			vtysh -c "configure terminal" -c "no router ospf" -c "end"
+-->
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ip ospf" help="OSPF interface commands">
+	</COMMAND>
+
+	<COMMAND name="no ip ospf" help="OSPF interface commands">
+	</COMMAND>
+
+	<COMMAND name="ip ospf hello-interval" help="Time between HELLO packets">
+		<PARAM name="hellotime" help=" Seconds" ptype="OSPF_INTERVAL"/>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_timer_hello/${hellotime}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf hello-interval ${hellotime}" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the interval between hello packets that the switch sends on the interface, use the ip ospf hello-interval command in interface configuration mode. To return to the default time, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This value is advertised in the hello packets. The smaller the hello interval, the faster topological changes will be detected, but more routing traffic will ensue. This value must be the same for all routers and access servers on a specific network.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+10 seconds
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example sets the interval between hello packets to 15 seconds:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip ospf hello-interval 15
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip ospf dead-interval
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf hello-interval" help="Time between HELLO packets">
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_timer_hello/10
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf hello-interval" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the interval between hello packets that the switch sends on the interface, use the ip ospf hello-interval command in interface configuration mode. To return to the default time, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+This value is advertised in the hello packets. The smaller the hello interval, the faster topological changes will be detected, but more routing traffic will ensue. This value must be the same for all routers and access servers on a specific network.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+10 seconds
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example sets the interval between hello packets to default:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no ip ospf hello-interval
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip ospf dead-interval
+	   </CTCRCMD>
+
+		
+	</COMMAND>
+
+	<COMMAND name="ip ospf dead-interval" help="Interval after which a neighbor is declared dead">
+		<PARAM name="deadtime" help=" Seconds" ptype="OSPF_INTERVAL"/>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_timer_dead/${deadtime}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf dead-interval ${deadtime}" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To set the interval during which at least one hello packet must be received from a neighbor before the router declares that neighbor down, use the ip ospf dead-interval command in interface configuration mode. To restore the default value, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The dead interval is advertised in OSPF hello packets. This value must be the same for all networking devices on a specific network.
+Specifying a smaller dead interval (seconds) will give faster detection of a neighbor being down and improve convergence, but might cause more routing instability.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+SECONDS: The neighbor is been considered as dead in 40s by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example sets the dead interval between hello packets to 20 seconds:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip ospf dead-interval 20
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip ospf hello-interval
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf dead-interval" help="Interval after which a neighbor is declared dead">
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_timer_dead/40
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf dead-interval" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To set the interval during which at least one hello packet must be received from a neighbor before the router declares that neighbor down, use the ip ospf dead-interval command in interface configuration mode. To restore the default value, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The dead interval is advertised in OSPF hello packets. This value must be the same for all networking devices on a specific network.
+Specifying a smaller dead interval (seconds) will give faster detection of a neighbor being down and improve convergence, but might cause more routing instability.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+SECONDS: The neighbor is been considered as dead in 40s by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example sets the dead interval between hello packets to 15 seconds:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no ip ospf dead-interval
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip ospf hello-interval
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="ip ospf authentication" help="Enable authentication on this interface">
+		<PARAM name="auth_type_opt" help="Authentication type option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+			<PARAM name="message-digest" help="Use message-digest authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf authentication ${auth_type_opt}" -c "end"
+			if [ "$?" == "0" ] ; then
+				if [ "${auth_type_opt}" != "" ]; then
+					cdbctl update/cdb/l3/route_if/$IFACE/ospf_auth_type/message-digest
+				else
+					cdbctl update/cdb/l3/route_if/$IFACE/ospf_auth_type/simple
+				fi
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the authentication type for an interface, use the ip ospf authentication command in interface configuration mode. To remove the authentication type for an interface, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Before using the ip ospf authentication command, configure a password for the interface using the ip ospf authentication-key command. If you use the ip ospf authentication message-digest command, configure the message-digest key for the interface with the ip ospf message-digest-key command.
+For backward compatibility, authentication type for an area is still supported. If the authentication type is not specified for an interface, the authentication type for the area will be used (the area default is null authentication).
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+The area default is no authentication (null authentication).
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example enables message-digest authentication:
+Switch(config)# interface eth-0-1
+Switch(config-if)# ip ospf authentication message-digest
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip ospf message-digest-key
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf authentication" help="Enable authentication on this interface">
+		<PARAM name="auth_type_opt" help="Authentication type option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+			<PARAM name="message-digest" help="Use message-digest authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf authentication ${auth_type_opt}" -c "end"
+			if [ "$?" == "0" ] ; then
+				if [ "${auth_type_opt}" != "" ]; then
+					cdbctl update/cdb/l3/route_if/$IFACE/ospf_auth_type/no-message-digest
+				else
+					cdbctl update/cdb/l3/route_if/$IFACE/ospf_auth_type/default
+				fi
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the authentication type for an interface, use the ip ospf authentication command in interface configuration mode. To remove the authentication type for an interface, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Before using the ip ospf authentication command, configure a password for the interface using the ip ospf authentication-key command. If you use the ip ospf authentication message-digest command, configure the message-digest key for the interface with the ip ospf message-digest-key command.
+For backward compatibility, authentication type for an area is still supported. If the authentication type is not specified for an interface, the authentication type for the area will be used (the area default is null authentication).
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+The area default is no authentication (null authentication).
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example disables message-digest authentication:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no ip ospf authentication
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip ospf message-digest-key
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip ospf authentication-key" help="Authentication password (key)">
+		<PARAM name="auth-key" help=" The OSPF password (key)" ptype="AUTHDKEY"/>
+	
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_auth_key/${auth-key}
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf authentication-key ${auth-key}" -c "end"
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To assign a password to be used by neighboring routers that are using the Open Shortest Path First (OSPF) simple password authentication, use the ip ospf authentication-key command in interface configuration mode. To remove a previously assigned OSPF password, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The password created by this command is used as a "key" that is inserted directly into the OSPF header when the switch originates routing protocol packets. A separate password can be assigned to each network on a per-interface basis. All neighboring routers on the same network must have the same password to be able to exchange OSPF information.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+No password is specified.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example enables the authentication key with the string yourpass:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip ospf authentication-key yourpass
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip ospf authentication
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf authentication-key" help="Authentication password (key)">
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_auth_key
+			vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf authentication-key" -c "end"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip ospf message-digest-key" help="Authentication password (key)">
+		<PARAM name="key-id" help="Key ID" ptype="OSPF_KEY_ID"/>
+		<PARAM name="md5" help="Use MD5 algorithm" ptype="SUBCOMMAND" mode="subcommand" />
+		<PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+		<PARAM name="auth-key" help=" The OSPF password (key)" ptype="AUTHDKEY"/>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			if [ "${encrypt}" == "8" ]; then
+			    keystr=`fnconvert -c decrypt -m "${auth-key}"`
+			else
+				keystr=${auth-key}
+			fi
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_md5_key/add-md5/${key-id}/$keystr
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf message-digest-key ${key-id} md5 $keystr" -c "end"
+			fi			
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To enable Open Shortest Path First (OSPF) Message Digest 5 (MD5) authentication, use the ip ospf message-digest-key command in interface configuration mode. To remove an old MD5 key, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+All routers access the same network/sub network share the same password when using this type of authentication. For every OSPF packet, the password is used for generating/examining the "message digest" which is at the tail of the OSPF packet. This "message digest" is processed by OSPF packet and password. There may multiple password be activated on the same interface, this command line always used to transit smoothly to the new password from the old one.	
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+OSPF MD5 authentication is disabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example sets a new key 19 with the password 8ry4222:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip ospf message-digest-key 19 md5 8ry4222
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf message-digest-key" help="Authentication password (key)">
+		<PARAM name="key-id" help="Key ID" ptype="OSPF_KEY_ID"/>
+
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_md5_key/del-md5/${key-id}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf message-digest-key ${key-id}" -c "end"
+			fi			
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To remove an old MD5 key, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+All routers access the same network/sub network share the same password when using this type of authentication. For every OSPF packet, the password is used for generating/examining the "message digest" which is at the tail of the OSPF packet. This "message digest" is processed by OSPF packet and password. There may multiple password be activated on the same interface, this command line always used to transit smoothly to the new password from the old one.	
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+OSPF MD5 authentication is disabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example sets a new key 19 with the password 8ry4222:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no ip ospf message-digest-key 19
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip ospf mtu-ignore" help="Disable mtu mismatch detection">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_mtu_ignore/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf mtu-ignore" -c "end"
+			fi	
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To disable Open Shortest Path First (OSPF) maximum transmission unit (MTU) mismatch detection on receiving Database Descriptor (DBD) packets, use the ip ospf mtu-ignore command in interface configuration mode. To reset to default, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+OSPF checks whether neighbors are using the same MTU on a common interface. This check is performed when neighbors exchange DBD packets. If the receiving MTU in the DBD packet is higher than the IP MTU configured on the incoming interface, OSPF adjacency will not be established.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+OSPF MTU mismatch detection is enabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example disables MTU mismatch detection on receiving DBD packets:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip ospf mtu-ignore
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf mtu-ignore" help="Disable mtu mismatch detection">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_mtu_ignore/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf mtu-ignore" -c "end"
+			fi	
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To reset to default, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+OSPF checks whether neighbors are using the same MTU on a common interface. This check is performed when neighbors exchange DBD packets. If the receiving MTU in the DBD packet is higher than the IP MTU configured on the incoming interface, OSPF adjacency will not be established.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+OSPF MTU mismatch detection is enabled.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example enables MTU mismatch detection on receiving DBD packets:
+Switch(config)# interface eth-0-1
+Switch(config-if)# no ip ospf mtu-ignore
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip ospf cost" help="Interface cost">
+		<PARAM name="ospf_cost" help=" Cost" ptype="OSPF_COST"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_cost/${ospf_cost}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf cost ${ospf_cost}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf cost" help="Interface cost">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_cost/0
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf cost" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip ospf priority" help="Router priority">
+		<PARAM name="ospf_priority" help="Priority" ptype="OSPF_PRIORITY"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_priority/${ospf_priority}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf priority ${ospf_priority}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf priority" help="Router priority">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_priority/1
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf priority" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="ip ospf network" help="Network type">
+		<PARAM name="network_type" help="Network type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="broadcast" help="Specify OSPF broadcast multi-access network" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-broadcast" help="Specify OSPF NBMA network" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="point-to-multipoint" help="Specify OSPF point-to-multipoint network" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="point-to-point" help="Specify OSPF point-to-point network" ptype="SUBCOMMAND" mode="subcommand"/>		
+		</PARAM>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_network_type/add/${network_type}
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "ip ospf network ${network_type}" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no ip ospf network" help="Router priority">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/ospf_network_type/del
+			if [ "$?" != "0" ] ; then
+				exit 1
+			else
+				vtysh -c "configure terminal" -c "interface $IFACE" -c "no ip ospf network" -c "end"
+			fi
+		</ACTION>
+
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-ospf-view"
+	prompt="${SYSTEM_NAME}(config-router)# "
+	depth="1">
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from router ospf configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from router ospf configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+	<COMMAND name="router-id" help="router-id for the OSPF process">
+		<PARAM name="rid" help="OSPF router-id in IP address format" ptype="IP_ADDR"/>
+		<ACTION>
+			vtysh -c "configure terminal" -c "router ospf" -c "ospf router-id ${rid}" -c "end" 
+			if [ "$?" == "0" ]; then
+				cdbctl update/cdb/l3/ospf/router_id/${rid}
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To use a fixed router ID, use the router-id command in router configuration mode. To force Open Shortest Path First (OSPF) to use the previous OSPF router ID behavior, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+You can configure an arbitrary value in the IP address format for each router. However, each router ID must be unique.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Depend to system interface without configuration.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example specifies a fixed router-id:
+Switch(config)# router ospf
+Switch(config-router)# router-id 10.1.1.1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router ospf
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+<!-- 
+			vtysh -c "configure terminal" -c "router ospf" -c "router-id ${rid}" -c "end"
+			vtysh -c "configure terminal" -c "router ospf" -c "no router-id" -c "end"
+-->
+
+	<COMMAND name="no router-id" help="router-id for the OSPF process">
+		<ACTION>
+			vtysh -c "configure terminal" -c "router ospf" -c "no ospf router-id" -c "end" 
+			if [ "$?" == "0" ]; then
+				cdbctl update/cdb/l3/ospf/router_id
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To use a fixed router ID, use the router-id command in router configuration mode. To force Open Shortest Path First (OSPF) to use the previous OSPF router ID behavior, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+You can configure an arbitrary value in the IP address format for each router. However, each router ID must be unique.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+Depend to system interface without configuration.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example unset the router-id:
+Switch(config)# router ospf
+Switch(config-router)# no router-id
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no router ospf
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="OSPF network prefix" ptype="IP_ADDR_MASK"/>
+	    <PARAM name="area" help="Set the OSPF area ID" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="areaid" help="OSPF area ID as a decimal value" ptype="OSPF_ID"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl create/cdb/l3/ospf_network/${prefix}/${areaid}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To define the interfaces on which Open Shortest Path First (OSPF) runs and to define the area ID for those interfaces, use the network area command in router configuration mode. To disable OSPF routing for interfaces defined with the address wildcard-mask pair, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The IP-ADDRESS and WILDCARD-MASK arguments together allow you to define one or multiple interfaces to be associated with a specific OSPF area using a single command.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following partial example initializes the OSPF routing process, and defines three OSPF areas: 2, 3, and 0. Areas 2, and 3 mask specific address ranges, and area 0 enables OSPF for all other networks.
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip address 10.108.20.1/24
+Switch(config)# router ospf
+Switch(config-router)# network 10.108.0.0/16 area 2
+Switch(config-router)# network 10.109.10.0/24  area 3
+Switch(config-router)# network 0.0.0.0/0 area 0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router ospf
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no network" help="Enable routing on an IP network">
+		<PARAM name="prefix" help="OSPF network prefix" ptype="IP_ADDR_MASK"/>
+	    <PARAM name="area" help="Set the OSPF area ID" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="areaid" help="OSPF area ID as a decimal value" ptype="OSPF_ID"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl delete/cdb/l3/ospf_network/${prefix}/${areaid}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To define the interfaces on which Open Shortest Path First (OSPF) runs and to define the area ID for those interfaces, use the network area command in router configuration mode. To disable OSPF routing for interfaces defined with the address wildcard-mask pair, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The IP-ADDRESS and WILDCARD-MASK arguments together allow you to define one or multiple interfaces to be associated with a specific OSPF area using a single command.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following partial example deletes the ospf network:
+Switch(config)# router ospf
+Switch(config-router)# no network 10.108.0.0/16 area 2
+Switch(config-router)# no network 10.109.10.0/24  area 3
+Switch(config-router)# no network 0.0.0.0/0 area 0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router ospf
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="area" help="OSPF area parameters">
+		<PARAM name="areaid" help="OSPF area ID as a decimal value" ptype="OSPF_ID"/>
+		<PARAM name="opt" help="Choose area command"  ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="authentication" help="Enable authentication"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="message-digest" help="Use message-digest authentication"  ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+			<PARAM name="range" help="Enable range"  ptype="SUBCOMMAND" mode="subcommand">
+			    <PARAM name="prefix" help="OSPF range prefix" ptype="IP_ADDR_MASK"/>
+			    <PARAM name="advert" help="Network type" ptype="SUBCOMMAND" mode="switch" optional="true">
+			    	<PARAM name="advertise" help="OSPF advertise"  ptype="SUBCOMMAND" mode="subcommand"/>
+			    	<PARAM name="not-advertise" help="OSPF advertise"  ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="stub" help="Configure OSPF area as stub"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="summary_option" help="Summary option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="no-summary" help="Do not inject inter-area routes into stub" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="nssa" help="Configure OSPF area as nssa"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="nssa_role" help="NSSA-ABR for translate role" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="translate-candidate" help="Configure NSSA-ABR for translate election (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+				    <PARAM name="translate-never" help="Configure NSSA-ABR to never translate" ptype="SUBCOMMAND" mode="subcommand"/>
+				    <PARAM name="translate-always" help="Configure NSSA-ABR to always translate" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+				<PARAM name="nssa_summary" help="Summary option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="no-summary" help="Do not inject inter-area routes into nssa" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="virtual-link" help="Configure a virtual link"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="peer" help="Router ID of the remote ABR" ptype="IP_ADDR"/>
+				<PARAM name="auth_type_opt" help="Authentication type option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="authentication" help="Use simple authentication" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="authentication-key" help="simple authentication password (key)" ptype="SUBCOMMAND" mode="subcommand"/>
+						<PARAM name="auth_key" help="The OSPF password (key, 8 characters)" ptype="OSPF_AUTH_KEY"/>
+					</PARAM>
+					<PARAM name="message-digest" help="Use message-digest authentication" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="message-digest-key" help="Message digest authentication password (key)" ptype="SUBCOMMAND" mode="subcommand"/>
+						<PARAM name="key_id" help="Key ID" ptype="OSPF_KEY_ID"/>
+						<PARAM name="md5" help="Use MD5 algorithm" ptype="SUBCOMMAND" mode="subcommand"/>
+						<PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG" optional="true"/>
+						<PARAM name="md5_key" help="The OSPF password (key, 16 characters)" ptype="OSPF_MD5_KEY"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="hello_opt" help="Hello option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="hello-interval" help="Time between HELLO packets" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="hello_val" help="Seconds" ptype="OSPF_INTERVAL"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="dead_opt" help="Dead option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="dead-interval" help="Interval time after which a neighbor is declared down" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="dead_val" help="Seconds" ptype="OSPF_INTERVAL"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="retrs_opt" help="Retransmitting option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="retransmit-interval" help="Time between retransmitting lost link state advertisements" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="retrs_val" help="Seconds" ptype="OSPF_INTERVAL"/>
+					</PARAM>
+				</PARAM>
+				<PARAM name="delay_opt" help="Transmit delay option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="transmit-delay" help="Link state transmit delay" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="delay_val" help="Seconds" ptype="OSPF_INTERVAL"/>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "${opt}" == "authentication" ]; then
+				cdbctl create/cdb/l3/ospf_area_auth/authentication/${areaid}/message-digest
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} authentication message-digest" -c "end"
+				fi
+			elif [ "${opt}" == "range" ]; then
+				if [ "${advert}" == "" ]; then
+					cdbctl create/cdb/l3/ospf_area_range/${prefix}/${areaid}
+				else
+					cdbctl create/cdb/l3/ospf_area_range/${prefix}/${areaid}/${advert}
+				fi
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} range ${prefix} ${advert}" -c "end"
+				fi
+			elif [ "${opt}" == "stub" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} stub ${summary_option}" -c "end"
+				if [ "$?" == "0" ]; then
+					cdbctl create/cdb/l3/ospf_area_stub/${areaid}
+					if [ "${summary_option}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_stub/${areaid}/no_summary/1
+					fi
+				fi
+			elif [ "${opt}" == "nssa" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} nssa ${nssa_role} ${nssa_summary}" -c "end"
+				if [ "$?" == "0" ]; then
+					cdbctl create/cdb/l3/ospf_area_nssa/${areaid}
+					if [ "${nssa_role}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_nssa/${areaid}/nssa_role/${nssa_role}
+					fi
+					if [ "${nssa_summary}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_nssa/${areaid}/no_summary/1
+					else
+						cdbctl update/cdb/l3/ospf_area_nssa/${areaid}/no_summary/0
+					fi
+				fi
+			elif [ "${opt}" == "virtual-link" ]; then
+				if [ "${auth_type_opt}" == "message-digest" ]; then
+					if [ "${encrypt}" == "8" ]; then
+					    keystr=`fnconvert -c decrypt -m "${md5_key}"`
+					else
+						keystr=${md5_key}
+					fi
+					auth_key_cmd="authentication message-digest message-digest-key ${key_id} md5 $keystr"
+				elif [ "${auth_type_opt}" == "authentication" ]; then
+					auth_key_cmd="authentication authentication-key ${auth_key}"
+				else
+					auth_key_cmd="authentication null"
+				fi
+				if [ "${hello_opt}" != "" ]; then
+					hello_cmd="hello-interval "${hello_val}
+				else
+					hello_cmd=""
+				fi
+				if [ "${dead_opt}" != "" ]; then
+					dead_cmd="dead-interval "${dead_val}
+				else
+					dead_cmd=""
+				fi
+				if [ "${retrs_opt}" != "" ]; then
+					retrs_cmd="retransmit-interval "${retrs_val}
+				else
+					retrs_cmd=""
+				fi
+				if [ "${delay_opt}" != "" ]; then
+					delay_cmd="transmit-delay "${delay_val}
+				else
+					delay_cmd=""
+				fi
+				
+				if [ "${auth_type_opt}" == "" -a "${hello_opt}" == "" -a "${dead_opt}" == "" -a "${retrs_opt}" == "" -a "${delay_opt}" == "" ]; then 
+					vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} virtual-link ${peer}" -c "end"
+				else
+					if [ "${auth_type_opt}" != "" ]; then
+						vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} virtual-link ${peer} $auth_key_cmd" -c "end"
+						if [ "$?" != "0" ]; then
+							exit 1
+						fi
+					fi
+					if [ "${hello_opt}" != "" -o "${dead_opt}" != "" -o "${retrs_opt}" != "" -o "${delay_opt}" != "" ]; then 
+						vtysh -c "configure terminal" -c "router ospf" -c "area ${areaid} virtual-link ${peer} $hello_cmd $dead_cmd $retrs_cmd $delay_cmd" -c "end"
+					fi
+				fi
+
+				if [ "$?" == "0" ]; then
+					cdbctl create/cdb/l3/ospf_area_vlink/${areaid}/${peer}
+					
+					if [ "${auth_type_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/auth_flag/1
+					fi
+					if [ "${auth_type_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/auth_type/${auth_type_opt}
+					fi
+
+					if [ "${auth_type_opt}" == "message-digest" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/md5_id/${key_id}
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/md5_key/$keystr
+					elif [ "${auth_type_opt}" == "authentication" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/auth_key/${auth_key}
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/md5_id/0
+					fi
+					
+					if [ "${hello_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/hello_interval/${hello_val}
+					fi
+					if [ "${dead_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/dead_interval/${dead_val}
+					fi
+					if [ "${retrs_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/retransmit_interval/${retrs_val}
+					fi
+					if [ "${delay_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/transmit_delay/${delay_val}
+					fi
+				fi
+
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To define the interfaces on which Open Shortest Path First (OSPF) runs and to define the area ID for those interfaces, use the network area command in router configuration mode. To disable OSPF routing for interfaces defined with the address wildcard-mask pair, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+The IP-ADDRESS and WILDCARD-MASK arguments together allow you to define one or multiple interfaces to be associated with a specific OSPF area using a single command.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following partial example initializes the OSPF routing process, and defines three OSPF areas: 2, 3, and 0. Areas 2, and 3 mask specific address ranges, and area 0 enables OSPF for all other networks.
+Switch(config)# interface eth-0-1
+Switch(config-if)# no switchport
+Switch(config-if)# ip address 10.108.20.1/24
+Switch(config)# router ospf
+Switch(config-router)# network 10.108.0.0/16 area 2
+Switch(config-router)# network 10.109.10.0/24  area 3
+Switch(config-router)# network 0.0.0.0/0 area 0
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router ospf
+	   </CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no area" help="OSPF area parameters">
+		<PARAM name="areaid" help="OSPF area ID as a decimal value" ptype="OSPF_ID"/>
+		<PARAM name="opt" help="Choose area command"  ptype="SUBCOMMAND" mode="switch">
+	    	<PARAM name="authentication" help="Enable authentication"  ptype="SUBCOMMAND" mode="subcommand"/>
+	    	<PARAM name="range" help="Enable range"  ptype="SUBCOMMAND" mode="subcommand">
+	    		<PARAM name="prefix" help="OSPF range prefix" ptype="IP_ADDR_MASK"/>
+	    	</PARAM>
+			<PARAM name="stub" help="Configure OSPF area as stub"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="summary_option" help="Summary option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="no-summary" help="Do not inject inter-area routes into stub" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="nssa" help="Configure OSPF area as nssa"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="nssa_role" help="NSSA-ABR for translate role" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="translate-candidate" help="Configure NSSA-ABR for translate election (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+				    <PARAM name="translate-never" help="Configure NSSA-ABR to never translate" ptype="SUBCOMMAND" mode="subcommand"/>
+				    <PARAM name="translate-always" help="Configure NSSA-ABR to always translate" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+				<PARAM name="nssa_summary" help="Summary option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+				    <PARAM name="no-summary" help="Do not inject inter-area routes into nssa" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="virtual-link" help="Configure a virtual link"  ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="peer" help="Router ID of the remote ABR" ptype="IP_ADDR"/>
+				<PARAM name="auth_type_opt" help="Authentication type option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="authentication" help="Use simple authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+				<PARAM name="hello_opt" help="Hello option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="hello-interval" help="Time between HELLO packets" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+				<PARAM name="dead_opt" help="Dead option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="dead-interval" help="Interval time after which a neighbor is declared down" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+				<PARAM name="retrs_opt" help="Retransmitting option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="retransmit-interval" help="Time between retransmitting lost link state advertisements" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+				<PARAM name="delay_opt" help="Transmit delay option" optional="true" ptype="SUBCOMMAND" mode="switch" default="">
+					<PARAM name="transmit-delay" help="Link state transmit delay" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "${opt}" == "authentication" ]; then
+				cdbctl delete/cdb/l3/ospf_area_auth/authentication/${areaid}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} authentication" -c "end"
+				fi
+			elif [ "${opt}" == "range" ]; then
+				cdbctl delete/cdb/l3/ospf_area_range/${prefix}/${areaid}
+				if [ "$?" == "0" ]; then
+					vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} range ${prefix}" -c "end"
+				fi
+			elif [ "${opt}" == "stub" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} stub ${summary_option}" -c "end"
+				if [ "$?" == "0" ]; then
+					if [ "${summary_option}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_stub/${areaid}/no_summary/0
+					else
+						cdbctl delete/cdb/l3/ospf_area_stub/${areaid}
+					fi
+				fi
+			elif [ "${opt}" == "nssa" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} nssa ${nssa_role} ${nssa_summary}" -c "end"
+				if [ "$?" == "0" ]; then
+					cdbctl delete/cdb/l3/ospf_area_nssa/${areaid}
+				fi
+			elif [ "${opt}" == "virtual-link" ]; then
+					auth_key_cmd="authentication authentication-key"
+				
+				if [ "${auth_type_opt}" == ""  -a "${hello_opt}" == "" -a "${dead_opt}" == "" -a "${retrs_opt}" == "" -a "${delay_opt}" == "" ]; then 
+					vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} virtual-link ${peer}" -c "end"
+					cdbctl delete/cdb/l3/ospf_area_vlink/${areaid}/${peer}
+				else
+					if [ "${auth_type_opt}" != "" ]; then
+						vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} virtual-link ${peer}  $auth_key_cmd" -c "end"
+					fi
+					if [ "${hello_opt}" != "" -o "${dead_opt}" != "" -o "${retrs_opt}" != "" -o "${delay_opt}" != "" ]; then 
+						vtysh -c "configure terminal" -c "router ospf" -c "no area ${areaid} virtual-link ${peer} ${hello_opt} ${dead_opt} ${retrs_opt} ${delay_opt}" -c "end"
+					fi
+					
+					if [ "${auth_type_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/auth_flag/0
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/auth_type
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/md5_id/0
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/md5_key
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/auth_key
+					fi
+					
+					if [ "${hello_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/hello_interval/0
+					fi
+					if [ "${dead_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/dead_interval/0
+					fi
+					if [ "${retrs_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/retransmit_interval/0
+					fi
+					if [ "${delay_opt}" != "" ]; then
+						cdbctl update/cdb/l3/ospf_area_vlink/${areaid}/${peer}/transmit_delay/0
+					fi
+				fi
+
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="default-information" help="Control distribution of default information" >
+	</COMMAND>
+
+	<COMMAND name="no default-information" help="Control distribution of default information" >
+	</COMMAND>
+
+	<COMMAND name="default-information originate" help="Distribute a default route">
+		<PARAM name="default-i" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="always" help="Always advertise default route" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l3/ospf/default_originate/add/${default-i}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "default-information originate ${default-i}" -c "end"
+			fi
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To generate a default external route into an Open Shortest Path First (OSPF) routing domain, use the default-information originate command in router configuration mode. To disable this feature, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Whenever you use the redistribute or the default-information router configuration command to redistribute routes into an OSPF routing domain, the switch automatically becomes an autonomous System Boundary Router (ASBR). However, an ASBR does not, by default, generate a default route into the OSPF routing domain. The system still must have a default route for itself before it generates one, except when you have specified the always keyword.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+This command is disabled by default.
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+The following example specifiesthe default route:
+Switch(config)# router ospf
+Switch(config-router)#default-information originate always
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+router ospf
+	   </CTCRCMD>
+		
+	</COMMAND>
+
+	<COMMAND name="no default-information originate" help="Distribute a default route">
+		<ACTION>
+			cdbctl update/cdb/l3/ospf/default_originate/del
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "no default-information originate" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rip" help="Routing Information Protocol (RIP)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/ospf/redistribute/add/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no redistribute" help="Redistribute information from another routing protocol">
+		<PARAM name="redist" help="Distribute a default route" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Statically configured routes" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="connected" help="Connected routes (directly attached subnet or host)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="rip" help="Routing Information Protocol (RIP)" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l3/ospf/redistribute/del/${redist}
+			if [ "$?" == "0" ]; then
+				vtysh -c "configure terminal" -c "router ospf" -c "no redistribute ${redist}" -c "end"
+			fi
+		</ACTION>
+	</COMMAND>
+
+
+</VIEW>
+
+</CLISH_MODULE>

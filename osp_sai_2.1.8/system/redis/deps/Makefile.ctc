@@ -1,0 +1,43 @@
+include $(TOP_DIR)/Makefile.env.inc
+all_targets += geohash
+all_targets += hiredis
+#all_targets += jemalloc
+all_targets += linenoise
+all_targets += lua
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+geohash: FORCE
+	$(OSP_MAKE) -C geohash-int
+
+clean_geohash: FORCE
+	$(OSP_MAKE) -C geohash-int clean
+
+hiredis: FORCE
+	$(OSP_MAKE) -C hiredis
+
+clean_hiredis: FORCE
+	$(OSP_MAKE) -C hiredis clean
+
+jemalloc: FORCE
+	$(OSP_MAKE) -C jemalloc
+
+clean_jemalloc: FORCE
+	$(OSP_MAKE) -C jemalloc clean
+	
+linenoise: FORCE
+	$(OSP_MAKE) -C linenoise
+
+clean_linenoise: FORCE
+	$(OSP_MAKE) -C linenoise clean
+
+lua: FORCE
+	$(OSP_MAKE) -C lua
+
+clean_lua: FORCE
+	$(OSP_MAKE) -C lua clean	
+	
+.PHONY: FORCE
+FORCE:

@@ -1,0 +1,10 @@
+include $(MK_DIR)/sys.mk
+LIB = ltc4151
+SRCS  = ltc4151_api.c
+SRCS  += ltc4151_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/ltc4151
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

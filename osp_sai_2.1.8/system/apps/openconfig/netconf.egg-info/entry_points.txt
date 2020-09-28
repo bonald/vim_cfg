@@ -1,0 +1,3 @@
+[console_scripts]
+netconf-client = netconf.ncclient:main
+

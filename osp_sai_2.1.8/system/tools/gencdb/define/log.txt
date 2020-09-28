@@ -1,0 +1,2546 @@
+################################################################################
+# Note:
+# 1. [LOG-MODULE]
+#       需要按字母排序, 否则会有Warning
+# 2. [LOG-ITEM]
+#    由3部分组成 MODULE-SEVERITY-BRIEF, 中间由关键字'-'连接, e.g. INTERFACE-4-UPDOWN
+#      1) MODULE必须是[LOG-MODULE]列出的
+#      2) SEVERITY必须是[0-7]的数字
+#        0:   E_EMERGENCY
+#        1:   E_ALERT
+#        2:   E_CRITICAL
+#        3:   E_ERROR
+#        4:   E_WARNING
+#        5:   E_NOTICE
+#        6:   E_INFORMATIONAL
+#        7:   E_DEBUG
+#      3) BRIEF必须少于48个字符
+# 3. "#" 注释
+# 4. [LOG-SENTENCE]
+#      必须为1行，其中[]包含的部分为参数，参数必须与[LOG-PARAM]中的数目对应
+# 5. [LOG-PARAM]
+#      行数必须与[LOG-SENTENCE]中的参数一致，列数必须为3列
+#      1) 列1为参数名称, e.g. IFNAME
+#      2）列2为 %s		Interface name
+#      可以使用的参数包括
+#      STRING  %s
+#      UINT    %u
+#      UINT64  %llu
+#      INT     %d
+#      INT64   %lld
+# 6. [LOG-EXPLANATION]
+# 7. [LOG-RECOMMENDED_ACTION]
+# 8. [LOG-EXPLANATION-CN]
+# 9. [LOG-RECOMMENDED_ACTION-CN]
+################################################################################
+--------------------------------------------------------------------------------
+[LOG-MODULE]
+AAA
+ACL
+ARP
+BFD
+BGP
+BHM
+CFM
+DHCP
+DOT1X
+EFM
+ERPS
+FAN
+FDB
+HARDWARE
+INTERFACE
+IPSOUR
+IPSLA
+LACP
+LAG
+LLDP
+LOG
+MLAG
+MONITOR
+NAT
+NTP
+OAM
+OPENFLOW
+OSPF
+POWER
+PSU
+PTP
+QINQ
+QOS
+RMON
+ROUTE
+SECURITY
+SFLOW
+STP
+SYSTEM
+TEMPERATURE
+TIMERANGE
+TRANSCEIVER
+TRACK
+VLAN
+VRF
+VRRP
+VXLAN
+ARPINSP
+ARPRATELIMIT
+ARPNUMBERLIMIT
+SSM
+ND
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+FAN-3-FAIL
+[LOG-SENTENCE]
+Fan [FAN_INDEX] in slot [FAN_SLOT] is fail
+[LOG-PARAM]
+FAN_INDEX		%s    Fan index
+FAN_SLOT		%d    Fan slot
+[LOG-EXPLANATION]
+The specified fan has failed or been removed.
+[REASON]
+Fans have failed.
+[LOG-RECOMMENDED_ACTION]
+Replace the specified fan as soon as possible.
+[LOG-PARAM-CN]
+FAN_INDEX		%s    风扇编号
+FAN_SLOT		%d    风扇槽位
+[LOG-EXPLANATION-CN]
+风扇运行异常。
+[REASON]
+风扇存在故障。
+[LOG-RECOMMENDED_ACTION-CN]
+检查问题风扇，确定安装正确，或者更换风扇。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+FAN-4-OK
+[LOG-SENTENCE]
+Fan [FAN_INDEX] in slot [FAN_SLOT] is ok
+[LOG-PARAM]
+FAN_INDEX		%s    Fan index
+FAN_SLOT		%d    Fan slot
+[LOG-EXPLANATION]
+Fan index is ok.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+FAN_INDEX		%s    风扇编号
+FAN_SLOT		%d    风扇槽位
+[LOG-EXPLANATION-CN]
+风扇运行正常。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-CREATE
+[LOG-SENTENCE]
+Create physical interface [IFNAME], MAC address is [MAC_ADDRESS], gport is [GPORT]
+[LOG-PARAM]
+IFNAME		%s		Interface name
+MAC_ADDRESS	%s		MAC address of the interface
+GPORT		%u		Chip's global port ID
+[LOG-EXPLANATION]
+Ppysical interface is created.
+[REASON]
+Ppysical interface is created.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+UPSTATE		端口链路状态
+[LOG-EXPLANATION-CN]
+创建物理端口
+[REASON]
+创建物理端口
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-UPDOWN
+[LOG-SENTENCE]
+Interface [IFNAME] state change to [UPSTATE]
+[LOG-PARAM]
+IFNAME		%s		Interface name
+UPSTATE		%s		Link-layer state, up or down
+[LOG-EXPLANATION]
+Interface link-layer state is changing.
+[REASON]
+physical link broken or configurations.
+[LOG-RECOMMENDED_ACTION]
+If the link-layer state has gone unexpectedly, please check the physical connection (e.g., cable) and configurations.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+UPSTATE		端口链路状态
+[LOG-EXPLANATION-CN]
+端口链路状态变化。
+[REASON]
+物理链路故障或端口配置
+[LOG-RECOMMENDED_ACTION-CN]
+如果端口链路状态异常，请检查物理连接或者端口配置。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-ERRDISABLE_ENTER
+[LOG-SENTENCE]
+Interface [IFNAME] enter [ERR_REASON] errdisable state
+[LOG-PARAM]
+IFNAME		%s		Interface name
+ERR_REASON      %s		Error reason, e.g. link-flap
+[LOG-EXPLANATION]
+The interface has detected an error condition, and is disabled as a precautionary measure.
+[REASON]
+switch detected the error,disable interface.
+[LOG-RECOMMENDED_ACTION]
+Recommended Action: The switch detected the reported error condition (errdisable cause) on the interface. As
+a precautionary measure, and to avoid the error condition from affecting the switch/network, the switch disables
+the interface. If recovery timer has been configured for the errdisable cause, the switch will attempt to recover the
+interface after the recovery timeout. The interface could also be recovered by performing the shutdown command,
+followed by the no shutdown command in the interface configuration mode.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+ERR_REASON	错误原因，譬如端口链路状态频繁变化
+[LOG-EXPLANATION-CN]
+端口检测到某种错误条件，作为一种预防措施，主动关闭端口。
+[REASON]
+系统出现错误，主动关闭端口。
+[LOG-RECOMMENDED_ACTION-CN]
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-BANDWIDTH_OVERFLOW
+[LOG-SENTENCE]
+Interface [IFNAME] [DIR] bandwidth utilization rate over [THRESHOLD_RATE] percent
+[LOG-PARAM]
+IFNAME		%s		Interface name
+DIR         %s      input or output
+THRESHOLD_RATE  %d	Bandwidth usage threshold
+[LOG-EXPLANATION]
+Interface bandwidth in use over threshold.
+[REASON]
+Port interface bandwidth in use over threshold.
+[LOG-RECOMMENDED_ACTION]
+If the interface bandwidth in use over threshold, perhaps the speed of the interface cant meet the demand.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+DIR         端口出入方向
+THRESHOLD_RATE	产生日志的带宽利用率阈值
+[LOG-EXPLANATION-CN]
+端口带宽利用率
+[REASON]
+端口带宽利用率超过阈值
+[LOG-RECOMMENDED_ACTION-CN]
+通过带宽利用率了解当前设备的负载状况，如果带宽利用率超过一定阈值则表明带宽资源已经难以满足当前的业务需求，需要对设备进行扩容。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-BANDWIDTH_RESUME
+[LOG-SENTENCE]
+Interface [IFNAME] [DIR] bandwidth utilization rate resume under [RESUME_RATE] percent
+[LOG-PARAM]
+IFNAME		%s		Interface name
+DIR         %s      input or output
+RESUME_RATE  %d	    Bandwidth resume
+[LOG-EXPLANATION]
+Interface bandwidth in use resume.
+[REASON]
+Port interface bandwidth in use resume.
+[LOG-RECOMMENDED_ACTION]
+If the interface bandwidth in use resume, the interface can meet the demand.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+DIR         端口出入方向
+RESUME_RATE	产生恢复日志的带宽利用率阈值
+[LOG-EXPLANATION-CN]
+端口带宽利用率
+[REASON]
+端口带宽利用率恢复正常
+[LOG-RECOMMENDED_ACTION-CN]
+端口带宽利用率恢复正常
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-DROP_OVERFLOW
+[LOG-SENTENCE]
+Interface [IFNAME] [DIR] drop [DROP_PACKETS] packets in [DROP_INTERVAL] minutes
+[LOG-PARAM]
+IFNAME		%s		Interface name
+DIR         %s      input or output
+DROP_PACKETS    %llu  drop packets count
+DROP_INTERVAL   %d	  Bandwidth usage threshold
+[LOG-EXPLANATION]
+Interface drop pcakets overflow in given time.
+[REASON]
+Port interface drop packets over threshold in given time.
+[LOG-RECOMMENDED_ACTION]
+If the interface drop packets over threshold in given time, congestion may happened.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+DIR         端口出入方向,目前仅支持出方向
+DROP_PACKETS	丢包数量
+DROP_INTERVAL   统计时间
+[LOG-EXPLANATION-CN]
+端口给定时间周期内丢包数超过设置阈值
+[REASON]
+端口拥塞丢包超过阈值
+[LOG-RECOMMENDED_ACTION-CN]
+在网络运行过程中，如果发生了网络拥塞，容易引起业务流在网络的传输过程中发生丢包。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-DROP_RESUME
+[LOG-SENTENCE]
+Interface [IFNAME] [DIR] drop resume under [DROP_PACKETS] packets in [DROP_INTERVAL] minutes
+[LOG-PARAM]
+IFNAME		%s		Interface name
+DIR         %s      input or output
+DROP_PACKETS    %llu  drop packets count
+DROP_INTERVAL   %d	  Bandwidth usage threshold
+[LOG-EXPLANATION]
+Interface drop pcakets under threshold in given time.
+[REASON]
+Port interface drop packets resume under threshold in given time.
+[LOG-RECOMMENDED_ACTION]
+If the interface bandwidth in use resume, the congestion might be disappear.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+DIR         端口出入方向,目前仅支持出方向
+DROP_PACKETS	丢包数量
+DROP_INTERVAL   统计时间
+[LOG-EXPLANATION-CN]
+端口给定时间周期内丢包数超过小于阈值
+[REASON]
+端口拥塞丢包恢复正常
+[LOG-RECOMMENDED_ACTION-CN]
+端口拥塞丢包恢复正常
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-ERRDISABLE_EXIT
+[LOG-SENTENCE]
+Interface [IFNAME] exit errdisable state for [EXIT_REASON]
+[LOG-PARAM]
+IFNAME		%s		Interface name
+EXIT_REASON     %s		Exit reason, administer or timeout
+[LOG-EXPLANATION]
+The interface exit errdisable state, maybe cased by administer 'no shutdown' or errdisable timeout.
+[REASON]
+The interface exit errdisable state, maybe cased by administer 'no shutdown' or errdisable timeout.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+EXIT_REASON     退出原因，管理解除或者超时
+[LOG-EXPLANATION-CN]
+端口退出错误条件，可能是管理员配置'no shutdown'或者errdisable定时器超时。
+[REASON]
+端口退出错误条件，可能是管理员配置'no shutdown'或者errdisable定时器超时。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+INTERFACE-4-CRCPKT
+[LOG-SENTENCE]
+Interface [IFNAME] newly receives [NEW_CRC_COUNT] (total [TOTAL_CRC_COUNT]) CRC error packets
+[LOG-PARAM]
+IFNAME		%s		Interface name
+NEW_CRC_COUNT   %llu		Newly received CRC packet count
+TOTAL_CRC_COUNT %llu		Total received CRC packet count
+[LOG-EXPLANATION]
+The interface received CRC packets
+[REASON]
+The cable, fiber, or fiber module maybe have problem
+[LOG-RECOMMENDED_ACTION]
+Please check the cable, fiber, or fiber module of this interface.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+NEW_CRC_COUNT   新增收到的CRC包计数
+NEW_CRC_COUNT   全部收到的CRC包计数
+[LOG-EXPLANATION-CN]
+端口收到CRC包
+[REASON]
+可能该端口的网线、光纤、或光模块有问题
+[LOG-RECOMMENDED_ACTION-CN]
+检查该端口的网线、光纤、或光模块
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LAG-4-ADD
+[LOG-SENTENCE]
+LAG interface [IFNAME] is created
+[LOG-PARAM]
+IFNAME		%s		LAG interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LAG-4-DEL
+[LOG-SENTENCE]
+LAG interface [IFNAME] is deleted
+[LOG-PARAM]
+IFNAME		%s		LAG interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LAG-4-ATTACH_MEMBER
+[LOG-SENTENCE]
+LAG interface [IFNAME] attach member [MEMBER_IFNAME]
+[LOG-PARAM]
+IFNAME		%s		LAG interface name
+MEMBER_IFNAME	%s		Member interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+MEMBER_IFNAME	成员端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LAG-4-DETACH_MEMBER
+[LOG-SENTENCE]
+LAG interface [IFNAME] detach member [MEMBER_IFNAME]
+[LOG-PARAM]
+IFNAME		%s		LAG interface name
+MEMBER_IFNAME	%s		Member interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		LAG端口名称
+MEMBER_IFNAME	成员端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LAG-4-CHANGE_ACTIVE
+[LOG-SENTENCE]
+LAG interface [IFNAME] active member [MEMBER_IFNAME]
+[LOG-PARAM]
+IFNAME		    %s		LAG interface name
+MEMBER_IFNAME	%s		Member interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME	    	LAG端口名称
+MEMBER_IFNAME	成员端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LAG-4-CHANGE_INACTIVE
+[LOG-SENTENCE]
+LAG interface [IFNAME] inactive member [MEMBER_IFNAME]
+[LOG-PARAM]
+IFNAME		    %s		LAG interface name
+MEMBER_IFNAME	%s		Member interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+IFNAME	    	LAG端口名称
+MEMBER_IFNAME	成员端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LLDP-4-ADD_NEIGH
+[LOG-SENTENCE]
+Add LLDP neighbor [CHASSISID] [PORTID] on local interface [IFNAME]
+[LOG-PARAM]
+CHASSISID	%s		Neighbor chassis ID
+PORTID		%s		Neighbor port ID
+IFNAME		%s		Local interface name
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+CHASSISID	邻居设备ID
+PORTID		邻居端口ID
+IFNAME		本地端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+LLDP-4-DEL_NEIGH
+[LOG-SENTENCE]
+Delete LLDP neighbor [CHASSISID] [PORTID] on local interface [IFNAME] for [DEL_REASON]
+[LOG-PARAM]
+CHASSISID	%s		Neighbor chassis ID
+PORTID		%s		Neighbor port ID
+IFNAME		%s		Local interface name
+DEL_REASON      %s		Delete reason, administer or timeout
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+CHASSISID	邻居设备ID
+PORTID		邻居端口ID
+IFNAME		本地端口名称
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+MLAG-4-ESTABLISH
+[LOG-SENTENCE]
+MLAG session establish with peer [ADDRESS]
+[LOG-PARAM]
+ADDRESS		%s		MLAG Peer Address
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+MLAG-3-BREAKOFF
+[LOG-SENTENCE]
+MLAG session break off
+[LOG-PARAM]
+[LOG-EXPLANATION]
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OSPF-4-NEIGHCHG
+[LOG-SENTENCE]
+OSPF neighbour [NEIGHBOUR] from interface [IFNAME] state changes ([PREV_STATE] -> [NEW_STATE]) for [DOWN_REASON]
+[LOG-PARAM]
+NEIGHBOUR	%s	OSPF neighbour router ID
+IFNAME		%s	Interface name
+PREV_STATE	%s	previous neighbour state
+NEW_STATE	%s	new neighbour state
+DOWN_REASON %s  neighbour down reason
+[LOG-EXPLANATION]
+OSPF neighbour state changes
+[REASON]
+OSPF neighbour state changes
+[LOG-RECOMMENDED_ACTION]
+Need to change network status when a neighbour change from Full to Deleted, otherwise no action is required
+[LOG-PARAM-CN]
+NEIGHBOUR	%s	OSPF邻居router标识符
+IFNAME		%s	端口名称
+PREV_STATE	%s	原来的邻居状态
+NEW_STATE	%s	新的邻居状态
+DOWN_REASON	%s	邻居down的原因
+[LOG-EXPLANATION-CN]
+OSPF邻居状态变化
+[REASON]
+OSPF邻居状态变化
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-3-ABSENT
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] is absent
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+[LOG-EXPLANATION]
+The specified psu is absent.
+[REASON]
+Fans are missing.
+[LOG-RECOMMENDED_ACTION]
+Check the psu module.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+[LOG-EXPLANATION-CN]
+有电源模块未插入。
+[REASON]
+有电源模块未插入。
+[LOG-RECOMMENDED_ACTION-CN]
+检查电源模块。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-4-PRESENT
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] is present
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+[LOG-EXPLANATION]
+The specified psu is present.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+[LOG-EXPLANATION-CN]
+电源模块在位。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-3-ABNORMAL
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] work is abnormal
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+[LOG-EXPLANATION]
+The specified psu is no longer providing power to the system.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+The power supply may need to be replaced.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+[LOG-EXPLANATION-CN]
+电源没有向系统供电。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+检查电源模块。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-3-ALERT
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] is alert
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+[LOG-EXPLANATION]
+The specified psu is alert.
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+The power supply may need to be replaced.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+[LOG-EXPLANATION-CN]
+电源告警。
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+检查电源模块。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-4-NORMAL
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] work is normal
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+[LOG-EXPLANATION]
+PSU work is normal.
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+[LOG-EXPLANATION-CN]
+电源供电正常。
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-4-NOALERT
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] is no alert
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+[LOG-EXPLANATION]
+PSU is no alert.
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+[LOG-EXPLANATION-CN]
+电源不告警。
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PSU-4-PMBUS
+[LOG-SENTENCE]
+Psu [PSU_NAME] in slot [PSU_SLOT] index [PSU_INDEX] pmbus info: status_byte: 0x[STATUS_BYTE] status_word: 0x[STATUS_WORD] status_vout: 0x[STATUS_VOUT] status_iout: 0x[STATUS_IOUT] status_input: 0x[STATUS_INPUT] status_temperature: 0x[STATUS_TEMPERATURE] status_cml: 0x[STATUS_CML] status_other: 0x[STATUS_OTHER] status_mfr_specific: 0x[STATUS_MFR_SPECIFIC] status_fans_1_2: 0x[STATUS_FANS_1_2] status_fans_3_4: 0x[STATUS_FANS_3_4]
+[LOG-PARAM]
+PSU_NAME		%s    psu name
+PSU_SLOT		%d	  psu tray number
+PSU_INDEX		%d    psu slot
+STATUS_BYTE		%02x status byte
+STATUS_WORD	%04x status word
+STATUS_VOUT	%02x status vout
+STATUS_IOUT		%02x status iout
+STATUS_INPUT	%02x status input
+STATUS_TEMPERATURE	%02x status temperature
+STATUS_CML		%02x status cml
+STATUS_OTHER	%02x status other
+STATUS_MFR_SPECIFIC %02x status mfr specific
+STATUS_FANS_1_2	%02x status fans 1 2
+STATUS_FANS_3_4	%02x status fans 3 4
+[LOG-EXPLANATION]
+PSU pmbus registers status.
+[REASON]
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+PSU_NAME		%s    电源模块名称
+PSU_SLOT		%d	  电源模块槽位号
+PSU_INDEX		%d    电源模块编号
+STATUS_BYTE		%02x 状态字节
+STATUS_WORD	%04x 状态字
+STATUS_VOUT	%02x 电压输出状态
+STATUS_IOUT		%02x 电流输出状态
+STATUS_INPUT	%02x 输入状态
+STATUS_TEMPERATURE	%02x 温度状态
+STATUS_CML		%02x CML 状态
+STATUS_OTHER	%02x 其他状态
+STATUS_MFR_SPECIFIC %02x MFR SPECIFIC 状态
+STATUS_FANS_1_2	%02x 风扇1 2 状态
+STATUS_FANS_3_4	%02x 风扇3 4 状态
+[LOG-EXPLANATION-CN]
+电源pmbus 寄存器状态。
+[REASON]
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-4-FIB_OVERFLOW
+[LOG-SENTENCE]
+FIB overflow and can not add new route
+[LOG-PARAM]
+[LOG-EXPLANATION]
+IPv4/Ipv6 FIB is overflow.
+[REASON]
+IPv4/Ipv6 FIB is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+IPv4或IPv6转发信息表溢出。
+[REASON]
+IPv4或IPv6转发信息表溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-4-STATIC_ROUTE_OVERFLOW
+[LOG-SENTENCE]
+static route overflow and can not add new route
+[LOG-PARAM]
+[LOG-EXPLANATION]
+IPv4 static route is overflow.
+[REASON]
+IPv4 static route is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+IPv4静态路由表溢出。
+[REASON]
+IPv4静态路由表溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-6-FIB_OVERFLOW
+[LOG-SENTENCE]
+FIB overflow and can not add new route v6
+[LOG-PARAM]
+[LOG-EXPLANATION]
+Ipv6 FIB is overflow.
+[REASON]
+Ipv6 FIB is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+IPv6转发信息表溢出。
+[REASON]
+IPv6转发信息表溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-6-STATIC_ROUTE_OVERFLOW
+[LOG-SENTENCE]
+static route overflow and can not add new route v6
+[LOG-PARAM]
+[LOG-EXPLANATION]
+Ipv6 static route is overflow.
+[REASON]
+Ipv6 static route is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+IPv6静态路由表溢出。
+[REASON]
+IPv6静态路由表溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-4-INDIRECT_ROUTE_OVERFLOW
+[LOG-SENTENCE]
+IPv4 indirect route current [CURR_VALUE] new add [NEW_ADD] max [MAX_VALUE], will overflow and can not add new route
+[LOG-PARAM]
+CURR_VALUE		%d    current indirect route
+NEW_ADD		%d	  new add value
+MAX_VALUE		%d    max indirect route
+[LOG-EXPLANATION]
+IPv4 indirect route is overflow.
+[REASON]
+IPv4 indirect route is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+CURR_VALUE		%d    当前非直连路由个数
+NEW_ADD		%d	  新增非直连路由个数
+MAX_VALUE		%d    最大非直连路由个数
+[LOG-EXPLANATION-CN]
+IPv4非直连路由溢出。
+[REASON]
+IPv4非直连路由溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-6-INDIRECT_ROUTE_OVERFLOW
+[LOG-SENTENCE]
+IPv6 indirect route current [CURR_VALUE] new add [NEW_ADD] max [MAX_VALUE], will overflow and can not add new route
+[LOG-PARAM]
+CURR_VALUE		%d    current indirect route
+NEW_ADD		%d	  new add value
+MAX_VALUE		%d    max indirect route
+[LOG-EXPLANATION]
+IPv6 indirect route is overflow.
+[REASON]
+IPv6 indirect route is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+CURR_VALUE		%d    当前非直连路由个数
+NEW_ADD		%d	  新增非直连路由个数
+MAX_VALUE		%d    最大非直连路由个数
+[LOG-EXPLANATION-CN]
+IPv6非直连路由溢出。
+[REASON]
+IPv6非直连路由溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-3-STM_INC_DEC_ERR
+[LOG-SENTENCE]
+Stm [ITEM] current [CURR_VALUE] [INC_DEC] [NEW_VALUE], max [MAX_VALUE], error
+[LOG-PARAM]
+ITEM                     %s     stm item
+CURR_VALUE		%d    current value
+INC_DEC              %s     increase or decrease
+NEW_VALUE		%d	  new value to be increase or decrease
+MAX_VALUE		%d    max value
+[LOG-EXPLANATION]
+Stm error when increase or decrease.
+[REASON]
+Stm overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+ITEM                     %s    系统规格条目
+CURR_VALUE		%d    当前个数
+INC_DEC              %s    增加或减少
+NEW_VALUE		%d	  将要增加或者减少的数量
+MAX_VALUE		%d    最大个数
+[LOG-EXPLANATION-CN]
+当增加或减少系统规格时出现错误。
+[REASON]
+系统规格溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ROUTE-4-ECMPGROUP_OVERFLOW
+[LOG-SENTENCE]
+ECMP group overflow and can not add new ECMP group to chip
+[LOG-PARAM]
+[LOG-EXPLANATION]
+Chip's ECMP group resouce is is overflow.
+[REASON]
+Chip's ECMP group resouce is is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+芯片ECMP组资源溢出。
+[REASON]
+芯片ECMP组资源溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARP-4-OVERFLOW
+[LOG-SENTENCE]
+ARP table overflow, can not add new ARP entry
+[LOG-PARAM]
+[LOG-EXPLANATION]
+ARP table is overflow.
+[REASON]
+ARP table is overflow.
+[LOG-RECOMMENDED_ACTION]
+No action is required, this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+IPv4或IPv6转发信息表溢出。
+[REASON]
+IPv4或IPv6转发信息表溢出。
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-REBOOT
+[LOG-SENTENCE]
+System reboot at [REBOOT_TIME]
+[LOG-PARAM]
+REBOOT_TIME	%s	system reboot time
+[LOG-EXPLANATION]
+System reboot.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Please contact network administer.
+[LOG-PARAM-CN]
+REBOOT_TIME	%s	重启时间
+[LOG-EXPLANATION-CN]
+系统重启。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+请联系网络管理人员。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-STARTUP
+[LOG-SENTENCE]
+System startup [RESULT]
+[LOG-PARAM]
+RESULT		%s		system startup success or failure
+[LOG-EXPLANATION]
+System startup success or failure.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Please contact technical support.
+[LOG-PARAM-CN]
+RESULT		%s	  系统启动成功或失败
+[LOG-EXPLANATION-CN]
+系统启动成功或失败。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+请联系技术支持人员。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-WRITECONFIGURE
+[LOG-SENTENCE]
+Building configuration [RESULT]
+[LOG-PARAM]
+RESULT		%s		save configuration success or failure
+[LOG-EXPLANATION]
+save configuration success or failure.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Please contact technical support.
+[LOG-PARAM-CN]
+RESULT		%s		保存系统当前配置成功或失败
+[LOG-EXPLANATION-CN]
+保存系统当前配置。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+请联系技术支持人员。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-USERLOGIN
+[LOG-SENTENCE]
+User [USERNAME] from [IPADDR] [LOGIN] system by [PROTOCOL]
+[LOG-PARAM]
+USERNAME	%s		user name
+IPADDR		%s		ip address
+LOGIN		%s		login or logoff
+PROTOCOL        %s              protocol: telnet or ssh or web
+[LOG-EXPLANATION]
+User login or logoff system.
+[REASON]
+User login or logoff system.
+[LOG-RECOMMENDED_ACTION]
+Warning information..
+[LOG-PARAM-CN]
+USERNAME	%s		用户名字
+IPADDR		%s		ip 地址
+LOGIN		%s		登入或退出
+PROTOCOL	%s		协议: telnet/ssh/web
+[LOG-EXPLANATION-CN]
+用户登入或退出系统。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-TIMECHANGE
+[LOG-SENTENCE]
+System clock has been changed from [PRE_TIME] to [NEW_TIME] by configuration 
+[LOG-PARAM]
+PRE_TIME	%s		previous time
+NEW_TIME	%s		new time
+[LOG-EXPLANATION]
+System time has been changed by configuration.
+[REASON]
+System time has been changed by configuration.
+[LOG-RECOMMENDED_ACTION]
+Warning information.
+[LOG-PARAM-CN]
+PRE_TIME	%s		原来的时间
+NEW_TIME	%s		新的时间
+[LOG-EXPLANATION-CN]
+系统时间被更改。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-TIMEUPDATE
+[LOG-SENTENCE]
+System clock has been updated to [NEW_TIME] by NTP
+[LOG-PARAM]
+NEW_TIME	%s		new time
+[LOG-EXPLANATION]
+System time has been updated by NTP.
+[REASON]
+System time has been updated by NTP.
+[LOG-RECOMMENDED_ACTION]
+Warning information.
+[LOG-PARAM-CN]
+NEW_TIME	%s		新的时间
+[LOG-EXPLANATION-CN]
+系统时间被NTP更新。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-TIMEUPDATE_BY_PTP
+[LOG-SENTENCE]
+System clock has been updated to [NEW_TIME] by PTP
+[LOG-PARAM]
+NEW_TIME	%s		new time
+[LOG-EXPLANATION]
+System time has been updated by PTP.
+[REASON]
+System time has been updated by PTP.
+[LOG-RECOMMENDED_ACTION]
+Warning information.
+[LOG-PARAM-CN]
+NEW_TIME	%s		新的时间
+[LOG-EXPLANATION-CN]
+系统时间被NTP更新。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-TIMEZONE_SET
+[LOG-SENTENCE]
+system timezone set to [NAME] ([DIRECTION] [OFFSET])
+[LOG-PARAM]
+NAME		%s		timezone name
+DIRECTION	%s		add or minus
+OFFSET		%s		offset with format Hour:Minute:Second
+[LOG-EXPLANATION]
+System timezone has been set.
+[REASON]
+System timezone has been set.
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+NAME		%s		时区名称
+DIRECTION	%s		方向，正负
+OFFSET		%s		偏移，时:分:秒
+[LOG-EXPLANATION-CN]
+系统时区更改。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-TIMEZONE_CLEAR
+[LOG-SENTENCE]
+system timezone clear from [NAME] ([DIRECTION] [OFFSET]) to UTC
+[LOG-PARAM]
+NAME		%s		pervious timezone name
+DIRECTION	%s		previous direction, add or minus
+OFFSET		%s		previous offset with format Hour:Minute:Second
+[LOG-EXPLANATION]
+System timezone has been clear to UTC.
+[REASON]
+System timezone has been clear to UTC.
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+NAME		%s		原时区名称
+DIRECTION	%s		原方向，正负
+OFFSET		%s		原偏移，时:分:秒
+[LOG-EXPLANATION-CN]
+系统时区恢复UTC。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-CPU_THRESHOLD
+[LOG-SENTENCE]
+CPU usage over [CPU_USAGE]%% in last [STATS_TIME] seconds.
+[LOG-PARAM]
+CPU_USAGE   %d    CPU usage
+STATS_TIME  %d    stats interval
+[LOG-EXPLANATION]
+CPU usage over log threshold.
+[REASON]
+Perhaps something wrong happened in system.
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+CPU_USAGE   系统CPU使用率
+STATS_TIME  持续时间
+[LOG-EXPLANATION-CN]
+系统CPU使用率超过阈值触发告警信息
+[REASON]
+系统内存使用率超过阈值
+[LOG-RECOMMENDED_ACTION-CN]
+请检查交换机运行状态。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-CPU_RESUME
+[LOG-SENTENCE]
+CPU usage resume under [CPU_USAGE]%%.
+[LOG-PARAM]
+CPU_USAGE   %d    CPU usage
+[LOG-EXPLANATION]
+CPU usage resume under log threshold.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+CPU_USAGE   系统CPU使用率
+[LOG-EXPLANATION-CN]
+系统CPU使用率恢复到正常阈值之下
+[REASON]
+系统CPU使用率恢复正常
+[LOG-RECOMMENDED_ACTION-CN]
+日志信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-1-LOAD_CRITICAL
+[LOG-SENTENCE]
+System load state changes from [PREV_STATE] to critical
+[LOG-PARAM]
+PREV_STATE	%s	previous system load state
+[LOG-EXPLANATION]
+System load is exceed critical threshold. Any CLI command will be forbidden.
+[REASON]
+A mass of CLI commands, or lots of protocl packets to CPU.
+[LOG-RECOMMENDED_ACTION]
+Please check switch input, such as a mass of CLI commands and lots of protocol packets to CPU.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+系统负载超过严重阈值。
+[REASON]
+大量命令行配置，或者大量协议报文发送到CPU。
+[LOG-RECOMMENDED_ACTION-CN]
+请检查交换机的输入。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-2-LOAD_ALERT
+[LOG-SENTENCE]
+System load state changes from [PREV_STATE] to alert
+[LOG-PARAM]
+PREV_STATE	%s	previous system load state
+[LOG-EXPLANATION]
+System load is exceed alert threshold. Any CLI command will be wait 30 millisecond.
+[REASON]
+A mass of CLI commands, or lots of protocl packets to CPU.
+[LOG-RECOMMENDED_ACTION]
+Please check switch input, such as a mass of CLI commands and lots of protocol packets to CPU.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+系统负载超过告警阈值。
+[REASON]
+大量命令行配置，或者大量协议报文发送到CPU。
+[LOG-RECOMMENDED_ACTION-CN]
+请检查交换机的输入。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-3-LOAD_WARNING
+[LOG-SENTENCE]
+System load state changes from [PREV_STATE] to warning
+[LOG-PARAM]
+PREV_STATE	%s	previous system load state
+[LOG-EXPLANATION]
+System load is exceed warning threshold. Any CLI command will be wait 10 millisecond.
+[REASON]
+A mass of CLI commands, or lots of protocl packets to CPU.
+[LOG-RECOMMENDED_ACTION]
+Please check switch input, such as a mass of CLI commands and lots of protocol packets to CPU.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+系统负载超过提示告警阈值。
+[REASON]
+大量命令行配置，或者大量协议报文发送到CPU。
+[LOG-RECOMMENDED_ACTION-CN]
+请检查交换机的输入。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-LOAD_NORMAL
+[LOG-SENTENCE]
+System load state changes from [PREV_STATE] to normal
+[LOG-PARAM]
+PREV_STATE	%s	previous system load state
+[LOG-EXPLANATION]
+System load is under warning threshold. No CLI command will be wait.
+[REASON]
+System come back from high load state.
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+系统负载低于提示告警阈值。
+[REASON]
+系统负载从高负荷恢复到正常级别。
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-0-MEM_CRITICAL
+[LOG-SENTENCE]
+System memory state changes from [PREV_STATE] to critical
+[LOG-PARAM]
+PREV_STATE		%s		previous state
+[LOG-EXPLANATION]
+system memory usage is exceed critical threshold.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Please reboot the system
+[LOG-PARAM-CN]
+PREV_STATE		%s		状态
+[LOG-EXPLANATION-CN]
+系统内存使用率达到最高上限。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+需要重新启动系统。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-1-MEM_ALERT
+[LOG-SENTENCE]
+System memory state changes from [PREV_STATE] to alert
+[LOG-PARAM]
+PREV_STATE		%s		previous state
+[LOG-EXPLANATION]
+system memory usage is exceed alert threshold
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+PREV_STATE		%s		状态
+[LOG-EXPLANATION-CN]
+系统内存使用率达到次高上限。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+严重告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-3-MEM_WARNING
+[LOG-SENTENCE]
+System memory state changes from [PREV_STATE] to warning
+[LOG-PARAM]
+PREV_STATE		%s		previous state
+[LOG-EXPLANATION]
+system memory usage is exceed warning threshold
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+PREV_STATE		%s		状态
+[LOG-EXPLANATION-CN]
+系统内存使用率达到WARNING上限。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-4-MEM_NORMAL
+[LOG-SENTENCE]
+System memory state changes from [PREV_STATE] to normal
+[LOG-PARAM]
+PREV_STATE		%s		previous state
+[LOG-EXPLANATION]
+system memory threshold is in the normal range.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A 
+[LOG-PARAM-CN]
+PREV_STATE		%s		状态
+[LOG-EXPLANATION-CN]
+系统内存使用率在正常范围内。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SYSTEM-3-MEM_PACKETDISCARD
+[LOG-SENTENCE]
+Packet [PACKET_NAME] will be discarded because the system memory is not enough
+[LOG-PARAM]
+PACKET_NAME		%s		packet name
+[LOG-EXPLANATION]
+system memory is not enough so the recieved packets will discard
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A 
+[LOG-PARAM-CN]
+PACKET_NAME		%s	 	报文名称
+[LOG-EXPLANATION-CN]
+当系统内存不足时，收到的部分报文将丢弃
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A。
+--------------------------------------------------------------------------------
+#ARP_LOG_USER(E_WARNING, ARP_4_DUPLICATE_IP_ADDR, LOG_RATE_LIMIT_TYPE_DEF, cdb_addr_ipv4_val2str(buf, CMD_BUF_32, &dst_addr), p_db_if->key.name);
+#LOG_EVENT(ARP_4_DUPLICATE_IP_ADDR, cdb_addr_ipv4_val2str(buf, CMD_BUF_32, &dst_addr), p_db_if->key.name);
+#ARP/4/ARP_DUPLICATE_IPADDR:Received an ARP packet with a duplicate IP address from the interface! (IpAddress=[IPADDR], InterfaceName=[STRING], MacAddress=[STRING])
+#[LOG-RECOMMENDED_ACTION] No action is required, this message is for information only.
+#[LOG-RECOMMENDED_ACTION] If the problem persists, please contact customer support.
+[LOG-ITEM]
+TEMPERATURE-3-ALARM
+[LOG-SENTENCE]
+[DEVICE] Temperature [TEMP] is out of warn threshold
+[LOG-PARAM]
+DEVICE   %s   board or chip
+TEMP		 %d		Temperature value
+[LOG-EXPLANATION]
+Temperature is out of warn threshold.
+[REASON]
+Device is operating out of the recommended ambient temperature range.
+[LOG-RECOMMENDED_ACTION]
+Check that system fans are operating correctly.
+[LOG-PARAM-CN]
+TEMP		 %d		温度值
+[LOG-EXPLANATION-CN]
+温度过高告警。
+[REASON]
+设备工作环境温度过高。
+[LOG-RECOMMENDED_ACTION-CN]
+检查风扇是否运行正常。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TEMPERATURE-4-NORMAL
+[LOG-SENTENCE]
+[DEVICE] Temperature [TEMP] has returned to normal
+[LOG-PARAM]
+DEVICE   %s   board or chip
+TEMP		%d		Temperature value
+[LOG-EXPLANATION]
+Temperature has returned to normal.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+TEMP		%d		温度值
+[LOG-EXPLANATION-CN]
+温度恢复正常。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRANSCEIVER-4-INSERT
+[LOG-SENTENCE]
+Interface [IFNAME] insert transceiver [TRANSCEIVER_TYPE]
+[LOG-PARAM]
+IFNAME		       %s	 Interface name
+TRANSCEIVER_TYPE   %s    Transceiver type
+[LOG-EXPLANATION]
+Interface insert transceiver.
+[REASON]
+Interface insert transceiver.
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		      %s	端口名称
+TRANSCEIVER_TYPE  %s    光模块类型
+[LOG-EXPLANATION-CN]
+端口插入光模块。
+[REASON]
+端口插入光模块。
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRANSCEIVER-4-REMOVE
+[LOG-SENTENCE]
+Interface [IFNAME] remove transceiver
+[LOG-PARAM]
+IFNAME		        %s		Interface name
+[LOG-EXPLANATION]
+Interface remove transceiver.
+[REASON]
+Transceiver have been removed.
+[LOG-RECOMMENDED_ACTION]
+No action is required - this message is for information only.
+[LOG-PARAM-CN]
+IFNAME		        %s		端口名称
+[LOG-EXPLANATION-CN]
+端口移除光模块。
+[REASON]
+端口移除光模块。
+[LOG-RECOMMENDED_ACTION-CN]
+正常打印信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRANSCEIVER-3-ALARM
+[LOG-SENTENCE]
+Interface [IFNAME] [INFO_TYPE] enter to [HIGH_LOW] [CURRENT_STATE], before is [PREVIOUS_STATE]
+[LOG-PARAM]
+IFNAME		     %s	 Interface name
+INFO_TYPE		 %s	 Internal temperature/Internal supply voltage/Bias current/Transmitted Power/Received Power
+HIGH_LOW         %s  High/Low
+CURRENT_STATE    %s  Normal/Warning/Alarm
+PREVIOUS_STATE   %s  Normal/Warning/Alarm
+[LOG-EXPLANATION]
+Alarm information.
+[REASON]
+Transceiver is operating out of the recommended ambient temperature range.
+[LOG-RECOMMENDED_ACTION]
+Alarm information.
+[LOG-PARAM-CN]
+IFNAME		     %s	 端口名称
+INFO_TYPE		 %s	 Internal temperature/Internal supply voltage/Bias current/Transmitted Power/Received Power
+HIGH_LOW         %s  High/Low
+CURRENT_STATE    %s  Normal/Warning/Alarm
+PREVIOUS_STATE   %s  Normal/Warning/Alarm
+[LOG-EXPLANATION-CN]
+严重告警信息。
+[REASON]
+设备工作环境温度过高。
+[LOG-RECOMMENDED_ACTION-CN]
+严重告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRANSCEIVER-4-WARN
+[LOG-SENTENCE]
+Interface [IFNAME] [INFO_TYPE] enter to [HIGH_LOW] [CURRENT_STATE], before is [PREVIOUS_STATE]
+[LOG-PARAM]
+IFNAME		     %s	 Interface name
+INFO_TYPE		 %s	 Internal temperature/Internal supply voltage/Bias current/Transmitted Power/Received Power
+HIGH_LOW         %s  High/Low
+CURRENT_STATE    %s  Normal/Warning/Alarm
+PREVIOUS_STATE   %s  Normal/Warning/Alarm
+[LOG-EXPLANATION]
+Warning information.
+[REASON]
+Transceiver work abnormal
+[LOG-RECOMMENDED_ACTION]
+Warning information.
+[LOG-PARAM-CN]
+IFNAME		     %s	 端口名称
+INFO_TYPE		 %s	 Internal temperature/Internal supply voltage/Bias current/Transmitted Power/Received Power
+HIGH_LOW         %s  High/Low
+CURRENT_STATE    %s  Normal/Warning/Alarm
+PREVIOUS_STATE   %s  Normal/Warning/Alarm
+[LOG-EXPLANATION-CN]
+告警信息。
+[REASON]
+光模块工作异常。
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRANSCEIVER-4-NORMAL
+[LOG-SENTENCE]
+Interface [IFNAME] [INFO_TYPE] return to normal, before is [PREVIOUS_STATE]
+[LOG-PARAM]
+IFNAME		     %s	 Interface name
+INFO_TYPE		 %s	 Internal temperature/Internal supply voltage/Bias current/Transmitted Power/Received Power
+PREVIOUS_STATE   %s  Normal/Warning/Alarm
+[LOG-EXPLANATION]
+Transceiver information.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Transceiver information.
+[LOG-PARAM-CN]
+IFNAME		     %s	 端口名称
+INFO_TYPE		 %s	 Internal temperature/Internal supply voltage/Bias current/Transmitted Power/Received Power
+PREVIOUS_STATE   %s  Normal/Warning/Alarm
+[LOG-EXPLANATION-CN]
+光模块日志信息。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+光模块日志信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+FDB-4-OVERFLOW
+[LOG-SENTENCE]
+Add FDB failed for FDB number exceed maximum
+[LOG-EXPLANATION]
+The FDB add has failed.
+[REASON]
+Investigate whether the device is being attacked.
+[LOG-RECOMMENDED_ACTION]
+Can not add fdb at all.
+[LOG-EXPLANATION-CN]
+告警信息。
+[REASON]
+请检查设备是否受到攻击。
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+FDB-4-FDBLOOP
+[LOG-SENTENCE]
+Interface [IFNAME] FDB loop for [MACADDR] VLAN [VLANID], and action is [ACTION]
+[LOG-PARAM]
+IFNAME		%s    Interface name
+MACADDR	        %s    MAC address
+VLANID          %u    VLAN ID
+ACTION          %s    errdisable or warning
+[LOG-EXPLANATION]
+The network possible exist Layer2 loop.
+[REASON]
+Every MAC address moving will consume a FDBLOOP token is consumed out, will trigger FDBLOOP.
+[LOG-RECOMMENDED_ACTION]
+Check the MAC address table size or network topology.
+[LOG-EXPLANATION-CN]
+告警信息。
+[REASON]
+请检查设备是否受到攻击。
+[LOG-RECOMMENDED_ACTION-CN]
+告警信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ERPS-4-BLOCK
+[LOG-SENTENCE]
+ERPS interface [IFNAME] instance_id [INSTANCE] state [STATE]
+[LOG-PARAM]
+IFNAME		%s    Interface name
+INSTANCE	%d    MSTP instance id
+STATE           %s    blocking state
+[LOG-EXPLANATION]
+ERPS block or unblock port.
+[REASON]
+ERPS state change.
+[LOG-RECOMMENDED_ACTION]
+none.
+[LOG-PARAM-CN]
+IFNAME		%s    端口名字
+INSTANCE	%d    生成树的实例号
+STATE		%d    生成树实例是否block
+[LOG-EXPLANATION-CN]
+指定端口上指定实例的阻塞状态。
+[REASON]
+无
+[LOG-RECOMMENDED_ACTION-CN]
+无
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TIMERANGE-4-STATE
+[LOG-SENTENCE]
+TimeRange [TIME_RANGE_NAME] change to [INFO_STATE] 
+[LOG-PARAM]
+TIME_RANGE_NAME		     %s	 Time range name
+INFO_STATE		 %s	 Active or Inactive
+[LOG-EXPLANATION]
+Time range state information.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Time range state information.
+[LOG-PARAM-CN]
+TIME_RANGE_NAME		     %s	 时间范围名称
+INFO_STATE		 %s	 Active/Inactive
+[LOG-EXPLANATION-CN]
+时间范围日志信息。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+时间范围日志信息。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+BHM-1-REBOOT
+[LOG-SENTENCE]
+Detect process [PROCESS_NAME] (PID [PID]) is uncontrolled. System will be reset.
+[LOG-PARAM]
+PROCESS_NAME	 %s	 Process name
+PID		 %u	 Process ID
+[LOG-EXPLANATION]
+Process is uncontrolled, and system will be reset.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Collect system log and analyse process uncontrolled reason.
+[LOG-PARAM-CN]
+PROCESS_NAME	 %s	 进程名称
+PID		 %u	 进程ID
+[LOG-EXPLANATION-CN]
+进程出现异常，系统将立即自动重启。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+收集系统日志，分析进程异常原因。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+BHM-1-SHUTDOWN
+[LOG-SENTENCE]
+Detect process [PROCESS_NAME] (PID [PID]) is uncontrolled. All ports will be shutdown. Please manual reboot system.
+[LOG-PARAM]
+PROCESS_NAME	 %s	 Process name
+PID		 %u	 Process ID
+[LOG-EXPLANATION]
+Process is uncontrolled, and all ports will be shutdown.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Collect system log and analyse process uncontrolled reason, and manual reboot system.
+[LOG-PARAM-CN]
+PROCESS_NAME	 %s	 进程名称
+PID		 %u	 进程ID
+[LOG-EXPLANATION-CN]
+进程出现异常，所有端口将自动关闭。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+收集系统日志，分析进程异常原因，然后请手动复位系统。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+BHM-1-WARNING
+[LOG-SENTENCE]
+Detect process [PROCESS_NAME] (PID [PID]) is uncontrolled. Please manual reboot system.
+[LOG-PARAM]
+PROCESS_NAME	 %s	 Process name
+PID		 %u	 Process ID
+[LOG-EXPLANATION]
+Process is uncontrolled.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Collect system log and analyse process uncontrolled reason, and manual reboot system.
+[LOG-PARAM-CN]
+PROCESS_NAME	 %s	 进程名称
+PID		 %u	 进程ID
+[LOG-EXPLANATION-CN]
+进程出现异常。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+收集系统日志，分析进程异常原因，然后请手动复位系统。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+BHM-1-PROMPT
+[LOG-SENTENCE]
+Process [PROCESS_NAME] has been uncontrolled. Please manual reboot system.
+[LOG-PARAM]
+PROCESS_NAME	 %s	 Process name
+[LOG-EXPLANATION]
+Process has been uncontrolled.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Collect system log and analyse process uncontrolled reason, and manual reboot system.
+[LOG-PARAM-CN]
+PROCESS_NAME	 %s	 进程名称
+[LOG-EXPLANATION-CN]
+进程已经出现异常。
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+收集系统日志，分析进程异常原因，然后请手动复位系统。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+AAA-4-FAIL
+[LOG-SENTENCE]
+AAA username [USER_NAME] [TYPE] [STATE]
+[LOG-PARAM]
+USER_NAME   %s    user name
+TYPE	    %s    Authentication or Authorization or Accounting
+STATE       %s    Fail or Denied
+[LOG-EXPLANATION]
+AAA connection is failed or rejected by server
+[REASON]
+AAA is not success.
+[LOG-RECOMMENDED_ACTION]
+none.
+[LOG-PARAM-CN]
+USER_NAME		%s    用户名
+TYPE	        %s    业务类型授权鉴权计费
+STATE		    %s    失败或服务器拒绝
+[LOG-EXPLANATION-CN]
+AAA连接失败或被服务器拒绝
+[REASON]
+无
+[LOG-RECOMMENDED_ACTION-CN]
+无
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+DOT1X-4-FAIL
+[LOG-SENTENCE]
+DOT1X username [USER_NAME] access [STATE]
+[LOG-PARAM]
+USER_NAME   %s    user name
+STATE       %s    Fail or Denied
+[LOG-EXPLANATION]
+DOT1X connection is failed or rejected by server
+[REASON]
+DOT1X is not success.
+[LOG-RECOMMENDED_ACTION]
+none.
+[LOG-PARAM-CN]
+USER_NAME		%s    用户名
+STATE		    %s    失败或服务器拒绝
+[LOG-EXPLANATION-CN]
+DOT1X连接失败或被服务器拒绝
+[REASON]
+无
+[LOG-RECOMMENDED_ACTION-CN]
+无
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPINSP-4-RESULT
+[LOG-SENTENCE]
+[PACKET_RESULT]
+[LOG-PARAM]
+PACKET_RESULT		%s		arp pecket result
+[LOG-EXPLANATION]
+arp packet drop or permit result for arp inspection
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+arp packet result
+[LOG-PARAM-CN]
+PACKET_RESULT		%s 		arp 报文结果，丢或者通过
+[LOG-EXPLANATION-CN]
+N/A
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPINSP-3-CHECK
+[LOG-SENTENCE]
+[ERROR_REASON]
+[LOG-PARAM]
+ERROR_REASON			%s		error reason
+[LOG-EXPLANATION]
+arp inspection check error reason.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+drop arp packet
+[LOG-PARAM-CN]
+ERROR_REASON			%s 		错误原因
+[LOG-EXPLANATION-CN]
+N/A
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPINSP-5-ACL
+[LOG-SENTENCE]
+[ERROR_REASON]
+[LOG-PARAM]
+ERROR_REASON			%s		arp acl
+[LOG-EXPLANATION]
+arp inspection permit arp acl.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+permit arp acl packet
+[LOG-PARAM-CN]
+ERROR_REASON			%s 		ARP ACL
+[LOG-EXPLANATION-CN]
+N/A
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SFLOW-4-FAIL
+[LOG-SENTENCE]
+SFLOW packet fail to [IP]:[UDP] on socket [FD]:[REASON]
+[LOG-PARAM]
+IP          %s    Collector IP address
+UDP         %d    Collector UDP port
+FD          %d    Socket ID
+REASON      %s    Failed reason
+[LOG-EXPLANATION]
+SFLOW send packet failed
+[REASON]
+SFLOW socket return fail when sending packet.
+[LOG-RECOMMENDED_ACTION]
+none.
+[LOG-PARAM-CN]
+IP          %s    服务器的IP地址
+UDP         %d    服务器的UDP号
+FD          %d    套接字的ID
+REASON      %s    套接字返回的失败原因
+[LOG-EXPLANATION-CN]
+SFLOW发送报文失败
+[REASON]
+无
+[LOG-RECOMMENDED_ACTION-CN]
+无
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPRATELIMIT-4-EXCEED
+[LOG-SENTENCE]
+The port [IF_NAME] receive [CUR_PKT_NUM] packets on [CUR_TIME], exceed configured value [MAX_NUM],  turn to [ACTION] states
+[LOG-PARAM]
+IF_NAME   %s    interface name
+CUR_PKT_NUM   %d   current packet number
+CUR_TIME   %s   current time
+MAX_NUM   %d   max packet number
+ACTION       %s    violation mode
+[LOG-EXPLANATION]
+Recieve arp packet number more than configure value in 30s, output this log
+[REASON]
+Recieve arp packet number more than configure value in 30s.
+[LOG-RECOMMENDED_ACTION]
+none.
+[LOG-PARAM-CN]
+IF_NAME   %s    接口名称
+CUR_PKT_NUM   %d   当前接收到的arp报文数
+CUR_TIME   %s   当前时间
+MAX_NUM   %d   配置的最大报文数
+ACTION       %s    报文超限后的动作
+[LOG-EXPLANATION-CN]
+在30s内接收到的报文数超过配置值，会输出这条log
+[REASON]
+在30s内接收到的报文数超过配置值
+[LOG-RECOMMENDED_ACTION-CN]
+无
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPRATELIMIT-4-ABNORMAL
+[LOG-SENTENCE]
+The port [IF_NAME] recieve [CUR_PKT_NUM] packets on [CUR_TIME] in 30s, exceed configured value [MAX_NUM]
+[LOG-PARAM]
+IF_NAME   %s    interface name
+CUR_PKT_NUM   %d   current packet number
+CUR_TIME   %s   current time
+MAX_NUM   %d   max packet number
+[LOG-EXPLANATION]
+When arpratelimit_timer is up to date, if a L3 port is abnormal ,output this log
+[REASON]
+When arpratelimit_timer is up to date, if a L3 port is abnormal
+[LOG-RECOMMENDED_ACTION]
+none.
+[LOG-PARAM-CN]
+IF_NAME   %s    接口名称
+CUR_PKT_NUM   %d   当前接收到的arp报文数
+CUR_TIME   %s   当前时间
+MAX_NUM   %d   配置的最大报文数
+[LOG-EXPLANATION-CN]
+当arpratelimit的30s定时器到时，如果有3层接口异常，会输出这条log
+[REASON]
+当arpratelimit的30s定时器到时，有3层接口异常
+[LOG-RECOMMENDED_ACTION-CN]
+无
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPNUMBERLIMIT-4-EXCEED
+[LOG-SENTENCE]
+[LOG_REASON]
+[LOG-PARAM]
+LOG_REASON			%s		dump arp packet
+[LOG-EXPLANATION]
+When the number of arp is exceed the maximum of arp number-limit, output this 
+log.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+dump the arp packet.
+[LOG-PARAM-CN]
+LOG_REASON			%s		dump arp packet
+[LOG-EXPLANATION-CN]
+N/A
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ARPNUMBERLIMIT-4-ABNORMAL
+[LOG-SENTENCE]
+The port [IF_NAME] is suffered [ARP_PKT_NUM] attack in the 30 seconds
+[LOG-PARAM]
+IF_NAME   %s    	interface name
+ARP_PKT_NUM   %llu    ARP packet number
+[LOG-EXPLANATION]
+When the recieved arp number exceed the maximum and the L3 port recieve arp 
+packets persistently, output this log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+dump the log that L3 port suffer the arp attack.
+[LOG-PARAM-CN]
+IF_NAME   %s    接口名称
+ARP_PKT_NUM   %llu   当前arp报文的攻击数
+[LOG-EXPLANATION-CN]
+N/A
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM] 
+MONITOR-3-LATENCY_START
+[LOG-SENTENCE]
+Interface [IFNAME] reachs to max latency event threshold, average latency is [LATENCY] ns
+[LOG-PARAM] 
+IFNAME		        %s		  Interface name 
+LATENCY                %llu        Average latency
+[LOG-EXPLANATION] 
+When the latency reachs the maximum threshold and the monitor latency event start, output this log
+[REASON] 
+N/A
+[LOG-RECOMMENDED_ACTION] 
+Please check the latency status of this interface. 
+[LOG-PARAM-CN] 
+IFNAME		端口名称 
+[LOG-EXPLANATION-CN] 
+当该端口的延迟达到最大阈值，延迟事件产生，上报log
+[REASON] 
+N/A
+[LOG-RECOMMENDED_ACTION-CN] 
+检查该端口的延迟状态 
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+MONITOR-4-LATENCY_END
+[LOG-SENTENCE]
+Interface [IFNAME] falls to min latency event threshold, average latency is [LATENCY] ns
+[LOG-PARAM]
+IFNAME		       %s		Interface name
+LATENCY               %llu       Average latency
+[LOG-EXPLANATION]
+When the latency falls the minimum threshold and the monitor latency event end, output this log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+IFNAME		端口名称
+[LOG-EXPLANATION-CN]
+当该端口的延迟下降到最小阈值，延迟事件结束，上报log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+MONITOR-3-BUFFER_START
+[LOG-SENTENCE]
+Interface [IFNAME] reachs to max buffer event threshold, buffer count is [COUNT]
+[LOG-PARAM]
+IFNAME		%s		Interface name
+COUNT          %u         Current cell count in buffer 
+[LOG-EXPLANATION]
+When the buffer reachs the maximum threshold and the monitor buffer event start, output this log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+Please check the buffer status of this interface.
+[LOG-PARAM-CN]
+IFNAME		端口名称
+[LOG-EXPLANATION-CN]
+当该端口的拥塞数量达到最大阈值，延迟事件产生，上报log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+检查该端口的拥塞状态
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+MONITOR-4-BUFFER_END
+[LOG-SENTENCE]
+Interface [IFNAME] falls to min buffer event threshold, buffer count is [COUNT]
+[LOG-PARAM]
+IFNAME		%s		Interface name
+COUNT          %u         Current cell count in buffer 
+[LOG-EXPLANATION]
+When the buffer falls the minimum threshold and the monitor buffer event end, output this log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+IFNAME		端口名称
+[LOG-EXPLANATION-CN]
+当该端口的拥塞数量下降到最小阈值，延迟事件结束，上报log
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+VRRP-4-VRRP_STATE
+[LOG-SENTENCE]
+VRRP instance [VRID] for interface [IFNAME] state changes ([PREV_STATE] -> [NEW_STATE])
+[LOG-PARAM]
+VRID    	%d	VRRP instance ID
+IFNAME		%s	Interface name
+PREV_STATE	%s	previous vrrp state
+NEW_STATE	%s	new vrrp state
+[LOG-EXPLANATION]
+VRRP instance state changes
+[REASON]
+VRRP instance state changes
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+VRID     	%d	VRRP实例标识符
+IFNAME		%s	端口名称
+PREV_STATE	%s	原来的VRRP实例状态
+NEW_STATE	%s	新的VRRP实例状态
+[LOG-EXPLANATION-CN]
+VRRP实例状态变化
+[REASON]
+VRRP实例状态变化
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OSPF-4-LSA_ROUTE
+[LOG-SENTENCE]
+OSPF lsa [TYPE] [ID] [ADV_ROUTER] ignored for [REASON]
+[LOG-PARAM]
+TYPE	    %s	LSA type
+ID		    %s	LSA link ID
+ADV_ROUTER	%s	LSA ADV router
+REASON	    %s	LSA ignored reason
+[LOG-EXPLANATION]
+OSPF LSA can't be added to route table
+[REASON]
+OSPF LSA can't be added to route table
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+TYPE	    %s	LSA 类型
+ID		    %s	LSA 链路ID
+ADV_ROUTER	%s	LSA ADV路由器
+REASON	    %s	LSA 不加路由表的原因
+[LOG-EXPLANATION-CN]
+OSPF LSA未加路由表
+[REASON]
+OSPF LSA未加路由表
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SSM-5-PORT_SELECT
+[LOG-SENTENCE]
+The port [IF_NAME] is selected as the best clock resource.
+[LOG-PARAM]
+IF_NAME   %s    	interface name
+[LOG-EXPLANATION]
+When the port's clock is best, then the device will select the port. 
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+IF_NAME   %s    接口名称
+[LOG-EXPLANATION-CN]
+N/A
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+SSM-4-STATE_CHANGE
+[LOG-SENTENCE]
+The device synce state is changed from [PREV_STATE] to [NEW_STATE]
+[LOG-PARAM]
+PREV_STATE	%s	previous device state
+NEW_STATE	%s	new device state
+[LOG-EXPLANATION]
+The device SyncE state has changed.
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+PREV_STATE	%s	原来的状态
+NEW_STATE	%s	新的状态
+[LOG-EXPLANATION-CN]
+设备时钟状态发生变化
+[REASON]
+N/A
+[LOG-RECOMMENDED_ACTION-CN]
+N/A
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PTP-4-PTP_STATE_CHANGE
+[LOG-SENTENCE]
+PTP state of interface [IFNAME] is changing from [PREV_STATE] to [NEW_STATE]
+[LOG-PARAM]
+IFNAME		%s	Interface name
+PREV_STATE	%s	previous ptp state
+NEW_STATE	%s	new ptp state
+[LOG-EXPLANATION]
+PTP interface state changes
+[REASON]
+PTP interface state changes
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+IFNAME		%s	端口名称
+PREV_STATE	%s	原来的PTP端口状态
+NEW_STATE	%s	新的PTP端口状态
+[LOG-EXPLANATION-CN]
+PTP端口状态变化
+[REASON]
+PTP端口状态变化
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PTP-4-PTP_MASTER_CHANGE
+[LOG-SENTENCE]
+PTP master of interface [IFNAME] changed to clock [NEW_MASTER_CLOCK_ID]
+[LOG-PARAM]
+IFNAME		%s	Interface name
+NEW_MASTER_CLOCK_ID	%s	New master clock id
+[LOG-EXPLANATION]
+PTP interface master changes
+[REASON]
+PTP interface mster changes
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+IFNAME		%s	端口名称
+NEW_MASTER_CLOCK_ID	%s	新的主时钟ID
+[LOG-EXPLANATION-CN]
+PTP端口主时钟变化
+[REASON]
+PTP端口主时钟变化
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+PTP-4-PTP_ACCURACY_CHANGE
+[LOG-SENTENCE]
+PTP master accuracy changed to 0x[NEW_ACCURACY]
+[LOG-PARAM]
+NEW_ACCURACY		%s	New accuracy
+[LOG-EXPLANATION]
+PTP master accuracy changes
+[REASON]
+PTP master accuracy changes
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+NEW_ACCURACY		%s	新的精度
+[LOG-EXPLANATION-CN]
+PTP主时钟精度变化
+[REASON]
+PTP主时钟精度变化
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+IPSLA-4-IPSLA_EVENT
+[LOG-SENTENCE]
+Entry id [ENTRYID], test id [TESTID], test result change from [OLD] to [NEW]
+[LOG-PARAM]
+ENTRYID         %d  entry id
+TESTID    	 	%d	test id
+OLD             %s  old state
+NEW             %s  new state
+[LOG-EXPLANATION]
+ipsla test result changed
+[REASON]
+ipsla test result changed
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+ENTRYID         %d  entry id
+TESTID    	 	%d	test id
+OLD             %s  old state
+NEW             %s  new state
+[LOG-EXPLANATION-CN]
+ipsla状态变化
+[REASON]
+ipsla状态变化
+[LOG-RECOMMENDED_ACTION-CN]
+存在ipsla状态探测状态变化。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRACK-4-TRACK_EVENT
+[LOG-SENTENCE]
+State change to [TRACK_STATE] for track [TRACK_ID]
+[LOG-PARAM]
+TRACK_STATE     %s  track_state
+TRACK_ID	 	%d	track id
+[LOG-EXPLANATION]
+track state changed
+[REASON]
+track state changed
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+TRACK_STATE       track 状态
+TRACK_ID	      track id
+[LOG-EXPLANATION-CN]
+track状态变化
+[REASON]
+track状态变化
+[LOG-RECOMMENDED_ACTION-CN]
+存在接口状态或关联ipsla状态变化。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+TRACK-4-STATIC_RT_UPDATE
+[LOG-SENTENCE]
+Set [TRACK_STATE] for ip [DEST]/[PREFIXLEN] nh [GATE]
+[LOG-PARAM]
+TRACK_STATE     %s  track_state
+DEST     	 	%s	dest
+PREFIXLEN       %d  prefixlen
+GATE            %s  gate
+[LOG-EXPLANATION]
+Update static route tracked
+[REASON]
+Update static route tracked
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+TRACK_STATE       track_state
+DEST     	 	  dest
+PREFIXLEN         prefixlen
+GATE              gate
+[LOG-EXPLANATION-CN]
+track状态变化,静态路由下发或删除
+[REASON]
+track状态变化,静态路由下发或删除
+[LOG-RECOMMENDED_ACTION-CN]
+静态路由下发或删除。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OAM-4-TPOAM_CCM_STATE_CHANGE
+[LOG-SENTENCE]
+CCM state of oam session [SESSION_ID] is changing from [PREV_STATE] to [NEW_STATE]
+[LOG-PARAM]
+SESSION_ID  %d	Session ID
+PREV_STATE  %s	previous ccm state
+NEW_STATE   %s	new ccm state
+[LOG-EXPLANATION]
+OAM session ccm state changes
+[REASON]
+OAM session ccm state changes
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+SESSION_ID   %d	Session ID
+PREV_STATE   %s	原来的ccm状态
+NEW_STATE    %s	新的ccm状态
+[LOG-EXPLANATION-CN]
+OAM session 的ccm 状态变化
+[REASON]
+OAM session 的ccm 状态变化
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OAM-4-TPOAM_LM_EVENT
+[LOG-SENTENCE]
+LM event [ACTION] of oam session [SESSION_ID], local rx frame loss [NEFL], local rx frame loss ratio [NEFLR1].[NEFLR2], remote rx frame loss [FEFL], remote rx frame loss ratio [FEFLR1].[FEFLR2]
+[LOG-PARAM]
+ACTION          %s  Event action   
+SESSION_ID   %d	Session ID
+NEFL	               %u	near end frame loss
+NEFLR1            %u	near end frame loss ratio
+NEFLR2            %u	near end frame loss ratio
+FEFL	               %u	far end frame loss
+FEFLR1             %u	far end frame loss ratio
+FEFLR2             %u	far end frame loss ratio
+[LOG-EXPLANATION]
+OAM session LM event occur or clear
+[REASON]
+OAM session LM event occur or clear
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+ACTION          %s  事件发生或者清除
+SESSION_ID   %d	Session ID
+NEFL	               %u	近端帧丢失
+NEFLR1            %u	近端帧丢失率整数位
+NEFLR2            %u	近端帧丢失率小数位
+FEFL	               %u	远端帧丢失
+FEFLR1             %u	远端帧丢失率整数位
+FEFLR2             %u	远端帧丢失率小数位
+[LOG-EXPLANATION-CN]
+OAM session 的LM事件发生或者清除
+[REASON]
+OAM session 的LM事件发生或者清除
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OAM-4-TPOAM_DM_EVENT
+[LOG-SENTENCE]
+DM event [ACTION] of oam session [SESSION_ID], delay [DELAY], variation [VARIATION]
+[LOG-PARAM]
+ACTION          %s  Event action   
+SESSION_ID   %d	Session ID
+DELAY            %u	delay
+VARIATION      %u	variation
+[LOG-EXPLANATION]
+OAM session DM event occur or clear
+[REASON]
+OAM session DM event occur or clear
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+ACTION          %s  事件发生或者清除
+SESSION_ID   %d	Session ID
+DELAY            %u	时延
+VARIATION      %u	变化量
+[LOG-EXPLANATION-CN]
+OAM session 的DM事件发生或者清除
+[REASON]
+OAM session 的DM事件发生或者清除
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行信息，无需处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OAM-4-G8131_LINK_CHANGE
+[LOG-SENTENCE]
+[APS_TYPE] aps group id [GROUP_ID] change to [LINK_STATE] link
+[LOG-PARAM]
+APS_TYPE			%s  aps type
+GROUP_ID			%u  group id
+LINK_STATE          %s  link state   
+[LOG-EXPLANATION]
+G8131 state has been changed
+[REASON]
+G8131 state has been changed
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+APS_TYPE		 %s  lsp或者pw
+GROUP_ID	     %u  group id
+LINK_STATE       %s  working或者protection
+[LOG-EXPLANATION-CN]
+N/A 
+[REASON]
+N/A 
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行下处于working状态。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+ND-4-G8131_LINK_CHANGE
+[LOG-SENTENCE]
+IPv6 Neigh overflow
+[LOG-PARAM]
+[LOG-EXPLANATION]
+Can't add new nce because cache is full
+[REASON]
+Can't add new nce because cache is full
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+[LOG-EXPLANATION-CN]
+N/A 
+[REASON]
+N/A 
+[LOG-RECOMMENDED_ACTION-CN]
+无需进一步处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+RMON-4-RISING_ALARM
+[LOG-SENTENCE]
+Alarm Index [INDEX] Alarm Rising Threshold [THRESHOLD] Alarm Value [VALUE] Alarm Rising Event Index [EVENT_ID]
+[LOG-PARAM]
+INDEX           %d   alarm index
+THRESHOLD	 	%d	 rising threshold
+VALUE           %lld alarm value
+EVENT_ID        %d   event index
+[LOG-EXPLANATION]
+Rmon rising value large than the rising threshold trigger the rising event log
+[REASON]
+Rmon rising value large than the rising threshold trigger the rising event log
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+INDEX           %d   alarm index
+THRESHOLD	 	%d	 rising threshold
+VALUE           %llu alarm value
+EVENT_ID        %d   event index
+[LOG-EXPLANATION-CN]
+Rmon rising 统计值大于 threshold 触发日志事件
+[REASON]
+Rmon rising 统计值大于 threshold 触发日志事件
+[LOG-RECOMMENDED_ACTION-CN]
+无需进一步处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+RMON-4-FALLING_ALARM
+[LOG-SENTENCE]
+Alarm Index [INDEX] Alarm Falling Threshold [THRESHOLD] Alarm Value [VALUE] Alarm Falling Event Index [EVENT_ID]
+[LOG-PARAM]
+INDEX           %d   alarm index
+THRESHOLD	 	%d	 rising threshold
+VALUE           %lld alarm value
+EVENT_ID        %d   event index
+[LOG-EXPLANATION]
+Rmon falling value large than the falling threshold trigger the falling event log
+[REASON]
+Rmon falling value large than the falling threshold trigger the falling event log
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+INDEX           %d   alarm index
+THRESHOLD	 	%d	 rising threshold
+VALUE           %llu alarm value
+EVENT_ID        %d   event index
+[LOG-EXPLANATION-CN]
+Rmon falling 统计值大于 threshold 触发日志事件
+[REASON]
+Rmon falling 统计值大于 threshold 触发日志事件
+[LOG-RECOMMENDED_ACTION-CN]
+无需进一步处理。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OAM-4-G8032_STATE_CHANGE
+[LOG-SENTENCE]
+G8032 ring  [RING_ID] change from [OLD_STATE] state to [NEW_STATE] state
+[LOG-PARAM]
+RING_ID			%u  ring_id
+OLD_STATE			%s  old_state
+NEW_STATE          %s  new_state   
+[LOG-EXPLANATION]
+G8032 state has been changed
+[REASON]
+G8032 state has been changed
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+RING_ID			%u  ring_id
+OLD_STATE			%s  old_state
+NEW_STATE          %s  new_state   
+[LOG-EXPLANATION-CN]
+N/A 
+[REASON]
+N/A 
+[LOG-RECOMMENDED_ACTION-CN]
+正常运行下处于IDLE状态。
+--------------------------------------------------------------------------------
+[LOG-ITEM]
+OAM-4-G8032_CONFIG_ALARM
+[LOG-SENTENCE]
+There are more than one rpl owner node in G8032 ring  [RING_ID]
+[LOG-PARAM]
+RING_ID			%d  ring_id  
+[LOG-EXPLANATION]
+There are more than one rpl owner node in G8032 ring
+[REASON]
+There are more than one rpl owner node in G8032 ring
+[LOG-RECOMMENDED_ACTION]
+N/A
+[LOG-PARAM-CN]
+RING_ID			%d  ring_id  
+[LOG-EXPLANATION-CN]
+N/A 
+[REASON]
+N/A 
+[LOG-RECOMMENDED_ACTION-CN]
+无需进一步处理。
+--------------------------------------------------------------------------------

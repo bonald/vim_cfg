@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+QOS POLICER
+</CTCMODULENAME>
+
+<!-- show related CLIs -->
+<VIEW name="Exec">
+
+
+    <COMMAND name="show qos policer-profile" help="Policer profile">
+        <PARAM name="name" optional="true" help="Specify a policer profile name" ptype="NAME_STRING"/>
+    
+        <ACTION>cdbctl show/cdb/qos/qos_policer_profile/${name}</ACTION>
+     
+ 		<CTCDESCRIPTION>
+Use this command to display the information of QoS policer-profile.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of policer-profile p1.  
+    Switch# show qos policer-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos policer-profile
+		</CTCRCMD>
+
+    </COMMAND>
+    
+    <COMMAND name="show qos policer-action-profile" help="Policer action profile">
+        <PARAM name="name" optional="true" help="Specify a policer actoin profile name" ptype="NAME_STRING"/>
+    
+        <ACTION>cdbctl show/cdb/qos/qos_policer_action_profile/${name}</ACTION>
+     
+ 		<CTCDESCRIPTION>
+Use this command to display the information of QoS policer action profile.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of policer action profile p1.  
+    Switch# show qos policer-action-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos policer-action-profile
+		</CTCRCMD>
+
+    </COMMAND>
+
+</VIEW>
+
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+    <COMMAND name="qos policer-action-profile" help="Configure policer action profile" view="Configure-qos-policer-actoin-view" viewid="name=${name}">
+        <PARAM name="name" help="Specify a policer action profile name" ptype="NAME_STRING"/>
+            
+            <ACTION>cdbctl create/cdb/qos/qos_policer_action_profile/${name}</ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to creat a qos policer action profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to creat policer action profile p1.  
+    Switch(config)# qos policer-action-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no qos policer-action-profile
+		</CTCRCMD>
+
+	</COMMAND>
+
+    <COMMAND name="no qos policer-action-profile" help="Remove policer action profile">
+        <PARAM name="name" help="Specify a policer action profile name" ptype="NAME_STRING"/>
+
+        <ACTION>cdbctl delete/cdb/qos/qos_policer_action_profile/${name}</ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to delete a qos policer action profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete policer action profile p1.  
+    Switch(config)# no qos policer-action-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos policer-action-profile
+		</CTCRCMD>
+
+    </COMMAND>
+    
+
+    <COMMAND name="qos policer-profile" help="Configure policer profile" view="Configure-qos-policer-view" viewid="name=${name}">
+        <PARAM name="name" help="Specify a policer profile name" ptype="NAME_STRING"/>
+        
+        <ACTION>cdbctl create/cdb/qos/qos_policer_profile/${name}</ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to creat a qos policer-profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to creat policer-profile p1.  
+    Switch(config)# qos policer-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no qos policer-profile
+		</CTCRCMD>
+
+	</COMMAND>
+       
+    <COMMAND name="no qos policer-profile" help="Remove policer profile">
+        <PARAM name="name" help="Specify a policer name" ptype="NAME_STRING"/>
+
+        <ACTION>cdbctl delete/cdb/qos/qos_policer_profile/${name}</ACTION>
+       
+ 		<CTCDESCRIPTION>
+Use this command to delete a qos policer-profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete policer-profile p1.  
+    Switch(config)# no qos policer-profile p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos policer-profile
+		</CTCRCMD>
+
+    </COMMAND>
+        
+</VIEW>
+
+<VIEW name="Configure-qos-policer-actoin-view" prompt="${SYSTEM_NAME}(config-qos-policer-action-${name})# " depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Configure"	help="false" completion="false"/>
+
+    <COMMAND name="exit" help="Exit from policer configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+    <COMMAND name="quit" help="Exit from policer configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+    
+    <COMMAND name="no" help="Negate a command or set its defaults"/>
+    
+    <COMMAND name="set" help="Configurate">
+        <PARAM name="color_action" help="Color action" mode="switch" ptype="SUBCOMMAND">
+            <PARAM name="confirm-action" help="Green color action" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="exceed-action" help="Yellow color action" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="violate-action" help="Red color action" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        <PARAM name="action_type" help="Action type" mode="switch" ptype="SUBCOMMAND">
+            <PARAM name="transmit" help="Transmit packet" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="drop" help="Drop packet" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="tc" help="Set packet tc" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="tc_value" help="Tc value" ptype="COS_ID"/>
+            </PARAM>
+        </PARAM>
+        
+        <ACTION>
+            if [ ${color_action} == "confirm-action" ]; then
+                cdbctl update/cdb/qos/qos_policer_action_profile/${name}/confirm_action/${action_type}/${tc_value}/
+            elif [ ${color_action} == "exceed-action" ];then
+                cdbctl update/cdb/qos/qos_policer_action_profile/${name}/exceed_action/${action_type}/${tc_value}/
+            else
+                cdbctl update/cdb/qos/qos_policer_action_profile/${name}/violate_action/${action_type}/${tc_value}/
+            fi
+        </ACTION>
+        
+ 		<CTCDESCRIPTION>
+Use this command to configure qos policer acton profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default confirm-action is transmit, tc invalid.
+Default exceed-action is transmit, tc invalid.
+Default violate-action is drop, tc invalid.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to violate-action transmit and tc 0.  
+    Switch(config)# qos policer action-profile p1  
+    Switch(config-qos-policer-action-p1)# set violate-action transmit
+    Switch(config-qos-policer-action-p1)# set violate-action tc 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos policer-action-profile
+		</CTCRCMD>
+
+    </COMMAND>
+    
+            
+    <COMMAND name="no set" help="Restore default configuration">
+        <PARAM name="color_action" help="Color action" mode="switch" ptype="SUBCOMMAND">
+            <PARAM name="confirm-action" help="Green color action" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="exceed-action" help="Yellow color action" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="violate-action" help="Red color action" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        
+        <ACTION>
+            if [ ${color_action} == "confirm-action" ]; then
+                cdbctl update/cdb/qos/qos_policer_action_profile/${name}/confirm_action//
+            elif [ ${color_action} == "exceed-action" ];then
+                cdbctl update/cdb/qos/qos_policer_action_profile/${name}/exceed_action//
+            else
+                cdbctl update/cdb/qos/qos_policer_action_profile/${name}/violate_action//
+            fi
+        </ACTION>
+                       
+ 		<CTCDESCRIPTION>
+Use this command to restore qos policer acton profile default configuration. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default confirm-action is transmit, tc invalid.
+Default exceed-action is transmit, tc invalid.
+Default violate-action is drop, tc invalid.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set exceed-action default action.  
+    Switch(config)# qos policer action-profile p1  
+    Switch(config-qos-policer-action-p1)# no set exceed-action transmit
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos policer-action-profile
+		</CTCRCMD>
+
+    </COMMAND>
+</VIEW>
+
+<VIEW name="Configure-qos-policer-view" prompt="${SYSTEM_NAME}(config-qos-policer-${name})# " depth="1">
+
+<!-- Inheritance -->
+	<NAMESPACE ref="Configure"	help="false" completion="false"/>
+
+    <COMMAND name="exit" help="Exit from policer configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+    <COMMAND name="quit" help="Exit from policer configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+    
+    <COMMAND name="no" help="Negate a command or set its defaults"/>
+        
+    <COMMAND name="mode" help="Specify policer mode">
+        <PARAM name="algorithm" help="Algorithm" mode="switch" ptype="SUBCOMMAND">
+            <PARAM name="rfc2697" help="Use rfc2697 SrTCM mode" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="pps" help=" Policing uses pps mode(default bps)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+            </PARAM>
+            <PARAM name="rfc4115" help="Use rfc4115 Modified TrTCM mode" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="pps" help=" Policing uses pps mode(default bps)" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+            </PARAM>
+        </PARAM>
+        <PARAM name="color" help="Color" mode="switch" ptype="SUBCOMMAND" optional="true" default="color-blind">
+            <PARAM name="color-aware" help=" Color aware mode policer" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="color-blind" help=" Color blind mode policer(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+        
+        <PARAM name="cir" help=" Config CIR" ptype="SUBCOMMAND" mode="subcommand">
+            <!--<PARAM name="cir_value" help="CIR - Commit Information Rate (kbps)" ptype="POLICER_RATE"/>-->
+            <PARAM name="cir_value" test='"${pps}"=""' help="CIR - Commit Information Rate (kbps)" ptype="POLICER_RATE"/>
+            <PARAM name="cir_value" test='"${pps}"="pps"' help="CIR - Commit Information Rate (pps)" ptype="POLICER_PPS_RATE"/>
+        </PARAM>
+        <PARAM name="cbs" help="Config CBS" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <!--<PARAM name="cbs_value" help="CBS - Commit Burst Size (bytes)" ptype="POLICER_BURST"/>-->
+            <PARAM name="cbs_value" test='"${pps}"=""' help="CBS - Commit Burst Size (bytes)" ptype="POLICER_BURST"/>
+            <PARAM name="cbs_value" test='"${pps}"="pps"' help="CBS - Commit Burst Size (packet)" ptype="POLICER_PPS_BURST"/>
+        </PARAM>
+
+        <PARAM name="ebs" test='"${algorithm}"="rfc2697"' help="Config EBS" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <!--<PARAM name="pbs_value" help="EBS - Excess Burst Size (bytes)" ptype="POLICER_BURST"/>-->
+            <PARAM name="pbs_value" test='"${pps}"=""' help="EBS - Excess Burst Size (bytes)" ptype="POLICER_BURST"/>
+            <PARAM name="pbs_value" test='"${pps}"="pps"' help="EBS - Excess Burst Size (packet)" ptype="POLICER_PPS_BURST"/>
+        </PARAM>
+
+        <PARAM name="eir" test='"${algorithm}"="rfc4115"' help="Config EIR" ptype="SUBCOMMAND" mode="subcommand">
+            <!--<PARAM name="pir_value" help="EIR - Excess Information Rate (kbps)" ptype="POLICER_RATE"/>-->
+            <PARAM name="pir_value" test='"${pps}"=""' help="EIR - Excess Information Rate (kbps)" ptype="POLICER_RATE"/>
+            <PARAM name="pir_value" test='"${pps}"="pps"' help="EIR - Excess Information Rate (pps)" ptype="POLICER_PPS_RATE"/>
+        </PARAM>
+        <PARAM name="ebs" test='"${algorithm}"="rfc4115"' help="Config EBS" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+            <!--<PARAM name="pbs_value" help="EBS - Excess Burst Size (bytes)" ptype="POLICER_BURST"/>-->
+            <PARAM name="pbs_value" test='"${pps}"=""' help="EBS - Excess Burst Size (bytes)" ptype="POLICER_BURST"/>
+            <PARAM name="pbs_value" test='"${pps}"="pps"' help="EBS - Excess Burst Size (packet)" ptype="POLICER_PPS_BURST"/>
+        </PARAM>
+
+        <PARAM name="stats" help="Enable policer statistics" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+        
+        <ACTION>
+            cdbctl update/cdb/qos/qos_policer_profile/${name}/check/${algorithm}/${pps}/${cir_value}/${cbs_value}/${pir_value}/${pbs_value}/
+            if [ "$?" != "0" ]; then
+                exit 1
+            else
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/update/${algorithm}/${pps}/${cir_value}/${cbs_value}/${pir_value}/${pbs_value}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/algorithm_mode/${algorithm}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/is_pps/${pps}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/color_mode/${color}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/cir/${cir_value}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/cbs/${cbs_value}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/eir_or_pir/${pir_value}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/ebs_or_pbs/${pbs_value}/
+                cdbctl update/cdb/qos/qos_policer_profile/${name}/flags_stats/${stats}/
+            fi
+            
+        </ACTION>
+                       
+ 		<CTCDESCRIPTION>
+Use this command to configure qos policer profile, inlcude algorithm-mode, color-mode, cir, cbs, eir, ebs and stats. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default color-mode is blind, the value of cir,cbs,eir,ebs is 0. and the default of stats is disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set a rfc2697 policer in policer profile.  
+    Switch(config)# qos policer-profile p1  
+    Switch(config-qos-policer-p1)# mode rfc2697 cir 10000 cbs 2000 ebs 300 stats  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos policer-profile
+		</CTCRCMD>
+
+    </COMMAND>
+
+    <COMMAND name="set" help="Configurate policer action profile">
+        <PARAM name="actoin-profile" help="Policer action profile" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="action_name" help="Specify a policer action profile name" ptype="NAME_STRING"/>
+        
+        <ACTION>
+            cdbctl update/cdb/qos/qos_policer_profile/${name}/action_profile_name/${action_name}/
+        </ACTION>
+        
+    <CTCDESCRIPTION>
+Use this command to apply qos policer action profile in policer profile.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply a policer action profile in policer profile.  
+    Switch(config)# qos policer-profile p1  
+    Switch(config-qos-policer-p1)# set action-profile a1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos policer-profile
+		</CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="no set" help="Remove policer action profile">
+        <PARAM name="actoin-profile" help="Policer action profile" ptype="SUBCOMMAND" mode="subcommand"/>
+        
+        <ACTION>
+            cdbctl update/cdb/qos/qos_policer_profile/${name}/action_profile_name//
+        </ACTION>
+        
+    <CTCDESCRIPTION>
+Use this command to remove policer action profile in policer profile. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove policer action profile in policer profile.  
+    Switch(config)# qos policer-profile p1  
+    Switch(config-qos-policer-p1)# no set action-profile
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos policer-profile
+		</CTCRCMD>
+    </COMMAND>
+    
+</VIEW>
+
+<VIEW name="Configure">
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+    <COMMAND name="qos port-policer" help="Port policer config">
+            <PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="input" help="Ingress port policer" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="output" help="Egress port policer" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            <PARAM name="name" help="Specify a policer name" ptype="NAME_STRING"/>
+			
+            <ACTION>
+                if test "${direction}" == "input"; then
+                    cdbctl update/cdb/aclqos_if/input_policer/${iface}/policer_name/${name}/
+                else
+                    cdbctl update/cdb/aclqos_if/output_policer/${iface}/policer_name/${name}/
+                fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to apply a port-policer profile on the interface. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set port-policer profile p1 on interface eth-0-1.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# qos port-policer input p1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="no qos port-policer" help="Port policer config">
+            <PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="input" help="Ingress port policer" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="output" help="Egress port policer" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+			
+            <ACTION>
+                if [ "${direction}" == "input" ]; then
+                    cdbctl update/cdb/aclqos_if/input_policer/${iface}/policer_name//
+                else
+                    cdbctl update/cdb/aclqos_if/output_policer/${iface}/policer_name//
+                fi
+            </ACTION>
+					
+   		<CTCDESCRIPTION>
+Use this command to unapply a port-policer profile on the interface.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset port-policer profile p1 on interface eth-0-1.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no qos port-policer input  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+
+    </COMMAND>
+        
+</VIEW>
+
+</CLISH_MODULE>
+

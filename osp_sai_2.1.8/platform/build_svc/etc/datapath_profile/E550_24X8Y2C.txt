@@ -1,0 +1,316 @@
+#Datapath for 96 XLG
+
+###########################################Port Mapping###########################################
+#                                               API port                                         #
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+#   | network port | network port  | reserved port|  network port | network port|reserved port|  #
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+#   |    0~39      |     40~47     |    48~63     |    64~103     |   104~111   |   112~127   |  #
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+#                                             Chip port                                          #
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+#   |Slice0 0~39   |Slice0 40~47   |      -       | Slice1 0~39   |Slice1 40~47 |      -      |  # 
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+#                                              Mac Id                                            #
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+#   |Slice0 0~39   |Slice0 48~55   |      -       | Slice1 0~39   |Slice1 48~55 |      -      |  # 
+#   |--------------|---------------|--------------|---------------|-------------|-------------|  #
+##################################################################################################
+
+#SERDES_MODE   : 0-NONE, 1-XFI, 2-SGMII, 3-Not Support, 4-QSGMII, 5-XAUI, 6-DXAUI, 7-XLG, 8-CG, 9-2.5G
+				#10-USXGMII0, 11-USXGMII1, 12-USXGMII2, 13-XXVG, 14-LG 
+#SERDES_RX_POLY: 0-Normal, 1-Reserve
+#SERDES_SWITCH : 0-Not Support Dynamic Switch, 1-Support Dynamic Switch
+
+[WLAN_ENABLE] = 0
+[DOT1AE_ENABLE] = 1
+
+[CORE_PLLA] = 600
+[CORE_PLLB] = 500
+
+#{
+[SERDES_ITEM]
+#repeat 64 step 5
+[SERDES_ID]   = 0
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 1
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 2
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 3
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 4
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 5
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 6
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 7
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 8
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 9
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 10
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 11
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 12
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 13
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 14
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 15
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 16
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 17
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 18
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 19
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 20
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 21
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 22
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 23
+[SERDES_MODE]   = 1
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 0
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 24
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 25
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 26
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 27
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 28
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 29
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 30
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 31
+[SERDES_MODE]   = 13
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 32
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 33
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 34
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 35
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 36
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 37
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 0
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 38
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 0
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+[SERDES_ID]   = 39
+[SERDES_MODE]   = 8
+[SERDES_GROUP]  = 1
+[SERDES_RX_POLY]   = 1
+[SERDES_TX_POLY]   = 1
+[SERDES_SWITCH] = 1
+
+#repeat end
+#}
+

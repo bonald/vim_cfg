@@ -1,0 +1,47 @@
+
+export WARN_NOERROR = y
+
+all_targets = libntp ntpd ntpdc ntpq
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+libopts: FORCE
+	make -C libopts -f Makefile.ctc
+
+clean_libopts: FORCE
+	make -C libopts -f Makefile.ctc clean
+    
+libntp: FORCE
+	make -C libntp -f Makefile.ctc
+
+clean_libntp: FORCE
+	make -C libntp -f Makefile.ctc clean
+
+ntpd: libntp FORCE
+	make -C ntpd -f Makefile.ctc
+
+clean_ntpd: FORCE
+	make -C ntpd -f Makefile.ctc clean
+    
+ntpdate: FORCE
+	make -C ntpdate -f Makefile.ctc
+
+clean_ntpdate: FORCE
+	make -C ntpdate -f Makefile.ctc clean
+
+ntpdc: libntp FORCE
+	make -C ntpdc -f Makefile.ctc
+
+clean_ntpdc: FORCE
+	make -C ntpdc -f Makefile.ctc clean
+
+ntpq: libntp FORCE
+	make -C ntpq -f Makefile.ctc
+
+clean_ntpq: FORCE
+	make -C ntpq -f Makefile.ctc clean
+    
+.PHONY: FORCE
+FORCE:

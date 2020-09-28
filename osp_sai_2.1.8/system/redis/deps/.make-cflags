@@ -1,0 +1,1 @@
+-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security

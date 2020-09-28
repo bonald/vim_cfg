@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+DHCP RELAY
+</CTCMODULENAME>		
+    
+<VIEW name="Exec">
+
+<COMMAND name="show dhcp" help="Show DHCP configurations"/>
+<COMMAND name="show dhcp relay" help="Show relay configuration"/>
+<COMMAND name="show dhcp relay information" help="Show relay agent information"/>
+<COMMAND name="show dhcp relay information trusted-sources" 
+    help="List of trusted sources of relay information option">
+<ACTION>
+cdbctl show/cdb/dhcp/dhcrelay/trusted
+</ACTION>
+	
+	<CTCDESCRIPTION>
+	To display all interfaces configured to be a trusted source for the DHCP relay information 
+	option, use the show dhcp relay information trusted-sources command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+	This command is used to display the configuration of DHCP relay information 
+	trusted port.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+	None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following is sample output from the show dhcp relay information trusted 
+	port command:  
+	Switch# show dhcp relay information trusted-sources
+	List of trusted sources of relay agent information option:
+	============================================================
+	eth-0-1 
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay information trusted
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp relay interfaces" help="Show relay enabled interface(s)">
+<ACTION>
+cdbctl show/cdb/dhcp/dhcrelay/interfaces
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To display to which dhcp-server group the interface belongs, use the show dhcp relay 
+	interfaces command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command is used to display the configuration of DHCP relay interfaces.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    In the following example shows how to display the configuration of DHCP relay interfaces:  
+    Switch# show dhcp relay interfaces   
+    List of DHCP relay enabled interface(s):
+    DHCP relay service status: disabled
+    Interface Name          DHCP server group
+    ============================================================
+    eth-0-1                 1
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp-server
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp-server" help="Show DHCP server group configuration">
+<PARAM name="grpidx" help="Specify group number" ptype="DHCSRVGRP" optional="true"/>
+<ACTION>
+if [ "${grpidx}" == "" ]; then
+    cdbctl show/cdb/dhcp/dhcsrvgrp
+else
+    grpid="`expr ${grpidx} - 1`"
+    cdbctl show/cdb/dhcp/dhcsrvgrp/$grpid
+fi
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To display the DHCP server groups, use the show dhcp-server command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command is used to display the configuration of dhcp server.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  In the following example shows how to display the configuration of dhcp server:  
+  Switch# show dhcp-server    
+  DHCP server group information:   
+  ============================================================   
+  group 1 ip address list:        
+      [1] 10.10.10.1   
+  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp-server
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp relay information config" help="Show current relay agent information configuration">
+<ACTION>
+cdbctl show/cdb/dhcp/dhcrelay/config
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To display the DHCP relay information configurations, use the show dhcp relay information 
+	config command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command is used to display the configuration of dhcp relay information.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  In the following example shows how to display the configuration of dhcp relay 
+  information:     
+  Switch# show dhcp relay information config     
+  DHCP relay agent information configuration:    
+  ============================================================      
+  no dhcp relay information option   
+  dhcp relay information check   
+  dhcp relay information policy keep       
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay information option
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcp relay statistics" help="Statistics information">
+<ACTION>
+cdbctl show/cdb/dhcp/dhcrelay/statistics
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To display the statistics of DHCP packets relayed by the switch, use the show dhcp relay 
+	statistics command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command is used to display dhcp relay statistics.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  In the following example shows how to display dhcp relay statistics:  
+  Switch# show dhcp relay statistics        
+  DHCP relay packet statistics:     
+  ============================================================   
+  Client relayed packets:  0  
+  Server relayed packets:  0  
+
+  Client error packets:    0  
+  Server error packets:    0  
+  Bogus GIADDR drops:      0  
+  Bad circuit ID packets:  0  
+  Corrupted agent options: 0  
+  Missing agent options:   0  
+  Missing circuit IDs:     0      
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	clear dhcp relay statistics
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear dhcp" help="DHCP"/>
+<COMMAND name="clear dhcp relay" help="Relay"/>
+<COMMAND name="clear dhcp relay statistics" help="Statistics information">
+<ACTION>
+cdbctl delete/cdb/dhcp/dhcrelay/statistics
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To clear the statistics of DHCP packets relayed by the switch, use the clear dhcp relay 
+	statistics command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command is used to clear dhcp relay statistics.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  In the following example shows how to clear dhcp relay statistics:  
+  Switch# clear dhcp relay statistics    
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	show dhcp relay statistics
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+<COMMAND name="dhcp" help="Specify DHCP configuration"/>
+<COMMAND name="dhcp relay" help="Specify DHCP relay configuration"/>
+<COMMAND name="dhcp relay information" help="Relay agent information option"/>
+<COMMAND name="dhcp relay information trusted" 
+    help="Received DHCP packets may contain relay information option with zero giaddr">
+<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcp_relay_option_trust/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To configure an interface as a trusted source of DHCP relay agent information option, use 
+	the dhcp relay information trusted command in interface configuration mode. To restore the 
+	interface to the default behavior, use the no form of the command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+	To configure an interface as a trusted source of DHCP relay agent information option, use 
+	the dhcp relay information trusted command in interface configuration mode. To restore the 
+	interface to the default behavior, use the no form of the command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  All interfaces on the router are considered untrusted.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to configure an interface as trusted source of 
+  dhcp relay information:  
+  Switch(config-if-eth-0-1)# dhcp relay information trusted   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp relay information trusted
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp" help="Specify DHCP configuration"/>
+<COMMAND name="no dhcp relay" help="Specify DHCP relay configuration"/>
+<COMMAND name="no dhcp relay information" help="Relay agent information option"/>
+<COMMAND name="no dhcp relay information trusted" 
+    help="Received DHCP packets may contain relay information option with zero giaddr">
+<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcp_relay_option_trust/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To restore the interface to the default behavior, use the no dhcp relay information trusted.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  All interfaces on the router are considered untrusted.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to configure an interface not as trusted source 
+  of dhcp relay information:  
+  Switch(config-if-eth-0-1)# no dhcp relay information trusted  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay information trusted
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp-server" help="Specify DHCP server parameter">
+<PARAM name="grpidx" help="Specify DHCP server group number" ptype="DHCSRVGRP"/>
+<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcp_server_group/${grpidx}
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To add an interface into a DHCP server group, use the dhcp-server command in interface 
+	configuration mode. To remove this interface from the DHCP server group, use the no 
+	form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  This command is used to specify DHCP server group which is configed by the command 
+  dhcp-server in global mode.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  No DHCP server group is configured for the interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to configure dhcp-server group for interface:       
+  Switch(config-if-eth-0-1)# dhcp-server 1   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp-server
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp-server" help="Specify DHCP server parameter">
+<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcp_server_group/0
+</ACTION>
+
+  <CTCDESCRIPTION>
+  To delete an interface from a DHCP server group, use the no dhcp-server command in 
+  interface configuration mode.
+  </CTCDESCRIPTION>
+  <CTCUSAGE>
+  This command is used to delete an interface from a DHCP server group.
+  </CTCUSAGE>
+  <CTCDEFAULT>
+  None
+  </CTCDEFAULT>
+  <CTCEXAMPLE> 
+  The following example shows how to delete an interface from a DHCP server group:     
+  Switch(config-if-eth-0-1)# no dhcp-server   
+  </CTCEXAMPLE>
+  <CTCRCMD>
+  dhcp-server
+  </CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+<COMMAND name="no dhcp" help="Specify DHCP configuration"/>
+
+<COMMAND name="service dhcp" help="DHCP service">
+<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+  <PARAM name="enable" help="Enable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+  <PARAM name="disable" help="Disable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+<ACTION>
+if [ "${opt}" == "enable" ]; then
+    cdbctl update/cdb/sys/sys_global/dhcp_service_enable/1
+else
+    cdbctl update/cdb/sys/sys_global/dhcp_service_enable/0
+fi
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To enable the Dynamic Host Configuration Protocol (DHCP) snooping and relay agent features 
+	on your router, use the service dhcp command in global configuration mode. To disable the 
+	DHCP snooping and relay agent features, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Only the main DHCP service is enabled by the service dhcp command, can other 
+  DHCP services be used, such as dhcp relay or dhcp snooping.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP service is disabled globally.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to enable DHCP service globally:  
+  Switch(config)# service dhcp enable  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp-server
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp" help="Specify DHCP configuration"/>
+<COMMAND name="dhcp relay" help="Enable DHCP relay feature">
+<ACTION>
+cdbctl update/cdb/sys/sys_global/dhcp_relay_enable/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+	Use this command to turn on the debug switches of dhcp relay module.To restore the default, 
+	use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  The DHCP service must be enabled with the dhcp service command before DHCP relay 
+  service can be used.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP relay is disabled.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to enable DHCP relay agent:     
+  Switch(config)# dhcp relay  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp relay
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp relay" help="Enable DHCP relay feature">
+<ACTION>
+cdbctl update/cdb/sys/sys_global/dhcp_relay_enable/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+  To disable DHCP relay agent,use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCP relay is disabled.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to disable DHCP relay agent:   
+  Switch(config)# no dhcp relay   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp server" help="Enable DHCP server feature"  hidden="true" >
+<ACTION>
+cdbctl update/cdb/sys/sys_global/dhcp_server_enable/1
+</ACTION>
+</COMMAND>
+
+<COMMAND name="no dhcp server" help="Enable DHCP server feature"  hidden="true" >
+<ACTION>
+cdbctl update/cdb/sys/sys_global/dhcp_server_enable/0
+</ACTION>
+</COMMAND>
+
+
+<COMMAND name="dhcp relay information" help="Relay agent information option"/>
+<COMMAND name="dhcp relay information trust-all" 
+    help="Received DHCP packets may contain relay info option with zero giaddr">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/trust_all/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To configure all interfaces as trusted sources of the DHCP relay agent information option, 
+	use the dhcp relay information trust-all command in global configuration mode. To restore 
+	these interfaces to their default behavior, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  By default, if the gateway address is set to all zeros in the DHCP packet and 
+  the relay information option is already present in the packet, the DHCP relay 
+  agent will discard the packet. If the dhcp relay information trust-all command 
+  is configured globally, the DHCP relay agent will not discard the packet even 
+  if the gateway address is set to all zeros. Instead, the received DHCPDISCOVER 
+  or DHCPREQUEST messages will be forwarded to the addresses configured by the 
+  dhcp-server command as in normal DHCP relay operation.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  All interfaces on the switch are considered untrusted.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to configure dhcp relay information trust globally:  
+  Switch(config)# dhcp relay information trust-all  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp relay information trust-all
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp relay information" help="Relay agent information option"/>
+<COMMAND name="no dhcp relay information trust-all" 
+    help="Received DHCP packets may contain relay info option with zero giaddr">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/trust_all/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To configure all interfaces as untrusted sources of the DHCP relay agent information option, 
+	use the no dhcp relay information trust-all command in global configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+	None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+	All interfaces on the switch are considered untrusted.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to configure dhcp relay information untrust globally:  
+	Switch(config)# no dhcp relay information trust-all  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay information trust-all
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp-server" help="Specify DHCP server parameter">
+    <PARAM name="grpidx" help="Specify DHCP server group number" ptype="DHCSRVGRP"/>
+    <PARAM name="addrlist1" help="Specify DHCP server address list. " ptype="IP_ADDR">
+        <PARAM name="addrlist2" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR">
+            <PARAM name="addrlist3" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR">
+                <PARAM name="addrlist4" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR">
+                    <PARAM name="addrlist5" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR">
+                        <PARAM name="addrlist6" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR">
+                            <PARAM name="addrlist7" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR">
+                                <PARAM name="addrlist8" help="Specify DHCP server address list." optional="true" ptype="IP_ADDR"/>
+                            </PARAM>
+                        </PARAM>
+                    </PARAM>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+    <ACTION>
+    cfgaddr=""
+    cfgaddr="${addrlist1}"
+    if [ "${addrlist2}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist2}"
+    fi
+    if [ "${addrlist3}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist3}"
+    fi
+    if [ "${addrlist4}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist4}"
+    fi
+    if [ "${addrlist5}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist5}"
+    fi
+    if [ "${addrlist6}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist6}"
+    fi
+    if [ "${addrlist7}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist7}"
+    fi
+    if [ "${addrlist8}" != "" ]; then
+        cfgaddr="$cfgaddr;${addrlist8}"
+    fi
+    grpid="`expr ${grpidx} - 1`"
+    cdbctl update/cdb/dhcp/dhcsrvgrp/$grpid/addrs/$cfgaddr
+    </ACTION>
+
+  <CTCDESCRIPTION>
+  To create a DHCP server group, use the dhcp-server command in global configuration 
+  mode. To remove a DHCP server group, use the no form of this command.
+  </CTCDESCRIPTION>
+  <CTCUSAGE>
+  This command is used to specify the remote DHCP server.
+  </CTCUSAGE>
+  <CTCDEFAULT>
+  No DHCP server group is defined.
+  </CTCDEFAULT>
+  <CTCEXAMPLE> 
+  The following example shows how to configure dhcp-server group globally:   
+  Switch(config)# dhcp-server 1 1.1.1.1 2.2.2.2 3.3.3.3    
+  </CTCEXAMPLE>
+  <CTCRCMD>
+  no dhcp-server
+  </CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="no dhcp-server" help="Specify DHCP server parameter">
+<PARAM name="grpidx" help="Specify DHCP server group number" ptype="DHCSRVGRP"/>
+<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+  <PARAM name="addrlist" help="Specify DHCP server address list. (A.B.C.D ...)" ptype="KLINE"/>
+</PARAM>
+  
+<ACTION>
+grpid="`expr ${grpidx} - 1`"
+
+if [ "${opt}" == "addrlist" ]; then
+    cdbctl delete/cdb/dhcp/dhcsrvgrp/$grpid/addrs/${addrlist}
+else
+    cdbctl update/cdb/dhcp/dhcsrvgrp/$grpid/addrs
+fi
+
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To delete a DHCP server group, use the no dhcp-server command in global configuration mode. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  No DHCP server group is defined.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to delete dhcp-server group globally:   
+  Switch(config)# no dhcp-server 1 1.1.1.1   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp-server
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp relay information option" help="Insert relay information in BOOTREQUEST">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/add_agent_options/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To enable the system to insert a DHCP relay agent information option in forwarded request 
+	messages to a DHCP server, use the dhcp relay information option command in global configuration 
+	mode. To disable inserting relay information, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  The dhcp relay information option command automatically adds the circuit identifier 
+  suboption and the remote ID suboption to the DHCP relay agent information option 
+  (also called option 82).
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  No relay agent information is inserted.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to enable inserting of dhcp relay information option.   
+  Switch(config)# dhcp relay information option    
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp relay information option
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp relay information option" help="Insert relay information in BOOTREQUEST">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/add_agent_options/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To disable the system to insert a DHCP relay agent information option in forwarded request  
+	messages to a DHCP server, use the no dhcp relay information option command in global
+  configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+	None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+	None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to disable inserting of dhcp relay information option:
+	Switch(config)# no dhcp relay information option   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay information option
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp relay information check" help="Validate relay information in BOOTREPLY">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/drop_agent_mismatch/1
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To enable validation of relay agent information option in forwarded reply messages, use 
+	the dhcp relay information check command in global configuration mode. To disable an 
+	information check, use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  The validation of relay agent information is enabled. Invalid messages are dropped.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+  The following example shows how to enable validation of relay agent information:      
+  Switch(config)# dhcp relay information check   
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp relay information check
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp relay information check" help="Validate relay information in BOOTREPLY">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/drop_agent_mismatch/0
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To disable validation of relay agent information option in forwarded reply messages, use 
+	the no dhcp relay information check command in global configuration mode. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+	None
+	</CTCUSAGE>
+	<CTCDEFAULT>
+	None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to disable validation of relay agent information:  
+	Switch(config)# no dhcp relay information check  
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	dhcp relay information check
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="dhcp relay information policy" help="Define reforwarding policy">
+<PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" >
+  <PARAM name="drop" help="Do not forward BOOTREQUEST message with existing information" ptype="SUBCOMMAND" mode="subcommand"/>
+  <PARAM name="keep" help="Leave existing information alone (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+  <PARAM name="replace" help="Replace existing information" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+<ACTION>
+if [ "${opt}" == "drop" ]; then
+    cdbctl update/cdb/dhcp/dhcrelay/agent_proc_option/drop
+elif [ "${opt}" == "keep" ]; then
+    cdbctl update/cdb/dhcp/dhcrelay/agent_proc_option/keep
+else
+    cdbctl update/cdb/dhcp/dhcrelay/agent_proc_option/replace
+fi
+</ACTION>
+
+	<CTCDESCRIPTION>
+	To configure the information reforwarding policy for a DHCP relay agent (what a relay agent 
+	should do if a message already contains relay information), use the dhcp relay information 
+	policy command in global configuration. To restore the default relay information policy, 
+	use the no form of this command.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+	A DHCP relay agent may receive a message from another DHCP relay agent that already contains 
+	relay information. By default, this message will be forwarded with the relay information from 
+	the previous relay agent untouched.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+	The DHCP relay won't changed existing relay information.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+	The following example shows how to configure policy of dhcp relay information:    
+	Switch(config)# dhcp relay information policy drop
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	no dhcp relay information policy
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no dhcp relay information policy" help="Define reforwarding policy">
+<ACTION>
+cdbctl update/cdb/dhcp/dhcrelay/agent_proc_option/keep
+</ACTION>
+
+  <CTCDESCRIPTION>
+  To restore the information reforwarding policy to default for a DHCP relay agent (what 
+  a relay agent should do if a message already contains relay information), use the no dhcp 
+  relay information policy command in global configuration.
+  </CTCDESCRIPTION>
+  <CTCUSAGE>
+  None
+  </CTCUSAGE>
+  <CTCDEFAULT>
+  The DHCP relay won't changed existing relay information.
+  </CTCDEFAULT>
+  <CTCEXAMPLE> 
+  The following example shows how to restore the information reforwarding policy to default:      
+  Switch(config)# no dhcp relay information policy   
+  </CTCEXAMPLE>
+  <CTCRCMD>
+  dhcp relay information policy
+  </CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

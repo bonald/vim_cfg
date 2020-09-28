@@ -1,0 +1,1139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+
+    <COMMAND name="show lldp" help="Link Layer Discovery Protocol"/>
+    <COMMAND name="show lldp local" help="Local information"/>
+
+    <COMMAND name="show lldp local config" help="Configuation">
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_name" help="Interface ID" ptype="IF_NAME_E"/>
+            </PARAM>
+        </PARAM>
+		
+        <ACTION>
+            if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_lldp_local/config
+            else
+				cdbctl show/cdb/l2/show_lldp_local/config/${if_name}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show lldp local config privileged EXEC command to display the global time information and lldp enable or not. 
+Use the show lldp local config interface ethx privileged EXEC command to display the interface LLDP admin status and TVL information. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show lldp local config command:  
+    Switch# show lldp local config  
+    LLDP global configuration:
+	-------------------------+-------------------
+	LLDP function global enabled: NO
+	LLDP TxHold              : 4
+	LLDP TxInterval          : 30
+	LLDP ReinitDelay         : 2
+	LLDP TxDelay             : 2
+	
+	DUT1# show lldp local config interface eth-0-1
+	LLDP configuration on interface eth-0-1:
+	-------------------------+-------------------
+	LLDP admin status        : TX
+	Basic optional TLV Enabled:
+		Port Description TLV
+		System Name TLV
+		System Description TLV
+		System Capabilities TLV
+		Management Address TLV
+
+	IEEE 802.1 TLV Enabled:
+		Port Vlan ID TLV
+		Port and Protocol Vlan ID TLV
+		Vlan Name TLV
+		Protocol Identity TLV
+		
+	IEEE 802.3 TLV Enabled:
+		MAC/PHY Configuration/Status TLV
+		Power Via MDI TLV
+		Link Aggregation TLV
+		Maximum Frame Size TLV
+
+	LLDP-MED TLV Enabled:
+		Med Capabilities TLV
+		Network Policy TLV
+		Extended Power-via-MDI TLV
+		Inventory TLV
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show lldp local tlv-info" help="TLV information">
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_name" help="Interface ID" ptype="IF_NAME_E"/>
+            </PARAM>
+        </PARAM>
+		
+        <ACTION>
+            if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_lldp_local/tlv_info
+            else
+				cdbctl show/cdb/l2/show_lldp_local/tlv_info/${if_name}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show lldp local tlv-info privileged EXEC command to display the global tvl information. 
+Use the show lldp local tlv-info interface ethx privileged EXEC command to display the port tvl information. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show lldp local tlv-info command:  
+	DUT1# show lldp local tlv-info 
+	LLDP global TLV information:
+	-------------------------+-------------------
+	System Name              : DUT1
+
+	System Description       : OSP Software software, CNOS, Version 1.0.0.31.it 
+	 Copyright (C) Centec Networks (suzhou) Co., Ltd..  All rights reserved.
+
+	System Capabilities      :
+		Bridge     :  
+		Router     :  
+
+	Configured Management IP Address: 
+
+	LLDP MED Inventory Information:
+	  Hardware Rivision      : CNOS
+	  Firmware Rivision      : uml1.0
+	  Software Rivision      : 1.0.0.31.it
+	  Serial Number          : 
+	  Manufacturer Name      : Centec Networks (suzhou) Co., Ltd.
+	  Model Name             : CNOS
+	  Asset ID               : 
+	  
+	DUT1# show lldp local tlv-info interface eth-0-1
+	LLDP TLV information on interface eth-0-1:
+	-------------------------+-------------------
+	Port Vlan ID             : 1
+
+	Protocol identities      :
+		Spanning Tree Protocol
+		Rapid Spanning Tree Protocol
+		Link Aggregation
+
+	Link Aggregation status  : Supported
+
+	MAC/PHY Configuration/Status:
+	AutoNego                 : Unsupport
+	AutoNego Capability      : 0
+	Operational MAU Type     : 0
+
+	Power via MDI            :
+	Port class               : PD
+	PSE MDI power support    : NO
+	PSE MDI power state      : Disabled
+	PSE pairs control ability: NO
+	PSE power pair           : Unknown
+	Power class              : Unknown
+	
+	Maximum Frame Size       : 1632
+
+	LLDP-MED TLV             
+	Network Policy           :
+	Application Type         : Voice
+	Status                   : Unknown
+
+	Extended Power-via-MDI   :
+	type                     : PSE
+	Power Source             : Unknown
+	Power Priority           : 0
+	Power Value              : 0.0W
+
+	Location Identification  :
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+    </COMMAND>
+
+
+    <COMMAND name="show lldp neighbor" help="Neighbor information">
+	    <PARAM name="brief" help="Brief" optional="true" ptype="SUBCOMMAND" mode="subcommand" default = "detail"/>
+	    <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_name" help="Interface ID" ptype="IF_NAME_E"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_lldp_neighbor/${brief}
+			else
+				cdbctl show/cdb/l2/show_lldp_neighbor/${brief}/${if_name}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show lldp neighbor privileged EXEC command to display all the information of remote device. 
+Use the show lldp neighbor brief privileged EXEC command to display the brief information of remote device. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show lldp neighbor command:  
+    DUT1# show lldp neighbor 
+	Neighbor LLDP Information
+	Chassis ID type          : Mac address
+	Chassis ID               : 6AA4.939B.BE00
+	Port ID type             : Interface Name
+	Port ID                  : eth-0-9
+
+	TTL                      : 40
+	ExpireTime               : 39
+
+	System Name              : DUT1
+	System Description       : OSP Software software, CNOS, Version 1.0.0.31.it 
+	 Copyright (C) Centec Networks (suzhou) Co., Ltd..  All rights reserved.
+	Port Description         : eth-0-9
+
+	System Capabilities      :
+		  Bridge  :  Enabled
+		  Router  :  Enabled
+
+	Management Address       : 192.168.100.101
+	Interface Numbering      : 2
+	Interface Number         : 9
+	OID                      : 
+
+	Port Vlan ID             : 1
+
+	VLAN ID                  : 1
+	VLAN Name                : default
+
+	Protocols Identity       :
+	   Spanning Tree Protocol
+	   Rapid Spanning Tree Protocol
+	   Link Aggregation
+	   
+	Link Aggregation Capability: Support
+	Link Aggregation Status  : Disabled
+	Link Aggregation Port ID : 0
+
+	MAC/PHY Configuration/Status: 
+	AutoNego                 : Not Support
+	AutoNego Capability      : Unknown
+	Operational MAU Type     : Unknown - Unknown
+
+	Power via MDI            :
+	Port class               : PD
+	PSE MDI power support    : NO
+	PSE MDI power state      : Disabled
+	PSE pairs control ability: NO
+	PSE power pair           : Unknown
+	Power class              : Unknown
+
+	Maximum Frame Size       : 1632
+
+	LLDP MED Information     
+	Device type              : Network Connectivity
+	Med capabilities         :
+	  LLDP-MED Capabiliies
+	  Network Policy
+	  Extended Power via MDI - PSE
+	  Extended Power via MDI - PD
+
+	Network Policy           :
+	Application Type         : Voice
+	Status                   : Unknown
+
+	Extended Power-via-MDI   :
+	type                     : PSE
+	Power Source             : Unknown
+	Power Priority           : 0
+	Power Value              : 0.0W
+
+	Inventory Information    :
+	  Hardware Rivision      : CNOS
+	  Firmware Rivision      : uml1.0
+	  Software Rivision      : 1.0.0.31.it
+	  Serial Number          : 
+	  Manufacturer Name      : Centec Networks (suzhou) Co., LtdCNOS
+	  Model Name             : CNOS
+	  Asset ID               : 
+
+	Location Identification  :
+	
+	DUT2# show lldp neighbor brief 
+	Local Port               : eth-0-9
+	ChassisID                : 6AA4.939B.BE00
+	Remote Port              : eth-0-9
+	HoldTime                 : 40
+	ExpireTime               : 34
+	System Name              : DUT1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="show lldp statistics" help="LLDP Statistics">
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_name" help="Interface ID" ptype="IF_NAME_E"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ ${part} == "all" ]; then
+				cdbctl show/cdb/l2/show_lldp_statistics
+            else
+				cdbctl show/cdb/l2/show_lldp_statistics/${if_name}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the show lldp statistics privileged EXEC command to display the frames. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show lldp statistics command:  
+    DUT1# show lldp statistics 
+	LLDP statistics information:
+	-------------------------+-------------------
+	LLDP Port statistics for : eth-0-1
+	Frames Transmitted       : 10
+	Frames Aged              : 0
+	Frames Discarded         : 0
+	Frames with Error        : 0
+	Frames Recieved          : 0
+	TLVs Discarded           : 0
+	TLVs Unrecognized        : 0
+
+	DUT1# show lldp statistics interface eth-0-1
+	LLDP statistics information:
+	-------------------------+-------------------
+	LLDP Port statistics for : eth-0-1
+	Frames Transmitted       : 10
+	Frames Aged              : 0
+	Frames Discarded         : 0
+	Frames with Error        : 0
+	Frames Recieved          : 0
+	TLVs Discarded           : 0
+	TLVs Unrecognized        : 0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear lldp statistics
+		</CTCRCMD>
+    </COMMAND>
+
+	<COMMAND name="clear lldp" help="Link Layer Discovery Protocol"/>
+	<COMMAND name="clear lldp statistics" help="LLDP Statistics">
+        <PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+                <PARAM name="if_name" help="Interface ID" ptype="IF_NAME_E"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ ${part} == "all" ]; then
+				cdbctl update/cdb/l2/clear_lldp_statistics
+            else
+				cdbctl update/cdb/l2/clear_lldp_statistics/${if_name}
+			fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use the clear lldp statistics privileged EXEC command to remove all the frames transmitted or recieved.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove statistics:  
+    Switch# clear lldp statistics
+    Switch# clear lldp statistics interface eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show lldp statistics
+		</CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="lldp" help="Link Layer Discovery Protocol"/>
+	<COMMAND name="lldp enable" help="Enable LLDP globally">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/enable/1</ACTION>
+		<CTCDESCRIPTION>
+Use the lldp enable command to make lldp work globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example make lldp enable globally:  
+    Switch(config)# lldp enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp timer" help="Set timer"/>
+	<COMMAND name="lldp timer tx-interval" help="Set the Transmit Interval Value">
+		<PARAM name="value" help="TxInterval value, be equal or greater than (4*txdelay), default is 30s" ptype="LLDP_TX_INTERVAL"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/tx_interval/${value}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set lldp tx interval time value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+30
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set lldp tx interval time value:  
+    Switch(config)# lldp timer tx-interval 20
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp timer tx-interval
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp timer tx-hold" help="Set the Transmit Hold Value">
+		<PARAM name="value" help="Txhold value, default is 4s" ptype="LLDP_TX_HOLD"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/tx_hold/${value}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set lldp tx hold time value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+4
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set lldp tx hold time value:  
+    Switch(config)# lldp timer tx-hold 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp timer tx-hold
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp timer tx-delay" help="Set the Transmit Delay Value">
+		<PARAM name="value" help="TxDelay value, be less than or equal to (0.25*txinterval), default is 2s" ptype="LLDP_TX_DELAY"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/tx_delay/${value}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set lldp tx delay time value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set lldp tx delay time value:  
+    Switch(config)# lldp timer tx-delay 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp timer tx-delay
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp timer reinit-delay" help="Set the Reinitialization Delay Value">
+		<PARAM name="value" help="ReinitDelay value, default is 2s" ptype="LLDP_REINIT_DELAY"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/reinit_delay/${value}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set lldp reinit delay time value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set lldp reinit delay time value:  
+    Switch(config)# lldp timer reinit-delay 1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp timer reinit-delay
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="lldp management" help="Configure IP address used in Management Address TLV"/>
+	<COMMAND name="lldp management ip" help="IP address">
+		<PARAM name="addr" help="IP address value" ptype="IP_ADDR"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/management_ip/${addr}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp management ip address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp management ip address:  
+    Switch(config)# lldp management ip 1.2.3.4
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp management ip
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp system-name" help="Configure LLDP System-name globally">
+		<PARAM name="name" help="LLDP System Name, Max Length is 64" ptype="NAME_STRING"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/system_name/${name}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp system name.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp system name:  
+    Switch(config)# lldp system-name centec
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp system-name
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp system-description" help="Configure LLDP System-Description globally">
+		<PARAM name="desc" help="LLDP System Description, Max Length is 255" ptype="KLINE"/>
+		<ACTION>cdbctl update/cdb/l2/lldp_global/system_desc/"${desc}"</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp system description.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp system description:  
+    Switch(config)# lldp system-description centecOS
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp system-description
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no lldp" help="Link Layer Discovery Protocol"/>
+	<COMMAND name="no lldp enable" help="Disable LLDP globally">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/enable/0</ACTION>
+		<CTCDESCRIPTION>
+Use the no lldp enable command to make lldp disable globally.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example make lldp disable globally:  
+    Switch(config)# no lldp enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp enable
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no lldp timer" help="Set Default timer"/>
+	<COMMAND name="no lldp timer tx-interval" help="Set the Default Transmit Interval Value">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/tx_interval/30</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp timer tx interval.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp timer tx interval:  
+    Switch(config)# no lldp timer tx-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp timer tx-interval
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no lldp timer tx-hold" help="Set the Default Transmit Hold Value">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/tx_hold/4</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp timer tx hold.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp timer tx hold:  
+    Switch(config)# no lldp timer tx-hold
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp timer tx-hold
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no lldp timer tx-delay" help="Set the Default Transmit Delay Value">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/tx_delay/2</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp timer tx delay.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp timer tx delay:  
+    Switch(config)# no lldp timer tx-delay
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp timer tx-delay
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no lldp timer reinit-delay" help="Set the Default Reinitialization Delay Value">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/reinit_delay/2</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp timer reinit delay.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp timer reinit-delay:  
+    Switch(config)# no lldp timer reinit-delay
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp timer reinit-delay
+		</CTCRCMD>	
+	</COMMAND>
+
+	<COMMAND name="no lldp management" help="Configure IP address used in Chasis/Management ID TLV"/>
+	<COMMAND name="no lldp management ip" help="IP address">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/management_ip</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp management ip address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp management ip address:  
+    Switch(config)# no lldp management ip
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp management ip
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no lldp system-name" help="Configure LLDP System-name globally">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/system_name</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp system name.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp system name:  
+    Switch(config)# no lldp system-name
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp system-name
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no lldp system-description" help="Configure LLDP System-Description globally">
+		<ACTION>cdbctl update/cdb/l2/lldp_global/system_desc</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp system description.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp system description:  
+    Switch(config)# no lldp system-description
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp system-description
+		</CTCRCMD>	
+	</COMMAND>
+
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="lldp" help="Link Layer Discovery Protocol"/>
+	<COMMAND name="no lldp" help="Link Layer Discovery Protocol"/>
+
+	<COMMAND name="lldp enable" help="Enable LLDP for the interface">
+		<PARAM name="type" help="Timeout" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="rxonly" help="LLDP Recieve Only Mode" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="txonly" help="LLDP Transmit Only Mode" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="txrx" help="LLDP Transmit and Recieve Mode" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		<ACTION>cdbctl create/cdb/l2/lldp_if/${iface}/${type}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp admin status on interface, txonly, rxonly, txrx.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp admin status on interface:
+	Switch(config-if)# lldp enable txrx
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp enable
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="lldp tlv" help="LLDP TVL"/>
+	
+	<COMMAND name="lldp tlv basic" help="LLDP TVL BASIC">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="ALL Basic optional TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="management-address" help="Management Address TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="port-description" help="Port-Description TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="system-capabilities" help="System Capabilities TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="system-description" help="System Description TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="system-name" help="System Name TLV" ptype="SUBCOMMAND" mode="subcommand" />			
+		</PARAM>
+		<ACTION>cdbctl update/cdb/l2/lldp_if/${iface}/add/basic/${type}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp basic tlv on interface, management-address, port-description, system-capabilities, system-capabilities, system-description, system-name and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp basic tlv on interface:
+	Switch(config-if)# lldp tlv basic management-address
+	Switch(config-if)# lldp tlv basic all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp tvl basic
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="lldp tlv med" help="LLDP TVL MED">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Select all LLDP-MED tlvs (except Location Identification TLV)" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="ext-power" help="Extend Power-via-MDI TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="inventory" help="Inventory TVL" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="network-policy" help="Network Policy TLV" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+		   cdbctl update/cdb/l2/lldp_if/${iface}/add/med/${type}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp med tlv on interface, ext-powe, inventory, network-policy and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp med tlv on interface:
+	Switch(config-if)# lldp tlv med inventory
+	Switch(config-if)# lldp tlv med all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp tvl med
+		</CTCRCMD>	
+	</COMMAND>
+	
+
+	<COMMAND name="lldp tlv med location-id" help="LLDP TVL MED Location id">	
+	    <PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="civic" help="Location id type civic" ptype="SUBCOMMAND" mode="subcommand" >
+				<PARAM name="num" help=" CIVIC address refer to, 0 - DHCP Server, 1 - the closet networkdevice, 2 - current device" ptype="LCI_WHAT">
+				<PARAM name="countrycode" help="The two-letter ISO 3166 country code in capital ASCII letters, eg., US" ptype="NAME_STRING">
+				<PARAM name="ca1" help="Civic Address1" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca1_type" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca1_value" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca2" optional="true" help="Civic Address2" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca2_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca2_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca3" optional="true" help="Civic Address3" test='"${ca2_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca3_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca3_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca4" optional="true" help="Civic Address4" test='"${ca3_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca4_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca4_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca5" optional="true" help="Civic Address5" test='"${ca4_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca5_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca5_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca6" optional="true" help="Civic Address6" test='"${ca5_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca6_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca6_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca7" optional="true" help="Civic Address7" test='"${ca6_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca7_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca7_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca8" optional="true" help="Civic Address8" test='"${ca7_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca8_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca8_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca9" optional="true" help="Civic Address9" test='"${ca8_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca9_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca9_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				<PARAM name="ca10" optional="true" help="Civic Address10" test='"${ca9_type}"!="none"' ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ca10_type" default="none" help=" CA TYPE, the max number of CA type inputted is 10" ptype="CA_TYPE"/>
+					<PARAM name="ca10_value" default="none" help=" CA VALUE, the total length of all CA value should be in [1, 232]" ptype="NAME_STRING"/>
+				</PARAM>
+				</PARAM>
+				</PARAM>
+			</PARAM>	
+			<PARAM name="ecs-elin" help="Location id type ecs-elin" ptype="SUBCOMMAND" mode="subcommand" > 
+			    <PARAM name="value" help=" ECS ELIN address ,valid length is in [10-25]" ptype="UINT"/>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+		    if [ ${type} == "civic" ]; then
+			  cdbctl update/cdb/l2/lldp_if/${iface}/add/med/location-id/${type}/${num}/${countrycode}/ca1/${ca1_type}/${ca1_value}/ca2/${ca2_type}/${ca2_value}/ca3/${ca3_type}/${ca3_value}/ca4/${ca4_type}/${ca4_value}/ca5/${ca5_type}/${ca5_value}/ca6/${ca6_type}/${ca6_value}/ca7/${ca7_type}/${ca7_value}/ca8/${ca8_type}/${ca8_value}/ca9/${ca9_type}/${ca9_value}/ca10/${ca10_type}/${ca10_value}
+			elif [ ${type} == "ecs-elin" ]; then
+                cdbctl update/cdb/l2/lldp_if/${iface}/add/med/location-id/${type}/${value}
+            fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp med tlv location-id on interface, the type of location-id are civic and ecs-elin.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp med tlv location-id on interface:
+	Switch(config-if)# lldp tlv med location-id civic 2 cn ca1 1 suzhou ca2 2 qaunqu ca3 3 xinghanjie
+	Switch(config-if)# lldp tlv med location-id ecs-elin 12334545678087
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp tvl med
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="lldp tlv 8021-org-specific" help="LLDP TVL IEEE 802.1 Organizationally Specific">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Select all IEEE 802.1 tlv(except Link Aggregation TLV)" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="port-vlan" help="Port Vlan ID TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="protocol-id" help="Protocol Identity TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol-vlan" help="Port and Protocol Vlan ID TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="vlan-name" help="Vlan Name TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="link-aggregation" help="Link Aggregation TLV" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+		    cdbctl update/cdb/l2/lldp_if/${iface}/add/8021-org-specific/${type}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp 8021-org-specific tlv on interface, port-vlan, protocol-id, protocol-vlan, vlan-name, link-aggregation and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp 8021-org-specific tlv on interface:
+	Switch(config-if)# lldp tlv 8021-org-specific port-vlan
+	Switch(config-if)# lldp tlv 8021-org-specific all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp tvl 8021-org-specific
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp tlv 8021-org-specific vlan-name-value" help="Vlan_id of Vlan Name TLV">
+		    <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+		<ACTION>
+             cdbctl update/cdb/l2/lldp_if/${iface}/add/8021-org-specific/vlan-name-value/${vlan_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp 8021-org-specific vlan-name-value on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp 8021-org-specific vlan-name-value on interface:
+	Switch(config-if)# lldp tlv 8021-org-specific vlan-name-value 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp tlv 8021-org-specific vlan-name-value
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="lldp tlv 8023-org-specific" help="LLDP TVL IEEE 802.3 Organizationally Specific">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Select all IEEE 802.3 TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="link-aggregation" help="Link Aggregation TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="mac-phy-cfg" help="MAC/PHY Configuration/Status TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="max-frame-size" help="Maximum Frame Size TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="power" help="Power Via MDI TLV" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>cdbctl update/cdb/l2/lldp_if/${iface}/add/8023-org-specific/${type}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to set the lldp 8023-org-specific tlv on interface, mac-phy-cfg, max-frame-size, power, link-aggregation and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example set the lldp 8023-org-specific tlv on interface:
+	Switch(config-if)# lldp tlv 8023-org-specific max-frame-size
+	Switch(config-if)# lldp tlv 8023-org-specific all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no lldp tvl 8023-org-specific
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no lldp tlv" help="LLDP TVL"/>
+	
+	<COMMAND name="no lldp tlv basic" help="LLDP TVL BASIC">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="ALL Basic optional TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="management-address" help="Management Address TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="port-description" help="Port-Description TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="system-capabilities" help="System Capabilities TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="system-description" help="System Description TVL" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="system-name" help="System Name TLV" ptype="SUBCOMMAND" mode="subcommand" />			
+		</PARAM>
+		<ACTION>cdbctl update/cdb/l2/lldp_if/${iface}/del/basic/${type}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp basic tlv on interface, management-address, port-description, system-capabilities, system-capabilities, system-description, system-name and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp basic tlv on interface:
+	Switch(config-if)# no lldp tlv basic management-address
+	Switch(config-if)# no lldp tlv basic all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp tvl basic
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no lldp tlv med" help="LLDP TVL MED">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Select all LLDP-MED tlvs (except Location Identification TLV)" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="ext-power" help="Extend Power-via-MDI TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="inventory" help="Inventory TLV Set" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="network-policy" help="Network Policy TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="location-id" help="Location ID TLV" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>cdbctl update/cdb/l2/lldp_if/${iface}/del/med/${type}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp med tlv on interface, ext-powe, inventory, network-policy location-id and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp med tlv on interface:
+	Switch(config-if)# no lldp tlv med inventory
+	Switch(config-if)# no lldp tlv med all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp tvl med
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no lldp tlv 8021-org-specific" help="LLDP TVL IEEE 802.1 Organizationally Specific">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Select all IEEE 802.1 TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="port-vlan" help="Port Vlan ID TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="link-aggregation" help="Link Aggregation TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol-id" help="Protocol Identity TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="protocol-vlan" help="Port and Protocol Vlan ID TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="vlan-name" help="Vlan Name TLV" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>
+		     cdbctl update/cdb/l2/lldp_if/${iface}/del/8021-org-specific/${type}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp 8021-org-specific tlv on interface, port-vlan, protocol-id, protocol-vlan, vlan-name, link-aggregation and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp 8021-org-specific tlv on interface:
+	Switch(config-if)# no lldp tlv 8021-org-specific port-vlan
+	Switch(config-if)# no lldp tlv 8021-org-specific all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp tvl 8021-org-specific
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no lldp tlv 8021-org-specific vlan-name-value" help="Vlan_id of Vlan Name TLV">
+		<ACTION>
+			  cdbctl update/cdb/l2/lldp_if/${iface}/del/8021-org-specific/vlan-name-value/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use the command to del the lldp 8021-org-specific vlan-name-value on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example del the lldp 8021-org-specific vlan-name-value on interface:
+	Switch(config-if)# no lldp tlv 8021-org-specific vlan-name-value
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp tlv 8021-org-specific vlan-name-value
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no lldp tlv 8023-org-specific" help="LLDP TVL IEEE 802.3 Organizationally Specific">
+		<PARAM name="type" help="TYPE" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Select all IEEE 802.3 tlv" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="link-aggregation" help="Link Aggregation TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="mac-phy-cfg" help="MAC/PHY Configuration/Status TLV" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="max-frame-size" help="Maximum Frame Size TLV" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="power" help="Power Via MDI TLV" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+		<ACTION>cdbctl update/cdb/l2/lldp_if/${iface}/del/8023-org-specific/${type}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp 8023-org-specific tlv on interface, mac-phy-cfg, max-frame-size, power, link-aggregation and all of them.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp 8023-org-specific tlv on interface:
+	Switch(config-if)# no lldp tlv 8023-org-specific max-frame-size
+	Switch(config-if)# no lldp tlv 8023-org-specific all
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp tvl 8023-org-specific
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no lldp enable" help="Disable LLDP for the interface">
+		<ACTION>cdbctl delete/cdb/l2/lldp_if/${iface}</ACTION>
+		<CTCDESCRIPTION>
+Use the command to unset the lldp admin status on interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example unset the lldp admin status on interface:
+	Switch(config-if)# no lldp enable
+		</CTCEXAMPLE>
+		<CTCRCMD>
+lldp enable
+		</CTCRCMD>	
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

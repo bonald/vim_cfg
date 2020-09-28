@@ -1,0 +1,254 @@
+HAL-MSG-OPENFLOW-FLOW DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+
+    HalMsgIpv4addr,
+    HalMsgIpv6addr
+    FROM HAL-MSG-L3TYPES
+    ;
+    
+-------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow flow rule (BEGIN) {
+-------------------------------------
+
+HalMsgOpenFlowL4PortType ::= SEQUENCE
+{
+    port            INTEGER,
+    portMask        INTEGER
+}
+
+HalMsgOpenFlowEntryId ::= SEQUENCE
+{
+    table           INTEGER,
+    entryId         INTEGER,
+    priority        INTEGER,
+    label           INTEGER,
+	groupId         INTEGER
+}
+
+HalMsgOpenFlowMacRule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_OPENFLOW_MAC_RULE_FLAG_*
+    macSa           HalMsgDefL2MacAddr,
+    macSaMask       HalMsgDefL2MacAddr,
+    macDa           HalMsgDefL2MacAddr,
+    macDaMask       HalMsgDefL2MacAddr,
+    sTagValid       INTEGER,
+    sVlanId         INTEGER,
+    sVlanIdMask     INTEGER,
+    sTagCos         INTEGER,
+    sTagCosMask     INTEGER,
+    ipv4Pkt         INTEGER,
+    arpPkt          INTEGER,
+    mplsPkt          INTEGER,    
+    ethType         INTEGER,
+    ethTypeMask     INTEGER,
+	cTagValid       INTEGER,
+    cVlanId         INTEGER,
+    cVlanIdMask     INTEGER,
+    cTagCos         INTEGER,
+    cTagCosMask     INTEGER
+}
+
+HalMsgOpenFlowArpRule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_OPENFLOW_ARP_RULE_FLAG_*
+    senderIp        HalMsgIpv4addr,
+    senderIpMask    HalMsgIpv4addr,
+    targetIp        HalMsgIpv4addr,
+    targetIpMask    HalMsgIpv4addr,
+    arpOpCode       INTEGER,
+    arpOpCodeMask   INTEGER
+}
+
+HalMsgOpenFlowIpv4Rule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of GLB_OPENFLOW_IPV4_RULE_FLAG_*
+    ipSa            HalMsgIpv4addr,
+    ipSaMask        HalMsgIpv4addr,
+    ipDa            HalMsgIpv4addr,
+    ipDaMask        HalMsgIpv4addr,
+    l4SrcPort       HalMsgOpenFlowL4PortType,
+    l4DestPort      HalMsgOpenFlowL4PortType,
+    dscp            INTEGER,
+    dscpMask        INTEGER,
+    l4Protocol      INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER,
+    igmpType        INTEGER,
+    tcpFlags        INTEGER,
+    ipFrag          INTEGER,
+    ipFragMask      INTEGER,
+    ecn             INTEGER,
+    ecnMask         INTEGER
+}
+
+HalMsgOpenFlowIpv6Rule ::= SEQUENCE
+{
+    flag            INTEGER,    -- bitmap of  GLB_OPENFLOW_IPV6_RULE_FLAG_*
+    sprefix         HalMsgIpv6addr,
+    sprefixMask      HalMsgIpv6addr,
+    dprefix         HalMsgIpv6addr,
+    dprefixMask      HalMsgIpv6addr,
+    l4SrcPort       HalMsgOpenFlowL4PortType,
+    l4DestPort      HalMsgOpenFlowL4PortType,
+    ipOptions       INTEGER,
+    routedPacket    INTEGER,
+    l4Protocol      INTEGER,
+    icmpType        INTEGER,
+    icmpCode        INTEGER,
+    dscp            INTEGER,
+	dscpMask        INTEGER,
+    ipFrag          INTEGER,
+    ipFragMask      INTEGER,
+    ecn             INTEGER,
+    ecnMask         INTEGER,
+    flowLabel       INTEGER,
+	flowLabelMask   INTEGER
+}
+
+HalMsgOpenFlowMplsRule ::= SEQUENCE
+{
+    mplsLabelNum        INTEGER,
+    mplsLabel0          INTEGER,
+    mplsLabel0Mask      INTEGER,    
+    mplsLabel1          INTEGER,
+    mplsLabel1Mask      INTEGER,    
+    mplsLabel2          INTEGER,
+    mplsLabel2Mask      INTEGER
+}
+
+HalMsgOpenFlowTnlRule ::= SEQUENCE -- Added by weizj for tunnel
+{
+    flags           INTEGER,
+    metadata        INTEGER,
+	tunId           INTEGER
+}
+
+HalMsgOpenFlowUdfRule ::= SEQUENCE -- Added by weizj for udf
+{
+    enable          INTEGER, 
+    udfId           INTEGER,
+    udf0            INTEGER,
+    udfMask0        INTEGER,
+    udf1            INTEGER,
+    udfMask1        INTEGER,
+    udf2            INTEGER,
+    udfMask2        INTEGER,
+    udf3            INTEGER,
+    udfMask3        INTEGER
+}
+
+HalMsgOpenFlowRule ::= SEQUENCE
+{
+    macRule         HalMsgOpenFlowMacRule,
+    tnlRule         HalMsgOpenFlowTnlRule,    -- Added by weizj for tunnel
+    udfRule         HalMsgOpenFlowUdfRule,    -- Added by weizj for udf   
+ 
+    unionRule CHOICE 
+    {
+        arpRule         HalMsgOpenFlowArpRule,
+        ipv4Rule        HalMsgOpenFlowIpv4Rule,
+        ipv6Rule        HalMsgOpenFlowIpv6Rule,
+        mplsRule        HalMsgOpenFlowMplsRule,
+        mplsMcastRule   HalMsgOpenFlowMplsRule
+    }
+}
+
+-------------------------------------
+-- } DATA STRUCTURE definitions for OpenFlow flow rule (END)
+-------------------------------------
+
+-------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow flow action (BEGIN) {
+-------------------------------------
+
+HalMsgOpenFlowAction ::= SEQUENCE
+{
+    policerId       INTEGER,
+    statsEn         INTEGER,
+    statsId         INTEGER,
+
+    priorityValid   INTEGER,
+    priority        INTEGER,
+    color           INTEGER,
+
+    nexthopId       INTEGER,
+    denyRouting     INTEGER,
+    denyBridging    INTEGER,
+    denyLearning    INTEGER,
+    popAllMpls      INTEGER,
+    isDsMplsKey     INTEGER,
+    mplsActionType  INTEGER,
+    resetPayloadOffset  INTEGER,
+    oldLogSessionId INTEGER,
+    logSessionId    INTEGER,
+    logDestPort     INTEGER,
+    truncateLen     INTEGER,
+    groupVlanId     INTEGER,
+    groupVlanCos    INTEGER,
+    groupVlanType   INTEGER,
+    stripPacket     INTEGER
+}
+
+-------------------------------------
+-- } DATA STRUCTURE definitions for OpenFlow flow action (END)
+-------------------------------------
+
+
+-------------------------------------
+--  Message definitions for OpenFlow (BEGIN) {
+-------------------------------------
+HalMsgOpenFlowAddFlowReq ::= SEQUENCE
+{
+    entryId         HalMsgOpenFlowEntryId,
+    rule            HalMsgOpenFlowRule,
+    action          HalMsgOpenFlowAction
+}
+
+HalMsgOpenFlowUpdateFlowReq ::= SEQUENCE
+{
+    entryId         HalMsgOpenFlowEntryId,
+    action          HalMsgOpenFlowAction
+}
+
+HalMsgOpenFlowDelFlowReq ::= SEQUENCE
+{
+    entryId         HalMsgOpenFlowEntryId,
+    isDsMplsKey     INTEGER,
+    mplsLabel       INTEGER,
+    logSessionId    INTEGER
+}
+
+HalMsgOpenFlowOpLabelReq ::= SEQUENCE
+{
+    enable          INTEGER,
+    type            INTEGER,
+    label           INTEGER
+}
+
+HalMsgOpenFlowSetUdfReq ::= SEQUENCE     -- Added by weizj for udf
+{
+    enable           INTEGER
+}
+
+HalMsgOpenFlowSetE2eReq ::= SEQUENCE
+{
+    enable          INTEGER
+}
+
+HalMsgOpenFlowSetStpidReq ::= SEQUENCE
+{
+    stpid          INTEGER
+}
+
+HalMsgOpenFlowSetCtpidReq ::= SEQUENCE
+{
+    ctpid          INTEGER
+}
+-------------------------------------
+--  } Message definitions for OpenFlow (END)
+-------------------------------------
+END

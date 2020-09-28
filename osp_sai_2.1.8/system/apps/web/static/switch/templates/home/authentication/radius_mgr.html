@@ -1,0 +1,134 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+            <div class="panel-title">{{ 'Global Configuration' | translate }}
+            </div>  
+    </div>
+
+    <div class="panel-body">
+        <!-- channel group table -->
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    <th class="text-center">{{ 'Deadtime' | translate }}</th>                  
+                    <th class="text-center">{{ 'Timeout' | translate }}</th>  
+                    <th class="text-center">{{ 'Retries' | translate }}</th>
+                    <th class="text-center">{{ 'Secret' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in cfg_list">
+                    <td class="text-center">{{ x.deadtime}}</td>
+                    <td class="text-center">{{ x.timeout }}</td>
+                    <td class="text-center">{{ x.retries }}</td>
+                    <td class="text-center">{{ (x.secret.length!=0)?x.secret:((x.enc_secret.length!=0)?x.enc_secret:'N/A') }}</td>       
+                </tr>
+            </tbody>
+        </table>
+        <!-- channel group table end -->
+    </div>
+</div>
+
+<!-- port conf -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+            <div class="panel-title">{{ 'Radius Server' | translate }}
+                <!-- options -->
+                <button style="float:right" type="button" class="btn btn-default" data-toggle="modal" data-target="#add_Raduis_Server" >
+                    <span class="glyphicon glyphicon-cog"></span>&nbsp;{{ 'Add Server' | translate }}
+                </button>
+                <!-- options end -->
+            </div>              
+    </div>
+
+    <div class="panel-body">
+        <!-- channel group table -->
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center">{{ 'Server Host' | translate }}</th>
+                    <th class="text-center">{{ 'VRF' | translate }}</th>
+                    <th class="text-center">{{ 'Port' | translate }}</th>    
+                    <th class="text-center">{{ 'Secret' | translate }}</th>					
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="y in dot1x_radius | filter : {'type': 'radius'}">
+                    <th class="text-center">{{ $index + 1 }}</th>
+                    <td class="text-center">{{ y.host }}</td>
+                    <td class="text-center">{{ y.is_inband }}</td>
+                    <td class="text-center">{{ y.port }}</td>
+					<td class="text-center">{{ (y.secret.length!=0)?y.secret:((y.enc_secret.length!=0)?y.enc_secret:'N/A') }}</td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delRadiusServer(y)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </td>           
+                </tr>
+            </tbody>
+        </table>
+        <!-- channel group table end -->
+    </div>
+</div>
+
+
+<div class="modal fade" id="add_Raduis_Server" ng-init="method1 = 'none'; method2 = 'none' ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Add' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="AddRadiusSrvModeForm" name="AddRadiusSrvModeForm" class="form"  novalidate>
+                  <table class="table table-condensed table-bordered">
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Server Host' | translate }}</th>
+                        <td class="text-left col-md-6">
+                            <select class="form-control" ng-model="srvVrfsel" ng-options="i for i in vrfIds"></select>
+                            <br>
+                            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[AddRadiusSrvModeForm.serverHost.$valid]" >
+                                <input type="text" name="serverHost" class="form-control" placeholder="A.B.C.D" ng-model="serverHost" ng-pattern="/^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$/" required />
+                            </div>   
+                        </td>
+                    </tr>   
+                    <tr>
+                        <th class="text-center col-md-6">{{ 'Key String' | translate }}</th>
+                        <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="serverKeyEn" switch-on-change="serverKeyEnFun()" ></btn-switch>
+                                </div>
+                        </td>
+                    </tr>  
+					
+					<tr ng-show="serverKeyEn==true">
+                        <th class="text-center col-md-6">{{ 'Value' | translate }}</th>
+                        <td class="text-left col-md-6">
+                        <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[AddRadiusSrvModeForm.serverKey.$valid]">
+                            <input type="text" name="serverKey" class="form-control" placeholder="server key-string" ng-pattern="/^[a-zA-Z0-9~!@#$^\&\*\(\)_\+\-\[\]|.:\>\<\;,]{1,63}$/" ng-model="serverKey"  required />
+                        </div>
+                        </td>
+                    </tr>  
+					
+					
+                  </table>
+                </form>
+                
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addRadiusServer()" ng-disabled="(serverKeyEn==true && AddRadiusSrvModeForm.serverKey.$invalid )|| AddRadiusSrvModeForm.serverHost.$invalid "  >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

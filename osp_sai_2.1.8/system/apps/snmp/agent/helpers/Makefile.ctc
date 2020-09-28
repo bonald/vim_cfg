@@ -1,0 +1,19 @@
+include ../../../../Makefile.env.inc
+include $(MK_DIR)/sys.mk
+
+LIB = netsnmphelpers
+DELFILES=table_generic.c
+ALLFILES=$(wildcard *.c)
+
+DODEL=$(if $(findstring $(file),$(DELFILES)),, $(file))
+SRCS=$(foreach file,$(ALLFILES),$(DODEL))
+
+CPPFLAGS+= -I$(APP_TOP_DIR)/ 
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/include -I$(APP_TOP_DIR)/snmp/agent/mibgroup
+CPPFLAGS+= -DNETSNMP_ENABLE_IPV6 -Ulinux -Dlinux=linux
+
+STATIC_LIBS+=${BLD_DIR}/lib/libnetsnmp.a
+#LD_FLAGS+=--export-dynamic -lcrypto
+LD_FLAGS+=-lcrypto
+
+include $(MK_DIR)/lib.mk

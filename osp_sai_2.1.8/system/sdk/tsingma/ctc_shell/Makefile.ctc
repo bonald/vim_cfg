@@ -1,0 +1,39 @@
+# CROSS_COMPILE should set appropriate compiler path to PATH.
+# Suggestion: add these two lines to your ~/.bash_profile
+#    PATH=$PATH:/sw/pub/xtools.ppc-linux/bin/:/opt/gcc-4.3/bin/
+#    export PATH
+# In this case, /sw/pub/xtools.ppc-linux/bin/    /opt/gcc-4.3/bin/  is our appropriate compiler path.
+
+############################# linux #####################################
+ifeq ($(targetbase),linux)
+
+include $(MK_DIR)/sys.mk
+
+all_targets = ctc_shell 
+export BLD_DIR
+export BOARD
+export VER
+export CPU
+export ARCH
+export SUBARCH
+export CROSS_COMPILE
+export KDIR
+export M64
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+ctc_shell:	FORCE
+	make -f Makefile_ctc_sdk
+	
+clean_ctc_sdk:	FORCE
+	make -C $(SDK_DIR)/driver/$(CHIPNAME) clean
+	make -C $(SDK_DIR)/dal clean
+	make -C $(SDK_DIR)/sal clean
+	make -C $(SDK_DIR)/libctccli clean
+ifeq ($(ARCH),um)
+	make -C $(SDK_DIR)/mem_model/$(CHIPNAME) clean
+endif	
+.PHONY: FORCE
+FORCE:
+endif

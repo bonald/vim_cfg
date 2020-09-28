@@ -1,0 +1,855 @@
+<!-- Flow Statistics -->
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+            <div class="panel-title">{{ 'Tap ACL Statistics' | translate }}
+                <!-- add flow -->
+            <button style="float:right" type="button" class="btn btn-default"  data-toggle="modal" data-target="#flowDetailModal" >
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add Acl' | translate }}
+            </button>        
+
+            </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+
+                    <th class="text-center">{{ 'Name' | translate }}</th>
+                    <th class="text-center">{{ 'Remark' | translate }}</th>
+
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entry in acl_arr ">
+                 
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewDetail(entry.key)">{{ entry.key }}</a></td>
+                        <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewFlowRemarkDetail(entry)">{{ (entry.remark.length!=0)?entry.remark:"N/A" }}</a></td>
+
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+
+                                <button  class="btn btn-default" data-toggle="modal" data-target="#addFlowEntryModal" ng-click="viewAddFlowEntry(entry.key)">
+                                    <span class="glyphicon glyphicon-plus"></span>&nbsp;
+                                </button>  
+
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delFlow(entry)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>                        
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- modal Flow Detail -->
+<div class="modal fade" id="flowDetailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Add Acl' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="flowConfForm" name="flowConfForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-3">{{ 'Name'  | translate }}</div>
+                        <div class="col-md-6" ng-class="{true: 'has-success', false: 'has-error'}[flowConfForm.newFlowName.$valid]">
+                            <input type="text" name="newFlowName" class="form-control" placeholder="New ACL Name" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,19}$/" ng-model="newFlowTableName"  required />
+                        </div>             
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addNewFlowTable()" ng-disabled=" flowConfForm.newFlowName.$invalid " >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'Add Acl' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Add Flow Entry -->
+<div class="modal fade" id="addFlowEntryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Add' | translate }}</h4>          
+            </div>
+
+            <div class="modal-body">
+                <form id="addEntryForm" name="addEntryForm" class="form-inline padding-5px"  novalidate>
+                    <table class="table table-condensed table-bordered">
+
+                        <tr>
+                            <th class="text-right col-md-6">{{ 'Action' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="cfgEntry.dir" ng-options="m for m in direction" >
+                                </select>    
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-right col-md-6">{{ 'IP protocol number' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="cfgEntry.ipProtocolNumber" ng-options="m for m in ipProtocol" ng-click="cfgEntryIpProtoNum() ">
+                                </select>    
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.ipProtocolNumber=='num'">
+                            <th class="text-right col-md-6">{{ 'IP protocol' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.protocol.$valid]" >
+                                    <input name="protocol" type="number" class="form-control" placeholder="0~255" ng-model="cfgEntry.protocolNum"  ng-min="0" ng-max="255" required />
+                                </div>
+                            </td>
+                        </tr>  
+                       <!-- ICMP -->
+                        <tr ng-show="cfgEntry.ipProtocolNumber=='icmp' ">
+                            <th class="text-right col-md-6">{{ 'ICMP TYPE' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.icmptypeEn" switch-on-change="cfgEntryIcmpTypeEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>    
+
+                        <tr ng-show="cfgEntry.icmptypeEn==true && cfgEntry.ipProtocolNumber=='icmp' ">
+                            <th class="text-right col-md-6">{{ 'ICMP Type Value' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.icmptypeValue.$valid]" >
+                                    <input name="icmptypeValue" type="number" class="form-control" placeholder="0~255" ng-model="cfgEntry.icmptypeValue"  ng-min="0" ng-max="255"  required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.icmptypeEn==true && cfgEntry.ipProtocolNumber=='icmp' ">
+                            <th class="text-right col-md-6">{{ 'ICMP CODE' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.icmpcodeEn" switch-on-change="cfgEntryIcmpCodeEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>    
+
+                        <tr ng-show="cfgEntry.icmpcodeEn==true && cfgEntry.ipProtocolNumber=='icmp' ">
+                            <th class="text-right col-md-6">{{ 'ICMP Code Value' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.icmpcodeValue.$valid]" >
+                                    <input name="icmpcodeValue" type="number" class="form-control" placeholder="0~255" ng-model="cfgEntry.icmpcodeValue"  ng-min="0" ng-max="255"  required />
+                                </div>
+                            </td>
+                        </tr>      
+
+						
+                        <tr>
+                            <th class="text-right col-md-6">{{ 'Filter TYPE' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="cfgEntry.Ipv4v6Type" ng-options="m for m in Ipv4v6Type" ng-click="cfgEntryIpFilterType()">
+                                </select>
+                            </td>
+                        </tr>
+						
+						<!-- ether type -->
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' ">
+                            <th class="text-right col-md-6">{{ 'Ether Type' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.ethertypeEn" switch-on-change="cfgEntryEthertypeEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.ethertypeEn == true && cfgEntry.Ipv4v6Type =='ipv4' ">
+                            <th class="text-right col-md-6">{{ 'Value' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.etherValue.$valid]" >
+                                    <input name="etherValue" type="text" class="form-control" placeholder="0x600-0xFFFF" ng-model="cfgEntry.etherValue"  ng-pattern="/^(((0[xX])+([0-9a-fA-F]{4}))|((0[xX])+[6-9a-fA-F]+([0-9a-fA-F]{2})))$/"  required />
+                                </div>								
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.ethertypeEn == true && cfgEntry.Ipv4v6Type =='ipv4' ">
+                            <th class="text-right col-md-6">{{ 'Wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.etherMask.$valid]" >
+                                    <input name="etherMask" type="text" class="form-control" placeholder="0xFFFF" ng-model="cfgEntry.etherMask"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,4})$/"  required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- SRC IP -->
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' && cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'Src-ip' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.srcipEn" switch-on-change="cfgEntrySrcIpEnFun()" ></btn-switch>
+                                </div>
+                            </td> 
+                        </tr>
+						
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' && cfgEntry.ethertypeEn != true && cfgEntry.srcipEn == true">
+                            <th class="text-right col-md-6">{{ 'Source IP' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcIp.$valid]" >
+                                    <input type="text" name="entrySrcIp" class="form-control" placeholder="A.B.C.D" ng-model="cfgEntry.srcIp" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                                </div>  
+                            </td>
+                        </tr>
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' && cfgEntry.ethertypeEn != true && cfgEntry.srcipEn == true ">
+                            <th class="text-right col-md-6">{{ 'Source wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcwcard.$valid]">
+                                    <input type="text" name="entrySrcwcard" class="form-control" placeholder="0.0.0.0" ng-model="cfgEntry.srcIpMask" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/"   required />
+                                </div>
+                            </td>
+                        </tr>
+						
+						<!-- DST IP -->
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' && cfgEntry.ethertypeEn != true  ">
+                            <th class="text-right col-md-6">{{ 'Dst-ip' | translate }}</th>
+							<td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.dstipEn" switch-on-change="cfgEntryDstIpEnFun()" ></btn-switch>
+                                </div>
+                            </td> 
+                        </tr>
+						
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' && cfgEntry.ethertypeEn != true && cfgEntry.dstipEn == true">
+                            <th class="text-right col-md-6">{{ 'Destination IP' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDstIp.$valid]" >
+                                    <input type="text" name="entryDstIp" class="form-control" placeholder="A.B.C.D" ng-model="cfgEntry.dstIp" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                                </div>  
+                            </td>
+                        </tr>
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv4' && cfgEntry.ethertypeEn != true && cfgEntry.dstipEn == true ">
+                            <th class="text-right col-md-6">{{ 'Destination wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDstwcard.$valid]">
+                                    <input type="text" name="entryDstwcard" class="form-control" placeholder="0.0.0.0" ng-model="cfgEntry.dstIpMask" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/"   required />
+                                </div>  
+                            </td>
+
+                        </tr>
+
+                        <!-- SRC IPv6 -->
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv6' && cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'Src-ip' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.srcipv6En" switch-on-change="cfgEntrySrcIpv6EnFun()" ></btn-switch>
+                                </div>
+                            </td> 
+                        </tr>
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv6' && cfgEntry.ethertypeEn != true && cfgEntry.srcipv6En == true ">
+                            <th class="text-right col-md-6">{{ 'Source IP' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcIpv6.$valid]" >
+                                    <input type="text" name="entrySrcIpv6" class="form-control" placeholder="X:X::X:X" ng-model="cfgEntry.srcIpv6" ng-pattern="/((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/" required />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv6' && cfgEntry.ethertypeEn != true && cfgEntry.srcipv6En == true ">
+                            <th class="text-right col-md-6">{{ 'Source wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcv6wcard.$valid]">
+                                    <input type="text" name="entrySrcv6wcard" class="form-control" placeholder="X:X::X:X" ng-model="cfgEntry.srcIpv6Mask" ng-pattern="/((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/"   required />
+                                </div>
+                            </td>
+                        </tr>
+						
+						<!-- DST IPv6 -->
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv6' && cfgEntry.ethertypeEn != true  ">
+                            <th class="text-right col-md-6">{{ 'Dst-ip' | translate }}</th>
+							<td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.dstipv6En" switch-on-change="cfgEntryDstIpv6EnFun()" ></btn-switch>
+                                </div>
+                            </td> 
+                        </tr>
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv6' && cfgEntry.ethertypeEn != true && cfgEntry.dstipv6En == true">
+                            <th class="text-right col-md-6">{{ 'Destination IP' | translate }}</th>
+                            <td class="text-left col-md-6 form-inline ">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDstIpv6.$valid]" >
+                                    <input type="text" name="entryDstIpv6" class="form-control" placeholder="X:X::X:X" ng-model="cfgEntry.dstIpv6" ng-pattern="/((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/" required />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-show="cfgEntry.Ipv4v6Type =='ipv6' && cfgEntry.ethertypeEn != true && cfgEntry.dstipv6En == true">
+                            <th class="text-right col-md-6">{{ 'Destination wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDstv6wcard.$valid]">
+                                    <input type="text" name="entryDstv6wcard" class="form-control" placeholder="X:X::X:X" ng-model="cfgEntry.dstIpv6Mask" ng-pattern="/((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/"   required />
+                                </div>
+                            </td>
+                        </tr>
+
+						<!-- flow label -->
+                        <tr ng-show="cfgEntry.Ipv4v6Type == 'ipv6' && cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'Flow Label' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.flowlabelEn" switch-on-change="cfgEntryFlowLabelEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>    
+
+                       <tr ng-show="cfgEntry.flowlabelEn==true && cfgEntry.Ipv4v6Type =='ipv6' ">
+                            <th class="text-right col-md-6">{{ 'Flow Label' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.flowlabelValue.$valid]" >
+                                    <input name="flowlabelValue" type="number" class="form-control" placeholder="0~1048575" ng-model="cfgEntry.flowlabelValue"  ng-min="0" ng-max="1048575"  required />
+                                </div>
+                            </td>
+                        </tr>					
+
+                        <tr ng-show="cfgEntry.flowlabelEn==true && cfgEntry.Ipv4v6Type =='ipv6' ">
+                            <th class="text-right col-md-6">{{ 'Label Wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.flowlabelMask.$valid]" >
+                                    <input name="flowlabelMask" type="text" class="form-control" placeholder="0xFFFFF" ng-model="cfgEntry.flowlabelMask"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,5})$/"  required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- DSCP -->
+                        <tr ng-show="cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'DSCP' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.dscpEn" switch-on-change="cfgEntryDscpEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.dscpEn == true">
+                            <th class="text-right col-md-6">{{ 'Value' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.dscp.$valid]" >
+                                    <input name="dscp" type="number" class="form-control" placeholder="0~63" ng-model="cfgEntry.dscp"  ng-min="0" ng-max="63" required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- TOS -->
+                        <tr ng-show="cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'Ip-precedence' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.tosEn" switch-on-change="cfgEntryTosEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.tosEn == true">
+                            <th class="text-right col-md-6">{{ 'Value' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.tos.$valid]" >
+                                    <input name="tos" type="number" class="form-control" placeholder="0~7" ng-model="cfgEntry.tos"  ng-min="0" ng-max="7" required />
+                                </div>
+                            </td>
+                        </tr>
+
+						<!-- OPTIONS -->
+                        <tr ng-show="cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'Options' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.optionsEn" switch-on-change="cfgEntryOptionsEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+						
+						<!-- ANY Fragment -->
+                        <tr ng-show="cfgEntry.ethertypeEn != true">
+                            <th class="text-right col-md-6">{{ 'Fragment' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.fragEn" switch-on-change="cfgEntryFragEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+						
+						
+                        <!-- Source Port -->
+                        <tr ng-show="cfgEntry.ipProtocolNumber == 'udp' || cfgEntry.ipProtocolNumber == 'tcp'">
+                            <th class="text-right col-md-6">{{ 'Src-port' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.srcPortEn" switch-on-change="cfgEntrySrcPortEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>                        
+
+                        <tr ng-show="cfgEntry.srcPortEn == true">
+                            <th class="text-right col-md-6">{{ 'Type' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcPortTypeFun('any')" ng-disabled="cfgEntry.srcPortType=='any'">any
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcPortTypeFun('eq')" ng-disabled="cfgEntry.srcPortType=='eq'">eq
+                                    </button>    
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcPortTypeFun('gt')" ng-disabled="cfgEntry.srcPortType=='gt'">gt
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcPortTypeFun('lt')" ng-disabled="cfgEntry.srcPortType=='lt'">lt
+                                    </button>
+                                </div>
+
+                            </td>   
+                        </tr>   
+                        
+                        <tr ng-show="cfgEntry.srcPortType!='any' && cfgEntry.srcPortEn == true">
+                            <th class="text-right col-md-6">{{ 'Port' | translate }} </th>
+
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcPor.$valid]">
+                                    <input type="number" name="entrySrcPor" class="form-control" placeholder="Src Port Num (0..65535)" ng-model="cfgEntry.srcPortValue"   ng-min="0" ng-max="65535"  required />
+                                </div>
+                            </td>
+
+                        </tr>   
+
+                        <!-- Destination Port -->
+                        <tr ng-show="cfgEntry.ipProtocolNumber == 'udp' || cfgEntry.ipProtocolNumber == 'tcp'">
+                            <th class="text-right col-md-6">{{ 'Dst-port' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.destPortEn" switch-on-change="cfgEntryDestPortEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>                        
+
+                        <tr ng-show="cfgEntry.destPortEn == true">
+                            <th class="text-right col-md-6">{{ 'Type' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestPortTypeFun('any')" ng-disabled="cfgEntry.destPortType=='any'">any
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestPortTypeFun('eq')" ng-disabled="cfgEntry.destPortType=='eq'">eq
+                                    </button>    
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestPortTypeFun('gt')" ng-disabled="cfgEntry.destPortType=='gt'">gt
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestPortTypeFun('lt')" ng-disabled="cfgEntry.destPortType=='lt'">lt
+                                    </button>
+                                </div>
+
+                            </td>   
+                        </tr>   
+                        
+                        <tr ng-show="cfgEntry.destPortType!='any' && cfgEntry.destPortEn == true">
+                            <th class="text-right col-md-6">{{ 'Port' | translate }} </th>
+
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDestPort.$valid]">
+                                    <input type="number" name="entryDestPort" class="form-control" placeholder="Dest Port Num (0..65535)" ng-model="cfgEntry.destPortValue" ng-min="0" ng-max="65535"  required />
+                                </div>
+                            </td>
+
+                        </tr>   
+                        
+
+                        <!-- Source Mac -->
+                        <tr>
+                            <th class="text-right col-md-6">{{ 'Src-mac' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.srcMacEn" switch-on-change="cfgEntrySrcMacEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>                        
+
+                        <tr ng-show="cfgEntry.srcMacEn == true">
+                            <th class="text-right col-md-6">{{ 'Type' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcMacTypeFun('any')" ng-disabled="cfgEntry.srcMacType=='any'">any
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcMacTypeFun('host')" ng-disabled="cfgEntry.srcMacType=='host'">host
+                                    </button>    
+                                    <button class="btn btn-primary" ng-click="cfgEntrySrcMacTypeFun('mac')" ng-disabled="cfgEntry.srcMacType=='mac'">MAC
+                                    </button>
+
+                                </div>
+
+                            </td>   
+                        </tr>   
+
+                        
+                        <tr ng-show="cfgEntry.srcMacType=='mac' || cfgEntry.srcMacType=='host'">
+                            <th class="text-right col-md-6">{{ 'Src-mac' | translate }} </th>
+
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcMac.$valid]">
+                                    <input type="text" name="entrySrcMac" class="form-control" placeholder="mac in HHHH.HHHH.HHHH format" ng-model="cfgEntry.srcMacValue" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/"  required />
+                                </div>
+                            </td>
+
+                        </tr>   
+                        <tr ng-show="cfgEntry.srcMacType=='mac'">
+                            <th class="text-right col-md-6">{{ 'Wildcard' | translate }} </th>
+
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entrySrcMacMask.$valid]">
+                                    <input type="text" name="entrySrcMacMask" class="form-control" placeholder="wildcard in HHHH.HHHH.HHHH format" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/" ng-model="cfgEntry.srcMacMask"  required />
+                                </div>
+                            </td>
+                        </tr>   
+                     
+                        <!-- Destination Mac -->
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'Dst-mac' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.destMacEn" switch-on-change="cfgEntryDestMacEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.destMacEn == true">
+                            <th class="text-right col-md-6">{{ 'Type' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestMacTypeFun('any')" ng-disabled="cfgEntry.destMacType=='any'">any
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestMacTypeFun('host')" ng-disabled="cfgEntry.destMacType=='host'">host
+                                    </button>    
+                                    <button class="btn btn-primary" ng-click="cfgEntryDestMacTypeFun('mac')" ng-disabled="cfgEntry.destMacType=='mac'">MAC
+                                    </button>
+                                </div>
+                            </td>   
+                        </tr>   
+
+                        <tr ng-show="cfgEntry.destMacType=='mac' || cfgEntry.destMacType=='host' ">
+                            <th class="text-right col-md-6">{{ 'Dst-mac' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDestMac.$valid]">
+                                    <input type="text" name="entryDestMac" class="form-control" placeholder="mac in HHHH.HHHH.HHHH format" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/" ng-model="cfgEntry.destMacValue"  required />
+                                </div>
+                            </td>
+                        </tr>   
+                        
+                        <tr ng-show="cfgEntry.destMacType=='mac'">
+                            <th class="text-right col-md-6">{{ 'Wildcard' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryDestMacMask.$valid]">
+                                    <input type="text" name="entryDestMacMask" class="form-control" placeholder="wildcard in HHHH.HHHH.HHHH format" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/" ng-model="cfgEntry.destMacMask"  required />
+                                </div>
+                            </td>
+                        </tr>   
+						
+                        <!-- COS -->
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'COS' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.cosEn" switch-on-change="cfgEntryCosEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.cosEn==true">
+                            <th class="text-right col-md-6">{{ 'COS VALUE' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.cosValue.$valid]" >
+                                    <input name="cosValue" type="number" class="form-control" placeholder="0~7" ng-model="cfgEntry.cosValue"  ng-min="0" ng-max="7" required />
+                                </div>
+                            </td>
+                        </tr>
+						
+                        <!-- INNER COS -->
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'Inner COS' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.innercosEn" switch-on-change="cfgEntryInnerCosEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.innercosEn==true">
+                            <th class="text-right col-md-6">{{ 'Inner COS VALUE' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.innercosValue.$valid]" >
+                                    <input name="innercosValue" type="number" class="form-control" placeholder="0~7" ng-model="cfgEntry.innercosValue"  ng-min="0" ng-max="7" required />
+                                </div>
+                            </td>
+                        </tr>
+
+						
+                        <!-- VLAN -->
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'VLAN' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.VlanEn" switch-on-change="cfgEntryVlanEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.VlanEn==true">
+                            <th class="text-right col-md-6">{{ 'ID' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.vlanID.$valid]" >
+                                    <input name="vlanID" type="number" class="form-control" placeholder="1~4094" ng-model="cfgEntry.VlanID"  ng-min="1" ng-max="4094" required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.VlanEn==true ">
+                            <th class="text-right col-md-6">{{ 'Wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.vlanMask.$valid]" >
+                                    <input name="vlanMask" type="text" class="form-control" placeholder="0xFFF" ng-model="cfgEntry.VlanMask"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,3})$/"  required />
+                                </div>
+                            </td>
+                        </tr>
+						
+                        <!-- INNER VLAN -->
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'Inner VLAN' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.InnerVlanEn" switch-on-change="cfgEntryInnerVlanEnFun()" ></btn-switch>
+                                </div>
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="cfgEntry.InnerVlanEn==true">
+                            <th class="text-right col-md-6">{{ 'Inner VLAN ID' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.innervlanID.$valid]" >
+                                    <input name="innervlanID" type="number" class="form-control" placeholder="1~4094" ng-model="cfgEntry.InnerVlanID"  ng-min="1" ng-max="4094" required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.InnerVlanEn==true ">
+                            <th class="text-right col-md-6">{{ 'Wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.innervlanMask.$valid]" >
+                                    <input name="innervlanMask" type="text" class="form-control" placeholder="0xFFF" ng-model="cfgEntry.InnerVlanMask"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,3})$/"  required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- UDF -->
+                        <tr ng-show="cfgEntry.truncationEn!=true && System_product != 'Tap-350' && System_product != 'Tap-580'&& System_product != 'Tap-550'&& System_product != 'Tap-530' && cfgEntry.Ipv4v6Type == 'ipv4'">
+                            <th class="text-right col-md-6">{{ 'UDF' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.udfEn" switch-on-change="cfgEntryUdfEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>
+                        </tr>
+
+                       <tr ng-show="cfgEntry.udfEn==true">
+                            <th class="text-right col-md-6">{{ 'Type' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button class="btn btn-primary" ng-click="cfgEntryUdfTypeFun('Layer3')" ng-disabled="cfgEntry.udfType=='Layer3'">Layer 3
+                                    </button>
+                                    <button class="btn btn-primary" ng-click="cfgEntryUdfTypeFun('Layer4')" ng-disabled="cfgEntry.udfType=='Layer4'">Layer 4
+                                    </button>    
+
+                                </div>
+                            </td>   
+                        </tr>   
+
+                        <tr ng-show="cfgEntry.udfEn==true">
+                            <th class="text-right col-md-6">{{ 'Value' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.udfValue.$valid]" >
+                                    <input name="udfValue" type="text" class="form-control" placeholder="0xFFFFFFFF" ng-model="cfgEntry.udfValue"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,8})$/"  required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.udfEn==true">
+                            <th class="text-right col-md-6">{{ 'Wildcard' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.udfMask.$valid]" >
+                                    <input name="udfMask" type="text" class="form-control" placeholder="0xFFFFFFFF" ng-model="cfgEntry.udfMask"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,8})$/"  required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.udfEn==true">
+                            <th class="text-right col-md-6">{{ 'Offset' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.udfOffset.$valid]" >
+                                    <input name="udfOffset" type="number" class="form-control" placeholder="0~60" ng-model="cfgEntry.udfOffset"  ng-min="0" ng-max="60" required />
+                                </div>
+                            </td>
+                        </tr>
+<!-- ACL not support vlan and truncation
+                        <tr ng-show="cfgEntry.removeVlanEn!=true ">
+                            <th class="text-right col-md-6">{{ 'Truncation' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.truncationEn" switch-on-change="cfgEntryTruncationEnFun()" ></btn-switch>
+                                </div>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <th class="text-right col-md-6">{{ 'VNI' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="cfgEntry.vniEn" switch-on-change="cfgEntryVniEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>    
+
+                        <tr ng-show="cfgEntry.vniEn==true">
+                            <th class="text-right col-md-6">{{ 'Vni-ID' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.VniID.$valid]" >
+                                    <input name="VniID" type="number" class="form-control" placeholder="0~16777215" ng-model="cfgEntry.VniID"  ng-min="0" ng-max="16777215" required />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="cfgEntry.vniEn==true">
+                            <th class="text-right col-md-6">{{ 'Vni-Mask' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.VniMask.$valid]" >
+                                    <input name="VniMask" type="text" class="form-control" placeholder="0xFFFFFF" ng-model="cfgEntry.VniMask"  ng-pattern="/^(0[xX])([0-9a-fA-F]{1,6})$/"   required />
+                                </div>
+                            </td>
+                        </tr>
+-->                        
+                    </table>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addNewFlowEntry()" ng-disabled="addNewFlowEntryCheck(addEntryForm) ==  false ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="addNewFlowEntryClose()" >
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- display Flow Entry Detail -->
+<div class="modal fade"  id="flowEntryDetailModal">
+    <div class="modal-dialog" style="width:1100px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ dispFlowName }}</h4>
+
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-condensed table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">{{ '#' | translate }}</th>
+                            <th class="text-left">{{ 'Entry' | translate }}</th>
+                            <th class="text-center">{{ 'Options' | translate }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="entry in flow_entry_arr ">
+                            <th class="text-center">{{ $index + 1 }}</th>
+                            <td class="text-left">{{ entry }}</td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-xs">
+
+                                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delFlowEntryFromTable(entry)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- modal Flow Remark -->
+<div class="modal fade" id="flowRemarkModal"  ng-init="remarkConfForm.newRemarkName = ''">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ dispFlowName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="remarkConfForm" name="remarkConfForm" class="form"  novalidate>  
+                    <dl >
+                         <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-3">{{ 'Enable'  | translate }}</div>
+                        <div class="col-md-6" >
+                            <btn-switch switch-state="newRemarkNameEnable" switch-on-change="newRemarkNameEnableFun()" ></btn-switch>
+                        </div>
+                        </dd> 
+                    </dl>   
+                    <dl ng-show="newRemarkNameEnable">
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-3">{{ 'Remark'  | translate }}</div>
+                        <div class="col-md-6" ng-class="{true: 'has-success', false: 'has-error'}[remarkConfForm.newRemarkName.$valid]">
+                            <input type="text" name="newRemarkName" class="form-control" placeholder="ACL description" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,99}$/" ng-model="newRemarkName"  required />
+                        </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateRemark()" ng-disabled="remarkConfForm.newRemarkName.$invalid && newRemarkNameEnable == true ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

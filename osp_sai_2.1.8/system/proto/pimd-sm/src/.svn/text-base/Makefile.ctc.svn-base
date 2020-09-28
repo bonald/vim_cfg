@@ -1,0 +1,27 @@
+include $(MK_DIR)/sys.mk
+#include $(QUAGGA_TOP_DIR)/Makefile.env.inc
+
+PROG = pimd_sm
+
+C_FILELIST =  $(wildcard *.c)
+FILTER_OUT_PATTERN =  routesock.c
+C_FILELIST += $(addprefix ../lib/,pidfile.c strlcpy.c strlcat.c strtonum.c)
+SRCS = $(filter-out $(FILTER_OUT_PATTERN),$(C_FILELIST))
+
+include $(PROTO_DIR)/Makefile.inc
+CPPFLAGS += -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_GNU_SOURCE \
+	        -I. -I../include -DSYSCONFDIR=\"/etc\" \
+	        -DLOCALSTATEDIR=\"/var\" \
+	        -DRAW_OUTPUT_IS_RAW -DIOCTL_OK_ON_RAW_SOCKET
+#LIBFRR = $(LIB_DIR)/libfrr.a
+#DEP_LIBS = $(LIBJSON) $(LIBFRR)
+LD_LIBS += -L$(LIB_DIR) -lifaddrs  
+#LD_LIBS +=
+#LD_LIBS += -L$(LIB_DIR) -ljson -lcrypt -lrt
+#LD_LIBS += -L$(LIB_DIR)  -lproto -ltermcap -lgenlog -ltask -lsal -lrt
+#LD_LIBS += -L$(LIB_DIR) -ljson -lreadline -ltermcap -lgenlog -ltask -lsal -lcrypt -lrt -lnetsnmpagent -lnetsnmpmibs -lnetsnmp 
+#LD_LIBS += -lpthread
+
+DEP_LIBS = $(LIBFEI) $(LIBPROTO) $(LIBCDB) $(LIBSOCK) $(LIBTASK) $(LIBCTCLIB) $(LIBGENLOG) $(LIBCJSON) $(LIBSAL)
+LD_LIBS += -L$(LIB_DIR) -lproto -lcdb -lfei -lsock -ltask -lctclib -lgenlog -lsal -lcjson -lm -lrt -lhiredis -lpthread -lcrypt -lcrypto
+include $(MK_DIR)/prog.mk

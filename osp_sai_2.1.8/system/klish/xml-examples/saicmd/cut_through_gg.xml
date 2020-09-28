@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+cut-through-forwarding
+</CTCMODULENAME>
+
+<VIEW name="Configure">
+
+<!-- cut-through-forwarding  -->
+    <COMMAND name="cut-through-forwarding" help="Cut through forwarding mode"/>
+    <COMMAND name="no cut-through-forwarding" help="Cut through forwarding mode"/>
+  
+    <COMMAND name="cut-through-forwarding enable" help="Enable cut through forwarding mode">
+        <PARAM name="speed_sub" help="speed_sub" ptype="SUBCOMMAND" mode="switch" optional="true" default="none">
+            <PARAM name="10G-40G-100G" help="Select cut through port speed 10G-40G-100G(default value)" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="1G-10G-100G" help="Select cut through port speed 1G-10G-100G" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="1G-10G-40G" help="Select cut through port speed 1G-10G-40G" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+
+        <ACTION>
+            if [ "1G-10G-100G" == ${speed_sub} ]; then
+                cdbctl update/cdb/sys/sys_global/cut_through_enable/2
+            elif [ "1G-10G-40G" == ${speed_sub} ]; then
+                cdbctl update/cdb/sys/sys_global/cut_through_enable/3
+            else 
+                cdbctl update/cdb/sys/sys_global/cut_through_enable/1
+            fi
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="no cut-through-forwarding enable" help="Enable cut through forwarding mode">
+        <ACTION>cdbctl update/cdb/sys/sys_global/cut_through_enable/0</ACTION>
+    </COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

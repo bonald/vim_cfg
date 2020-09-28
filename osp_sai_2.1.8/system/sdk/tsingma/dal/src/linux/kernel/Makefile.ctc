@@ -1,0 +1,41 @@
+LKMOBJDIR = $(BLD_DIR)/obj/$(subst $(SDK_DIR)/,,$(CURDIR))
+include $(MK_DIR)/sys_km.mk
+
+obj-m := dal.o
+dal-objs := dal_kernel.o dal_mpool.o
+DAL_KO = dal.ko 
+
+ifeq ($(ARCH),mips)
+EXTRA_CFLAGS += -D_CTC_LOONGSON_2F_
+EXTRA_CFLAGS += -DDMA_MPOOL_ALLOC_BY_BSP
+else
+ifeq ($(ARCH),arm)
+EXTRA_CFLAGS += -D_CTC_ARM_HI3535_
+endif
+endif
+
+ifeq ($(CPU), ctc5236)
+EXTRA_CFLAGS += -DSOC_ACTIVE
+EXTRA_CFLAGS += -DDMA_MEM_MODE_PLATFORM
+endif
+
+EXTRA_CFLAGS += -I$(SDK_DIR)/dal/include
+EXTRA_CFLAGS += -I$(SDK_DIR)/sal/include
+
+.PHONY: all
+all:
+	cp $(SDK_DIR)/dal/src/common/dal_mpool.c .
+	cp $(SDK_DIR)/dal/include/dal_mpool.h .
+	cp -f Makefile Makefile_bak
+	cp -f Makefile.ctc Makefile
+	$(MAKE) -C $(KDIR) M=$(shell pwd) LKMOBJDIR=$(LKMOBJDIR)
+	cp $(LKMOBJDIR)/$(DAL_KO) $(BLD_DIR)/bin
+	rm $(SDK_DIR)/dal/src/linux/kernel/dal_mpool.c
+	rm $(SDK_DIR)/dal/src/linux/kernel/dal_mpool.h
+	mv Makefile_bak Makefile
+
+
+.PHONY: clean
+clean:
+	$(MAKE) -C $(KDIR) M=$(shell pwd) LKMOBJDIR=$(LKMOBJDIR) clean
+	rm -f $(BLD_DIR)/bin/$(DAL_KO)

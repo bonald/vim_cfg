@@ -1,0 +1,125 @@
+HAL-MSG-L2-VLAN-MAPPING DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES
+    ;
+
+HalMsgL2VlanMappingEntryDefaultVidType ::= ENUMERATED
+{
+    noAddOrDelete,
+    onlyAddDefaultVidEntry,
+    addDefaultVidEntry,
+    onlyDeleteDefaultVidEntry,
+    deleteDefaultVidEntry
+}
+
+HalMsgL2VlanMappingProReq ::= SEQUENCE
+{
+    portId          INTEGER,
+    enable          INTEGER,
+    defVid          INTEGER,
+    isAggMember     INTEGER
+}
+
+HalMsgL2VlanMappingProListReq ::= SEQUENCE
+{
+		array             SEQUENCE OF HalMsgL2VlanMappingProReq
+}
+
+HalMsgL2VlanMappingEntryReq ::= SEQUENCE 
+{
+		add         INTEGER,
+		offset      INTEGER,
+		replace     INTEGER,
+		glPort      INTEGER,
+		rawVid      INTEGER,
+		rawVidMax   INTEGER,  
+ 		groupId     INTEGER,
+ 		egress      INTEGER,
+ 		rawSvid     INTEGER,
+ 		rawCvid     INTEGER,
+		mapSvid     INTEGER,
+		mapCvid     INTEGER,
+		fid         INTEGER,
+		serviceId   INTEGER,
+		defVid      INTEGER,
+		changeDefVid INTEGER 
+}
+
+HalMsgL2VlanMappingAggMem ::= SEQUENCE
+{
+    portId      INTEGER
+}
+
+HalMsgL2VlanMappingEntryListReq ::= SEQUENCE
+{
+		entries     SEQUENCE OF HalMsgL2VlanMappingEntryReq,
+	  aggMemList  SEQUENCE OF HalMsgL2VlanMappingAggMem
+}
+
+HalMsgL2VlanMappingDefVidReq ::= SEQUENCE
+{
+    portId          INTEGER,
+    defVid          INTEGER
+}
+
+HalMsgL2VlanMappingDefVidListReq ::= SEQUENCE
+{
+		vlanMappingDefVidlistEntry     SEQUENCE OF HalMsgL2VlanMappingDefVidReq
+}
+
+HalMsgL2VlanMappingDefEntryReq ::= SEQUENCE
+{
+    portId          INTEGER, 
+    defVid          INTEGER,
+    add             INTEGER,
+    replace         INTEGER
+}
+
+HalMsgL2VlanMappingDefEntryListReq ::= SEQUENCE
+{
+		vlanMappingDefEntrylistEntry     SEQUENCE OF HalMsgL2VlanMappingDefEntryReq
+}
+
+HalMsgL2VlanMappingL2DefEntryReq ::= SEQUENCE
+{
+    portId          INTEGER, 
+    vid             INTEGER,
+    add             INTEGER
+}
+
+HalMsgL2VlanMappingL2DefEntryListReq ::= SEQUENCE
+{
+		vlanMappingL2DefEntrylistEntry     SEQUENCE OF HalMsgL2VlanMappingL2DefEntryReq
+}
+
+HalMsgL2VlanMappingSelectUpdateUntagReq ::= SEQUENCE
+{
+    portId          INTEGER,
+    add             INTEGER
+}
+
+HalMsgL2VlanMappingSelectGroupSetReq ::= SEQUENCE
+{
+    groupId         INTEGER,
+    add             INTEGER,
+		vlanMin0       INTEGER,
+		vlanMax0       INTEGER,
+		vlanMin1       INTEGER,
+		vlanMax1       INTEGER,
+		vlanMin2       INTEGER,
+		vlanMax2       INTEGER,
+		vlanMin3       INTEGER,
+		vlanMax3       INTEGER,
+		vlanMin4       INTEGER,
+		vlanMax4       INTEGER,
+		vlanMin5       INTEGER,
+		vlanMax5       INTEGER,
+		vlanMin6       INTEGER,
+		vlanMax6       INTEGER,
+		vlanMin7       INTEGER,
+		vlanMax7       INTEGER
+}               
+                
+END

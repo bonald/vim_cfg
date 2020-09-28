@@ -1,0 +1,37 @@
+
+include $(MK_DIR)/sys_vx.mk
+
+OBJ_DIR=$(OBJ_BASE_DIR)/core/usw/src/sys
+TEMP=$(OBJ_DIR)
+TEMP2=$(subst \,QQQ,$(TEMP))
+
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/core/
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+CPPFLAGS += -I$(SDK_DIR)/core/usw/include/sys
+CPPFLAGS += -I$(SDK_DIR)/driver/api
+CPPFLAGS += -I$(SDK_DIR)/driver
+
+SRC =  $(wildcard *.c)
+OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
+DEPS = $(patsubst %.c,%.d,$(wildcard *.c))
+
+all: $(foreach obj, $(OBJS), $(OBJ_DIR)/$(obj)) 
+
+$(OBJ_DIR)/%.o: %.c
+	$(shell mkdir -p $(OBJ_DIR))
+	@echo "CC  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.d: %.c
+	$(shell mkdir -p $(dir $@))
+	@echo "CX  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)"
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $< | sed "s#\($*\)\.o[ :]*#$(TEMP2)/\1.o $(TEMP2)/\1.d: #g"| sed "s#QQQ#\\\\#g" > $@
+
+-include $(foreach dep, $(DEPS), $(OBJ_DIR)/$(dep))
+
+
+.PHONY: clean
+clean:
+	rm -rf $(OBJ_DIR)/$(OBJS) $(OBJ_DIR)/$(DEPS)
+CFLAGS += -Werror -Wall

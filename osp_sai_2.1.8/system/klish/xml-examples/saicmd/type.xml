@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+
+    
+    <!-- for TPOAM -->
+    <PTYPE name="TPOAM_SESSION_ID_1_1000" method="unsignedInteger" pattern="1..1000" help="NUM"/>
+    <PTYPE name="TPOAM_CACHE_NUM_8_256" method="unsignedInteger" pattern="8..256" help="NUM"/>
+    <PTYPE name="TPOAM_LM_THRESHOLD_1_100" method="unsignedInteger" pattern="1..100" help="NUM"/>
+    <PTYPE name="TPOAM_LM_THRESHOLD"
+            pattern="([0-9]|[0-9]\.[0-9]|[0-9]\.[0-9]{2}|[0-9]\.[0-9]{3}|[1-9][0-9]|[1-9][0-9]\.[0-9]|[1-9][0-9]\.[0-9]{2}|[1-9][0-9]\.[0-9]{3})"
+            help="THRESHOLD"/>
+    <PTYPE name="TPOAM_DM_THRESHOLD_0_4000000000" method="unsignedInteger" pattern="0..4000000000" help="NUM"/>
+    <PTYPE name="TPOAM_LM_INTERVAL_1_100" method="unsignedInteger" pattern="1..100" help="NUM"/>
+    <PTYPE name="TPOAM_DM_INTERVAL_1_100" method="unsignedInteger" pattern="1..100" help="NUM"/>
+    <PTYPE name="TPOAM_DM_INTERVAL_1_10" pattern="(1|10)" help="NUM"/>
+    <PTYPE name="TPOAM_CYCLE_PACKET_IN_INTERVAL_5_100" method="unsignedInteger" pattern="5..100" help="NUM"/>
+    <PTYPE name="TPOAM_MEP_ID_1_8191" method="unsignedInteger" pattern="1..8191" help="NUM"/>
+    <PTYPE name="TPOAM_RMEP_ID_1_8191" method="unsignedInteger" pattern="1..8191" help="NUM"/>
+    <PTYPE name="TPOAM_EXP_0_7" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="TPOAM_LEVEL_0_7" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="TPOAM_ICCLEN_1_6" method="unsignedInteger" pattern="1..6" help="NUM"/>
+    <PTYPE name="TPOAM_STATS_INTERVAL_1_10" method="unsignedInteger" pattern="1..10" help="NUM"/>
+    <PTYPE name="TPOAM_CAHCE_SIZE_1_512" method="unsignedInteger" pattern="1..512" help="NUM"/>
+    <PTYPE name="TPOAM_REPEAT_1_255" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="TPOAM_REPEAT_1_32" method="unsignedInteger" pattern="1..32" help="NUM"/>
+    <PTYPE name="TPOAM_DATA_TLV_LENGTH_1_1500" method="unsignedInteger" pattern="1..1500" help="NUM"/>
+    <PTYPE name="TPOAM_TEST_TLV_LENGTH_2_1500" method="unsignedInteger" pattern="2..1500" help="NUM"/>
+    <PTYPE name="TPOAM_TTL_1_255" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="TPOAM_TIMEOUT_1_255" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="TPOAM_CHANNEL_TYPE" pattern="^0[xX]([3-9A-Fa-f]|[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]?)" help="LINE"/>
+    <PTYPE name="TPOAM_MEG_ID_STRING" pattern="[^/\']+" help="STRING"/>
+    <PTYPE name="TPOAM_DESCRIPTION" pattern="([0-9A-Za-z._-]){0,31}$" help="LINE"/>
+    <PTYPE name="TPOAM_LSP_NAME" pattern="([0-9A-Za-z.:_-]){0,120}$" help="LINE"/>
+    <PTYPE name="TPOAM_SECTION_NAME" pattern="([0-9A-Za-z._-]){0,120}$" help="LINE"/>
+    <PTYPE name="TPOAM_PWTPE_NAME" pattern="([0-9A-Za-z._-]){0,120}$" help="LINE"/>
+    <PTYPE name="CPU_USAGE_HIGH_THRESHOLD" method="integer" pattern="11..100" help="NUM"/>
+	<PTYPE name="CPU_USAGE_LOW_THRESHOLD" method="integer" pattern="1..90" help="NUM"/>
+<!--
+    <PTYPE name="TPOAM_DESCRIPTION" pattern="([0-9A-Za-z._-]){0,20}$" help="LINE"/>
+    <PTYPE name="TPOAM_LSP_NAME" pattern="([0-9A-Za-z._-]){0,20}$" help="LINE"/>
+    <PTYPE name="TPOAM_SECTION_NAME" pattern="([0-9A-Za-z._-]){0,20}$" help="LINE"/>
+    <PTYPE name="TPOAM_PWTPE_NAME" pattern="([0-9A-Za-z._-]){0,20}$" help="LINE"/>
+    -->
+    <PTYPE name="PTP_INTERVAL_0_10" method="unsignedInteger" pattern="0..10" help="NUM"/>
+    <PTYPE name="PTP_INTERVAL_-1_10" method="integer" pattern="-1..10" help="NUM"/>
+    <PTYPE name="PTP_ANNOUNCE_RECEIPT_TIMEOUT" method="unsignedInteger" pattern="2..255" help="NUM"/>
+    <PTYPE name="PTP_ASYMMETRY_CORRECTION" method="integer" pattern="-2000000..2000000" help="NUM"/>
+    <PTYPE name="PTP_GRESS_LATENCY" method="unsignedInteger" pattern="0..65535" help="NUM"/>
+    <PTYPE name="PTP_COS" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="PTP_DOMAIN" method="unsignedInteger" pattern="0..255" help="NUM"/>
+    <PTYPE name="PTP_UTC_OFFSET" method="unsignedInteger" pattern="0..100" help="NUM"/>
+    <PTYPE name="PTP_PRIORITY" method="unsignedInteger" pattern="0..255" help="NUM"/>
+
+    <PTYPE name="TCP_PORT" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="PKT2CPU_RATE" method="unsignedInteger" pattern="0..1000000" help="NUM"/>
+    <PTYPE name="PKT2CPU_CLASS" method="unsignedInteger" pattern="0..3" help="NUM"/>
+    <PTYPE name="MTU" method="unsignedInteger" pattern="128..9216" help="NUM"/>
+	<PTYPE name="IPV4_MASK_LEN" method="unsignedInteger" pattern="1..32" help="NUM"/>
+    <PTYPE name="UINT16" method="unsignedInteger" pattern="1..16384" help="NUM"/>
+    <PTYPE name="VLAN_ID" method="unsignedInteger" pattern="1..4094" help="NUM"/>
+    <PTYPE name="ACL_VLAN_ID" method="unsignedInteger" pattern="0..4095" help="NUM"/>
+    <PTYPE name="TRAFFIC_CLASS" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="INSTANCE_ID" method="unsignedInteger" pattern="1..4094" help="NUM"/>
+    <PTYPE name="INSTANCE_ID_ALL" method="unsignedInteger" pattern="0..4094" help="NUM"/>
+    <PTYPE name="ARP_AGING_TIME" method="unsignedInteger" pattern="1..2147483" help="NUM"/>
+    <PTYPE name="ARP_RETRY_TIME" method="unsignedInteger" pattern="0..3" help="NUM"/>
+    <PTYPE name="DISTANCE" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="PORT_ISOLATE_ID" method="unsignedInteger" pattern="1..29" help="NUM"/>
+    <PTYPE name="PRIORITY" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="AGING_TIME" method="unsignedInteger" pattern="10..1000000" help="NUM"/>
+	<PTYPE name="TRAP_DELAY_TIME" method="unsignedInteger" pattern="1..10" help="NUM"/>
+    <PTYPE name="BANDWIDTH" method="unsignedInteger" pattern="1..100000000" help="NUM"/>
+    <PTYPE name="BANDWIDTH_USAGE" method="unsignedInteger" pattern="1..100" help="NUM"/>
+    <PTYPE name="PORT_DISCARD" method="unsignedInteger" pattern="100..4294967295" help="NUM"/>
+    <PTYPE name="PORT_DISCARD_INTERVAL" method="unsignedInteger" pattern="1..1440" help="NUM"/>
+    <PTYPE name="LOAD_INTERVAL" method="unsignedInteger" pattern="30..300" help="NUM"/>
+    <PTYPE name="ICMP_ERR_RLMT" method="unsignedInteger" pattern="0..2147483647" help="Interval in milliseconds"/>
+    <PTYPE name="MPLS_LABEL_VALUE" method="unsignedInteger" pattern="16..1048575" help="NUM"/>
+    <PTYPE name="MPLS_LABEL_LIST"
+        pattern="([1-9][0-9\,\-]+[0-9]|[1-9][0-9]|[1-9])"
+        help="MPLS_LABEL_LIST"/>
+	<PTYPE name="QUEUE_0_6_ID" method="unsignedInteger" pattern="0..6" help="NUM"/>	
+	<PTYPE name="QUEUE_0_6_LIST" pattern="([0-6][0-6\,\-]+[0-6]|[0-6][0-6]|[0-6])" help="QUEUE_LIST"/>
+    <PTYPE name="QOS_DOMAIN_ID" method="unsignedInteger" pattern="0..6" help="NUM"/>
+    <PTYPE name="POLICER_RATE" method="unsignedInteger" pattern="0..100000000" help="RATE"/>
+    <PTYPE name="POLICER_BURST" method="unsignedInteger" pattern="126..128000" help="BURST"/>
+    <PTYPE name="POLICER_PPS_RATE" method="unsignedInteger" pattern="0..140000000" help="RATE"/>
+    <PTYPE name="POLICER_PPS_BURST" method="unsignedInteger" pattern="2..1500" help="BURST"/>
+    <PTYPE name="DROP_THRD" method="unsignedInteger" pattern="12..12286" help="THRESHOLD"/>
+    <PTYPE name="D2_DROP_THRD" method="unsignedInteger" pattern="12..10000" help="THRESHOLD"/>
+    <PTYPE name="DROP_PROB" method="unsignedInteger" pattern="0..100" help="PROBABILITY"/>
+    <PTYPE name="SHAPE_RATE" method="unsignedInteger" pattern="0..100000000" help="RATE"/>
+	<PTYPE name="COPP_CLASS_ID" method="unsignedInteger" pattern="0..5" help="ID"/>
+    <PTYPE name="QUEUE_ID" method="unsignedInteger" pattern="0..7" help="ID"/>
+    <PTYPE name="QUEUE_CLASS_ID" method="unsignedInteger" pattern="0..6" help="CLASS_ID"/>
+    <PTYPE name="QUEUE_WEIGHT" method="unsignedInteger" pattern="1..100" help="WEIGHT"/>
+    <PTYPE name="MAX_STATIC_ROUTES" method="unsignedInteger" pattern="1..65535" help="[1, 65535]"/>
+	<PTYPE name="BGP_ID" method="unsignedInteger" pattern="1..4294967295" help="NUM"/>
+    <PTYPE name="EBGP_NUM" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="BGP_METRIC" method="unsignedInteger" pattern="0..4294967295" help="NUM"/>
+    <PTYPE name="OSPF_INTERVAL" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="OSPF_COST" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="OSPF_ID" method="unsignedInteger" pattern="0..4294967295" help="NUM"/>
+    <PTYPE name="OSPF_KEY_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+	<PTYPE name="OSPF_MD5_KEY" pattern="^([0-9A-Za-z._-]){1,16}" help="STRING"/>
+    <PTYPE name="OSPF_AUTH_KEY" pattern="^([0-9A-Za-z._-]){1,8}" help="STRING"/>
+    <PTYPE name="OSPF_PRIORITY" method="unsignedInteger" pattern="0..255" help="NUM"/>
+	<PTYPE name="RIP_VERSION" method="unsignedInteger" pattern="1..2" help="1/2"/>
+    <PTYPE name="RIP_TIME" method="unsignedInteger" pattern="5..2147483647" help="TIME"/>
+    <PTYPE name="RIP_METRIC" method="unsignedInteger" pattern="0..16" help="NUM"/>
+    <PTYPE name="RIP_METRIC_DEFAULT" method="unsignedInteger" pattern="1..16" help="NUM"/>
+    <PTYPE name="TEMP_LOW" method="integer" pattern="-15..50" help="[-15, 50]"/>
+    <PTYPE name="TEMP_HIGH" method="unsignedInteger" pattern="50..85" help="[50, 85]"/>
+    <PTYPE name="TEMP_CRIT" method="unsignedInteger" pattern="55..90" help="[55, 90]"/>
+    <PTYPE name="FAN_SPEED" method="unsignedInteger" pattern="0..100" help="[0, 100]"/>
+	<PTYPE name="RATE_VALUE" method="unsignedInteger" pattern="32..1048576" help="[32, 1048576]"/>
+	<PTYPE name="SFLOW_UDP_PORT" method="unsignedInteger" pattern="1..65535" help="1..65535"/>
+	<PTYPE name="SFLOW_COUNTER_INTERVAL" method="unsignedInteger" pattern="1..2000" help="NUM"/>
+	<PTYPE name="MSTP_VERSION" pattern="(0|2|3)" help="MSTP Version: 0-STP, 2-RSTP, 3-MSTP"/>
+    <PTYPE name="MSTP_FWD_DELAY_TIME" method="unsignedInteger" pattern="4..30" help="[4, 30]"/>
+    <PTYPE name="MSTP_HELLO_TIME" method="unsignedInteger" pattern="1..10" help="[1, 10]"/>
+    <PTYPE name="MSTP_MAX_AGE_TIME" method="unsignedInteger" pattern="6..40" help="[6, 40]"/>
+    <PTYPE name="MSTP_MAX_HOPS" method="unsignedInteger" pattern="1..40" help="[1, 40]"/>
+    <PTYPE name="MSTP_BRG_PRIORITY" method="unsignedInteger" pattern="0..61440" help="[0, 61440]"/>
+    <PTYPE name="MSTP_TX_HOLD_COUNT" method="unsignedInteger" pattern="1..10" help="[1, 10]"/>
+    <PTYPE name="MSTP_PATH_COST" method="unsignedInteger" pattern="1..200000000" help="[1, 200000000]"/>
+    <PTYPE name="MSTP_PORT_PRIORITY" method="unsignedInteger" pattern="0..240" help="[0, 240]"/>
+    <PTYPE name="REVISION_LEVEL" method="unsignedInteger" pattern="0..65535" help="[0, 65535]"/>
+    <PTYPE name="TIMEZONE_HOURS" method="unsignedInteger" pattern="0..23" help="[0, 23]"/>
+    <PTYPE name="TIMEZONE_MINUTES" method="unsignedInteger" pattern="0..59" help="[0, 59]"/>
+    <PTYPE name="TIMEZONE_SECONDS" method="unsignedInteger" pattern="0..59" help="[0, 59]"/>
+    <PTYPE name="MLAG_KEEPALIVE" method="unsignedInteger" pattern="1..65535" help="[1, 65535]"/>
+    <PTYPE name="MLAG_HOLDTIME" method="unsignedInteger" pattern="4..65535" help="[4, 65535]"/>
+    <PTYPE name="MLAG_RELOAD_RELAY" method="unsignedInteger" pattern="0..86400" help="[0, 86400]"/>
+    <PTYPE name="MLAG_ID" method="unsignedInteger" pattern="1..55" help="[1, 55]"/>
+    <PTYPE name="LLDP_TX_INTERVAL" method="unsignedInteger" pattern="5..32768" help="[5, 32768]"/>
+    <PTYPE name="LLDP_TX_HOLD" method="unsignedInteger" pattern="2..10" help="[2, 10]"/>
+    <PTYPE name="LLDP_TX_DELAY" method="unsignedInteger" pattern="1..8192" help="[1, 8192]"/>
+    <PTYPE name="LLDP_REINIT_DELAY" method="unsignedInteger" pattern="1..10" help="[1, 10]"/>
+	<PTYPE name="VLAN_CLASS_RULE_ID" method="unsignedInteger" pattern="0..4095" help="NUM"/>
+	<PTYPE name="VLAN_CLASS_GROUP_ID" method="unsignedInteger" pattern="0..31" help="NUM"/>
+	<PTYPE name="LATENCY_LOW_THRESHOLD" method="unsignedInteger" pattern="1..7" help="THRESHOLD"/>
+	<PTYPE name="LATENCY_HIGH_THRESHOLD" method="unsignedInteger" pattern="2..8" help="THRESHOLD"/>
+	<PTYPE name="BUFFER_LOW_THRESHOLD" method="unsignedInteger" pattern="16..22528" help="THRESHOLD"/>
+	<PTYPE name="BUFFER_HIGH_THRESHOLD" method="unsignedInteger" pattern="16..22528" help="THRESHOLD"/>
+	<PTYPE name="RANGE_ID_VALUE" method="unsignedInteger" pattern="1..4096" help="RANGE_ID"/>
+    <PTYPE name="VMT_GROUP_ID" method="unsignedInteger" pattern="1..64" help="NUM"/>
+    <PTYPE name="ETHERTYPE_VALUE" pattern="([0-9A-Fa-f]){1,4}" help="NUM"/>
+    <!-- for IGMP/IGMP Snooping -->
+    <PTYPE name="IGMP_LMQC" method="unsignedInteger" pattern="2..7" help="[2, 7]"/>
+    <PTYPE name="IGMP_LMQI" method="unsignedInteger" pattern="1000..25500" help="[1000, 25500]"/>
+    <PTYPE name="IGMP_ROBUST_VAR" method="unsignedInteger" pattern="2..7" help="[2, 7]"/>
+    <PTYPE name="IGMP_QUERY_TIMEOUT" method="unsignedInteger" pattern="60..300" help="[60, 300]"/>
+    <PTYPE name="IGMP_QUERY_INTERVAL" method="unsignedInteger" pattern="2..18000" help="[2, 18000]"/>
+    <PTYPE name="IGMP_QUERY_RESP" method="unsignedInteger" pattern="1..25" help="[1, 25]"/>
+    <PTYPE name="IGMP_VERSION" method="unsignedInteger" pattern="1..3" help="[1, 3]"/>
+    <PTYPE name="IGMP_MEM_NUM" method="unsignedInteger" pattern="1..2048" help="[1, 2048]"/>
+	<PTYPE name="IGMP_MR_AGING_TIME" method="unsignedInteger" pattern="1..65535" help="[1, 65535]"/>
+
+    <PTYPE name="IGMP_TCN_COUNT" method="unsignedInteger" pattern="1..10" help="[1, 10]"/>
+    <PTYPE name="IGMP_TCN_INTERVAL" method="unsignedInteger" pattern="1..255" help="[1, 255]"/>
+    <PTYPE name="IGMP_TCN_RESP" method="unsignedInteger" pattern="1..10" help="[1, 10]"/>
+
+    <!-- for IPMC -->
+    <PTYPE name="REG_SUPPRESS_TIME" method="unsignedInteger" pattern="5..60000" help="[5, 60000]"/>
+    <PTYPE name="KEEP_ALIVE_TIME" method="unsignedInteger" pattern="31..60000" help="[31, 60000]"/>
+    <PTYPE name="PIM_PACKET_PROCESS" method="unsignedInteger" pattern="1..100" help="[1, 100]"/>
+    <PTYPE name="JOIN_PRUNE_INTERVAL" method="unsignedInteger" pattern="60..600" help="[60, 600]"/>
+    <PTYPE name="IPMC_QUREY_INTERVAL" method="unsignedInteger" pattern="1..1800" help="[1, 1800]"/>
+    <PTYPE name="PIM_HELLO_INTERAVL" method="unsignedInteger" pattern="1..180" help="[1, 180]"/>
+    <PTYPE name="PIM_HELLO_HOLDTIME" method="unsignedInteger" pattern="1..180" help="[1, 180]"/>
+    <PTYPE name="PIM_DR_PRIORITY" method="unsignedInteger" pattern="1..4294967295" help="[1, 4294967295]"/>
+
+	<!-- for ARP Inspection -->
+	<PTYPE name="ARP_LOG_ID" method="unsignedInteger" pattern="1..1024" help="NUM"/>
+	<PTYPE name="ARP_LOG_ENTRY_NUM" method="unsignedInteger" pattern="10..1024" help="NUM"/>
+	<PTYPE name="ARP_LOG_NUM" method="unsignedInteger" pattern="0..1024" help="NUM"/>
+	<PTYPE name="ARP_LOG_RATE" method="unsignedInteger" pattern="0..86400" help="NUM"/>
+	<PTYPE name="ARP_SEQUECE_NUM" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+	<PTYPE name="ARP_NUMBERLIMIT" method="unsignedInteger" pattern="1..2048" help="NUM"/>
+	<PTYPE name="ARP_PACKET_TIME" method="unsignedInteger" pattern="1..15" help="NUM"/>
+	<PTYPE name="ARP_RATE_LIMIT_NUM" method="unsignedInteger" pattern="1..9000" help="NUM"/>
+	
+	<!-- for MEMORY-THRESHOLD -->
+	<PTYPE name="MEMORY_THRESHOLD" method="unsignedInteger" pattern="1..200" help="NUM"/>
+
+    <!-- for CPU & MEMORY-THRESHOLD -->
+    <PTYPE name="HISTORY_PER_MINUTES" method="unsignedInteger" pattern="1..60" help="NUM"/>
+    <PTYPE name="HISTORY_PER_TENMINUTES" method="unsignedInteger" pattern="1..72" help="NUM"/>
+	
+	<!-- for SFLOW VERSION -->
+	<PTYPE name="SFLOW_VERSION_ID" method="unsignedInteger" pattern="4..5" help="NUM"/>
+
+    <!-- for ERPS -->
+    <PTYPE name="ERPS_DOMAIN_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="ERPS_DOMAIN_HELLO_TIME" method="unsignedInteger" pattern="1..15" help="NUM"/>
+    <PTYPE name="ERPS_DOMAIN_FAIL_TIME" method="unsignedInteger" pattern="3..45" help="NUM"/>
+    <PTYPE name="ERPS_RING_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="ERPS_RING_LEVEL" method="unsignedInteger" pattern="0..1" help="ERPS RING LEVEL: 0-PRIMARY, 1-SUB"/>
+    <PTYPE name="ERPS_CTRL_VLAN" method="unsignedInteger" pattern="2..4094" help="VLANID"/>
+    <!-- for G.8032 -->
+    <PTYPE name="G8032_RING_ID" method="unsignedInteger" pattern="1..2048" help="NUM"/>
+    <PTYPE name="G8032_LEVEL_ID" method="unsignedInteger" pattern="1..7" help="NUM"/>
+    <PTYPE name="G8032_VLAN" method="unsignedInteger" pattern="2..4094" help="VLANID"/>
+    <PTYPE name="G8032_WAIT_TIMER_INTERVAL" method="unsignedInteger" pattern="1..12" help="[1,12]"/>
+    <PTYPE name="G8032_HOLD_TIMER_INTERVAL"  pattern="(10000|[1-9][0-9][0]{2}|[1-9][0]{2}|0)" help="[0,10000]"/>
+    <PTYPE name="G8032_GUARD_TIMER_INTERVAL"  pattern="(2000|[1][0-9][0]{2}|[1-9][0]{2})" help="[100,2000]"/>
+    <!-- for IPSG -->
+    <PTYPE name="IPSG_MAX_PORT_BINDING" method="unsignedInteger" pattern="0..30" help="NUM"/>
+    <!-- for dot1x -->
+    <PTYPE name="DOT1X_MAX_REAUTH_REQ" method="unsignedInteger" pattern="1..10" help="NUM"/>
+    <PTYPE name="DOT1X_PORT_CTRL" method="unsignedInteger" pattern="0..3" help="TYPE"/>
+    <PTYPE name="DOT1X_PROTOCOL_VERSION" method="unsignedInteger" pattern="1..2" help="VERSION"/>
+    <PTYPE name="DOT1X_QUIET_PERIOD" method="unsignedInteger" pattern="1..65535" help="PERIOD"/>
+    <PTYPE name="DOT1X_TX_PERIOD" method="unsignedInteger" pattern="1..65535" help="PERIOD"/>
+    <PTYPE name="DOT1X_RE_AUTH_PERIOD" method="unsignedInteger" pattern="60..65535" help="PERIOD"/>
+    <PTYPE name="DOT1X_SUPP_PERIOD" method="unsignedInteger" pattern="1..65535" help="PERIOD"/>
+    <PTYPE name="DOT1X_SERVER_PERIOD" method="unsignedInteger" pattern="1..65535" help="PERIOD"/>
+    <PTYPE name="DOT1X_GUEST_VLAN" method="unsignedInteger" pattern="2..4094" help="VLANID"/>
+    <PTYPE name="RADIUS_DEAD_TIME" method="unsignedInteger" pattern="1..20" help="[1,20]"/>
+    <PTYPE name="RADIUS_RETRANSMIT" method="unsignedInteger" pattern="1..100" help="[1,100]"/>
+    <PTYPE name="RADIUS_TIMEOUT" method="unsignedInteger" pattern="1..1000" help="[1,1000]"/>
+    <PTYPE name="DOT1X_MAX_USER" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="DOT1X_AUTH_PORT" method="unsignedInteger" pattern="1..65535" help="[1,65535]"/>
+    <PTYPE name="CARRIER_DOWN_HOLDTIME" method="unsignedInteger" pattern="0..500" help="NUM"/>
+	<PTYPE name="RADIUS_SERVER_STRING"  pattern="[^/\']+" help="STRING"/>
+        
+    <!-- for LLDP -->
+    <PTYPE name="CA_TYPE" method="unsignedInteger" pattern="0..255" help="CA_TYPE"/>
+	<PTYPE name="LCI_WHAT" method="unsignedInteger" pattern="0..2" help="NUM"/>
+	
+	<!-- for LLDP -->
+	<PTYPE name="PORT_SECURITY_MAX_NUM" method="unsignedInteger" pattern="0..16384" help="NUM"/>
+	
+    <PTYPE name="STORMCTL_LEVEL" 
+            pattern="([0-9]\.[0-9]{2}|[1-9][0-9]\.[0-9]{2}|[0-9]\.[0-9]|[1-9][0-9]\.[0-9]|100|100\.0|100\.00|[0-9]|[1-9][0-9])"
+            help="LEVEL [0.00, 99.99]"/>
+
+    <PTYPE name="STORMCTL_PPS" method="unsignedInteger" pattern="0..1000000000" help="NUM"/>
+
+    <PTYPE name="AGG_GID" method="unsignedInteger" pattern="1..55" help="NUM"/>
+
+    <PTYPE name="AGG_PRIORITY" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+
+    <PTYPE name="AGG_MEMBER_NUM" method="unsignedInteger" pattern="1..16" help="NUM"/>
+
+    <PTYPE name="IPT_MAXCOUNT" method="unsignedInteger" pattern="0..1000" help="MAXCOUNT"/>
+    <PTYPE name="IPT_LENGTH" method="unsignedInteger" pattern="28..65535" help="LENGTH"/>
+    
+    <PTYPE name="IP_ADDR"
+        pattern="(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))"
+        help="A.B.C.D"/>
+        
+    <PTYPE name="IPV6_ADDR"
+        pattern="(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
+        help="X:X::X:X"/>
+
+    <PTYPE name="MAC_ADDR"
+        pattern="(([0-9A-Fa-f]+.){2}([0-9A-Fa-f]+))"
+        help="A.B.C"/>
+    
+    <PTYPE name="ACL_MAC_ADDR"
+        pattern="(([0-9A-Fa-f]+.){2}([0-9A-Fa-f]+))"
+        help="MAC"/>
+    
+    <PTYPE name="ACL_MAC_ADDR_MASK"
+        pattern="(([0-9A-Fa-f]+.){2}([0-9A-Fa-f]+))"
+        help="MASK"/>
+    
+    <PTYPE name="UINT"
+        pattern="[0-9]+"
+        help="Unsigned integer"/>
+    
+    <PTYPE name="STRING"
+        pattern=".+"
+        help="STRING"/>
+    
+    <PTYPE name="NAME_STRING"
+        pattern="[^/\' ]+"
+        help="STRING"/>
+    
+    <PTYPE name="ZONE_NAME"
+        pattern="[A-Za-z]+"
+        help="ZONE"/>
+
+    <PTYPE name="SUBCOMMAND"
+        pattern="[^\]+"
+        help="STRING"/>
+
+    <PTYPE name="REGION_NAME"
+        pattern="[^/]+"
+        help="Region Name"/>
+
+    <PTYPE name="BOOL"
+        method="select"
+        pattern="true(1) false(0)"
+        help="Boolean choice"/>
+    
+    <PTYPE name="IFACE_NUM"
+        pattern="[0-9]+"
+        help="Interface number"/>
+
+    <PTYPE name="OPENFLOW_DPID"
+        pattern="[0-9A-Fa-f]+"
+        help="NUM DPID number(hex)"/>
+
+<!--    
+    <PTYPE name="IF_NAME_ALL"
+        pattern="(eth-([0-0])-([1-9][0-9]|[1-9])|vlan(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{2}|[1-9][0-9]|[1-9])|agg(3[0-1]|[1-2][0-9]|[1-9]))"
+        help="eth-0-*/vlan*/agg*"/>
+    
+    <PTYPE name="IF_NAME_EA"
+        pattern="(eth-([0-0])-([1-9][0-9]|[1-9])|agg(3[0-1]|[1-2][0-9]|[1-9]))"
+        help="eth-0-*/agg*"/>
+    
+    <PTYPE name="IF_NAME_EV"
+        pattern="(eth-([0-0])-([1-9][0-9]|[1-9])|vlan(409[0-4]|40[0-8][0-9]|[1-3][0-9]{3}|[1-9][0-9]{2}|[1-9][0-9]|[1-9]))"
+        help="eth-0-*/vlan*"/>
+    
+    <PTYPE name="IF_NAME_E"
+        pattern="(eth-([0-0])-([1-9][0-9]|[1-9]))"
+        help="eth-0-*"/>
+-->
+	<!-- IF_SPLITTING -->        
+  	<PTYPE name="IF_NAME_ALL"
+    	method="intf"
+        pattern="all"
+        help="all interface"/>
+    <PTYPE name="IF_NAME_E"
+    	method="intf"
+        pattern="ethernet"
+        help="ethernet physical interface"/>
+    <PTYPE name="IF_NAME_EA"
+    	method="intf"
+        pattern="ethernet aggregate"
+        help="ethernet physical and aggregate interface"/>
+    <PTYPE name="IF_NAME_EV"
+    	method="intf"
+        pattern="ethernet vlan"
+        help="ethernet physical and vlan interface"/>
+
+    <PTYPE name="IF_NAME_EAV"
+    	method="intf"
+        pattern="ethernet vlan aggregate"
+        help="ethernet physical, vlan interface and aggregate interface"/>
+
+	<PTYPE name="IF_NAME_BGP"
+    	method="intf"
+        pattern="ethernet loopback"
+        help="ethernet physical and loopback interface"/>
+
+    <PTYPE name="IF_NAME_EAVL"
+        method="intf"
+        pattern="ethernet vlan aggregate loopback"
+        help="ethernet physical, vlan interface, aggregate interface and loopback interface"/>
+
+    <PTYPE name="IF_NAME_TUNNEL"
+        method="intf"
+        pattern="l2gre nvgre vxlan"
+        help="l2gre nvgre and vxlan interface"/>
+
+    <PTYPE name="NULL_INTERFACE_NUMBER" method="unsignedInteger" pattern="0..0" help="NUM"/>
+
+    <PTYPE name="PROTO"
+        method="select"
+        pattern="ip(ip) ipencap(ipencap) icmp(icmp) igmp(igmp) tcp(tcp) udp(udp)"
+        help="Protocol choice"/>
+    
+    <PTYPE name="SERVICE"
+        pattern="((ftp)|(telnet)|(sntp)|(smtp)|(http)|([0-9]+))"
+        help="Port"/>
+    
+    <PTYPE name="IP_ADDR_MASK"
+        pattern="(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(/(1[0-9]|2[0-9]|3[0-2]|[0-9]))"
+        help="A.B.C.D/M"/>
+    
+    <PTYPE name="IP_ADDR_ANY"
+        pattern="(((((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(/(1[0-9]|2[0-9]|3[0-2]|[0-9])))|any)"
+        help="A.B.C.D[/mask] or any"/>
+
+   <PTYPE name="IPV6_ADDR_MASK"
+        pattern="(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))"
+        help="X:X::X:X/M"/>
+        
+    <PTYPE name="PORT_MASK_ANY"
+        pattern="^(([0-9]+(/0x[0-9a-f]+)?)|(any))$"
+        help="Port[/mask]" />
+    
+    <PTYPE name="SEQ"
+        pattern="^[0-9]*[1-9][0-9]*"
+        help="Entry number"/>
+    <PTYPE name="VLAN_LIST"
+        pattern="([1-9][0-9\,\-]+[0-9]|[1-9][0-9]|[1-9])"
+        help="VLAN_LIST"/>
+    <PTYPE name="VLAN_LIST_INCLUDE0"
+        pattern="([0-9][0-9\,\-]+[0-9]|[0-9][0-9]|[0-9])"
+        help="VLAN_LIST_INCLUDE0"/>
+    <PTYPE name="LOG_ID_LIST"
+        pattern="([0-9][0-9\,\-]+[0-9]|[1-9][0-9]|[1-9])"
+        help="LOG_ID_LIST"/>
+    <PTYPE name="INSTANCE_LIST"
+        pattern="([0-9][0-9\,\-]+[0-9]|[0-9][0-9]|[0-9])"
+        help="INSTANCE_LIST"/>
+
+    <PTYPE name="ACL_SEQ_NUM" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="GACL" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="TERM_LINES" method="unsignedInteger" pattern="0..512" help="NUM"/>
+    <PTYPE name="COS_ID" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="VALUE_0_7_LIST" pattern="([0-7](\,|\-)[0-7])" help="VALUE_LIST"/>
+    <PTYPE name="VALUE_0_63_LIST" pattern="(([0-9]|[1-5][0-9]|6[0-3])(\,|\-)([0-9]|[1-5][0-9]|6[0-3]))" help="VALUE_LIST"/>
+    <PTYPE name="MIRROR_ID" method="unsignedInteger" pattern="1..4" help="NUM"/>
+	<PTYPE name="MIRROR_DEST_GROUPID" method="unsignedInteger" pattern="1..32" help="NUM"/>
+	<PTYPE name="MIRROR_REMOTE_VLAN" method="unsignedInteger" pattern="2..4094" help="NUM"/>
+    <PTYPE name="ERRDIS_FDBLOOP_MAXSIZE" method="unsignedInteger" pattern="1000..1000000" help="MAXSIZE"/>
+	<PTYPE name="ERRDIS_FDBLOOP_RATE" method="unsignedInteger" pattern="0..1000" help="RATE"/>
+    <PTYPE name="ERRDIS_FLAP_COUNT" method="unsignedInteger" pattern="1..100" help="COUNT"/>
+	<PTYPE name="ERRDIS_FLAP_TIME" method="unsignedInteger" pattern="1..120" help="SECONDS"/>
+    <PTYPE name="ERRDIS_RECOVER_TIMER_PARAM" method="unsignedInteger" pattern="30..86400" help="INTERVAL"/>
+    
+    <PTYPE name="ETHTYPE_ID" 
+        pattern="(0x[0-9A-Fa-f]+)"
+        help="ETH-TYPE"/>
+    
+    <PTYPE name="ARP_OPCODE" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+	<PTYPE name="ARP_OPCODE_MASK" pattern="^0[xX]([0-9A-Fa-f]+){1,4}" help="VALUE"/>
+
+    <PTYPE name="ABS_TIME" 
+        pattern="((([0-1][0-9]|2[0-3]|[0-9]):)(([0-5][0-9]|[0-9]):)([0-5][0-9]|[0-9]))"
+        help="HH:MM:SS"/>
+		
+	<!--
+    <PTYPE name="ABS_MONTH" 
+            pattern="([j|J][a|A][n|N]|[j|J][a|A][n|N][u|U]|[j|J][a|A][n|N][u|U][a|A]|[j|J][a|A][n|N][u|U][a|A][r|R]|[j|J][a|A][n|N][u|U][a|A][r|R][y|Y]|[f|F][e|E][b|B][r|R][u|U][a|A][r|R][y|Y]|[f|F][e|E][b|B][r|R][u|U][a|A][r|R]|[f|F][e|E][b|B][r|R][u|U][a|A]|[f|F][e|E][b|B][r|R][u|U]|[f|F][e|E][b|B][r|R]|[f|F][e|E][b|B]|[m|M][a|A][r|R][c|C][h|H]|[m|M][a|A][r|R][c|C]|[m|M][a|A][r|R]|[a|A][p|P][r|R][i|I][l|L]|[a|A][p|P][r|R][i|I]|[a|A][p|P][r|R]|[m|M][a|A][y|Y]|[j|J][u|U][n|N][e|E]|[j|J][u|U][n|N]|[j|J][u|U][l|L][y|Y]|[j|J][u|U][l|L]|[a|A][u|U][g|G][u|U][s|S][t|T]|[a|A][u|U][g|G][u|U][s|S]|[a|A][u|U][g|G][u|U]|[a|A][u|U][g|G]|[s|S][E|e][P|p][T|t][E|e][M|m][B|b][E|e][R|r]|[s|S][E|e][P|p][T|t][E|e][M|m][B|b][E|e[s|S][E|e][P|p][T|t][E|e][M|m][B|b]|[s|S][E|e][P|p][T|t][E|e][M|m]|[s|S][E|e][P|p][T|t][E|e]|[s|S][E|e][P|p][T|t]|[s|S][E|e][P|p]|[o|O][C|c][T|t][O|o][B|b][E|e][R|r]|[o|O][C|c][T|t][O|o][B|b][E|e]|[o|O][C|c][T|t][O|o][B|b]|[o|O][C|c][T|t][O|o]|[o|O][C|c][T|t]|[n|N][O|o][V|v][E|e][M|m][B|b][E|e][R|r]|[n|N][O|o][V|v][E|e][M|m][B|b][E|e]|[n|N][O|o][V|v][E|e][M|m][B|b]|[n|N][O|o][V|v][E|e][M|m]|[n|N][O|o][V|v][E|e]|[n|N][O|o][V|v]|[D|d][E|e][C|c][E|e][M|m][B|b][E|e][R|r]|[D|d][E|e][C|c][E|e][M|m][B|b][E|e]|[D|d][E|e][C|c][E|e][M|m][B|b]|[D|d][E|e][C|c][E|e][M|m]|[D|d][E|e][C|c][E|e]||[D|d][E|e][C|c])"
+        help="MONTH"/>
+    -->
+    <PTYPE name="WHICH_WEEKDAY"
+    pattern="((first)|(second)|(third)|(fourth)|(last))"
+    help="Select weekday in the month"/>
+    
+    <PTYPE name="CLOCK_MONTH" method="unsignedInteger" pattern="1..12" help="NUM"/>
+    <PTYPE name="OFFSET_MIN" method="unsignedInteger" pattern="1..1440" help="OFFSET MINUTES NUM"/>
+	<PTYPE name="ABS_MONTH" method="unsignedInteger" pattern="1..12" help="NUM"/>
+    <PTYPE name="ABS_DAY" method="unsignedInteger" pattern="1..31" help="NUM"/>
+    <PTYPE name="ABS_YEAR" method="unsignedInteger" pattern="2000..2037" help="NUM"/>
+	<PTYPE name="CLOCK_YEAR" method="unsignedInteger" pattern="2000..2037" help="NUM"/>
+    <PTYPE name="PER_TIME" 
+        pattern="((([0-1][0-9]|2[0-3]|[0-9]):)([0-5][0-9]|[0-9]))"
+        help="HH:MM"/>
+
+    <PTYPE name="PER_WEEK" 
+        pattern="([m|M][O|o][N|n][D|d][A|a][Y|y]|[m|M][O|o][N|n][D|d][A|a]|[m|M][O|o][N|n][D|d]|[m|M][O|o][N|n]|[T|t][U|u][E|e][S|s][D|d][A|a][Y|y]|[T|t][U|u][E|e][S|s][D|d][A|a]|[T|t][U|u][E|e][S|s][D|d]|[T|t][U|u][E|e][S|s]|[T|t][U|u][E|e]|[W|w][E|e][D|d][N|n][E|e][S|s][D|d][A|a][Y|y]|[W|w][E|e][D|d][N|n][E|e][S|s][D|d][A|a]|[W|w][E|e][D|d][N|n][E|e][S|s][D|d]|[W|w][E|e][D|d][N|n][E|e][S|s]|[W|w][E|e][D|d][N|n][E|e]|[W|w][E|e][D|d][N|n]|[W|w][E|e][D|d]|[T|t][H|h][U|u][R|r][S|s][D|d][A|a][y|Y]|[T|t][H|h][U|u][R|r][S|s][D|d][A|a]|[T|t][H|h][U|u][R|r][S|s][D|d]|[T|t][H|h][U|u][R|r][S|s]|[T|t][H|h][U|u][R|r]|[T|t][H|h][U|u]|[F|f][R|r][I|i][D|d][A|a][Y|y]|[F|f][R|r][I|i][D|d][A|a]|[F|f][R|r][I|i][D|d]|[F|f][R|r][I|i]|[S|s][A|a][T|t][U|u][R|r][D|d][A|a][Y|y]|[S|s][A|a][T|t][U|u][R|r][D|d][A|a]|[S|s][A|a][T|t][U|u][R|r][D|d]|[S|s][A|a][T|t][U|u][R|r]|[S|s][A|a][T|t][U|u]|[S|s][A|a][T|t]|[S|s][U|u][N|n][D|d][A|a][Y|y]|[S|s][U|u][N|n][D|d][A|a]|[S|s][U|u][N|n][D|d]|[S|s][U|u][N|n])"
+        help="WEEKDAY"/>
+
+    <PTYPE name="PROTOCOL_NUM" method="unsignedInteger" pattern="0..255" help="NUM"/>
+    <PTYPE name="L4_PORT_NUM" method="unsignedInteger" pattern="0..65535" help="NUM"/>
+    <PTYPE name="DSCP_VALUE" method="unsignedInteger" pattern="0..63" help="NUM"/>
+	<PTYPE name="FLOW_LABEL_VALUE" method="unsignedInteger" pattern="0..1048575" help="NUM"/>
+    <PTYPE name="VALUE_LIST" pattern="([0-9\,\-]+)" help="VALUE_LIST"/>
+    <PTYPE name="IP_PREC_VALUE" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="ARP_CODE_VALUE" method="unsignedInteger" pattern="0..65535" help="NUM"/>
+    <PTYPE name="ICMP_TYPE_CODE_VALUE" method="unsignedInteger" pattern="0..255" help="NUM"/>
+	<PTYPE name="IGMP_TYPE_VALUE" method="unsignedInteger" pattern="0..255" help="NUM"/>
+    <PTYPE name="ETHER_TYPE_VALUE" pattern="(0[xX][0-9A-Fa-f]{1,4})" help="NUM"/>
+    <PTYPE name="ETHER_TYPE_MASK_VALUE" pattern="([0-9A-Fa-f,x,X]){3,6}" help="NUM"/>
+    <PTYPE name="UDF_VALUE" pattern="^0[xX]([0-9A-Fa-f]+){1,8}" help="VALUE"/>
+    <PTYPE name="L4_PORT_NUM_WITHOUT_1" method="integer" pattern="1..65535" help="NUM"/>
+    
+    <PTYPE name="VLAN_ID_MASK" pattern="(0[xX][0-9A-Fa-f]{1,3})" help="NUM"/>
+    <PTYPE name="COS_ID_MASK" pattern="(0[xX][0-7])" help="NUM"/>
+    <PTYPE name="DSCP_VALUE_MASK" pattern="(0[xX]([0-9A-Fa-f]|[0-3][0-9A-Fa-f]))" help="NUM"/>
+	<PTYPE name="FLOW_LABEL_MASK" pattern="(0[xX}[0-9A-Fa-f]{1,5})" help="NUM"/>
+
+    <!-- for ssh -->    
+    <PTYPE name="SSHVER" method="select" pattern="v1(v1) v2(v2) all(all)" help="STRING" />   
+    <PTYPE name="SSHAUTHRETRIES" method="unsignedInteger" pattern="1..6" help="NUM"/>
+    <PTYPE name="SSHAUTHTIMEOUT" method="unsignedInteger" pattern="1..120" help="NUM"/>
+    <PTYPE name="SSHREKEYINTVL" method="unsignedInteger" pattern="1..1440" help="NUM"/>
+    <PTYPE name="SSHPINPROMPTS" method="unsignedInteger" pattern="1..7" help="NUM"/>
+    <PTYPE name="SERVICE_PORT" method="unsignedInteger" pattern="1025..65535" help="NUM"/>
+
+    <!-- for syslog -->
+    <PTYPE name="SYSLOGLINES" pattern="^[-+]?[0-9]{1,4}$" help="NUM"/>
+    <PTYPE name="CFGLOGLINES" method="unsignedInteger" pattern="10..1000" help="NUM"/>
+    <PTYPE name="LOGSEVERITY" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="LOGFAC" method="unsignedInteger" pattern="0..11" help="NUM"/>
+    <PTYPE name="LOGFAC2" method="unsignedInteger" pattern="16..23" help="NUM"/>
+    <PTYPE name="MERGETIMEOUT" method="unsignedInteger" pattern="1..300" help="NUM"/>
+    <PTYPE name="MERGEFSIZE" method="unsignedInteger" pattern="100..10240" help="NUM"/>
+
+    <!-- for snmp -->
+    <PTYPE name="SNMPNAME" pattern="[^/\]+" help="WORD"/>
+    <PTYPE name="ENGINEID" pattern="[^/]+" help="WORD"/>
+    <PTYPE name="KLINE" pattern="[0-9A-Za-z\,\@._ -\(\)]+" help="STRING"/>
+    <PTYPE name="BANNER" pattern="[0-9A-Za-z\,\@._ -]+" help="STRING"/>
+    <PTYPE name="SNMPKLINE" pattern="[^/\]+" help="STRING"/>
+    <!--<PTYPE name="SNMPKLINE" pattern="([0-9A-Za-z\@._ -]){1,254}$" help="STRING"/>-->
+    <PTYPE name="SNMPSUBTREE" pattern="([0-9\.]){1,127}" help="WORD"/>
+    <PTYPE name="SNMPMASK" pattern="([0-9A-Fa-f]){1,32}" help="WORD"/>
+    <PTYPE name="SNMP_UDP_PORT" method="unsignedInteger" pattern="0..65535" help="NUM"/>
+	<PTYPE name="SNMP_TIMEOUT" method="unsignedInteger" pattern="0..65535" help="NUM"/>
+	<PTYPE name="SNMP_RETRY" method="unsignedInteger" pattern="0..255" help="NUM"/>
+
+    <!-- for RMON -->
+    <PTYPE name="RMON_INDEX" method="unsignedInteger" pattern="1..65535" help="NUM"/>
+    <PTYPE name="RMON_DESC" pattern="^[A-Za-z]([0-9A-Za-z._-]){0,254}$" help="STRING"/>
+    <PTYPE name="RMON_OWNER" pattern="^[A-Za-z]([0-9A-Za-z._-]){0,14}$" help="STRING"/>
+    <PTYPE name="RMON_VARIABLE" pattern="([0-9A-Za-z\.]){1,127}" help="STRING"/>
+    <PTYPE name="RMON_BUCKET" method="unsignedInteger" pattern="1..10" help="NUM"/>
+    <PTYPE name="RMON_ALARM_INTERVAL" method="unsignedInteger" pattern="5..65535" help="NUM"/>
+    <PTYPE name="RMON_ALARM_THRESHOLD" pattern="^(-)?[0-9]{1,20}" help="NUM, -2147483648..2147483647"/>
+    <PTYPE name="RMON_INTERVAL" method="unsignedInteger" pattern="5..3600" help="NUM"/>
+	
+	<!-- for LLDP -->
+	<PTYPE name="SYSNAME" pattern="([0-9A-Za-z._-]){1,128}" help="STRING"/>
+	<!-- for dns -->
+    <PTYPE name="DNSNAME" 
+        pattern="^[A-Za-z]([0-9A-Za-z._-]){0,62}$"
+        help="NAME"/>
+
+    <!-- for user -->
+    <PTYPE name="USERNAME" 
+        pattern="^[A-Za-z]([0-9A-Za-z._-])*$"
+        help="WORD"/>
+    <PTYPE name="PASSWORD" 
+        pattern="[^/]+"
+        help="WORD"/>
+    <PTYPE name="RSAPASSWORD" 
+        pattern="^(\S){6,68}$"
+        help="WORD"/>
+    <PTYPE name="HIDDEN_FLAG" pattern="8" help="8"/>
+    <PTYPE name="LOGIN_FAILNUM" method="unsignedInteger" pattern="1..10" help="NUM"/>
+    <PTYPE name="WEB_TIME_OUT" method="unsignedInteger" pattern="1..60" help="NUM"/>
+    <PTYPE name="LOGIN_TIME_PERIOD" method="unsignedInteger" pattern="1..120" help="NUM"/>
+    <PTYPE name="LOGIN_DURATION" method="unsignedInteger" pattern="1..1000" help="NUM"/>
+    <PTYPE name="PRIVILEGE" method="unsignedInteger" pattern="1..4" help="NUM"/>
+    <PTYPE name="AAA_PRIVILEGE1" method="unsignedInteger" pattern="0..12" help="NUM"/>
+    <PTYPE name="AAA_PRIVILEGE2" method="unsignedInteger" pattern="0..13" help="NUM"/>
+    <PTYPE name="AAA_PRIVILEGE3" method="unsignedInteger" pattern="0..14" help="NUM"/>
+ 
+    <!-- for console & vty -->
+    <PTYPE name="VTYID" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="VTYMAX" method="unsignedInteger" pattern="0..8" help="NUM"/>
+    <PTYPE name="ETIMEOUTMIN" method="unsignedInteger" pattern="0..35791" help="NUM"/>
+    <PTYPE name="ETIMEOUTSEC" method="unsignedInteger" pattern="0..2147483" help="NUM"/>
+    <PTYPE name="AUTHLISTNAME" pattern="^[a-zA-Z0-9._-]([a-zA-Z0-9._-])*$" help="WORD"/> 
+    <PTYPE name="CPARITY"
+        method="select"
+        pattern="even(even) none(none) odd(odd)"
+        help="Parity type"/>
+
+<!--  for NTP -->
+    <PTYPE name="NTP_KEYID" method="unsignedInteger" pattern="1..6" help="NUM"/>
+    <PTYPE name="NTP_VERSION" method="unsignedInteger" pattern="1..3" help="NUM"/>
+	<PTYPE name="NTP_STRATUM" method="unsignedInteger" pattern="1..15" help="NUM"/>
+	<PTYPE name="NTP_DELAY" method="unsignedInteger" pattern="1..10000" help="NUM"/>
+	<PTYPE name="NTP_MIN_DISP" method="unsignedInteger" pattern="1..1000" help="NUM"/>
+	<PTYPE name="NTP_TRUSTEDKEY" method="unsignedInteger" pattern="1..64000" help="NUM"/>
+		
+    <!-- for rsa -->
+    <PTYPE name="RSAKEYBITS" method="unsignedInteger" pattern="1024..4096" help="KEYBITS"/>
+    <PTYPE name="RSAKEYNAME" 
+        pattern="^[A-Za-z]([0-9A-Za-z._-]){0,256}$"
+        help="WORD"/>
+    <PTYPE name="GKEYLINE" pattern="([0-9A-Za-z_=/\+\:\,\t -]){1,128}" help="KEYLINE"/>
+
+    <!-- for openflow -->
+    <PTYPE name="METADATA_ID" pattern="(0[xX]([0-9A-Fa-f]){1,16})" help="(0xXXXXXXXX)"/>
+    <PTYPE name="TUNNEL_ID" method="unsignedInteger" pattern="1..4294967295" help="NUM"/>
+    <PTYPE name="TABLE_ID" method="unsignedInteger" pattern="0..255" help="NUM"/>
+    <PTYPE name="STATS_ID" method="unsignedInteger" pattern="1..4294967295" help="NUM"/>
+    <PTYPE name="FLOW_ID" method="unsignedInteger" pattern="1..4294967295" help="NUM"/>
+    <PTYPE name="GROUP_ID" method="unsignedInteger" pattern="1..4294967295" help="NUM"/>
+    <PTYPE name="METER_ID" method="unsignedInteger" pattern="1..4294967295" help="NUM"/>
+    <PTYPE name="OF_PTR" pattern="(0[xX][0-9A-Fa-f]+)" help="PTR (0xXXXXXXXX)"/>
+    <PTYPE name="MAX_BACKOFF" method="unsignedInteger" pattern="1..64" help="NUM"/>
+    <PTYPE name="INACTIVITY_PROBE" method="unsignedInteger" pattern="5..200" help="NUM"/>
+
+    <!-- for DHCP -->
+    <PTYPE name="DHCSRVGRP" method="unsignedInteger" pattern="1..16" help="NUM"/>
+    <PTYPE name="DHCBINDSAVEINTV" method="unsignedInteger" pattern="15..1200" help="NUM"/>
+    <PTYPE name="DHCIDSTR" pattern="^([0-9A-Za-z._-]){1,63}$" help="STRING"/>
+    <PTYPE name="DHCBINDINGEXPIRY" method="unsignedInteger" pattern="0..86400" help="NUM"/>
+    <PTYPE name="REMOTE_ID_STRING" help="STRING"
+        pattern="^([a-zA-Z0-9._-]){1,63}$"/> 
+    <PTYPE name="HEX" pattern="[0-9A-Fa-f]+" help="WORD"/> 
+    
+    <PTYPE name="DAYS" method="unsignedInteger" pattern="0..365" help="NUM"/>
+    <PTYPE name="HOURS" method="unsignedInteger" pattern="0..23" help="NUM"/>
+    <PTYPE name="MINUTES" method="unsignedInteger" pattern="0..59" help="NUM"/>    
+
+ 
+	<!-- for CPU LIMIT -->
+    <PTYPE name="PERCENT" method="unsignedInteger" pattern="1..99" help="NUM"/>
+
+	<PTYPE name="PORT-CONNECTION" pattern="[\/|-]" help="Port-connection"/>
+	<PTYPE name="SUBPORT-CONNECTION" pattern="[\/|-|:]" help="Sub Port-connection"/>
+	
+	<!-- for CENTEC EVENT MANAGER(CEM) -->
+    <PTYPE name="THRESHOLD" method="unsignedInteger" pattern="1..100" help="NUM"/>
+
+    <!-- for AUTHD -->
+    <PTYPE name="DEADTIME" method="unsignedInteger" pattern="60..1200" help="NUM"/>
+    <PTYPE name="AUTHDKEY" pattern="[^/\']+" help="STRING"/>
+    <PTYPE name="AUTHDRETRIES" method="unsignedInteger" pattern="1..100" help="[1,100]"/>
+    <PTYPE name="AUTHDTIMEOUT" method="unsignedInteger" pattern="1..1000" help="[1,1000]"/>
+    <PTYPE name="AUTHDPORT" method="unsignedInteger" pattern="1..65535" help="[1,65535]"/>
+	
+    <PTYPE name="HOUR_MIN" pattern="([0-1][0-9]|2[0-3]):([0-5][0-9])" help="HH:MM"/>
+    <PTYPE name="YEAR_MON_DAY" pattern="([0-9/])+" help="YYYY/MM/DD or MM/DD/YYYY or MM/DD"/>
+    <PTYPE name="DELAY_TIME" pattern="(([0-1][0-9]|2[0-3]):([0-5][0-9]))|([1-9]|[1-9][0-9]|[1-6][0-9][0-9]|7[0-1][0-9]|720)" help="HH:MM or [1, 720]"/>
+
+	<!-- for web -->
+	<PTYPE name="WEBSESSION" pattern="^([0-9A-Za-z._-])+$" help="STRING"/>
+	
+	<!-- for ping -->
+	<PTYPE name="PING_INTERVAL" method="unsignedInteger" pattern="30..10000" help="NUM"/>
+	<PTYPE name="PING_COUNT" method="unsignedInteger" pattern="1..2147483646" help="NUM"/>
+	<PTYPE name="PING_SIZE" method="unsignedInteger" pattern="20..9600" help="NUM"/>
+	<PTYPE name="PING_TOS" method="unsignedInteger" pattern="0..255" help="NUM"/>
+	<PTYPE name="PING_TTL" method="unsignedInteger" pattern="1..255" help="NUM"/>
+	<PTYPE name="PING_HOPLIMIT" method="unsignedInteger" pattern="1..255" help="NUM"/>
+
+    <!-- vrrp -->
+    <PTYPE name="VRRP_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="VRRP_INTERVAL" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="VRRP_MSEC_INTERVAL" method="unsignedInteger" pattern="100..900" help="NUM"/>
+    <PTYPE name="VRRP_DELAY_INTERVAL" method="unsignedInteger" pattern="0..3600" help="NUM"/>
+    <PTYPE name="VRRP_PRIORITY" method="unsignedInteger" pattern="1..254" help="NUM"/>
+    <PTYPE name="VRRP_PRIORITY_DELTA" method="unsignedInteger" pattern="1..255" help="NUM"/>
+	
+	<!-- for syncE -->
+	<PTYPE name="SSM_PRIORITY_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+	<PTYPE name="DNU_GROUP_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+	<PTYPE name="SYNCE_HOLDOFF_TIME" method="unsignedInteger" pattern="3..18" help="NUM"/>
+	<PTYPE name="SYNCE_WTR_TIME" method="unsignedInteger" pattern="0..12" help="NUM"/>
+	<PTYPE name="CLOCK_ID_ADDR" pattern="(([0-9A-Fa-f]+.){3}([0-9A-Fa-f]+))" help="A.B.C.D"/>
+
+    <!-- for ipsla -->
+    <PTYPE name="IPSLA_ENTRY_ID" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="IPSLA_FREQUENCY" method="unsignedInteger" pattern="1..4800" help="NUM"/>
+    <PTYPE name="IPSLA_TIMEOUT" method="unsignedInteger" pattern="1..4800" help="NUM"/>
+    <PTYPE name="IPSLA_INTERVAL" method="unsignedInteger" pattern="1..4800" help="NUM"/>
+    <PTYPE name="IPSLA_THRESHOLD" method="unsignedInteger" pattern="1..4800000" help="NUM"/>
+    <PTYPE name="IPSLA_TTL" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="IPSLA_TOS" method="unsignedInteger" pattern="0..255" help="NUM"/>
+    <PTYPE name="IPSLA_DATA_SIZE" method="unsignedInteger" pattern="0..8100" help="NUM"/>
+    <PTYPE name="IPSLA_DATA_PATTERN" pattern="([0-9A-Fa-f]){1,8}" help="LINE"/>
+    <PTYPE name="IPSLA_FAIL_PERCENT" method="unsignedInteger" pattern="1..100" help="NUM"/>
+    <PTYPE name="IPSLA_PACKET_CNT" method="unsignedInteger" pattern="0..1000" help="NUM"/>
+    <PTYPE name="IPSLA_TEST_CNT" method="unsignedInteger" pattern="1..10" help="NUM"/>
+
+    <!-- for track -->
+    <PTYPE name="TRACK_OBJECT_ID" method="unsignedInteger" pattern="1..500" help="NUM"/>
+    <PTYPE name="TRACK_DELAY_TIME" method="unsignedInteger" pattern="1..180" help="NUM"/>
+    
+    <!-- for watch -->
+    <PTYPE name="SECONDS" method="unsignedInteger" pattern="1..3600" help="SECONDS"/>	
+    
+	<!-- for G.8131 -->
+	<PTYPE name="APS_GROUP_ID" method="unsignedInteger" pattern="1..4294967040" help="NUM"/>
+	<PTYPE name="APS_HOLDOFF_TIME" method="unsignedInteger" pattern="0..100" help="NUM"/>
+	<PTYPE name="APS_WTR_TIME" method="unsignedInteger" pattern="0..12" help="NUM"/>
+
+    <!-- for ipv6 nd-->
+    <PTYPE name="ND_HOP_LIMIT" method="unsignedInteger" pattern="1..255" help="NUM"/>
+    <PTYPE name="ND_RA_HOP_LIMIT" method="unsignedInteger" pattern="0..255" help="NUM"/>
+    <PTYPE name="ND_RA_LMAX" method="unsignedInteger" pattern="4..1800" help="NUM"/>
+    <PTYPE name="ND_RA_LMIN" method="unsignedInteger" pattern="3..1350" help="NUM"/>
+    <PTYPE name="ND_RA_LIFETIME" method="unsignedInteger" pattern="0..9000" help="NUM"/>
+    <PTYPE name="ND_ATTEMPTS" method="unsignedInteger" pattern="0..600" help="NUM"/>
+    <PTYPE name="ND_NS_INTERVAL" method="unsignedInteger" pattern="1000..3600000" help="NUM"/>
+    <PTYPE name="ND_REACHABLE_TIME" method="unsignedInteger" pattern="0..3600000" help="NUM"/>
+    <PTYPE name="ND_LIFE_TIME" method="unsignedInteger" pattern="0..4294967295" help="NUM"/>
+    <PTYPE name="ND_PREFERRED_TIME" method="unsignedInteger" pattern="0..4294967295" help="NUM"/>
+
+	<!-- for buffer size-->
+    <PTYPE name="BUFFER_SIZE" method="unsignedInteger" pattern="1..1000" help="NUM"/>
+    <PTYPE name="BUFFER_ID" method="unsignedInteger" pattern="1..1000" help="NUM"/>
+    
+    <!-- for udf -->
+    <PTYPE name="UDF_OFFSET" method="unsignedInteger" pattern="0..63" help="NUM"/>
+    <PTYPE name="ACL_UDF_ID" method="unsignedInteger" pattern="0..15" help="NUM"/>
+    <PTYPE name="VLAN_NUM" method="unsignedInteger" pattern="0..2" help="NUM"/>
+    <PTYPE name="MPLS_LABEL_NUM" method="unsignedInteger" pattern="0..9" help="NUM"/>
+	
+	<PTYPE name="DYNAMIC_FLOW_NUM" method="unsignedInteger" pattern="16..2048" help="NUM"/>
+	<PTYPE name="STATIC_FLOW_NUM" method="unsignedInteger" pattern="1..255" help="NUM"/>
+
+     <!-- for poe -->
+	<PTYPE name="POE_POWER_CHANNLE" method="unsignedInteger" pattern="1..100000" help="NUM"/>
+	<PTYPE name="PSU_POWER" method="unsignedInteger" pattern="1..6000" help="NUM"/>
+	<PTYPE name="POE_MODULE_NUM" method="unsignedInteger" pattern="1..4" help="NUM"/>
+    <!-- for nat -->
+    <PTYPE name="L4_PORT_RANGE" pattern="([1-9][0-9\,\-]+[0-9]|[1-9][0-9]|[1-9])" help="PORT_RANGE"/>
+	<PTYPE name="SESSION_TIME_OUT" method="unsignedInteger" pattern="180..3600" help="NUM"/>
+	<PTYPE name="SESSION_MAX" method="unsignedInteger" pattern="1..8000" help="NUM"/>
+	<!-- for sw_ver -->
+	<PTYPE name="SW_VERSION" pattern="([0-9A-Za-z._-]){1,29}" help="String"/>
+    <!-- for cfm -->
+    <PTYPE name="CFM_DOMAIN_STRING" pattern="^([0-9A-Za-z._-]){1,43}$" help="STRING"/>
+    <PTYPE name="CFM_DOMAIN_MAC_ADDRESS_STRING" pattern="([0-9A-Fa-f:-]){1,20}$" help="STRING"/>
+    <PTYPE name="CFM_SERVICE_STRING" pattern="^([0-9A-Za-z._-]){1,43}$" help="STRING"/>
+    
+    <PTYPE name="CFM_LEVEL_ID" method="unsignedInteger" pattern="0..7" help="NUM"/>
+    <PTYPE name="CFM_MPID_ID" method="unsignedInteger" pattern="1..8191" help="NUM"/>
+    <!-- for bypass -->
+    <PTYPE name="BYPASS_NUM" method="unsignedInteger" pattern="0..7" help="NUM"/>
+	
+	<!-- for PIM -->
+    <PTYPE name="PIM_PRIORITY" method="unsignedInteger" pattern="0..255" help="NUM"/>                                                                                                                 
+    <PTYPE name="PIM_INTERVAL" method="unsignedInteger" pattern="10..16383" help="NUM"/>
+    <PTYPE name="PIM_MASKLEN" method="unsignedInteger" pattern="1..32" help="NUM"/>
+       
+    <PTYPE name="PIM_HELLO_INTERVAL" method="unsignedInteger" pattern="30..18724" help="NUM"/>
+    <PTYPE name="PIM_DR_PRIORITY_ZHW" method="unsignedInteger" pattern="1..65535" help="NUM"/>        
+    <!-- add by zhw for port_mode --> 
+    <PTYPE name="GPHYPORT" method="unsignedInteger" pattern="1..100" help="GPHYPORT_ID"/>
+    <!-- add by zhw for igmp -->
+    <PTYPE name="IGMP_QUERIER_TIMEOUT" method="unsignedInteger" pattern="60..300" help="[60, 300]"/>
+    <PTYPE name="LAST_MEMBER_QUERY_COUNT" method="unsignedInteger" pattern="2..7" help="[2, 7]"/>
+    <PTYPE name="LAST_MEMBER_QUERY_INTERVAL" method="unsignedInteger" pattern="1..25" help="[1, 25]"/>
+    <PTYPE name="ROBUSTNESS_VARIABLE" method="unsignedInteger" pattern="2..7" help="[2, 7]"/>
+    <PTYPE name="IGMP_LIMIT_NUMBER" method="unsignedInteger" pattern="1..8192" help="[1, 8192]"/>
+    <!-- end add -->
+
+	<!-- for ospfv3 -->
+	<PTYPE name="OSPFV3_TIMER" method="unsignedInteger" pattern="0..600000" help="NUM"/>
+</CLISH_MODULE>
+

@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+L2protocol
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	
+	<COMMAND name="show l2protocol" help="Layer2 Protocol"/>
+	<COMMAND name="show l2protocol global" help="Global information">
+		<ACTION>
+		cdbctl show/cdb/l2/show_l2_protocol/global
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the global information of l2protocol.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show the global information of l2protocol.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows the global information of l2protocol:
+		Switch# show l2protocol global
+		L2protocol cos: 0
+		Protocol Name        Type         Protocol mac   Group mac
+		--------------------+------------+--------------+--------------
+		aaaaaaaaaaaaaaaaaaaa user-defined 0180.C200.0021 N/A           
+		bbbb                 user-defined 0180.C200.0011 N/A           
+		cccc                 user-defined 0180.C200.0012 N/A           
+		dddd                 user-defined 0180.C200.0013 N/A           
+		dot1x                standard     0180.C200.0003 0180.C200.0034
+		lldp                 standard     0180.C200.000E 0180.C200.0033
+		slow-proto           standard     0180.C200.0002 0180.C200.0035
+		stp                  standard     0180.C200.0000 0180.C200.003F
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show l2protocol interface
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show l2protocol interface" help="Interface information">
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "all">
+		     <PARAM name="if_name" help="Interface name" ptype="IF_NAME_EA"/>
+		</PARAM>
+		<ACTION>
+		if [ ${part} == "all" ]; then
+			cdbctl show/cdb/l2/show_l2_protocol/interface
+		else
+			cdbctl show/cdb/l2/show_l2_protocol/interface/${if_name}
+		fi
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the l2protocol information of all ports or a special port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show the l2protocol information of all ports or a special port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows the l2protocol information of all ports:
+		DUT1# show l2protocol interface 
+		Interface: eth-0-9
+		l2protocol uplink: enable
+		Protocol name        Type         protocol-vlan    Protocol-action
+		--------------------+------------+----------------+---------------
+		lldp                 standard     N/A              peer          
+		stp                  standard     N/A              peer          
+
+		Interface: eth-0-10
+		l2protocol uplink: enable
+		Protocol name        Type         protocol-vlan    Protocol-action
+		--------------------+------------+----------------+---------------
+		lldp                 standard     N/A              peer          
+		stp                  standard     N/A              peer          
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="l2protocol" help="Configure Layer2 Protocol" >
+		<PARAM name="protocol_type" help="L2protocol Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dot1x" help="Port Authentication (802.1 X)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="lldp" help="Link Layer Discovery Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="slow-proto" help="Slow Protocol for Link Aggregation, Efm and Synce" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="stp" help="Spanning Tree Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="user_defined_name" help="User Defined Protocol Name, max length is 20" ptype="NAME_STRING"/>
+		</PARAM>
+		<PARAM name="group-mac" help="MAC address of multicast" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mac_addr" help="MAC address begin with 0x01, exclude 0180.C200.0000 - 0180.C200.002F" ptype="MAC_ADDR"/>
+		</PARAM>
+		<ACTION>
+		if [ "${protocol_type}" == "user_defined_name" ]; then
+			cdbctl update/cdb/l2/l2_protocol/user-defined/${user_defined_name}/${mac_addr}
+		else
+			cdbctl update/cdb/l2/l2_protocol/standard/${protocol_type}/${mac_addr}
+		fi;
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the l2protocol group mac.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The l2 protocol include four standard protocol: dot1x, lldp, slow-proto, stp and user defined protocol.
+The group mac is begin with 0x01, exclude 0180.C200.0000 - 0180.C200.002F.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the group mac of stp:
+		DUT1(config)# l2protocol stp group-mac 0180.C200.003F
+          
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no l2protocol" help="Configure Layer2 Protocol" >
+		<PARAM name="protocol_type" help="L2protocol Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dot1x" help="Port Authentication (802.1 X)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="lldp" help="Link Layer Discovery Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="slow-proto" help="Slow Protocol for Link Aggregation, Efm and Synce" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="stp" help="Spanning Tree Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="user_defined_name" help="User Defined Protocol Name, max length is 20" ptype="NAME_STRING"/>
+		</PARAM>
+		<PARAM name="group-mac" help="MAC address of multicast" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+		if [ "${protocol_type}" == "user_defined_name" ]; then
+			cdbctl update/cdb/l2/l2_protocol/user-defined/${user_defined_name}
+		else
+			cdbctl update/cdb/l2/l2_protocol/standard/${protocol_type}
+		fi;
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete the l2protocol group mac.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The l2 protocol include four standard protocol: dot1x, lldp, slow-proto, stp and user defined protocol.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to delete the group mac of stp:
+		DUT1(config)# no l2protocol stp group-mac
+          
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="l2protocol user-defined-protocol" help="User defined protocol" >
+		<PARAM name="proto_name" help="Name of protocol, maximum length is 20" ptype="NAME_STRING"/>
+		<PARAM name="protocol-mac" help="Protocol Mac Address" ptype="SUBCOMMAND" mode="subcommand"> 
+             <PARAM name="mac_addr" help="Multicast MAC address, including 0180.C200.0000 - 0180.C200.002F, except 0180.C200.0000, 0180.C200.0002, 0180.C200.0003, 0180.C200.000E" ptype="MAC_ADDR"/>
+        </PARAM>
+		<ACTION>
+		cdbctl create/cdb/l2/l2_protocol/user-defined/${proto_name}/${mac_addr}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to creat user defined protocol name and set protocol mac.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The protocol mac is multicast mac, include 0180.C200.0000 - 0180.C200.002f, but except 0180.C200.0000, 0180.C200.0002, 0180.C200.0003, 0180.C200.000E.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to creat user defined protocol name and set the protocol mac:
+		DUT1(config)# l2protocol user-defined-protocol aaaa protocol-mac 0180.C200.0011
+		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no l2protocol user-defined-protocol" help="User defined protocol" >
+		<PARAM name="proto_name" help="Name of protocol, maximum length is 20" ptype="NAME_STRING"/>
+		<ACTION>
+		cdbctl delete/cdb/l2/l2_protocol/user-defined/${proto_name}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the user defined protocol protocol-mac.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The protocol mac is multicast mac, include 0180.C200.0000 - 0180.C200.002f, but except 0180.C200.0000, 0180.C200.0002, 0180.C200.0003, 0180.C200.000E.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to delete the user defined protocol name:
+		DUT1(config)# no l2protocol user-defined-protocol aaaa
+		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	
+	<COMMAND name="l2protocol cos" help="Configure Layer2 Protocol default COS values" >
+		    <PARAM name="cos_id" help="Cos value, default is 0" ptype="COS_ID"/>
+		<ACTION>
+		cdbctl update/cdb/l2/brg_global/l2protocol_cos/${cos_id}
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the vlan priority.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the vlan priority.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the vlan priority:
+		DUT1(config)# l2protocol cos 3
+		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no l2protocol cos" help="Configure Layer2 Protocol default COS value" >
+		<ACTION>
+		cdbctl update/cdb/l2/brg_global/l2protocol_cos/0
+        </ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the vlan priority to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the vlan priority to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		The follow example shows how to set the vlan priority to default value:
+		DUT1(config)# no l2protocol cos
+		
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+
+<VIEW name="configure-if-view">
+	
+	<COMMAND name="l2protocol" help="Configure Layer2 Protocol" >
+		<PARAM name="protocol_type" help="L2protocol Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dot1x" help="Port authentication (802.1 X)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="lldp" help="Link Layer Discovery Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="slow-proto" help="Slow protocol for Link aggregation, efm and synce" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="stp" help="Spanning Tree Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="user_defined_name" help="User Defined Protocol Name, max length is 20" ptype="NAME_STRING"/>
+		</PARAM>
+		<PARAM name="l2modetype" help="L2 Mode Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="protocol-vlan" help="L2 Protocol Vlan" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="protocol-action" help="L2 Protocol Action" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="enable" help="L2 Protocol Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		
+		<PARAM name="vlantype" test='"${l2modetype}"="protocol-vlan"' help="L2 Protocol Vlan" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="vlan_id" help="Vlan ID, default is port native vlan" ptype="VLAN_ID"/>
+			<PARAM name="evc" help="Configure Tunnel EVC Name" optional="true" ptype="SUBCOMMAND" mode="subcommand" default = "all"> 
+				<PARAM name="EvcName" help="EVC name to be tunneled" ptype="NAME_STRING"/>  
+			</PARAM>		
+		</PARAM>
+		
+		<PARAM name="actiontype" test='"${l2modetype}"="protocol-action"' help="L2 Protocol Action" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="discard" help="Discard the protocol data unit" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="peer" help="Act as peer to the customer device instance of the protocol(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="tunnel" help="Tunnel the protocol data unit into the SVLAN" ptype="SUBCOMMAND" mode="subcommand"/>		
+		</PARAM>
+		<ACTION>
+		if [ "${protocol_type}" == "user_defined_name" ]; then
+			if [ "${l2modetype}" == "protocol-vlan" ]; then
+				if [ "${evc}" == "all" ]; then
+					cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/update/${user_defined_name}/protocol-vlan/vlan/${vlan_id}
+				else
+					cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/update/${user_defined_name}/protocol-vlan/evc/${EvcName}
+				fi;
+			elif [ "${l2modetype}" == "protocol-action" ]; then
+				cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/update/${user_defined_name}/protocol-action/${actiontype}
+			else
+				cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/add/${user_defined_name}
+			fi;
+		else
+			if [ "${l2modetype}" == "protocol-vlan" ]; then
+				if [ "${evc}" == "all" ]; then
+					cdbctl update/cdb/interface/${iface}/l2protocol/normal/update/${protocol_type}/protocol-vlan/vlan/${vlan_id}
+				else
+					cdbctl update/cdb/interface/${iface}/l2protocol/normal/update/${protocol_type}/protocol-vlan/evc/${EvcName}
+				fi;
+			elif [ "${l2modetype}" == "protocol-action" ]; then
+				cdbctl update/cdb/interface/${iface}/l2protocol/normal/update/${protocol_type}/protocol-action/${actiontype}
+			else
+				cdbctl update/cdb/interface/${iface}/l2protocol/normal/add/${protocol_type}
+			fi;
+		fi;
+		
+		
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="no l2protocol" help="Configure Layer2 Protocol" >
+		<PARAM name="protocol_type" help="L2protocol Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dot1x" help="Port authentication (802.1 X)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="lldp" help="Link Layer Discovery Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="slow-proto" help="Slow protocol for Link aggregation, efm and synce" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="stp" help="Spanning Tree Protocol" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="user_defined_name" help="User Defined Protocol Name, max length is 20" ptype="NAME_STRING"/>
+		</PARAM>
+		<PARAM name="l2modetype" help="L2 Mode Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="protocol-vlan" help="L2 Protocol Vlan" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="protocol-action" help="L2 Protocol Action" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="enable" help="L2 Protocol Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		if [ "${protocol_type}" == "user_defined_name" ]; then
+			if [ "${l2modetype}" == "protocol-vlan" ]; then
+				cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/update/${user_defined_name}/protocol-vlan/vlan/0
+			elif [ "${l2modetype}" == "protocol-action" ]; then
+				cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/update/${user_defined_name}/protocol-action/peer
+			else
+				cdbctl update/cdb/interface/${iface}/l2protocol/user_defined/del/${user_defined_name}
+			fi;
+		else
+			if [ "${l2modetype}" == "protocol-vlan" ]; then
+				cdbctl update/cdb/interface/${iface}/l2protocol/normal/update/${protocol_type}/protocol-vlan/vlan/0
+			elif [ "${l2modetype}" == "protocol-action" ]; then
+				cdbctl update/cdb/interface/${iface}/l2protocol/normal/update/${protocol_type}/protocol-action/peer
+			else
+				cdbctl update/cdb/interface/${iface}/l2protocol/normal/del/${protocol_type}
+			fi;
+		fi;
+		
+        </ACTION>
+	</COMMAND>
+
+	<COMMAND name="l2protocol uplink" help="Configure interface uplink" >
+			<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/l2pro_uplink/1
+        </ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no l2protocol uplink" help="Configure interface uplink">
+			<PARAM name="enable" help="Enable" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/l2pro_uplink/0
+        </ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

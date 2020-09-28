@@ -1,0 +1,1367 @@
+LCM DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    --show tcam(sram) messages
+    AclTcamUsageMsg,
+    AclGetFreeLabelIndexMsg,
+    --AceFreeLableIndex,
+    AclFreeLableIndexMsg,
+    AclGetTcamUsgMsg,
+    --DSAclQos,
+    --DSAclQosMacKey,
+    --DSAclQosIpv4Key,
+    --DSAclQosIpv6Key,
+    AclTcamEntry,
+    AclTcamDataMsg,
+    AclTcamGetMsg,
+    AclTcamGetOneEntryMsg,
+    --DSMacKey,
+    --DSMacDA,
+    --DSMacDA,
+    L2TcamEntryMsg,
+    L2MacTcamEntry,
+    L2TcamEntriesMsg,
+    L2EntryCountReq,
+    L2EntryCountResp,
+    --IPv4RouteKey,
+    --IPv6RouteKey,
+    --DSIpDA,
+    --DSIpSA,
+    --DSFwd,
+    --DSNexthop,
+    --DSDestPort,
+    --DSSrcPort,
+    --DSPhyPort,
+    --DSSrcVlan,
+    --DSDestVlan,
+    --DSProtoVlan,
+    --L2EditEth4w,
+    --L2EditEth8w,
+    --L2EditLpbk,
+    --L2EditFlx4w,
+    --L2EditFlx8w,
+    --L3EditMpls4w,
+    --L3EditMpls8w,
+    --L3EditNAT,
+    --DSL3EditTunnelV4,
+    --DSL3EditTunnelV6,
+    --DSL3EditFlex,
+    --DSMetEntry,
+    --IPSaNAT,
+    --DSMPLS,
+    --STPState,
+    --VlanStatus,
+    --DSbidiPimGroup,
+    --DSMplsCtl,
+    --DSStormCtl,
+    --DSAging,
+    --DSPolicer,
+    --DSPolicerProfile,
+    --DSRouterMac,
+    --XGmacMdioCmd,
+    --DSUsrID,
+    --TrunkTbl,
+    L3TcamEntryMsg,
+    IPv4TcamEntryMsg,
+    SRAMEntryReqMsg,
+    SRAMEntryMsg,
+    IPv4TcamEntriesMsg,
+    IPv6TcamEntryMsg,
+    IPv6TcamEntriesMsg,
+    BridgeStpPortStateReq,
+    BridgeStpPortStateRes,
+    RateLimitStateReq,
+    RateLimitStateRes,
+    --UsrIDVlanKey,
+    --UsrIDMacKey,
+    --UsrIDIPv4Key,
+    --UsrIDIPv6Key,
+    --VlanClassvlanEntry,
+    --VlanClassmacEntry,
+    --VlanClassipv4Entry,
+    --VlanClassipv6Entry,
+    --VlanClassTcamEntry,
+    VlanClassTcamEntrisMsg,
+    VlanClassTcamEntryMsg,
+    --SrcVlanCtl,
+    RegEntryMsg,
+    RegEntryRespMsg,
+    MPLSEntryMsg,
+    --MPLSEntry,
+    MPLSEntriesMsg,
+    --ShowFoward
+    CmodelInfoMsg,
+    ShowForwardMsg,
+    DebugCmodelMsg,
+    TcamInfoMsgReq,
+    TcamInfoMsgAck,
+    ChsmMsgDebugReq,
+    ChsmMsgDebugCtrlReq
+    FROM LCM-DEBUG
+    ;
+
+LcmMsg ::= SEQUENCE
+{
+    ver     INTEGER (1..3),             -- Version number
+    id      INTEGER (0..2147483647),    -- Message ID
+    op      CHOICE                      -- Operation
+    {
+        -- supvisor <-> linecard
+        lcAttach                LcAttachMsg,
+        lcDeattach              LcDeattachMsg,
+        lcOnline                LcOnlineMsg,
+        lcPortInfo              LcPortInfoMsg,
+        lcPortSpeedMode			LcPortSpeedModeMsg,
+        lcDiagResult            LcDiagResultMsg,
+        lcFiberModuleAttach     LcFiberModuleAttachMsg,
+        lcFiberModuleDeattach   LcFiberModuleDeattachMsg,
+        lcFiberModuleUpdate     LcFiberModuleUpdateMsg,
+        lcPortLinkNotify        LcPortLinkNotifyMsg,
+        lcChsmDbgCtrlGetAck     LcChsmDbgCtrlGetAck,
+        lcChsmPortGetInfoAck    LcChsmPortGetInfoAck,
+        lcChsmPortGetStatsAck   LcChsmPortGetStatsAck,
+        lcChsmKeepaliveAck      LcChsmKeepaliveAck,
+        lcChsmTmprGetAck        LcChsmTmprGetAck,
+        lcChsmRebootInfo        LcChsmRebootInfo,       
+        lcChsmVCTGetInfo        LcChsmVCTGetInfo,
+        lcChsmPsuStatusGetAck   LcChsmPsuStatusGetAck,
+        lcChsmBMRStatusGetAck   LcChsmBMRStatusGetAck,         --/*add by guhg for BMR,2015-11-30*/
+        lcChsmVoltCurrValueGetAck   LcChsmVoltCurrValueGetAck, --/*add by guhg for volt monitor,2015-08-01*/
+        lcChsmVoltCurrCfgGetAck LcChsmVoltCurrCfgGetAck,   --/*add by guhg for volt monitor,2015-08-01*/
+        lcChsmBMRCfgGetAck      LcChsmBMRCfgGetAck,   --/*add by guhg for volt monitor,2015-08-01*/
+        lcChsmVcmCfgGetAck      LcChsmVcmCfgGetAck, 
+        lcChsmVcmStatusGetAck   LcChsmVcmStatusGetAck,
+        lcChsmBootcmdGetAck     LcChsmBootcmdGetAck,
+        lcChsmFanStatusGetAck   LcChsmFanStatusGetAck,
+        lcChsmUpgradeLcImageAck LcChsmUpgradeLcImageAck,
+        lcChsmInitSdkAck        LcChsmInitSdkAck,
+        lcChsmPendingMsgDone    LcChsmPendingMsgDone,
+        lcChsmColdInfo          LcChsmColdInfo,
+        lcChsmColdChipStats     LcChsmColdChipStats,
+        lcAsicFatalInfo         LcAsicFatalInfo,
+        lcTmprThreshold         LcTmprThresholdMsg,
+        chsmLcAttachAck         ChsmLcAttachAck,
+        chsmKeepalive           ChsmKeepaliveMsg,
+        chsmSysSetVCT           ChsmSysSetVCTMsg,
+        chsmPortSetEn           ChsmPortSetEnMsg,
+        chsmPortSetSpeed        ChsmPortSetSpeedMsg,
+        chsmPortSetDuplex       ChsmPortSetDuplexMsg,
+        chsmPortSetLb           ChsmPortSetLbMsg,
+        chsmTmprThreshold       ChsmTmprThresholdMsg,
+        chsmFanSpeedRate	    ChsmFanSpeedRateMsg,		--/*add by qianj for fan speed,2017-08-02*/
+        chsmResetRebootInfo     ChsmResetRebootInfoMsg,        
+        chsmSetDatapathMode     ChsmSetDatapathModeMsg,
+        chsmReloadLc            ChsmReloadLcMsg,
+        chsmSetStmMode          ChsmSetStmPofileModeMsg,
+        chsmShowSDKallocInfo    ChsmShowSDKallocInfoMsg,
+        chsmPortGetInfo         ChsmPortGetInfoMsg,
+        chsmPortGetStats        ChsmPortGetStatsMsg,
+        chsmDbgCtrlSet          ChsmDbgCtrlSetMsg,
+        chsmDbgCtrlGet          ChsmDbgCtrlGetMsg,
+        chsmTmprGet             ChsmTmprGetMsg,
+        chsmGetPsuStatus        ChsmGetPsuStatus,
+        chsmGetBMRStatus        ChsmGetBMRStatus,          --/*add by guhg for BMR,2015-11-30*/    
+        chsmGetVoltCurrValue    ChsmGetVoltCurrValue,
+        chsmGetVoltCurrCfg      ChsmGetVoltCurrCfg,         --/*add by guhg for volt monitor,2015-08-01*/
+        chsmGetBMRCfg           ChsmGetBMRCfg,
+        chsmGetVcmCfg			ChsmGetVcmCfg,
+        chsmGetVcmStatus        ChsmGetVcmStatus,        
+        chsmGetBootcmd          ChsmGetBootcmd,
+        chsmGetFanStatus        ChsmGetFanStatus,
+        chsmSetSerialNo         ChsmSetSerialNo,
+        chsmCardState           ChsmCardState,
+        chsmInitSdk             ChsmInitSdkMsg,
+        chsmSetKeepaliveEn      ChsmSetKeepaliveEnMsg,
+        chsmSetErrRebootEn      ChsmSetErrRebootEnMsg,
+        chsmSetLcFlag           ChsmSetLcFlagMsg,
+        chsmSetPhyTestFlag      ChsmSetPhyTestFlagMsg,      
+        chsmSmartCfgGet         ChsmSmartCfgMsg, -- /* added by liuyang for smartconfig,2011-10-26 */ 
+        chsmSmartCfgSet         ChsmSmartCfgMsg, -- /* added by liuyang for smartconfig,2011-10-26 */             
+        chsmMgmtCfgGet          ChsmMgmtCfgMsg,
+        chsmMgmtCfgSet          ChsmMgmtCfgMsg,
+        chsmSerialNoGet         ChsmSerialNoGetMsg,
+        chsmBootromVerGet       ChsmBootromVerGetMsg,
+        chsmUptimeGet           ChsmUptimeGetMsg,
+        chsmOemInfoGet          ChsmOemInfoGetMsg,
+        chsmOemInfoSet          ChsmOemInfoSetMsg,
+        chsmPortInfoSet         ChsmPortInfoSetMsg,
+        lcSerialNoGetAck        LcSerialNoGetAckMsg, 
+        lcBootromVerGetAck      LcBootromVerGetAckMsg,
+        lcUptimeGetAck          LcUptimeGetAckMsg,
+        lcOemInfoGetAck         LcOemInfoGetAckMsg,
+        lcOemInfoTx             LcOemInfoTxMsg,
+        chsmCpuMacSet         	ChsmCpuMacSetMsg,
+        chsmLedSet         	ChsmLedSetMsg,
+        chsmLedAlarmFlagSet     ChsmLedAlarmFlagSetMsg,
+        chsmUpdatebootrom       ChsmUpdatebootromMsg,
+	chsmLoadPhyFirmware     ChsmLoadPhyFirmwareMsg,
+        chsmConfigSpeedMode     ChsmConfigSpeedModeMsg,
+        chsmConfigbootcmd	ChsmConfigbootcmdMsg,
+        chsmUpdateEpld          ChsmUpdateEpldMsg,        
+        chsmConfigdiaglevel	ChsmConfigdiaglevelMsg, 
+        chsmStackingMaster      ChsmStackingMasterMsg,
+        chsmStackingTxTrunk     ChsmStackingTxTrunkMsg,
+		chsmMediaTypeSet        ChsmMediaTypeSetMsg,
+		chsmPowerDownSet        ChsmPowerDownSet,
+        chsmSetSwVer            ChsmSetSwVerMsg,
+        -- active supvisor <-> standby supvisor
+        chsmAttach              ChsmAttachMsg,
+        chsmInitReady           ChsmInitReadyMsg,
+        chsmSyncData            ChsmSyncDataMsg,
+        chsmSyncCmd             ChsmSyncCmdMsg,
+        chsmSetPktSeqChk        ChsmSetPktSeqChkMsg,
+        chsmUpgradeLcImage      ChsmUpgradeLcImageMsg,
+        chsmRedundancyMode      ChsmRedundancyMode,
+        chsmFullDumpStatus      ChsmFullDumpStatus,
+        chsmSwitchoverSim       ChsmSwitchoverSim,
+        chsmRecoverSystem       ChsmRecoverSystem,  
+        chsmDyingGasp           ChsmDyingGasp,
+                
+        -- sync messages
+        chsmShowLcImageReq      ChsmShowLcImageReq,
+        lcShowLcImageRes        LcShowLcImageRes,
+        chsmReadRegsReq         SyncReadRegsReq,
+        lcmReadRegsRes          SyncReadRegsRes,
+        chsmWriteRegsReq        SyncWriteRegsReq,
+        lcmWriteRegsRes         SyncWriteRegsRes,
+
+        -- sync show tcam messages
+        diagAclGetFreeLableReq     AclGetFreeLabelIndexMsg,
+        diagAclGetFreeLableRes     AclFreeLableIndexMsg,
+        diagAclGetTcamUsgReq       AclGetTcamUsgMsg,
+        diagAclGetTcamUsgRes       AclTcamUsageMsg,
+        diagShowAclEntriesReq      AclTcamGetMsg,
+        diagShowAclEntriesRes      AclTcamDataMsg,
+        diagShowAclOneEntryReq     AclTcamGetOneEntryMsg,
+        diagShowAclOneEntryRes     AclTcamEntry,
+        diagShowL2EntriesReq       L2TcamEntryMsg,  
+        diagShowL2EntriesRes       L2TcamEntriesMsg,
+        diagShowL2OneEntryReq      L2TcamEntryMsg,
+        diagShowL2OneEntryRes      L2MacTcamEntry,
+        diagShowL2EntryCountReq    L2EntryCountReq,
+        diagShowL2EntryCountResp   L2EntryCountResp,
+        diagShowIPv4EntreisReq     L3TcamEntryMsg,   
+        diagShowIPv4EntreisRes     IPv4TcamEntriesMsg,
+        diagShowIPv4OneEntryReq    L3TcamEntryMsg,
+        diagShowIPv4OneEntryRes    IPv4TcamEntryMsg,
+        diagShowIPv6EntreisReq     L3TcamEntryMsg,
+        diagShowIPv6EntreisRes     IPv6TcamEntriesMsg,
+        diagShowIPv6OneEntryReq    L3TcamEntryMsg,
+        diagShowIPv6OneEntryRes    IPv6TcamEntryMsg,
+        diagShowIPmcEntreisReq     L3TcamEntryMsg,
+        diagShowIPmcEntreisRes     IPv4TcamEntriesMsg,
+        diagShowIPmcOneEntryReq    L3TcamEntryMsg,
+        diagShowIPmcOneEntryRes    IPv4TcamEntryMsg,
+        diagShowIPmcv6EntriesReq   L3TcamEntryMsg,  
+        diagShowIPmcv6EntriesRes   IPv6TcamEntriesMsg,
+        diagShowIPmcv6OneEntryReq  L3TcamEntryMsg,
+        diagShowIPmcv6OneEntryRes  IPv6TcamEntryMsg,
+        diagShowSramTblReq         SRAMEntryReqMsg,
+        diagShowSramTblRes         SRAMEntryMsg,
+        diagShowRegTblReq          RegEntryMsg,
+        diagShowRegTblRes          RegEntryRespMsg,
+        diagShowtcamUsrIDReq       VlanClassTcamEntryMsg,
+        diagShowtcamUsrIDRes       VlanClassTcamEntrisMsg,
+        diagShowMPLSReq            MPLSEntryMsg,
+        diagShowMPLSRes            MPLSEntriesMsg,
+        diagShowStpPortStateReq    BridgeStpPortStateReq,
+        diagShowStpPortStateRes    BridgeStpPortStateRes,
+        diagShowRateLimitStateReq  RateLimitStateReq,
+        diagShowRateLimitStateRes  RateLimitStateRes,
+        diagShowCmodelInfo         CmodelInfoMsg,
+        diagShowForwardIPEReq      ShowForwardMsg,
+        diagShowForwardEPEReq      ShowForwardMsg,
+        diagShowForwardResp        ShowForwardMsg,
+        diagDebugCmodel            DebugCmodelMsg,
+        diagShowTcamInfoReq        TcamInfoMsgReq,
+        diagShowTcamInfoAck        TcamInfoMsgAck,
+        
+        -- debug settings messages
+        chsmDebugReq               ChsmMsgDebugReq,
+        chsmDebugCtrlReq           ChsmMsgDebugCtrlReq
+    }
+}
+
+ChsmShowLcImageReq ::= SEQUENCE
+{
+    slot        INTEGER
+}
+
+LcShowLcImageRes ::= SEQUENCE
+{  
+    desc        PrintableString
+}
+
+SyncReadRegsReq ::= SEQUENCE
+{
+    opcode      INTEGER,
+    chip        INTEGER,
+    address     INTEGER,
+    count       INTEGER,
+    regWidth    INTEGER
+}
+
+SyncRegsValue ::= SEQUENCE
+{
+    addr        INTEGER,
+    value       INTEGER
+}
+
+SyncReadRegsRes ::= SEQUENCE
+{
+    err         INTEGER,
+    regVals     SEQUENCE OF SyncRegsValue
+}
+
+SyncWriteRegsReq ::= SEQUENCE
+{
+    opcode      INTEGER,
+    chip        INTEGER,
+    address     INTEGER,
+    regWidth    INTEGER,
+    value       INTEGER
+}
+
+SyncWriteRegsRes ::= SEQUENCE
+{
+    err         INTEGER
+}
+
+SlotNo ::= INTEGER (1..16)
+PortNo ::= INTEGER (0..63)
+
+BoardState ::= ENUMERATED
+{
+    active,
+	standby
+}
+
+ChassisType ::= ENUMERATED
+{
+    pizzabox,   -- 1-slot pizza-box
+    atca6,      -- 6-slot ATCA chassis
+    atca14      -- 14-slot ATCA chassis
+}
+
+BoardType ::= SEQUENCE
+{
+    series      INTEGER,
+    type        INTEGER
+}
+
+SDKTableType ::= SEQUENCE
+{
+	size       INTEGER,
+	number     INTEGER
+}
+
+SDKGlbInfo ::= SEQUENCE
+{
+	mcastGroupNum       INTEGER,
+	glbNexthopNum        INTEGER,
+	mac        INTEGER
+}
+
+ResultCode ::= ENUMERATED
+{
+	ok,         -- Result OK
+	slotError,  -- Slot No is not in rang
+	typeError,  -- Type Wrong
+	other       -- Other Error Code
+}	
+
+TmprLimit ::= SEQUENCE
+{
+	boardLow      INTEGER,
+	boardHigh     INTEGER,
+	boardCrit     INTEGER
+}
+
+LcAttachMsg ::= SEQUENCE
+{
+    logicSlot       SlotNo,
+    phySlot         SlotNo,
+    lcType          BoardType,
+    stmMode         INTEGER,
+    stmExtFlag      INTEGER,
+    portNum         INTEGER,
+    poePortNum      INTEGER,
+    tmprNum         INTEGER,
+    serialNo        PrintableString,
+    bootromVer      PrintableString,
+    hwVer           INTEGER,
+    epldVer         INTEGER,
+    epldDate        INTEGER,
+    epldTime        INTEGER,
+    fpgaVer         INTEGER,
+    swVer           PrintableString,
+    tcamType        INTEGER,
+    sramType        INTEGER,
+    flashSize       INTEGER,
+    dramSize        INTEGER,
+    extCardType     INTEGER,
+    extCardVer      INTEGER,
+    datapathMode    INTEGER,
+    tmprLimit       TmprLimit,
+    cpuType         INTEGER,
+    platformType    INTEGER,
+    sdkTable        SEQUENCE OF SDKTableType,
+    sdkGlbeInfo     SDKGlbInfo
+}
+
+LcOnlineMsg ::= SEQUENCE
+{
+    tmprLimit       TmprLimit,
+    epldVer         INTEGER,
+    epldDate        INTEGER,
+    epldTime        INTEGER,
+    epldstatus        INTEGER,
+    flashSize       INTEGER,
+    dramSize        INTEGER,
+    hwVer           INTEGER,
+    swVer           PrintableString,
+    platformType    INTEGER,
+    chipDeviceId  INTEGER,
+    chipVersionId INTEGER,
+    chipName       PrintableString,
+    bootromVer     PrintableString,
+    serialNo       PrintableString
+}
+
+LcDeattachMsg ::= SEQUENCE
+{
+    slot            SlotNo
+}
+
+LcPortInfoMsg ::= SEQUENCE
+{
+    portIdx            INTEGER,
+    portLogicIdx       INTEGER,
+    portGchipIdx       INTEGER,
+    portMedia	       INTEGER,
+    portPhyType	       INTEGER,
+    portPanelSlot      INTEGER,
+    portPanelPort      INTEGER,
+    subportPanelPort   INTEGER,
+    poesupport         INTEGER,
+    portspeedability   INTEGER,
+    portspeedreal      INTEGER,
+    lpsupport          INTEGER,
+    iscombo            INTEGER,
+    eeesupport         INTEGER,
+    unidirsupport      INTEGER,
+    mediaSwitchSupport INTEGER,
+    speedmodecfgen INTEGER,
+    speedmode          INTEGER,
+    mac                PrintableString
+}
+
+LcPortSpeedModeMsg ::= SEQUENCE
+{
+    portIdx            INTEGER,
+    portLogicIdx       INTEGER,
+    portPanelSlot      INTEGER,
+    portPanelPort      INTEGER,
+    subportPanelPort   INTEGER,
+    portspeedability   INTEGER,
+    speedmodecfgen INTEGER,
+    speedmode			INTEGER
+}
+
+DiagItem ::= SEQUENCE
+{
+    itemId      INTEGER,
+    level       INTEGER,
+    attr        INTEGER,
+    rslt        INTEGER,
+    runTime     INTEGER,
+    name        PrintableString
+}
+
+LcDiagResultMsg ::= SEQUENCE
+{
+    logicSlotNo             INTEGER,
+    itemNum                 INTEGER,
+    items                   SEQUENCE OF DiagItem
+}
+
+LcChsmKeepaliveAck ::= SEQUENCE
+{
+	slot            SlotNo
+}	
+
+FiberModuleValues ::= SEQUENCE
+{
+    curr1                REAL,
+	curr2                REAL,
+	curr3                REAL,
+	curr4                REAL,
+    highAlarm           REAL,
+    lowAlarm            REAL,
+    highWarn            REAL,
+    lowWarn             REAL
+}
+
+TunableValues ::= SEQUENCE
+{
+    tunablesupport      INTEGER,
+	tunemode            INTEGER,
+	firstfreq            REAL,
+	lastfreq            REAL,
+    stepfreq            REAL,
+    tunablewavelength   REAL,
+    dithersupport       INTEGER,
+    wavechannels        INTEGER,
+    wavechannelidx	 INTEGER
+}
+
+LcFiberModuleAttachMsg ::= SEQUENCE
+{
+    slot                INTEGER,
+    port                INTEGER,
+    type                INTEGER,
+    fiberflag           INTEGER,
+    iscopper            INTEGER,
+    channelidx          INTEGER,
+    channelnum          INTEGER,
+    name                PrintableString,
+    pn                  PrintableString,
+    sn                  PrintableString,
+    complianceCode      OCTET STRING,
+    wavelength          OCTET STRING,
+    length              OCTET STRING,
+    ddm                 INTEGER,
+    txPwr               FiberModuleValues,
+    rxPwr               FiberModuleValues,
+    bias                FiberModuleValues,
+    tmpr                FiberModuleValues,
+    vcc                 FiberModuleValues,
+    tunableinfo		TunableValues
+}
+
+LcFiberModuleDeattachMsg ::= SEQUENCE
+{
+    slot                INTEGER,
+    port                INTEGER
+}
+
+LcFiberModuleUpdateMsg ::= SEQUENCE
+{
+    slot                INTEGER,
+    port                INTEGER,
+    ddm                 INTEGER,
+    txPwr               FiberModuleValues,
+    rxPwr               FiberModuleValues,
+    bias                FiberModuleValues,
+    tmpr                FiberModuleValues,
+    vcc                 FiberModuleValues,
+    tunableinfo			TunableValues
+}
+
+LcPortLinkNotifyMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    linkup          BOOLEAN,
+    duplex          DuplexMode,
+    speed           SpeedMode,
+    media           INTEGER
+}
+
+LcChsmDbgCtrlGetAck ::= SEQUENCE
+{
+    slot            SlotNo,
+    moduleID        INTEGER,
+    enableBMP       INTEGER
+}
+
+
+LcChsmPortGetInfoAck ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    linkup          BOOLEAN,
+    duplex          DuplexMode,
+    speed           SpeedMode
+}
+
+LcChsmUpgradeLcImageAck ::= SEQUENCE
+{
+    result          INTEGER
+}
+
+TmprValue ::= SEQUENCE
+{
+    index           INTEGER,
+    value           INTEGER,
+    pos             INTEGER
+}
+
+LcChsmTmprGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    tmpr      	   SEQUENCE OF TmprValue
+}
+
+RebootInfo ::= SEQUENCE
+{
+    rebootType         PrintableString,
+    rebootTimes        PrintableString
+}
+
+LcChsmRebootInfo ::= SEQUENCE
+{
+    count          INTEGER,
+    slotNo         INTEGER,
+		rebootInfo      	   SEQUENCE OF RebootInfo
+}
+
+
+VCTPairInfo ::= SEQUENCE
+{
+    pairLength       INTEGER,
+    pairState        INTEGER,
+    pairAccuracy     INTEGER
+}
+
+LcChsmVCTGetInfo ::= SEQUENCE
+{
+    pairA          VCTPairInfo,
+    pairB          VCTPairInfo,
+    pairC          VCTPairInfo,
+    pairD          VCTPairInfo,
+    remotePair     INTEGER,
+    portSpeed      INTEGER,
+    portLinkup     INTEGER,
+    portEnable     INTEGER,
+    portId         INTEGER,
+    slotId         INTEGER
+}
+
+PsuValue ::= SEQUENCE
+{
+    index         INTEGER,
+    psuFan        INTEGER,
+    psuMode       INTEGER,
+    psuWorkStatus INTEGER,
+    psuAbsent     INTEGER,
+    shutdown      INTEGER,
+    psuType       INTEGER,
+    psuAlert      INTEGER,      -- /* added by liuht for bug 24525,2013-10-24 */
+    psuHealthStatusChange INTEGER,
+    psuPmbusSupport INTEGER,
+    psuPmbusStatusByte INTEGER,
+    psuPmbusStatusWord INTEGER,
+    psuPmbusStatusVout INTEGER,
+    psuPmbusStatusIout INTEGER,
+    psuPmbusStatusInput INTEGER,
+    psuPmbusStatusTemperature INTEGER,
+    psuPmbusStatusCml INTEGER,
+    psuPmbusStatusOther INTEGER,
+    psuPmbusStatusMfrSpecific INTEGER,
+    psuPmbusStatusFan12 INTEGER,
+    psuPmbusStatusFan34 INTEGER,
+    fixedstatus      INTEGER     -- /* added by chenjr for bug 53516,2019-09-19 */
+}
+
+LcChsmPsuStatusGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+		psu      	   SEQUENCE OF PsuValue
+}
+
+BMRValue ::= SEQUENCE
+{
+    index         INTEGER,
+    inVolt        REAL,
+    outVolt       REAL,
+    temp          REAL,
+    outCurr      REAL        
+}
+
+LcChsmBMRStatusGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    bmr      	   SEQUENCE OF BMRValue
+}
+
+
+-- /* added by guhg for volt monitor,2015-08-01 */
+VoltCurrValue ::= SEQUENCE
+{
+    value             REAL
+}
+
+LcChsmVoltCurrValueGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    voltcurr       SEQUENCE OF VoltCurrValue 
+}
+
+VoltCurrCfg ::= SEQUENCE
+{
+    flag              INTEGER,
+    voltSplitFactor REAL,
+    low               REAL,  
+    high              REAL, 
+    name 	      PrintableString
+}
+
+LcChsmVoltCurrCfgGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    voltcurrCfg       SEQUENCE OF VoltCurrCfg 
+}
+
+BMRCfg ::= SEQUENCE
+{
+    outVoltH          REAL,
+    outVoltL          REAL,
+    inVoltH           REAL,  
+    inVoltL           REAL, 
+    outCurrL          REAL,  
+    tmprH             REAL
+}
+
+LcChsmBMRCfgGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    bmrCfg         SEQUENCE OF BMRCfg 
+}
+
+VcmChannelCfg ::= SEQUENCE
+{
+    flag              INTEGER,
+    currDependPin		REAL,
+    voltSplitFactor 	REAL,
+    low               REAL,  
+    high              REAL, 
+    name 	      PrintableString
+}
+
+VcmCfg ::= SEQUENCE
+{
+	channelNum			INTEGER,
+    vcmChannelCfg       SEQUENCE OF VcmChannelCfg 
+}
+
+LcChsmVcmCfgGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    vcmCfg       SEQUENCE OF VcmCfg 
+}
+
+VcmMonitor ::= SEQUENCE
+{
+	volt	REAL,
+	curr	REAL,
+	temperature REAL
+}
+
+VcmStatus ::= SEQUENCE
+{
+    channelNum         INTEGER,
+    inVolt        REAL,
+    vcmMonitor	SEQUENCE OF VcmMonitor
+}
+
+LcChsmVcmStatusGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+    vcmStatus      SEQUENCE OF VcmStatus
+}
+
+LcChsmBootcmdGetAck ::= SEQUENCE
+{
+   bootcmd               PrintableString
+}
+
+FanValue ::= SEQUENCE
+{
+    index        INTEGER,
+    num          INTEGER,
+    speedAdjust  INTEGER,
+    present      INTEGER,
+    status       INTEGER,
+    speedLevel   INTEGER,
+    speedRate    INTEGER
+}
+
+LcChsmFanStatusGetAck ::= SEQUENCE
+{
+    count          INTEGER,
+		fan      	     SEQUENCE OF FanValue
+}
+
+LcChsmPortGetStatsAck ::= SEQUENCE
+{
+    slot                SlotNo,
+    port                PortNo,
+    rxPackets           INTEGER,
+    txPackets           INTEGER,
+    rxBytes             INTEGER,
+    txBytes             INTEGER,
+    rxJabber            INTEGER,
+    rxFragments         INTEGER,
+    rxFrame             INTEGER,
+    rxCrc               INTEGER,
+    txCollisions        INTEGER,
+    txCarrier           INTEGER,
+    txCrc               INTEGER
+}
+
+LcChsmInitSdkAck ::= SEQUENCE
+{
+		sysMac      PrintableString,
+    scfgFlags           INTEGER,               
+    errCode             INTEGER
+}
+
+LcChsmPendingMsgDone ::= SEQUENCE
+{
+    slot             INTEGER
+}
+
+LcChsmColdInfo ::= SEQUENCE
+{
+    slot             INTEGER,
+    logType          INTEGER,
+    logLevel         INTEGER,
+    logInfo          PrintableString 
+}
+
+LcChsmColdChipStats ::= SEQUENCE
+{
+    slot            INTEGER,
+    endFlag         INTEGER,
+    chipStats       PrintableString
+}
+
+LcAsicFatalInfo ::= SEQUENCE
+{
+    slot            INTEGER,
+    type            INTEGER,
+    loginfo         PrintableString
+}
+
+ChsmLcAttachAck ::= SEQUENCE
+{
+    slot            SlotNo,
+    chassisType     ChassisType,
+    state           INTEGER,
+    datapath        INTEGER,
+    debugEn         INTEGER,
+    errReboot       INTEGER,
+    lcFlag          INTEGER,
+    rslt            ResultCode
+}
+
+ChsmKeepaliveMsg ::= SEQUENCE
+{
+	slot            SlotNo
+}
+
+ChsmSysSetVCTMsg ::= SEQUENCE
+{
+    port       INTEGER,
+    slot       INTEGER
+}
+
+ChsmPortSetEnMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    enable          INTEGER
+}
+
+SpeedMode ::= ENUMERATED
+{
+    auto,
+    x10M,
+    x100M,
+    x1000M,
+    x1XG
+}
+
+ChsmPortSetSpeedMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    speed           SpeedMode
+}
+
+DuplexMode ::= ENUMERATED
+{
+    auto,
+    half,
+    full
+}
+
+ChsmPortSetDuplexMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    duplex          DuplexMode
+}
+
+PortLbType ::= ENUMERATED
+{
+    phyNear,
+    phyFar,
+    none
+}
+
+ChsmPortSetLbMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    lbType          PortLbType,
+    enable          BOOLEAN
+}
+
+ChsmPortSetLinEnMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    enable          INTEGER
+}
+
+ChsmPortSetLinChangeMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo,
+    srcSlot         SlotNo,
+    srcPort         PortNo,
+    linState        INTEGER
+}
+
+ChsmTmprThresholdMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    low             INTEGER,
+    high            INTEGER,
+    crit            INTEGER
+}
+
+LcTmprThresholdMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    low             INTEGER,
+    high            INTEGER,
+    crit            INTEGER
+}
+
+ChsmFanSpeedRateMsg ::= SEQUENCE
+{
+    slot                     SlotNo,
+    bottomspeedrate          INTEGER,
+    lowspeedrate             INTEGER,
+    highspeedrate            INTEGER,
+    fullspeedrate			 INTEGER
+}
+
+ChsmResetRebootInfoMsg ::= SEQUENCE
+{
+    slot            SlotNo
+}
+
+ChsmSetDatapathModeMsg ::= SEQUENCE
+{
+    mode            INTEGER
+}
+
+ChsmReloadLcMsg ::= SEQUENCE
+{
+    slot            SlotNo
+}
+
+ChsmSetStmPofileModeMsg ::= SEQUENCE
+{
+    stmMode        INTEGER
+}
+
+ChsmShowSDKallocInfoMsg ::= SEQUENCE
+{
+    detailed       INTEGER
+}
+
+ChsmPortGetInfoMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo
+}
+
+ChsmPortGetStatsMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    port            PortNo
+}
+
+Direction ::= ENUMERATED
+{
+    ingress,
+    egress
+}
+
+ChsmDbgCtrlSetMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    moduleID        INTEGER,
+    enableBMP       INTEGER
+}
+
+ChsmDbgCtrlGetMsg ::= SEQUENCE
+{
+    slot            SlotNo,
+    moduleID        INTEGER
+}
+
+
+ChsmTmprGetMsg ::= SEQUENCE
+{
+    index            INTEGER
+}
+
+ChsmSetSerialNo ::= SEQUENCE
+{
+    slot            SlotNo,
+    serialNo        PrintableString
+}
+
+ChsmGetPsuStatus ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetBMRStatus ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetVoltCurrValue ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetVoltCurrCfg ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetBMRCfg ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetVcmCfg ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetVcmStatus ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmGetBootcmd ::= SEQUENCE
+{
+    index           INTEGER
+}
+ChsmGetFanStatus ::= SEQUENCE
+{
+    index           INTEGER
+}
+
+ChsmCardState ::= SEQUENCE
+{
+    slot             INTEGER,
+    state            INTEGER
+}
+
+ChsmFlowSrvMsg ::= SEQUENCE
+{
+    dir              INTEGER,
+    srv              INTEGER,
+    srvPrio          INTEGER,
+    aclPrio          INTEGER,
+    aclType          INTEGER,
+    classidEnable    INTEGER,
+    classidPrio      INTEGER
+}
+
+ChsmPropMsg ::= SEQUENCE
+{
+    type             INTEGER,
+    value            INTEGER
+}
+
+ChsmInitSdkMsg ::= SEQUENCE
+{
+    gchipId          INTEGER,
+    supervisorSlot   INTEGER,
+    profileMode      INTEGER,
+    mep1msNum        INTEGER,
+    aclPropArray     SEQUENCE OF ChsmPropMsg,
+    flowSrvArray     SEQUENCE OF ChsmFlowSrvMsg    
+}
+
+ChsmSerialNoGetMsg ::= SEQUENCE
+{
+    serialNo         PrintableString    
+}
+
+ChsmBootromVerGetMsg ::= SEQUENCE
+{
+    bootRomVer         PrintableString    
+}
+
+ChsmUptimeGetMsg ::= SEQUENCE
+{
+    day             INTEGER,
+    hour            INTEGER,   
+    min             INTEGER      
+}
+
+ChsmOemInfoGetMsg  ::= SEQUENCE
+{
+    oemInfo          PrintableString
+}
+
+ChsmSmartCfgMsg ::= SEQUENCE -- /* added by liuyang for smartconfig, 2011-10-26 */
+{
+    flags           INTEGER
+}
+
+ChsmOemInfoSetMsg  ::= SEQUENCE
+{
+    oemInfo          PrintableString
+}
+
+ChsmPortInfoSetMsg  ::= SEQUENCE
+{
+    portInfo          PrintableString
+}
+
+ChsmMgmtCfgMsg     ::= SEQUENCE
+{
+    cfgs            PrintableString
+}
+
+LcSerialNoGetAckMsg ::= SEQUENCE
+{
+    serialNo         PrintableString    
+}
+
+LcBootromVerGetAckMsg ::= SEQUENCE
+{
+    bootromVer         PrintableString    
+}
+
+LcUptimeGetAckMsg ::= SEQUENCE
+{
+    day           INTEGER,
+    hour          INTEGER,
+    min           INTEGER     
+}
+
+LcOemInfoGetAckMsg  ::= SEQUENCE
+{
+    oemInfo          PrintableString
+}
+
+LcOemInfoTxMsg  ::= SEQUENCE
+{
+    oemInfo          PrintableString
+}
+
+ChsmCpuMacSetMsg ::= SEQUENCE
+{
+    enable          INTEGER    
+}
+
+ChsmLedSetMsg ::= SEQUENCE
+{
+    reserved        INTEGER,
+    ledStatus       INTEGER
+}
+
+ChsmLedAlarmFlagSetMsg ::= SEQUENCE
+{
+    ledAlarmFlag       INTEGER
+}
+
+ChsmUpdatebootromMsg ::= SEQUENCE
+{
+    dstfile         PrintableString  
+}
+
+ChsmLoadPhyFirmwareMsg ::= SEQUENCE
+{
+    dstfile         PrintableString,
+    portid          INTEGER
+}
+
+ChsmConfigSpeedModeMsg ::= SEQUENCE
+{
+    mode            INTEGER,
+    groupid         INTEGER
+}
+
+ChsmUpdateEpldMsg ::= SEQUENCE
+{
+    dstfile         PrintableString  
+}
+
+ChsmConfigbootcmdMsg ::= SEQUENCE
+{
+    bootcmd         PrintableString  
+}
+
+ChsmConfigdiaglevelMsg ::= SEQUENCE
+{
+    level          INTEGER 
+}
+
+ChsmStackingMasterMsg ::= SEQUENCE
+{
+    master          INTEGER
+}
+
+ChsmStackingTxTrunkMsg ::= SEQUENCE
+{
+    member          INTEGER,
+    trunk           INTEGER
+}
+
+ChsmMediaTypeSetMsg ::= SEQUENCE
+{
+    panelSlot           INTEGER,
+    panelPort           INTEGER,
+	mediaType           INTEGER
+}
+
+ChsmPowerDownSet ::= SEQUENCE
+{
+	powerDownFlag           INTEGER
+}
+
+ChsmSetKeepaliveEnMsg ::= SEQUENCE
+{
+    enable          INTEGER
+}
+
+ChsmSetLcFlagMsg ::= SEQUENCE
+{
+    lcFlag          INTEGER
+}
+
+ChsmSetPhyTestFlagMsg ::= SEQUENCE
+{
+    slotid          INTEGER,
+    portid          INTEGER,
+    subportid       INTEGER,
+    testFlag        INTEGER
+}
+
+ChsmSetErrRebootEnMsg ::= SEQUENCE
+{
+    enable          INTEGER
+}
+
+ChsmAttachMsg ::= SEQUENCE
+{
+    logicSlot       SlotNo,
+    phySlot         SlotNo,
+    cardType        BoardType,
+    portNum         INTEGER,
+    tmprNum         INTEGER,
+    serialNo        PrintableString,
+    bootromVer      PrintableString,
+    hwVer           INTEGER,
+    epldVer         INTEGER,
+    fpgaVer         INTEGER,
+    swVer           INTEGER
+}
+
+ChsmInitReadyMsg ::= SEQUENCE
+{
+    logicSlot       SlotNo
+}
+
+ChsmSyncDataType ::= ENUMERATED
+{
+    syncStartupConfig,
+    syncDhcpsnooping
+}	
+
+ChsmSyncDataState ::= ENUMERATED
+{
+    syncBegin,
+    syncTrans,
+    syncAbort,
+    syncEnd
+}	
+
+ChsmSyncDataMsg ::= SEQUENCE
+{
+    syncType        ChsmSyncDataType,
+    syncState       ChsmSyncDataState,
+    data            OCTET STRING
+}
+
+ChsmSyncCmdMsg ::= SEQUENCE
+{
+	type            INTEGER,
+	data            OCTET STRING
+}
+
+ChsmSetPktSeqChkMsg ::= SEQUENCE
+{
+    enable          INTEGER
+}
+
+ChsmUpgradeLcImageMsg ::= SEQUENCE
+{
+    type            INTEGER,
+    imageName       OCTET STRING
+}
+
+ChsmRedundancyMode ::= SEQUENCE
+{
+    mode            INTEGER
+}
+
+ChsmFullDumpState ::= ENUMERATED
+{
+    fullDumpInit,
+    fullDumpRequest,
+    fullDumpStart,
+    fullDumpEnd
+}
+
+ChsmFullDumpStatus ::= SEQUENCE
+{
+    status            ChsmFullDumpState
+}
+
+ChsmSwitchoverSim ::= SEQUENCE
+{
+    slot    INTEGER
+}
+
+ChsmRecoverSystem ::= SEQUENCE
+{
+    reset      INTEGER
+}
+
+ChsmDyingGasp ::= SEQUENCE
+{
+    dyingGasp      INTEGER
+}
+
+ChsmSetSwVerMsg ::= SEQUENCE
+{
+    swVer     PrintableString
+}
+
+END

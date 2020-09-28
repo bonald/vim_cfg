@@ -1,0 +1,568 @@
+HAGT2SRV-MSG DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    -- Common define
+    HalMsgDefErrorCode
+    FROM HAL-MSG-TYPES    
+
+    -- Common IF define
+    HalMsgIFSetLinkStatus,
+    HalMsgIFWriteCRCErrorLog
+    FROM HAL-MSG-COMM-IF
+    
+    -- Common stats define
+	HalMsgStatsResponseReq
+    FROM HAL-MSG-STATS
+    
+    -- L2 define
+    -- L2 VLAN define
+    HalMsgL2VlanAddReq,
+    HalMsgL2VlanDelReq,
+    HalMsgL2VlanSetStateReq,
+    HalMsgL2VlanSetPortUntagPvidReq,
+    HalMsgL2VlanSetFlagsReq,
+    HalMsgL2VlanUnsetFlagsReq,
+    HalMsgL2VlanSetPortTypeReq,
+    HalMsgL2VlanSetDefaultPvidReq,
+    HalMsgL2VlanAddVidToPortReq,
+    HalMsgL2VlanDeleteVidFromPortReq,
+    HalMsgL2VlanRemoveAggFromDefEntrysReq,
+    HalMsgL2VlanSetFidReq,
+    HalMsgL2VlanSetRouteMacReq,
+    HalMsgBrgVlanSetStpidReq,
+    HalMsgL2VlanSyncReq,
+    HalMsgL2VlanSetReplaceDscpReq,
+    HalMsgL2VlanAddPortFailListReq
+    FROM HAL-MSG-L2-VLAN
+  
+    -- L2 Bridge define
+    HalMsgBrgFdbOpReq,
+    HalMsgBrgLearnEnReq,
+    HalMsgBrgSystemEntryReq,
+    HalMsgBrgCpuPacketReq,
+    HalMsgBrgFilterToCpuReq,
+    HalMsgBrgFdbFlushByVlanPortReq,
+    HalMsgBrgFdbFlushByVlanMacReq,
+    HalMsgBrgFdbFlushByLabelReq,
+    HalMsgBrgLearnEntryListReq,
+    HalMsgBrgLearnRawReq,
+    HalMsgBrgAgingRawReq,
+    HalMsgBrgAgingEntryListReq,
+    HalMsgBrgFdbEntryListReq,
+    HalMsgBrgFdbEntryListRawReq,
+    HalMsgBrgSystemEntryListReq,
+    HalMsgBrgCpuPacketListReq,
+    HalMsgBrgFilterToCpuListReq,
+    HalMsgBrgSetPortStateReq,    
+    HalMsgBrgAgingScanEnReq,
+    HalMsgBrgDeleteEntryReq,
+    HalMsgBrgFlushFdbEnd
+    FROM HAL-MSG-L2-BRG
+
+    --L2 LACP define
+    HalMsgAggReq,
+    HalMsgAggPropSyncReq,
+    HalMsgMemportPropSyncReq,
+    HalMsgAttachAggReq,
+    HalMsgStateAloneReq,
+    HalMsgSetTxRxReq,
+    HalMsgLacpSyncReq,
+    HalMsgDebugLacp
+    FROM HAL-MSG-L2-LACP
+    
+    --L2 VLAN MAPPING define
+    HalMsgL2VlanMappingProReq,
+    HalMsgL2VlanMappingProListReq,
+    HalMsgL2VlanMappingEntryListReq
+    FROM HAL-MSG-L2-VLAN-MAPPING
+    
+    --L2 VLAN CLASSIFICATION define
+    HalMsgL2VlanClassificationEntryListReq,
+    HalMsgL2VlanClassificationEnListReq
+    FROM HAL-MSG-L2-VLAN-CLASSIFICATION
+
+    --L2 IP BINDING define
+    HalMsgL2IPBindingListReq,
+    HalMsgL2IPBindingEnReq
+    FROM HAL-MSG-L2-IP-BINDING
+
+    -- L2MC define
+    HalMsgL2mcMrouterPortReq,
+    HalMsgL2mcEntryReq,
+    HalMsgL2mcPortReq,
+    HalMsgL2mcEntryPortReq,
+    HalMsgL2mcVlanReq,
+    HalMsgL2mcDiscardUnknownReq,
+    HalMsgL2mcVlanDefGroupidReq,
+    HalMsgL2mcAddNhToFloodReq,
+    HalMsgL2mcRemoveNhFromFloodReq
+    FROM HAL-MSG-L2MC
+    
+    -- L2MEF define
+    HalMsgMefVlanTpIdReq,
+    HalMsgMefPduProcReq,
+    HalMsgMefPduProcListReq,
+    HalMsgMefpduTunnelEnableReq,
+    HalMsgMefBpduTunnelDmacReq
+    FROM HAL-MSG-L2-MEF
+    
+    -- OAM EFM define
+    HalMsgOamEFMTestPKTRes,
+    HalMsgOamEFMSetInternalPortReq
+    FROM HAL-MSG-OAM-EFM
+   
+    -- OAM CFM define
+    HalMsgEthOamCfmErrorReq,
+    HalMsgEthOamCfmLmepErrorReq,
+    HalMsgEthOamCfmRmepErrorReq,
+    HalMsgEthOamCfmLmDualReq,
+    HalMsgEthOamCfmLmSDReq,
+    HalMsgEthOamCfmGetTstCountersReq
+    FROM HAL-MSG-ETH-OAM
+    
+    --L2 Dot1x define
+    HalMsgDot1xAuth,
+    HalMsgDot1xSetPethAuth,
+    HalMsgDot1xSetState
+    FROM HAL-MSG-L2-DOT1X
+    
+    -- L3 define
+    -- L3 NEXTHOP define
+    HalMsgNhAddReq,
+    HalMsgNhToSpecReq,
+    HalMsgNhToFwdReq,
+    HalMsgNhDelReq,
+    HalMsgNhUpdatePortReq,
+    HalMsgNhUpdateMacReq,
+    HalMsgNhSyncReq
+    FROM HAL-MSG-NEXTHOP
+    
+    -- L3 IPUC define
+    HalMsgIPucRtAddFail,
+    HalMsgRouteInitReq,
+    HalMsgRouteAddReq,
+    HalMsgRouteDelReq,
+    HalMsgRoutev6AddReq,
+    HalMsgRoutev6DelReq,
+    HalMsgEnForwardV6Req,
+    HalMsgRouteSyncReq,
+    HalMsgRoutev6SyncReq
+    FROM HAL-MSG-IPUC
+    
+    -- L3 MPLS define
+    HalMsgMPLSNhAddReq,
+    HalMsgMPLSNhToSpecReq,
+    HalMsgMPLSNhToFwdReq,
+    HalMsgMPLSNhDelReq,
+    HalMsgMPLSNhUpdateAttrReq,
+    HalMsgMPLSNhSyncReq,
+    HalMsgMplsEnReq,
+    HalMsgMplsIlmAddReq,
+    HalMsgMplsIlmDelReq,
+    HalMsgVpwsEnReq,
+    HalMsgVpwsBindReq,
+    HalMsgVpwsUnBindReq,
+    HalMsgVplsEnReq,
+    HalMsgVplsPePortEnReq,
+    HalMsgVplsLabelBindReq,
+    HalMsgVplsLabelUnBindReq,
+    HalMsgVplsPortEnReq,
+    HalMsgVplsBindReq,
+    HalMsgVplsUnBindReq
+    FROM HAL-MSG-MPLS
+    
+    -- L3MC define
+    HalMsgL3mcStatResponse,
+    HalMsgL3mcIPv6StatResponse
+    FROM HAL-MSG-L3MC
+
+    -- L3 PBR define
+    HalMsgPBRPendPolicyRmapEntryResp
+    FROM HAL-MSG-PBR
+
+    -- Misc define
+
+    -- Misc PTP define
+    HalMsgPtpTxTimeStampResp,
+    HalMsgPtpGetTaiTimeResp
+    FROM HAL-MSG-PTP
+
+    -- Misc CPU Traffic deine
+    HalMsgCpuTrafficNhptrToReasonResp
+    FROM HAL-MSG-CPU-TRAFFIC
+
+    -- AclQoS define
+    -- Acl define
+    HalMsgPendAceResp
+    FROM HAL-MSG-ACL
+
+    -- QoS define
+    HalMsgQosPendFlowEntryResp,
+    HalMsgQosSetPortQueueClassResp,
+    HalMsgQosGetPortQueueDepthResp
+    FROM HAL-MSG-QOS
+
+    --Mirror define
+    HalMsgMirrorCfgSrcReq,
+    HalMsgMirrorCfgDestReq
+    FROM HAL-MSG-MIRROR
+
+    --Debug define
+    HalMsgDebugReq,
+    HalMsgLCSwitchReq
+    FROM HAL-MSG-DEBUG
+    
+    --BFD define
+    HalMsgBFDSessionStateReq,
+    HalMsgBFDSessionStateResp
+    FROM HAL-MSG-BFD
+
+    --OpenFlow define
+    HalMsgOpenFlowPortSetConfigReq
+    FROM HAL-MSG-OPENFLOW-PORT
+
+    -- OAM CFM define
+    HalMsgTpoamEventReq
+    FROM HAL-MSG-TPOAM
+    ;
+    
+Hagt2SrvMsgGenericReq ::= SEQUENCE
+{
+    err         HalMsgDefErrorCode,
+    msg         PrintableString
+}
+
+Hagt2SrvMsg ::= SEQUENCE
+{
+    ver             INTEGER (1..3),
+    id              INTEGER (0..2147483647),
+    agentId         INTEGER (0..2147483647), -- agent id is a bitmap, used as slot No
+    opHagt2Srv      CHOICE
+    {
+        -- Common Module {
+        -- IF Begin {{
+        hagt2SrvMsgSetLinkStatus                       HalMsgIFSetLinkStatus,
+        hagt2SrvMsgWriteCRCErrorLog                    HalMsgIFWriteCRCErrorLog,
+        -- IF End   }}
+        
+         -- Stats Begin {{
+        hagt2SrvMsgStatsResponse                       HalMsgStatsResponseReq,
+        -- stats End   }}
+        -- Common Module End }`
+    
+        -- L2 Module {
+        -- VLAN Begin {{
+        --hsrv2AgtMsgL2VlanAdd                         HalMsgL2VlanAddReq,
+        --hsrv2AgtMsgL2VlanDel                         HalMsgL2VlanDelReq,
+        --hsrv2AgtMsgL2VlanSetState                    HalMsgL2VlanSetStateReq,
+        --hsrv2AgtMsgL2VlanSetPortUntagPvid            HalMsgL2VlanSetPortUntagPvidReq,
+        --hsrv2AgtMsgL2VlanSetFlags                    HalMsgL2VlanSetFlagsReq,
+        --hsrv2AgtMsgL2VlanUnsetFlags                  HalMsgL2VlanUnsetFlagsReq,
+        --hsrv2AgtMsgL2VlanSetPortType                 HalMsgL2VlanSetPortTypeReq,
+        --hsrv2AgtMsgL2VlanSetDefaultPvid              HalMsgL2VlanSetDefaultPvidReq,
+        --hsrv2AgtMsgL2VlanAddVidToPort                HalMsgL2VlanAddVidToPortReq,
+        --hsrv2AgtMsgL2VlanDeleteVidFromPort           HalMsgL2VlanDeleteVidFromPortReq,
+        --hsrv2AgtMsgL2VlanRemoveAggFromDefEntrys      HalMsgL2VlanRemoveAggFromDefEntrysReq,
+        --hsrv2AgtMsgL2VlanSetFid                      HalMsgL2VlanSetFidReq,
+        --hsrv2AgtMsgL2VlanSetRouteMac                 HalMsgL2VlanSetRouteMacReq,
+        --hsrv2AgtMsgL2BrgSetVlanStpid                 HalMsgBrgVlanSetStpidReq,
+        --hsrv2AgtMsgL2VlanSync                        HalMsgL2VlanSyncReq,
+        --hsrv2AgtMsgL2VlanSetReplaceDscp              HalMsgL2VlanSetReplaceDscpReq, 
+        hagt2SrvMsgVlanAddPortFail                     HalMsgL2VlanAddPortFailListReq,
+        -- VLAN End   }}                              
+         
+
+        -- Bridge Begin {{                            
+          hagt2SrvMsgL2BrgFdbLearnRaw                  HalMsgBrgLearnRawReq,
+          hagt2SrvMsgL2BrgFdbAge                       HalMsgBrgAgingEntryListReq,  
+          hagt2SrvMsgL2BrgFdbDelete                    HalMsgBrgDeleteEntryReq, 
+          hagt2SrvMsgL2BrgFlushFdbEnd                  HalMsgBrgFlushFdbEnd,
+        --hsrv2AgtMsgL2BrgFdbAdd                       HalMsgBrgFdbOpReq,
+        --hsrv2AgtMsgL2BrgFdbDel                       HalMsgBrgFdbOpReq,
+        --hsrv2AgtMsgBrgSystemEntryAdd                 HalMsgBrgSystemEntryReq,
+        --hsrv2AgtMsgBrgSystemEntryDel                 HalMsgBrgSystemEntryReq,
+        --hsrv2AgtMsgBrgMacFilterAdd                   HalMsgBrgSystemEntryReq,
+        --hsrv2AgtMsgBrgMacFilterDel                   HalMsgBrgSystemEntryReq,
+        --hsrv2AgtMsgBrgCpuPacketAdd                   HalMsgBrgCpuPacketReq,
+        --hsrv2AgtMsgBrgCpuPacketDel                   HalMsgBrgCpuPacketReq,
+        --hsrv2AgtMsgBrgFilterToCpu                    HalMsgBrgFilterToCpuReq,
+        --hsrv2AgtMsgBrgLearnEn                        HalMsgBrgLearnEnReq,
+        --hsrv2AgtMsgBrgFdbFlushByVlan                 HalMsgBrgFdbFlushByVlanPortReq,
+        --hsrv2AgtMsgBrgFdbFlushByPort                 HalMsgBrgFdbFlushByVlanPortReq,
+        --hsrv2AgtMsgBrgFdbFlushByVlanPort             HalMsgBrgFdbFlushByVlanPortReq,
+        --hsrv2AgtMsgBrgFdbFlushByMac                  HalMsgBrgFdbFlushByVlanMacReq,
+        --hsrv2AgtMsgBrgFdbFlushByVlanMac              HalMsgBrgFdbFlushByVlanMacReq,
+        --hsrv2AgtMsgBrgFdbFlushByLabel                HalMsgBrgFdbFlushByLabelReq,
+        --hsrv2AgtMsgL2BrgFdbAddList                   HalMsgBrgFdbEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbDelList                   HalMsgBrgFdbEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbAddListRaw                HalMsgBrgFdbEntryListRawReq,
+        --hsrv2AgtMsgL2BrgFdbDelListRaw                HalMsgBrgFdbEntryListRawReq,
+        --hsrv2AgtMsgL2BrgFdbLearn                     HalMsgBrgLearnEntryListReq,
+        --hsrv2AgtMsgL2BrgFdbLearnRaw                  HalMsgBrgLearnRawReq,
+        --hsrv2AgtMsgL2BrgFdbAgeRaw                    HalMsgBrgAgingRawReq,
+        --hsrv2AgtMsgL2BrgFdbAge                       HalMsgBrgAgingEntryListReq,
+        --hsrv2AgtMsgBrgSystemEntryListAdd             HalMsgBrgSystemEntryListReq,
+        --hsrv2AgtMsgBrgMacFilterListAdd               HalMsgBrgSystemEntryListReq,
+        --hsrv2AgtMsgBrgCpuPacketListAdd               HalMsgBrgCpuPacketListReq,
+        --hsrv2AgtMsgBrgFilterToCpuList                HalMsgBrgFilterToCpuListReq,
+        --hsrv2AgtMsgBrgSetPortState                   HalMsgBrgSetPortStateReq,
+        --hsrv2AgtMsgL2BrgAgingScanEn                  HalMsgBrgAgingScanEnReq,
+        --hsrv2AgtMsgL2BrgDown                         HalMsgBrgAgingScanEnReq,
+        -- Bridge End }}
+	
+	    -- L2MC Begin {{
+	    --hsrv2AgtMsgL2mcMrouterPortAdd                HalMsgL2mcMrouterPortReq,
+	    --hsrv2AgtMsgL2mcMrouterPortDel                HalMsgL2mcMrouterPortReq,
+	    --hsrv2AgtMsgL2mcMrouterPortSync               HalMsgL2mcMrouterPortReq,
+	    --hsrv2AgtMsgL2mcEntryDel	                     HalMsgL2mcEntryReq,
+	    --hsrv2AgtMsgL2mcPortAdd                       HalMsgL2mcPortReq,
+	    --hsrv2AgtMsgL2mcPortDel                       HalMsgL2mcPortReq,
+	    --hsrv2AgtMsgL2mcEntryPortAdd	                 HalMsgL2mcEntryPortReq,
+	    --hsrv2AgtMsgL2mcEntryPortDel	                 HalMsgL2mcEntryPortReq,
+	    --hsrv2AgtMsgL2mcEntrySync                     HalMsgL2mcEntryPortReq,
+	    --hsrv2AgtMsgL2mcEnableByVlan                  HalMsgL2mcVlanReq,
+	    --hsrv2AgtMsgL2mcDisableByVlan                 HalMsgL2mcVlanReq,
+	    --hsrv2AgtMsgL2mcDisableByVlanSync             HalMsgL2mcVlanReq,
+	    --hsrv2AgtMsgL2mcEnableByVlanSync              HalMsgL2mcVlanReq,
+	    --hsrv2AgtMsgL2mcDiscardUnknown                HalMsgL2mcDiscardUnknownReq,
+	    --hsrv2AgtMsgL2mcDiscardUnknownSync            HalMsgL2mcDiscardUnknownReq,
+	    --hsrv2AgtMsgL2mcVlanDefGroupidAlloc           HalMsgL2mcVlanDefGroupidReq,
+	    --hsrv2AgtMsgL2mcVlanDefGroupidRelease         HalMsgL2mcVlanDefGroupidReq,
+	    --hsrv2AgtMsgL2mcVlanDefGroupidSync            HalMsgL2mcVlanDefGroupidReq,	
+	    --hsrv2AgtMsgL2mcAddNhToFlood                  HalMsgL2mcAddNhToFloodReq,
+	    --hsrv2AgtMsgL2mcRemoveNhFromFlood             HalMsgL2mcRemoveNhFromFloodReq,
+	    -- L2MC End }}                               
+	                                                 
+        --LACP Begin {{                              
+        --hsrv2AgtMsgLacpAggAdd                        HalMsgAggReq,
+        --hsrv2AgtMsgLacpAggDel                        HalMsgAggReq,
+        --hsrv2AgtMsgLacpAggPropSync                   HalMsgAggPropSyncReq,
+        --hsrv2AgtMsgLacpAggPropClear                  HalMsgAggPropSyncReq,
+        --hsrv2AgtMsgLacpMemPropSync                   HalMsgMemportPropSyncReq,
+        --hsrv2AgtMsgLacpMemPropClear                  HalMsgMemportPropSyncReq,
+        --hsrv2AgtMsgLacpAggMuxAttach                  HalMsgAttachAggReq,
+        --hsrv2AgtMsgLacpAggMuxDetach                  HalMsgAttachAggReq,
+        --hsrv2AgtMsgLacpStateSet                      HalMsgStateAloneReq,
+        --hsrv2AgtMsgLacpStateClear                    HalMsgStateAloneReq,
+        --hsrv2AgtMsgLacpSetTxRx                       HalMsgSetTxRxReq,
+        --hsrv2AgtMsgLacpSyncItem                      HalMsgLacpSyncReq,
+        --Lacp debug and show                        
+        --hsrv2AgtMsgLacpShowMemPorts                  HalMsgDebugLacp,
+        --hsrv2AgtMsgLacpShowVidPorts                  HalMsgDebugLacp,
+        --hsrv2AgtMsgLacpShowVlanStatus                HalMsgDebugLacp,
+        --hsrv2AgtMsgLacpShowVlanFloodMem              HalMsgDebugLacp,
+        --hsrv2AgtMsgLacpGetVlanStatus                 HalMsgDebugLacp,
+        --hsrv2AgtMsgLacpGetAggMember                  HalMsgDebugLacp,
+        --hsrv2AgtMsgLacpGetGlbPort                    HalMsgDebugLacp,
+        --LACP End }}    
+        
+        --VLAN MAPPING Begin {{
+        --hsrv2AgtMsgVlanMappingSetPortQinq            HalMsgL2VlanMappingProReq,
+        --hsrv2AgtMsgVlanMappingReplaceEnable          HalMsgL2VlanMappingProListReq,
+        --hsrv2AgtMsgVlanMappingAppendEnable           HalMsgL2VlanMappingProListReq,
+        --hsrv2AgtMsgVlanMappingEntryPro               HalMsgL2VlanMappingEntryListReq,
+        --VLAN MAPPING End }}                         
+                                                      
+        --MEF Begin {{                                
+        --hsrv2AgtMsgMefSetVlanTpId                    HalMsgMefVlanTpIdReq,
+        --hsrv2AgtMsgMefSetBpduTunnelDmac              HalMsgMefBpduTunnelDmacReq,
+        --hsrv2AgtMsgMefSetBpduTunnelEnable            HalMsgMefpduTunnelEnableReq,
+        --hsrv2AgtMsgMefSetMefPduTunnelEnable          HalMsgMefpduTunnelEnableReq,
+        --hsrv2AgtMsgMefSetBpduProcList                HalMsgMefPduProcListReq,
+        --hsrv2AgtMsgMefSetL2PduProcList               HalMsgMefPduProcListReq,
+        --MEF End }}                                 
+                                                     
+                
+        --OAM EFM Begin {{                                
+        hagt2SrvMsgOamEFMTestPKT                       HalMsgOamEFMTestPKTRes,
+        hagt2SrvMsgOamEFMSetInternalPort               HalMsgOamEFMSetInternalPortReq,
+        --MEF End }}   
+        
+        --OAM CFM Begin {{
+        hagt2SrvMsgEthOamCfmErrorReq                   HalMsgEthOamCfmErrorReq,
+        hagt2SrvMsgEthOamCfmLmepErrorReq               HalMsgEthOamCfmLmepErrorReq,
+        hagt2SrvMsgEthOamCfmRmepErrorReq               HalMsgEthOamCfmRmepErrorReq,
+        hagt2SrvMsgEthOamCfmLmDualReq                  HalMsgEthOamCfmLmDualReq,
+        hagt2SrvMsgEthOamCfmLmSDReq                    HalMsgEthOamCfmLmSDReq,
+        hagt2SrvMsgEthOamCfmGetTstCountersResp         HalMsgEthOamCfmGetTstCountersReq,
+        hagt2SrvMsgEthOamCfmReportTstCounters          HalMsgEthOamCfmGetTstCountersReq,
+        --CFM End }}   
+                                           
+        --DOT1X Begin {{                             
+        --hsrv2AgtMsgDot1xAuth                         HalMsgDot1xAuth,
+        --hsrv2AgtMsgDot1xSetPethAuth                  HalMsgDot1xSetPethAuth,
+        --DOT1X End }}                               
+                                                     
+        -- VLAN Class BEGIN {{                       
+        --hsrv2AgtMsgVlanClassificationEntryAdd        HalMsgL2VlanClassificationEntryListReq, 
+        --hsrv2AgtMsgVlanClassificationEntryDel        HalMsgL2VlanClassificationEntryListReq, 
+        --hsrv2AgtMsgVlanClassificationEnable          HalMsgL2VlanClassificationEnListReq, 
+        --hsrv2AgtMsgVlanClassificationDisable         HalMsgL2VlanClassificationEnListReq,
+        -- VLAN Class END   }}  
+        
+        -- IP BINDING BEGIN {{
+        --hsrv2AgtMsgIPBindingAdd                      HalMsgL2IPBindingListReq, 
+        --hsrv2AgtMsgIPBindingDel                      HalMsgL2IPBindingListReq, 
+        --hsrv2AgtMsgIPBindingEnable                   HalMsgL2IPBindingEnReq, 
+                                                     
+        -- IP BINDING END   }}                       
+        -- L2 Module End }                           
+                                                     
+        -- L3 Module {                               
+        -- NEXTHOP Begin {{                          
+        --hsrv2AgtMsgNhAdd                             HalMsgNhAddReq,
+        --hsrv2AgtMsgNhToSpec                          HalMsgNhToSpecReq,
+        --hsrv2AgtMsgNhToFwd                           HalMsgNhToFwdReq,
+        --hsrv2AgtMsgNhDel                             HalMsgNhDelReq,
+        --hsrv2AgtMsgNhUpdatePort                      HalMsgNhUpdatePortReq,
+        --hsrv2AgtMsgNhUpdateMac                       HalMsgNhUpdateMacReq,
+        --hsrv2AgtMsgNhSync                            HalMsgNhSyncReq,
+        -- NEXTHOP End   }}
+
+        -- L3 PBR Begin {{
+        hagt2SrvMsgPBRPendPolicyRmapEntryResp         HalMsgPBRPendPolicyRmapEntryResp,
+        -- L3 PBR End    }}
+                                                      
+        -- IPUC Begin {{          
+        hagt2SrvMsgRTAddFailReq                        HalMsgIPucRtAddFail,
+        hagt2SrvMsgRTDelFailReq                        HalMsgIPucRtAddFail,
+        --hsrv2AgtMsgRouteInit                         HalMsgRouteInitReq,
+        --hsrv2AgtMsgRouteAdd                          HalMsgRouteAddReq,
+        --hsrv2AgtMsgRouteDel                          HalMsgRouteDelReq,
+        --hsrv2AgtMsgRoutev6Add                        HalMsgRoutev6AddReq,
+        --hsrv2AgtMsgRoutev6Del                        HalMsgRoutev6DelReq,
+        --hsrv2AgtMsgRoutev6En                         HalMsgEnForwardV6Req,
+        --hsrv2AgtMsgRouteSync                         HalMsgRouteSyncReq,
+        --hsrv2AgtMsgRoutev6Sync                       HalMsgRoutev6SyncReq,
+        -- IPUC End   }}
+        
+        -- MPLS Begin {{
+        --hsrv2AgtMsgMplsEn                            HalMsgMplsEnReq,        
+        --hsrv2AgtMsgIlmAdd                            HalMsgIlmAddReq,
+        --hsrv2AgtMsgIlmDel                            HalMsgIlmDelReq,
+        --hsrv2AgtMsgVpwsEn                            HalMsgVpwsEnReq,
+        --hsrv2AgtMsgVpwsBind                          HalMsgVpwsBindReq,
+        --hsrv2AgtMsgVpwsUnBind                        HalMsgVpwsUnBindReq,
+        --hsrv2AgtMsgVplsEn                            HalMsgVplsEnReq,
+        --hsrv2AgtMsgVplsPePortEn                      HalMsgVplsPePortEnReq,
+        --hsrv2AgtMsgVplsLabelBind                     HalMsgVplsLabelBindReq,
+        --hsrv2AgtMsgVplsLabelUnBind                   HalMsgVplsLabelUnBindReq,
+        --hsrv2AgtMsgVplsPortEn                        HalMsgVplsPortEnReq,
+        --hsrv2AgtMsgVplsBind                          HalMsgVplsBindReq,
+        --hsrv2AgtMsgVplsUnBind                        HalMsgVplsUnBindReq,
+        --hsrv2AgtMsgModeUpdateLpk                     HalMsgModeUpdateLpkReq,
+        --hsrv2AgtMsgModeUpdateNh                      HalMsgModeUpdateNhReq,
+        -- MPLS End   }}                             
+                                                     
+	-- L3MC Begin {{  
+	  hagt2SrvMsgL3mcStatResponse                  HalMsgL3mcStatResponse,  
+	  hagt2SrvMsgL3mcIPv6StatResponse              HalMsgL3mcIPv6StatResponse,                          
+	--hsrv2AgtMsgL3mcAddressAdd                    HalMsgL3mcAddressAddReq,
+	--hsrv2AgtMsgL3mcAddressDel                    HalMsgL3mcAddressDelReq,
+	--hsrv2AgtMsgL3mcMembersDel                    HalMsgL3mcMembersReq,
+	--hsrv2AgtMsgL3mcMembersAdd                    HalMsgL3mcMembersReq,
+	--hsrv2AgtMsgMvrSetVlanMcEnReq                 HalMsgMvrVlanMcEnReq,
+	--hsrv2AgtMsgMvrSetVlanMcRpfEnReq              HalMsgMvrVlanMcRpfEnReq,
+	-- L3MC End }}                               
+        
+        -- L3 Module End }
+    
+        -- Misc Module {
+        -- PTP Begin {{
+        hagt2SrvMsgPtpTxTimeStamp                      HalMsgPtpTxTimeStampResp,
+        hagt2SrvMsgPtpGetTaiTimeResp                   HalMsgPtpGetTaiTimeResp,
+        -- PTP End   }}
+
+        -- CPU TRAFFIC Begin {{
+        hagt2SrvMsgCpuTrafficAddNhptrToReason          HalMsgCpuTrafficNhptrToReasonResp,
+        hagt2SrvMsgCpuTrafficDelNhptrToReason          HalMsgCpuTrafficNhptrToReasonResp,
+        -- CPU TRAFFIC End   }}                      
+                                                     
+        -- Misc Module End }                         
+                                                     
+        -- ACLQOS Module Begin {                     
+        -- ACL Begin {{                              
+        --hsrv2AgtMsgSetAclEnable                      HalMsgSetAclEnableReq,
+        --hsrv2AgtMsgSetAclEnByVid                     HalMsgSetAclEnByVidReq,
+        --hsrv2AgtMsgSetAceInvalid                     HalMsgSetAceInvalidReq,
+        --hsrv2AgtMsgSetAccessGroup                    HalMsgSetAccessGroupReq,
+        --hsrv2AgtMsgUnsetAccessGroup                  HalMsgUnsetAccessGroupReq,
+        --hsrv2AgtMsgDebugHardwareEn                   HalMsgDebugHardwareEnReq,
+        --hsrv2AgtMsgAclGetFreeLabelOrIndex            HalMsgAclGetFreeLabelOrIndexReq,        
+        hagt2SrvMsgPendAceResp                         HalMsgPendAceResp,
+        -- ACL End }}
+        
+        -- sFlow Begin {{
+        --hsrv2AgtMsgSetSflowEnable                    HalMsgSetSflowEnableReq,
+        --hsrv2AgtMsgSetSflowSample                    HalMsgSetSflowSampleReq,
+        -- sFlow End }}
+    
+        -- QoS Begin {{
+        hagt2SrvMsgQosPendFlowEntryResp                HalMsgQosPendFlowEntryResp,
+        hagt2SrvMsgQosSetPortQueueClassResp            HalMsgQosSetPortQueueClassResp,
+        hagt2SrvMsgQosGetPortQueueDepthResp            HalMsgQosGetPortQueueDepthResp,
+        -- QoS End }}
+        
+        -- ACLQOS Module End }
+    
+    
+        -- DEBUG {{
+        --hsrv2AgtMsgDebugSet                          HalMsgDebugReq,
+        --hsrv2AgtMsgLCSwitchSet                       HalMsgLCSwitchReq,
+        -- DEBUG }}                                  
+                                                     
+        --MIRROR {{                                  
+        --hsrv2AgtMsgMirrorSetDest                     HalMsgMirrorCfgDestReq,
+        --hsrv2AgtMsgMirorUnsetDest                    HalMsgMirrorCfgDestReq,
+        --hsrv2AgtMsgMirrorSetSrcPort                  HalMsgMirrorCfgSrcReq,
+        --hsrv2AgtMsgMirrorUnsetSrcPort                HalMsgMirrorCfgSrcReq,
+        --hsrv2AgtMsgMirrorSetSrcVlan                  HalMsgMirrorCfgSrcReq,
+        --hsrv2AgtMsgMirrorUnsetSrcVlan                HalMsgMirrorCfgSrcReq,
+        --hsrv2AgtMsgMirrorSetForEfmOamLb              HalMsgMirrorCfgDestReq,
+        --hsrv2AgtMsgMirrorUnsetForEfmOamLb            HalMsgMirrorCfgDestReq,
+        --MIRROR }}
+        --hsrv2AgtMsgGeneric                           Hsrv2AgtMsgGenericReq,
+        --hsrv2AgtMsgInitSeq                           Hsrv2AgtMsgInitSeqReq,
+        --hsrv2AgtMsgSynDone                           Hsrv2AgtMsgSynDoneReq,
+        hagt2SrvMsgAgentDbSyncReq                      Hagt2SrvMsgAgentDbSyncReq,
+        hagt2SrvMsgBFDSessionState                     HalMsgBFDSessionStateReq,
+        hagt2SrvMsgBFDSessionStateResp                 HalMsgBFDSessionStateResp,
+        
+        -- TPOAM Begin {{
+        hagt2SrvMsgTpoamEvent                          HalMsgTpoamEventReq,
+        -- TPOAM End }}
+
+        -- OpenFlow {{
+        hagt2SrvMsgOpenFlowPortSetConfig               HalMsgOpenFlowPortSetConfigReq,
+        -- OpenFlow }}
+
+        -- HA Begin
+        hagt2SrvMsgAuditMsgID                          Hagt2SrvMsgAuditMsgID,
+        -- HA End
+        -- Max Msg Type, MUST at the bottom
+        hagt2SrvMsgMax                INTEGER
+    }
+}
+Hagt2SrvMsgInitSeqReq ::= SEQUENCE
+{
+    initseq INTEGER (0..2147483647)
+}
+
+Hagt2SrvMsgSynDoneReq ::= SEQUENCE
+{
+    done INTEGER
+}
+
+Hagt2SrvMsgAgentDbSyncReq ::= SEQUENCE
+{
+    physlot INTEGER,
+    logicslot INTEGER,
+    type INTEGER
+}
+
+Hagt2SrvMsgAuditMsgID ::= SEQUENCE
+{
+    physlot INTEGER,
+    msgid INTEGER
+}
+END

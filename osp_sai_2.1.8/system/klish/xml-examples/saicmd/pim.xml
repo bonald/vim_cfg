@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+PIM
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ip pim" help="Pim information"/>
+
+	<COMMAND name="show ip pim dense-mode" help="Pim dense-mode"/>
+
+	<COMMAND name="show ip pim dense-mode neighbor" help="Pim dm neighbor">
+		<ACTION>
+			ps -fe | grep pimdd | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then			
+				sendmsg "show ip pim dense-mode neighbor" dm
+				cat /tmp/pimshow.txt 	
+			fi	
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip pim dense-mode mroute" help="Pim dm mroute">
+		<ACTION>
+			ps -fe | grep pimdd | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then			
+				sendmsg "show ip pim dense-mode mroute"	dm		
+				cat /tmp/pimshow.txt 	
+			fi			
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip pim sparse-mode" help="Pim sparse-mode"/>
+
+	<COMMAND name="show ip pim sparse-mode neighbor" help="Pim sm neighbor">
+		<ACTION>
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then			
+				sendmsg "show ip pim sparse-mode neighbor" show		
+				cat /tmp/pimshow.txt 	
+			fi	
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip pim sparse-mode mroute" help="Pim sm mroute">
+		<ACTION>
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then			
+				sendmsg "show ip pim sparse-mode mroute" show		
+				cat /tmp/pimshow.txt
+			fi	
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip pim sparse-mode rp-set" help="Pim sm rp-set">
+		<ACTION>
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then		
+				sendmsg "show ip pim sparse-mode rp-set" show			
+				cat /tmp/pimshow.txt
+			fi	
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip pim sparse-mode rp-hash" help="Pim sm rp-hash">
+		<PARAM name="address" help="group address" ptype="IP_ADDR"/>
+		<ACTION>
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then
+				sendmsg "show ip pim sparse-mode rp-hash ${address}" show			
+				cat /tmp/pimshow.txt	
+			fi	
+		</ACTION>
+	</COMMAND>
+	
+	<!--add by zhw for show igmp-->
+	<COMMAND name="show ip igmp groups" help="Igmp groups address">
+		<PARAM name="address" help="Igmp group address" optional="true" ptype="IP_ADDR" default=""/>
+		<ACTION>
+			ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then
+				sendmsg "show ip igmp groups ${address}" show			
+				cat /tmp/pimshow.txt	
+			fi
+			
+			ps -fe | grep pimdd | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then
+				sendmsg "show ip igmp groups ${address}" dm			
+				cat /tmp/pimshow.txt	
+			fi
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="show ip igmp interface" help="Igmp interface information">
+		<PARAM name="if_name" help="Physical interface name" ptype="IF_NAME_EV"/>
+		<ACTION>
+			ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then
+				sendmsg "show ip igmp interface ${if_name}" show			
+				cat /tmp/pimshow.txt	
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="show ip igmp global_info" help="Igmp global information">
+		<ACTION>
+			ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then
+				sendmsg "show ip igmp global_info" show			
+				cat /tmp/pimshow.txt		
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<!--add by zhw for show pim-->
+	<COMMAND name="show ip pim sparse-mode interface" help="Interface Name">
+		<PARAM name="if_name" help="Physical interface name" optional="true" ptype="IF_NAME_EV" default=""/>
+		<ACTION>
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then
+				sendmsg "show ip pim sparse-mode interface ${if_name}" show			
+				cat /tmp/pimshow.txt	
+			fi	
+		</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="router pim_sm" help="Start pim sm configuration" view="configure-pim_sm-view">
+	
+		<CTCDESCRIPTION>
+To configure pim sm routing process, use the router pimsm command in global configuration mode. To terminate an pim sm routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can create pim sm routing processes by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No pim sm routing process is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to create the pim sm routing process:
+Switch(config)# router pimsm
+Switch(config-router)#
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+network
+	   	</CTCRCMD>
+	   	<ACTION>
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "1" ] ; then
+	   			pimd_sm  1>/dev/null
+		   		if [ "$?" == "0" ] ; then
+					cdbctl create/cdb/l3/pim_sm/create_pim_sm
+					cat /dev/null > /tmp/pimshow.txt
+				fi
+			fi	
+		</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="no router pim_sm" help="stop pim sm configuration">
+	
+		<CTCDESCRIPTION>
+To configure pim sm routing process, use the router pimsm command in global configuration mode. To terminate an pim sm routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can create pim sm routing processes by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No pim sm routing process is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to remove the pim sm routing process:
+Switch(config)# no router pimsm
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+no network
+	   	</CTCRCMD>
+	   	<ACTION>
+	   		interface="eth-0-1"
+	   		ps -fe | grep pimd_sm | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then	   	
+		   		killall -9 pimd_sm 1>/dev/null
+		   		if [ "$?" == "0" ]; then
+					cdbctl delete/cdb/l3/pim_sm/remove_pim_sm
+					cdbctl delete/cdb/l3/pim_sm_rp/
+					cdbctl delete/cdb/l3/pim_sm_bsr/
+					cdbctl delete/cdb/l3/igmp_intf/$interface
+				fi
+			fi	
+		</ACTION>
+	</COMMAND>
+
+<COMMAND name="router pim_dm" help="Start pim dm configuration" >
+	
+		<CTCDESCRIPTION>
+To configure pim sm routing process, use the router pimsm command in global configuration mode. To terminate an pim sm routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can create pim sm routing processes by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No pim sm routing process is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to create the pim sm routing process:
+Switch(config)# router pimsm
+Switch(config-router)#
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+network
+	   	</CTCRCMD>
+	   	<ACTION>
+	   		ps -fe | grep pimdd | grep -v grep 1>/dev/null
+	   		if [ "$?" == "1" ] ; then
+	   			pimdd   1>/dev/null 
+		   		if [ "$?" == "0" ] ; then
+					cdbctl create/cdb/l3/pim_dm/create_pim_dm
+				fi
+			fi	
+		</ACTION>
+	</COMMAND>
+
+
+	<COMMAND name="no router pim_dm" help="stop pim dm configuration">
+	
+		<CTCDESCRIPTION>
+To configure pim sm routing process, use the router pimsm command in global configuration mode. To terminate an pim sm routing process, use the no form of this command.
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can create pim sm routing processes by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No pim sm routing process is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to remove the pim sm routing process:
+Switch(config)# no router pimsm
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+no network
+	   	</CTCRCMD>
+	   	<ACTION>
+	   		ps -fe | grep pimdd | grep -v grep 1>/dev/null
+	   		if [ "$?" == "0" ] ; then		   	
+		   		killall -9 pimdd 2>4.txt
+		   		if [ "$?" == "0" ]; then
+					cdbctl delete/cdb/l3/pim_dm/remove_pim_dm
+				fi
+			fi	
+		</ACTION>
+	</COMMAND>	
+	
+	<!-- add by zhw for igmp view -->
+	<COMMAND name="igmp" help="Start igmp configuration" view="configure-igmp-view">
+	
+		<CTCDESCRIPTION>
+To configure igmp, use the igmp command in global configuration mode. 
+		</CTCDESCRIPTION>
+      	<CTCUSAGE>
+You can create igmp by this command.
+      	</CTCUSAGE>
+	   	<CTCDEFAULT>
+No igmp is defined.
+	   	</CTCDEFAULT>
+	   	<CTCEXAMPLE>
+The following example configures to create the igmp:
+Switch(config)# igmp
+Switch(config-router)#
+	   	</CTCEXAMPLE>
+	   	<CTCRCMD>
+network
+	   	</CTCRCMD>
+ 	   	<ACTION>
+			ps -ef | grep pimd_sm | grep -v grep 1>/dev/null
+			if [ "$?" != "0" ]; then
+				echo "Please start pim_sm first!"
+				exit 1
+				configure
+				igmp
+				exit
+			fi
+		</ACTION>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="configure-pim_sm-view"
+	prompt="${SYSTEM_NAME}(config-router)# "
+	depth="1">
+
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from router pimsm configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from router pimsm configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+    
+	<COMMAND name="bsr-candidate" help="Bsr-candidate">
+		<PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_EAVL"/>
+		<PARAM name="priority" help="Priority" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="priority_num" help="Prnority" ptype="PIM_PRIORITY"/>
+		</PARAM>
+		<PARAM name="interval" help="Interval" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="interval_num" help="Interval" ptype="PIM_INTERVAL"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l3/pim_sm_bsr/${if_name}/priority/${priority_num}/interval/${interval_num}
+			if [ "$?" == "0" ]; then
+				sendmsg "bsr-candidate ${if_name} priority ${priority_num} interval ${interval_num}"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="rp-candidate" help="Rp-candidate">
+		<PARAM name="if_name" help="Ethernet interface name" ptype="IF_NAME_EAVL"/>
+		<PARAM name="priority" help="Priority" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="priority_num" help="Prnority" ptype="PIM_PRIORITY"/>
+		</PARAM>
+		<PARAM name="interval" help="Interval" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="interval_num" help="Interval" ptype="PIM_INTERVAL"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l3/pim_sm_rp/${if_name}/priority/${priority_num}/interval/${interval_num}
+			cdbctl delete/cdb/l3/pim_sm_rp_gp
+			cdbctl create/cdb/l3/pim_sm_rp_gp/group_prefix/224.0.0.0/4
+			if [ "$?" == "0" ]; then
+				sendmsg "rp-candidate delete"
+				sendmsg "group-prefix delete"
+				sendmsg "rp-candidate ${if_name} priority ${priority_num} interval ${interval_num}"
+				sendmsg "group-prefix 224.0.0.0 masklen 4"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="hello-interval" help="hello-interval">
+		<PARAM name="interval_num" help="Interval" ptype="PIM_HELLO_INTERVAL"/>
+		<ACTION>
+			cdbctl update/cdb/l3/pim_sm/hello_time/${interval_num}
+			if [ "$?" == "0" ]; then
+				sendmsg "hello-interval  ${interval_num}"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="jp-timer" help="join/prune period">
+		<PARAM name="interval_num" help="Interval" ptype="PIM_HELLO_INTERVAL"/>
+		<ACTION>
+			cdbctl update/cdb/l3/pim_sm/jp_timer/${interval_num}
+			if [ "$?" == "0" ]; then
+				sendmsg "jp-timer  ${interval_num}"
+			fi
+		</ACTION>
+	</COMMAND>
+	
+    <COMMAND name="rp-address" help="static rp-address set">
+    	<PARAM name="address" help="static rp local address" ptype="IP_ADDR"/>
+		<PARAM name="group_addr" help="group address" ptype="IP_ADDR"/>
+		<PARAM name="masklen" help="Masklen" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mask" help="Masklen" ptype="PIM_MASKLEN"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/l3/pim_sm/rp_addr/${address}/${group_addr}/${mask}
+			if [ "$?" == "0" ]; then
+				sendmsg "rp-address ${address} ${group_addr} masklen ${mask}"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no rp-address" help="no static rp-address set">		
+        <ACTION>
+			cdbctl update/cdb/l3/pim_sm/rp_addr/0/0/0
+			if [ "$?" == "0" ]; then
+				sendmsg "rp-address delete"
+			fi			  
+        </ACTION>
+
+	</COMMAND>	
+
+	<COMMAND name="spt-threshold"
+		help="Set spt-threshold">
+		<PARAM name="infinity" help="deny switch to spt" ptype="SUBCOMMAND" mode="subcommand" />
+        <ACTION>
+			cdbctl update/cdb/l3/pim_sm/spt_infinity/1
+			if [ "$?" == "0" ]; then
+				sendmsg "spt-threshold infinity "
+			fi			  
+        </ACTION>
+
+	</COMMAND>
+
+	<COMMAND name="no spt-threshold"
+		help="no Set spt-threshold">
+		<PARAM name="infinity" help="deny switch to spt" ptype="SUBCOMMAND" mode="subcommand" />		
+        <ACTION>
+			cdbctl update/cdb/l3/pim_sm/spt_infinity/0
+			if [ "$?" == "0" ]; then
+				sendmsg "spt-threshold package 0 interval 100"
+			fi			  
+        </ACTION>
+
+	</COMMAND>	
+	
+		
+	<COMMAND name="no bsr-candidate" help="Bsr-candidate">
+		<ACTION>
+			cdbctl delete/cdb/l3/pim_sm_bsr/
+			if [ "$?" == "0" ]; then
+				sendmsg "bsr-candidate delete"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no rp-candidate" help="Rp-candidate">
+		<ACTION>
+			cdbctl delete/cdb/l3/pim_sm_rp/
+			if [ "$?" == "0" ]; then
+				sendmsg "rp-candidate delete"
+			fi
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="group-prefix" help="Group-prefix">
+		<PARAM name="address" help="IP address" ptype="IP_ADDR"/>
+		<PARAM name="masklen" help="Masklen" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="mask" help="Masklen" ptype="PIM_MASKLEN"/>
+		</PARAM>
+		<ACTION>
+			sendmsg "group-prefix ${address} masklen ${mask}"
+			cat /tmp/pimshow.txt 
+			if [[ ! -s /tmp/pimshow.txt ]]; then
+				cdbctl create/cdb/l3/pim_sm_rp_gp/group_prefix/${address}/${mask}
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no group-prefix" help="Group-prefix">
+		<ACTION>
+			cdbctl delete/cdb/l3/pim_sm_rp_gp
+			if [ "$?" == "0" ]; then
+				sendmsg "group-prefix delete"
+			fi
+		</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-igmp-view"
+	prompt="${SYSTEM_NAME}(config-igmp)# "
+	depth="1">
+
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from igmp configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from igmp configuration mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+	<COMMAND name="ip" help="Internet Protocol (IP)">
+    </COMMAND>
+
+    <COMMAND name="no ip" help="IP">
+    </COMMAND>
+        
+	<COMMAND name="ip igmp" help="igmp"> 
+		<PARAM name="querier-timeout" help="querier timeout" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="timeout_sec" help="igmp querier timeout" ptype="IGMP_QUERIER_TIMEOUT"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "igmp-querier-timeout ${timeout_sec}"
+			cdbctl update/cdb/l3/igmp_intf/$interface/querier_timeout/${timeout_sec}
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip igmp" help="igmp">
+		<PARAM name="querier-timeout" help="querier timeout" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "igmp-querier-timeout"
+			cdbctl update/cdb/l3/igmp_intf/$interface/querier_timeout/0
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="ip igmp query-interval" help="query interval">
+		<PARAM name="interval_sec" help="igmp query interval" ptype="IGMP_QUERY_INTERVAL"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "igmp-query-interval ${interval_sec}"
+			cdbctl update/cdb/l3/igmp_intf/$interface/query_interval/${interval_sec}
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip igmp query-interval" help="query interval">
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "igmp-query-interval"
+			cdbctl update/cdb/l3/igmp_intf/$interface/query_interval/0
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip igmp last-member-query-count" help="Last Member Query Count">
+		<PARAM name="query_count" help="Last Member Query Count(Default 2)" ptype="LAST_MEMBER_QUERY_COUNT"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "last-member-query-count ${query_count}"
+			cdbctl update/cdb/l3/igmp_intf/$interface/last_member_query_count/${query_count}
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip igmp last-member-query-count" help="Last Member Query Count">
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "last-member-query-count"
+			cdbctl update/cdb/l3/igmp_intf/$interface/last_member_query_count/0
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip igmp last-member-query-interval" help="Last Member Query Interval">
+		<PARAM name="query_interval" help="Last Member Query Interval(Default 1)" ptype="LAST_MEMBER_QUERY_INTERVAL"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "last-member-query-interval ${query_interval}"
+			cdbctl update/cdb/l3/igmp_intf/$interface/last_member_query_interval/${query_interval}
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip igmp last-member-query-interval" help="Last Member Query Interval">
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "last-member-query-interval"
+			cdbctl update/cdb/l3/igmp_intf/$interface/last_member_query_interval/0
+		</ACTION>
+	</COMMAND>
+	
+
+	<COMMAND name="ip igmp robustness-variable" help="Robustness variable">
+		<PARAM name="robustness_variable" help="Robustness variable(Default 3)" ptype="ROBUSTNESS_VARIABLE"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "robustness-variable ${robustness_variable}"
+			cdbctl update/cdb/l3/igmp_intf/$interface/robustness_variable/${robustness_variable}
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no ip igmp robustness-variable" help="Robustness variable">
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "robustness-variable"
+			cdbctl update/cdb/l3/igmp_intf/$interface/robustness_variable/0
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="ip igmp limit" help="Limit global groups number">
+		<PARAM name="global_limit_number" help="Limit number" ptype="IGMP_LIMIT_NUMBER"/>
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "global-limit-number ${global_limit_number}"
+			cdbctl update/cdb/l3/igmp_intf/$interface/global_limit_number/${global_limit_number}
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip igmp limit" help="Limit global groups number">
+		<ACTION>
+			interface="eth-0-1"
+			sendmsg "global-limit-number"
+			cdbctl update/cdb/l3/igmp_intf/$interface/global_limit_number/0
+		</ACTION>
+	</COMMAND>
+    
+</VIEW>
+
+<VIEW name="configure-if-view">
+	<COMMAND name="ip pim" help="Pim">
+		<PARAM name="mode" help="Pim mode" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="pim_mode" help="Pim dm/sm" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dense-mode" help="Pim dense-mode" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="sparse-mode" help="Pim sparse-mode" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/pim_mode/${pim_mode}
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ip pim" help="Pim">
+		<PARAM name="mode" help="Pim mode" ptype="SUBCOMMAND" mode="subcommand"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl update/cdb/l3/route_if/$IFACE/pim_mode/0
+		</ACTION>
+	</COMMAND>
+	
+	<!-- add by zhw for igmp -->
+	<COMMAND name="ip igmp" help="igmp configuration"/>
+	
+	<COMMAND name="ip igmp version" help="igmp version">
+          <PARAM name="version_s" help="version" ptype="SUBCOMMAND" mode="switch">
+          	  <PARAM name="V1" help="igmpv1" ptype="SUBCOMMAND" mode="subcommand"/>
+              <PARAM name="V2" help="igmpv2" ptype="SUBCOMMAND" mode="subcommand"/>
+              <PARAM name="V3" help="igmpv3" ptype="SUBCOMMAND" mode="subcommand"/>
+          </PARAM>
+          <ACTION>
+              IFACE=`echo ${iface} | sed 's/\//_/'`   
+              sendmsg "phyint $IFACE ${version_s}"
+              cdbctl update/cdb/l3/route_if/$IFACE/igmp_version/${version_s}
+          </ACTION>
+      </COMMAND>
+
+      <COMMAND name="no ip igmp" help="igmp configuration">
+          <PARAM name="version" help="igmp version" ptype="SUBCOMMAND" mode="subcommand"/>
+          <ACTION>
+              IFACE=`echo ${iface} | sed 's/\//_/'`   
+              sendmsg "no version $IFACE"
+              cdbctl update/cdb/l3/route_if/$IFACE/igmp_version/0
+          </ACTION>
+      </COMMAND>
+
+   <COMMAND name="ip igmp limit" help="Limit interface groups number">
+		<PARAM name="interface_limit_number" help="Limit number" ptype="IGMP_LIMIT_NUMBER"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			sendmsg "interface-limit-number $IFACE ${interface_limit_number}"
+			cdbctl update/cdb/l3/route_if/$IFACE/igmp_intf_limit_number/${interface_limit_number}
+		</ACTION>
+	</COMMAND>
+	<COMMAND name="no ip igmp limit" help="Limit interface groups number">
+          <ACTION>
+            IFACE=`echo ${iface} | sed 's/\//_/'`
+            LIMIT="9000"
+			sendmsg "interface-limit-number $IFACE $LIMIT"
+			cdbctl update/cdb/l3/route_if/$IFACE/igmp_intf_limit_number/0
+          </ACTION>
+      </COMMAND>
+
+	<COMMAND name="ip pim dr-priority" help="Configure DR priority">
+		<PARAM name="priority_num" help="DR Prio" ptype="PIM_DR_PRIORITY_ZHW"/>
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			cdbctl create/cdb/l3/pim_sm_bsr/$IFACE
+			cdbctl update/cdb/l3/pim_sm_bsr/$IFACE/dr_pri/${priority_num}
+			if [ "$?" == "0" ]; then
+				sendmsg "phyint ${if_name} dr-priority ${priority_num}"
+			fi
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="igmp" help="igmp">
+	</COMMAND>
+
+	<COMMAND name="igmp on" help="Igmp on">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			layer3_protocol_index=1
+			layer3_protocol=2
+			entry_valid=1
+			action_index=20
+			cdbctl update/cdb/l3/route_if/$IFACE/igmp/1
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/layer3_protocol_index/$layer3_protocol_index
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/layer3_protocol/$layer3_protocol
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/entry_valid/$entry_valid
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/action_index/$action_index
+			sendmsg "interface $IFACE igmp on"
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="igmp off" help="Igmp off">
+		<ACTION>
+			IFACE=`echo ${iface} | sed 's/\//_/'`
+			layer3_protocol_index=0
+			layer3_protocol=0
+			entry_valid=0
+			action_index=0
+			cdbctl update/cdb/l3/route_if/$IFACE/igmp/0
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/layer3_protocol_index/$layer3_protocol_index
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/layer3_protocol/$layer3_protocol
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/entry_valid/$entry_valid
+			cdbctl update/cdb/l3/igmp_intf/$IFACE/action_index/$action_index
+			sendmsg "interface $IFACE igmp off"
+		</ACTION>
+	</COMMAND>
+	<!-- end add -->
+
+</VIEW>
+
+</CLISH_MODULE>

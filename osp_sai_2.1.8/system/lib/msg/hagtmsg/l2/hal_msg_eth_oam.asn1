@@ -1,0 +1,265 @@
+HAL-MSG-ETH-OAM DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+    
+HalMsgEthOamCfmModeReq ::= SEQUENCE
+{
+    mode           INTEGER
+}
+
+HalMsgEthOamCfmEnableReq ::= SEQUENCE
+{
+    enable          INTEGER
+}
+
+HalMsgEthOamCfmPortEnableReq ::= SEQUENCE
+{
+    glPort            HalMsgIntList,
+    enable            INTEGER
+}
+
+HalMsgEthOamCfmMaidReq ::= SEQUENCE
+{
+    maid              SEQUENCE OF PrintableString
+}
+
+HalMsgEthOamCfmPort ::= SEQUENCE
+{
+    portId        INTEGER
+}
+
+HalMsgEthOamCfmAddLMepReq ::= SEQUENCE
+{
+    maid              PrintableString,
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    mpAddrMode        INTEGER,
+    enableDM          INTEGER,
+    active            INTEGER,
+    ccmInterval       INTEGER,
+    tpidType          INTEGER,
+    ccmGportid        INTEGER,
+    mcGroupidForUpMep INTEGER,
+    mepOnCpu          INTEGER,
+    addChan           INTEGER,
+    vlanMaxLevel      INTEGER,
+    portMaxLevel      INTEGER,
+    mepIndex          INTEGER
+}
+
+HalMsgEthOamCfmDelLMepReq ::= SEQUENCE
+{
+    maid              PrintableString,
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    delChan           INTEGER,
+    vlanMaxLevel      INTEGER,
+    portMaxLevel      INTEGER,
+    mcGroupidForUpMep INTEGER,
+    mepIndex          INTEGER
+}
+
+HalMsgEthOamCfmAddDelPortToUpMepMCReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    add               INTEGER,
+    membPort          SEQUENCE OF HalMsgEthOamCfmPort
+}
+
+HalMsgEthOamCfmRMepReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mac               PrintableString,
+    rmepid            INTEGER,
+    active            INTEGER,
+    seqNumEn          INTEGER,
+    rmepMacUpdateEn   INTEGER,
+    rmepIndex         INTEGER
+}
+
+HalMsgEthOamCfmMipReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    level             INTEGER,
+    aggMember         INTEGER
+}
+
+HalMsgEthOamCfmSetCCEnableReq ::= SEQUENCE
+{
+    maid              PrintableString,
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    enable            INTEGER
+}
+
+HalMsgEthOamCfmErrorReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgEthOamPortStatusReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    portStatus        INTEGER
+}
+
+HalMsgEthOamFrameStatRes ::= SEQUENCE
+{
+    frameError        INTEGER,
+    errorCodes        INTEGER
+}
+
+HalMsgEthOamCfmSetCCMIntervalReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    interval          INTEGER
+}
+
+HalMsgEthOamCfmSetCCMVlanCosReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    cos               INTEGER
+}
+
+HalMsgEthOamCfmClearRdiReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER
+}
+
+HalMsgEthOamCfmLearningEnableReq ::= SEQUENCE
+{
+    enable            INTEGER
+}
+
+HalMsgEthOamCfmLmepErrorReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgEthOamCfmRmepErrorReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgEthOamCfmClearErrorsReq ::= SEQUENCE
+{
+    level            INTEGER
+}
+
+HalMsgEthOamCfmPortLevelReq ::= SEQUENCE
+{
+    glPort            HalMsgIntList,
+    level             INTEGER
+}
+
+HalMsgEthOamCfmSetLmEnableReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    enable            INTEGER,
+    lmType            INTEGER,
+    cosType           INTEGER,
+    cosValue          INTEGER,
+    statsInterval     INTEGER,
+    portLMenable      INTEGER,
+    lmMembPort        HalMsgIntList
+}
+
+HalMsgEthOamCfmLmDualReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgEthOamCfmSetLmSDEnableReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    enable            INTEGER,
+    ratioLimit        INTEGER,
+    lmType            INTEGER,
+    cosType           INTEGER,
+    cosValue          INTEGER
+}
+
+HalMsgEthOamCfmLmSDReq ::= SEQUENCE
+{
+    count       INTEGER,
+    rawData     PrintableString
+}
+
+HalMsgEthOamCfmSetTrptEnableReq ::= SEQUENCE
+{
+    glPort            INTEGER,
+    vlanid            INTEGER,
+    direction         INTEGER,
+    level             INTEGER,
+    mepid             INTEGER,
+    enable            INTEGER,
+    
+    packetType        INTEGER,
+    transmitMode      INTEGER,
+    transmitNum       INTEGER,
+    patternType       INTEGER,
+    tlvType           INTEGER,
+    repeatValue       INTEGER,
+    packetSize        INTEGER,
+    rate              INTEGER,
+    maxRate           INTEGER,
+    incrRate          INTEGER,
+    txPort            INTEGER,
+    timeRange         INTEGER,
+    tstType           INTEGER,
+    cos               INTEGER,
+    routeMac          HalMsgDefL2MacAddr,
+    destMac           HalMsgDefL2MacAddr,
+    tpid              INTEGER
+}
+
+HalMsgEthOamCfmGetTstCountersReq ::= SEQUENCE
+{
+    txPkts        OCTET STRING,
+    txOctets      OCTET STRING,
+    rxPkts        OCTET STRING,
+    rxOctets      OCTET STRING
+}   
+END

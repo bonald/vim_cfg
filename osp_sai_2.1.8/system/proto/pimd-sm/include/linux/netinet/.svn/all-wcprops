@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/linux/netinet
+END
+in-my.h
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/linux/netinet/in-my.h
+END
+mroute.h
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/linux/netinet/mroute.h
+END
+in-glibc-2.0.h
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/linux/netinet/in-glibc-2.0.h
+END
+in-glibc-2.1.h
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/linux/netinet/in-glibc-2.1.h
+END
+ip_mroute.h
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/code/!svn/ver/1568/cnos-code/branches/CNOS-code-2.1.5.9-ft/source/cnos/system/third_party/compile/pimd-sm/include/linux/netinet/ip_mroute.h
+END

@@ -1,0 +1,10 @@
+include $(MK_DIR)/sys.mk
+
+PROG = check_fit_image
+
+SRCS = fdt.c fdt_ro.c fdt_wip.c fdt_sw.c fdt_rw.c fdt_strerror.c fdt_empty_tree.c fdt_addresses.c fdt_region.c
+SRCS += check_fit_image.c
+
+CPPFLAGS += -I.
+
+include $(MK_DIR)/prog.mk

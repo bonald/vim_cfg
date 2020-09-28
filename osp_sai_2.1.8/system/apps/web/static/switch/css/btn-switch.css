@@ -1,0 +1,48 @@
+.btn-switch {
+    height: 22px;
+    width: 70px;
+    background: rgba(204, 204, 204, 1);
+    position: relative;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.btn-switch > .switch {
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    color: #888888;
+    width: 33px;
+    background: white;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.5s;
+}
+
+.btn-switch.active {
+    background: rgba(37, 172, 231, 1);
+}
+
+.btn-switch.disabled {
+    cursor: not-allowed;
+    background: rgba(204, 204, 204, 0.5);
+}
+
+.btn-switch.active.disabled {
+    background: rgba(37, 172, 231, 0.5);
+}
+
+.btn-switch.active > .switch {
+    left: 35px;
+}
+
+.user-select-none {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}

@@ -1,0 +1,120 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'User Management' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- options -->
+        <button type="button" class="btn btn-default" ng-click="showAddUserForm=!showAddUserForm;" ng-hide="showAddUserForm || showSetUserForm">
+            <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+        </button>
+        <button type="button" class="btn btn-default" ng-click="showAddUserForm=!showAddUserForm;" ng-show="showAddUserForm">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+        </button>
+
+        <button class="btn btn-default" ng-click="showSetUserForm=!showSetUserForm; user.username = user[multiSelUser.indexOf(true)].key; user.privilege=user[multiSelUser.indexOf(true)].privilege" ng-disabled="multiSelUser.indexOf(true) == -1 || selected!=1" ng-hide="showAddUserForm || showSetUserForm">
+            <span class="glyphicon glyphicon-pencil"></span>&nbsp;{{ 'Modify' | translate }}
+        </button>
+        <button type="button" class="btn btn-default" ng-click="showSetUserForm=!showSetUserForm;" ng-show="showSetUserForm">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+        </button>
+        <button class="btn btn-default" ng-click="deleteMulti()" ng-disabled="multiSelUser.indexOf(true) == -1"  ng-hide="showAddUserForm">
+            <span class="glyphicon glyphicon-trash"></span>&nbsp;{{ 'Delete' | translate }}
+        </button>
+        <!-- options end -->
+        <hr />
+
+        <!-- add static route item -->
+        <form id="addUserForm" name="addUserForm" class="form-inline" ng-show="showAddUserForm" novalidate>
+            <dl>
+                <dd class="row" style="margin-top: 10px;" ng-class="{true: 'has-success', false: 'has-error'}[addUserForm.username.$valid]">
+                    <div class="col-md-3">{{ 'User Name:'  | translate }}</div>
+                    <div class=" col-md-3">
+                      <input type="text" class="form-control" name="username" placeholder="{{ 'Enter username' | translate }}" ng-model="user.username" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,31}[a-zA-Z0-9]$/" required />
+                    </div>
+                </dd>    
+                <dd class="row" style="margin-top: 10px;" ng-class="{true: 'has-success', false: 'has-error'}[addUserForm.password.$valid]">
+                    <div class="col-md-3">{{ 'Password: '  | translate }}</div>
+                    <div class="col-md-3">
+                      <input type="password" name="password" class="form-control" placeholder="{{ 'Enter password' | translate }}" ng-model="user.password" ng-pattern="/^[a-zA-Z0-9~!@#^\&\*\(\)_\+\-\[\]|\=.:\>\<\;,\{\}]{1,63}$/"required/>
+                     </div> 
+                </dd>    
+                <dd class="row" style="margin-top: 10px;" class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addUserForm.conPasswd.$valid]">
+                    <div class="col-md-3">{{ 'Confirm Password: '  | translate }}</div>
+                    <div class="col-md-3">
+                      <input type="password" name="conPasswd" class="form-control" placeholder="{{ 'Verif password' | translate }}" ng-model="user.conPasswd" ng-pattern="/^[a-zA-Z0-9~!@#^\&\*\(\)_\+\-\[\]|\=.:\>\<\;,\{\}]{1,63}$/"required/>
+                    </div> 
+                    <!-- ()_+-={}[]|:;<>,. -->
+                </dd>  
+                <dd class="row" style="margin-top: 10px;" ng-class="{true: 'has-success', false: 'has-error'}[addUserForm.privilege.$valid]">
+                    <div class="col-md-3">{{ 'Privilege:'  | translate }}</div>
+                    <div class="col-md-3" >
+                        <select class="form-control" name= "privilege" ng-model = "user.privilege" ng-options="m for m in privilege" required/>
+                        </select>
+                    </div>
+                </dd>
+            </dl>
+            <button class="btn btn-primary" ng-click="addUser(user.privilege)" ng-disabled="addUserForm.username.$invalid || user.password != user.conPasswd"  >{{ 'Confirm' | translate }}</button>
+        </form>
+        <!-- add static route item end -->
+
+         <!-- set static route item -->
+        <form id="setUserForm" name="setUserForm" class="form-inline" ng-show="showSetUserForm" ng-init="user.username=user[multiSelUser.indexOf(true)].key" novalidate>
+            <dl>
+                <dd class="row" style="margin-top: 10px;" ng-class="{true: 'has-success', false: 'has-error'}[setUserForm.username.$valid]">
+                    <div class="col-md-3">{{ 'User Name:'  | translate }}</div>
+                    <div class=" col-md-3">
+                      <input type="text" class="form-control" name="username"  placeholder="{{ user[multiSelUser.indexOf(true)].key }}" ng-model="user.username"  ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,31}[a-zA-Z0-9]$/" required/>
+                    </div>
+                </dd>
+
+                <dd class="row" style="margin-top: 10px;" ng-class="{true: 'has-success', false: 'has-error'}[setUserForm.password.$valid]">
+                    <div class="col-md-3">{{ 'Password: '  | translate }}</div>
+                    <div class="col-md-3">
+                      <input type="password" name="password" class="form-control" placeholder="{{ 'Enter password' | translate }}" ng-model="user.password" ng-pattern="/^[a-zA-Z0-9~!@#^\&\*\(\)_\+\-\[\]|\=.:\>\<\;,\{\}]{1,63}$/" required/>
+                     </div>
+                </dd>
+                <dd class="row" style="margin-top: 10px;" class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[setUserForm.conPasswd.$valid]">
+                    <div class="col-md-3">{{ 'Confirm Password: '  | translate }}</div>
+                    <div class="col-md-3">
+                      <input type="password" name="conPasswd" class="form-control"  placeholder="{{ 'Verif password' | translate }}" ng-model="user.conPasswd" ng-pattern="/^[a-zA-Z0-9~!@#^\&\*\(\)_\+\-\[\]|\=.:\>\<\;,\{\}]{1,63}$/"  required/>
+                    </div>
+                    <!-- ()_+-={}[]|:;<>,. -->
+                </dd>
+                <dd class="row" style="margin-top: 10px;" ng-class="{true: 'has-success', false: 'has-error'}[setUserForm.privilege.$valid]">
+                    <div class="col-md-3">{{ 'Privilege:'  | translate }}</div>
+                    <div class="col-md-3" >
+                         <select class="form-control" name= "privilege" ng-model = "user.privilege" ng-options="m for m in privilege" required/>
+                        </select>
+                    </div>
+                </dd>
+            </dl>
+            <button class="btn btn-primary" ng-click="updateUser(user.privilege)" ng-disabled="setUserForm.username.$invalid || user.password != user.conPasswd"  >{{ 'Confirm' | translate }}</button>
+        </form>
+        <!-- set static route item end -->
+`
+
+        <!-- static route item table -->
+        <table class="table table-hover" ng-show="!showAddUserForm" ng-hide="showAddUserForm || showSetUserForm">
+            <thead>
+                <tr>
+                    <th class="text-center"><input type="checkbox" ng-model="SELCTLALL" ng-click="setCheckboxAll(SELCTLALL)" /></th>
+                    <th class="text-center">{{ 'User Name' | translate }}</th>
+                    <th class="text-center">{{ 'Privilege' | translate }}</th>
+                    <th class="text-center">{{ 'Password' | translate }}</th>    
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="x in user">
+                    <td class="text-center">
+                      <input ng-if="x.username == 'admin'" type="checkbox" disabled />
+                      <input ng-if="x.username != 'admin'"type="checkbox" ng-model="multiSelUser[user.indexOf(x)]" ng-change="change()"/></td>
+                    <td class="text-center">{{ x.username }}</td>
+                    <td class="text-center">{{ x.privilege }}</td>
+                    <td class="text-center" ng-if="x.enc_passwd==''">{{ x.password }}</td>
+                     <td class="text-center" ng-if="x.enc_passwd!=''">{{ x.enc_passwd }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- static route item table end -->
+    </div>
+</div>

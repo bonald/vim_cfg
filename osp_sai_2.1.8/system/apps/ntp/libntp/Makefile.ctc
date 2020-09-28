@@ -1,0 +1,114 @@
+include $(MK_DIR)/sys.mk
+
+CPPFLAGS += -Wno-error=format-contains-nul
+
+LIB = ntp
+SRCS =	\
+	systime.c					\
+	a_md5encrypt.c				\
+	adjtime.c					\
+	atoint.c					\
+	atolfp.c					\
+	atouint.c					\
+	audio.c						\
+	authkeys.c					\
+	authreadkeys.c				\
+	authusekey.c				\
+	bsd_strerror.c				\
+	buftvtots.c					\
+	caljulian.c					\
+	caltontp.c					\
+	calyearstart.c				\
+	clocktime.c					\
+	clocktypes.c				\
+	decodenetnum.c				\
+	dofptoa.c					\
+	dolfptoa.c					\
+	emalloc.c					\
+	findconfig.c				\
+	getopt.c					\
+	hextoint.c					\
+	hextolfp.c					\
+	humandate.c					\
+	icom.c						\
+	iosignal.c					\
+	is_ip_address.c				\
+	lib_strbuf.c				\
+	machines.c					\
+	mktime.c					\
+	modetoa.c					\
+	mstolfp.c					\
+	msyslog.c					\
+	netof.c						\
+	ntp_calendar.c				\
+	ntp_crypto_rnd.c			\
+	ntp_intres.c				\
+	ntp_libopts.c				\
+	ntp_lineedit.c				\
+	ntp_random.c				\
+	ntp_rfc2553.c				\
+	ntp_worker.c				\
+	numtoa.c					\
+	numtohost.c					\
+	octtoint.c					\
+	prettydate.c				\
+	refidsmear.c				\
+	recvbuff.c					\
+	refnumtoa.c					\
+	snprintf.c					\
+	socket.c					\
+	socktoa.c					\
+	socktohost.c				\
+	ssl_init.c					\
+	statestr.c					\
+	strdup.c					\
+	strl_obsd.c					\
+	syssignal.c					\
+	timetoa.c					\
+	timevalops.c				\
+	uglydate.c					\
+	vint64ops.c					\
+	work_fork.c					\
+	work_thread.c				\
+	ymd2yd.c					\
+	../lib/isc/assertions.c					\
+	../lib/isc/buffer.c						\
+	../lib/isc/backtrace-emptytbl.c			\
+	../lib/isc/backtrace.c					\
+	../lib/isc/pthreads/condition.c			\
+	../lib/isc/unix/dir.c					\
+	../lib/isc/error.c						\
+	../lib/isc/unix/errno2result.c			\
+	../lib/isc/event.c						\
+	../lib/isc/unix/file.c					\
+	../lib/isc/inet_ntop.c					\
+	../lib/isc/inet_pton.c					\
+	../lib/isc/unix/interfaceiter.c			\
+	../lib/isc/lib.c						\
+	../lib/isc/log.c						\
+	../lib/isc/md5.c						\
+	../lib/isc/nls/msgcat.c					\
+	../lib/isc/unix/net.c					\
+	../lib/isc/netaddr.c					\
+	../lib/isc/netscope.c					\
+	../lib/isc/ondestroy.c					\
+	../lib/isc/random.c						\
+	../lib/isc/result.c						\
+	../lib/isc/unix/stdio.c					\
+	../lib/isc/unix/stdtime.c				\
+	../lib/isc/unix/strerror.c				\
+	../lib/isc/task.c						\
+	../lib/isc/pthreads/thread.c			\
+	../lib/isc/pthreads/mutex.c			\
+	../lib/isc/unix/time.c					\
+	../lib/isc/sha1.c						\
+	../lib/isc/sockaddr.c					\
+	../lib/isc/tsmemcmp.c					
+
+CPPFLAGS+= -DHAVE_CONFIG_H -I$(APP_TOP_DIR)/include -I$(APP_TOP_DIR)/ntp -I$(APP_TOP_DIR)/ntp/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/include/
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/unix/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/sntp/libopts
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/pthreads/include
+
+include $(MK_DIR)/lib.mk

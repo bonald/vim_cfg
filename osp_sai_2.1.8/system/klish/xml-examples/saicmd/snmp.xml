@@ -1,0 +1,1949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+SNMP
+</CTCMODULENAME>
+    
+    
+<VIEW name="Exec">
+
+<COMMAND name="show snmp" help="Show snmp">
+<ACTION>cdbctl show/cdb/app/snmp_cfg/server_enable</ACTION>
+
+        <CTCDESCRIPTION>
+To display the services information of SNMP, use the show snmp command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the service information of SNMP (enable or disable).
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Disable
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp command:  
+    Switch# show snmp  
+    SNMP services: disable   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server enable
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp statistics" help="Statistics">
+	<ACTION>
+		cdbctl update/cdb/app/snmp_cfg/agent_stats/1
+		usleep 100
+		cdbctl read/cdb/app/snmp_cfg/agent_stats
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="clear snmp" help="SNMP"/>
+<COMMAND name="clear snmp statistics" help="Statistics">
+	<ACTION>
+		cdbctl update/cdb/app/snmp_cfg/agent_stats/0
+	</ACTION>
+</COMMAND>
+
+<COMMAND name="show snmp-server" help="Show snmp settings"/>
+<COMMAND name="show snmp-server version" help="System snmp version show">
+<ACTION>cdbctl show/cdb/app/snmp_cfg/version</ACTION>
+
+        <CTCDESCRIPTION>
+To display the supported version of SNMP, use the show snmp-server version command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display snmp version information configured by command snmp-server version.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+SNMPv1 and SNMPv2c
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server version command:  
+    Switch# show snmp-server version   
+    SNMP version: SNMPv1/SNMPv2c/SNMPv3  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server version
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server community" help="Community string show">
+<ACTION>cdbctl show/cdb/app/snmp_community</ACTION>
+
+        <CTCDESCRIPTION>
+To display the SNMP community information, use the show snmp-server community command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the community information configured by command snmp-server community.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    Switch# show snmp-server community   
+    Community-Access   Community-String     Security-name  
+    ------------------+--------------------+-------------------    
+    read-write         centec               comm1  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server community
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server engineID" help="Engine_ID string show">
+<ACTION>cdbctl show/cdb/app/snmp_cfg/engineid</ACTION>
+
+        <CTCDESCRIPTION>
+To display the identification of the local Simple Network Management Protocol (SNMP) engine and all remote engines that have been configured on the router, use the show snmp-server engineID command in EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+An SNMP engine is a copy of SNMP that can reside on a local or remote device.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default engineID is 30383038303830383038.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example specifies 00000009020000000c025808 as the local engineID:  
+    Switch# show snmp-server engineID   
+    Engine ID   : 00000009020000000c025808  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server engineID
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server sys-info" help="System infomation show">
+<ACTION>cdbctl show/cdb/app/snmp_cfg/sys-info</ACTION>
+
+        <CTCDESCRIPTION>
+To display the system information of SNMP, use the show snmp-server sys-info command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The system contact can be set by using the snmp-server system-contact command. The system location can be set by using the snmp-server system-location command.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server sys-info command:  
+    Switch# show snmp-server sys-info   
+    Contact: admin@exampledomain.com   
+    Location: Sample Place   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server system-contact
+snmp-server system-location
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server trap-receiver" help="Trap receiver table show">
+<ACTION>cdbctl show/cdb/app/snmp_trap</ACTION>
+
+        <CTCDESCRIPTION>
+To display the SNMP traps receiver, use the show snmp-server trap-receiver command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display traps receiver information configured by command snmp-server trap target-address.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server trap-receiver command:
+    Switch# show snmp-server trap-receiver
+    Target-ipaddress  mgmt-if udpport  version  pdu-type  community                        
+    -----------------+-------+--------+--------+---------+--------------------------------  
+    10.10.39.235      yes     162      v1       trap      centec                          
+    10.10.39.235      yes     162      v2c      trap      centec                               
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server inform-receiver" help="Inform receiver table show">
+<ACTION>cdbctl show/cdb/app/snmp_inform</ACTION>
+
+        <CTCDESCRIPTION>
+To display the SNMP informs receiver, use the show snmp-server inform-receiver command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display inform receiver information configured by command snmp-server inform target-address.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server inform-receiver command:
+    Switch# show snmp-server inform-receiver 
+    Target-ipaddress  mgmt-if udpport  version  pdu-type  community                       
+    -----------------+-------+--------+--------+---------+--------------------------------
+    2.1.1.3           yes     162      v2c      inform    public             
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server inform target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server view" help="View show">
+<PARAM name="view" help="Specify a view name that want to show"
+    ptype="USERNAME" optional="true"/>
+<ACTION>
+if [ "${view}" != "" ]; then
+    cdbctl show/cdb/app/snmp_view/${view}
+else
+    cdbctl show/cdb/app/snmp_view
+fi
+</ACTION>
+
+        <CTCDESCRIPTION>
+To display the family name, storage type, and status of a Simple Network Management Protocol (SNMP) configuration and associated MIB, use the show snmp-server view command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to display the SNMP view configuration.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server view command:  
+    Switch# show snmp-server view   
+    View-name                       View-type         Subtree  
+    -------------------------------+-----------------+---------  
+    a1                              included          .1  
+    a2                              included          .1.2  
+    abc                             excluded          .1.3.6.2  
+    _all_                           included          .0  
+    _all_                           included          .1  
+    _all_                           included          .2  
+    _none_                          excluded          .0  
+    _none_                          excluded          .1  
+    _none_                          excluded          .2  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server view
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server context" help="Snmp-server context show">
+    <PARAM name="ctextname" help="Specify a context name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_context/${ctextname}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display the SNMP context information, use the show snmp-server context command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the context information configured by command snmp-server context.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server context command:    
+    Switch# show snmp-server context   
+    Context-name  
+    -------------------------------  
+    test                             
+    contextA     
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server context
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server usm-user" help="Snmp-server usm-user show">
+    <PARAM name="username" help="Specify a usm user name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_usm_user/${username}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display information about the configured characteristics of Simple Network Management Protocol (SNMP) users, use the show snmp-server usm-user command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+An SNMP user must be part of an SNMP group, as configured using the snmp-server usm-user command.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server usm-user command:
+    Switch# show snmp-server usm-user u3
+    User Name:     u3
+    Auth Protocol: sha
+    Auth password: abcdabcd
+    Priv Protocol: des
+    Priv password: 12341234
+    Storage Type:  nonvolatile
+    Row status:    active
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server usm-user
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server access" help="Snmp-server access show">
+    <PARAM name="accname" help="Specify a access group name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_access_usm/${accname}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display the access group information of SNMP, use the show snmp-server access command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the access information configured by command snmp-server access.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server access command:  
+    Switch# show snmp-server access g1  
+    Group name:     g1  
+    Context:        test  
+    Security model: usm  
+    Security level: auth  
+    Context Match:  exact  
+    Read view:      _all_  
+    Write view:     none  
+    Notify view:    none 
+    Storage Type:   permanent  
+    Row status:     active  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server access
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server group" help="Snmp-server group show">
+    <PARAM name="grpname" help="Specify a group name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_group_usm/${grpname}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display the names of configured SNMP groups, the security model being used, the status of the different views, and the storage type of each group, use the show snmp-server group command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+SNMP groups are configured using the snmp-server group command.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server group command:  
+    Switch# show snmp-server group g1  
+    Group name:     g1  
+    Security model: v3  
+    Security name:  u1  
+    Storage Type:   permanent  
+    Row status:     active  
+    Group name:     g1  
+    Security model: v3  
+    Security name:  u2  
+    Storage Type:   permanent  
+    Row status:     active  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server group
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server notify" help="Snmp-server notify show">
+    <PARAM name="notifyname" help="Specify a notify name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_notify/${notifyname}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display notification information of SNMP, use the show snmp-server notify command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the notification information configured by command snmp-server notify.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server notify command:  
+    Switch# show snmp-server notify  
+    Notify-name                     Notify-type  
+    -------------------------------+---------------------------  
+    note                            trap  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server notify
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server target-address" help="Snmp-server target-address show">
+    <PARAM name="addname" help="Specify a target address name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_target_addr/${addname}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display target address information of SNMP, use the show snmp-server target-address command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the target address information configured by command snmp-server target address.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server target-address command:  
+    Switch# show snmp-server target-address   
+    Targetaddress-name              IP-address        Mgmt-If Parameters
+    -------------------------------+-----------------+-------+---------- 
+    tad1                            10.10.27.232      yes     p1 
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show snmp-server target-params" help="Snmp-server target-params show">
+    <PARAM name="paramsname" help="Specify a target params name that want to show" ptype="USERNAME" optional="true"/>
+    <ACTION>
+    cdbctl show/cdb/app/snmp_target_params/${paramsname}
+    </ACTION>
+
+        <CTCDESCRIPTION>
+To display target params information of SNMP, use the show snmp-server target-params command in privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to display the target params information configured by command snmp-server target params.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show snmp-server target-params command:  
+    Switch# show snmp-server target-params p1  
+    Target parameter name:     p1  
+    Message processing model:  v3  
+    Security model:            v3  
+    Security name:             u1  
+    Security level:            noauth  
+    Storage Type:              nonvolatile  
+    Row status:                active  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+        </CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+<COMMAND name="snmp-server" help="Specify SNMP configuration" access="4" />
+<COMMAND name="no snmp-server" help="Specify SNMP configuration" access="4" />
+
+<COMMAND name="snmp-server enable" help="Enable SNMP feature"  access="4">
+<ACTION>cdbctl update/cdb/app/snmp_cfg/server_enable/1</ACTION>
+
+        <CTCDESCRIPTION>
+To enable the SNMP function, use the snmp-server enable command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The command is used to enable snmp global.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+SNMP function is disabled.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server enable command:  
+    Switch(config)# snmp-server enable  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no snmp-server enable
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server enable" help="Enable SNMP feature"  access="4">
+<ACTION>cdbctl update/cdb/app/snmp_cfg/server_enable/0</ACTION>
+
+        <CTCDESCRIPTION>
+To disable the SNMP function, use the no snmp-server enable command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The command is used to disable snmp global.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+SNMP function is disabled.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server disable command: 
+    Switch(config)# no snmp-server enable   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server enable
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server engineID" help="Configure a local SNMPv3 engineID"  access="4">
+<PARAM name="eid" help="Engine ID octet string of hexadecimal characters" ptype="ENGINEID"/>
+
+<ACTION>cdbctl update/cdb/app/snmp_cfg/engineid/${eid}</ACTION>
+
+        <CTCDESCRIPTION>
+To specify the Simple Network Management Protocol (SNMP) engine ID on the local device, use the snmp-server engineID command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The SNMP engine ID is a unique string used to identify the device for administration purposes. You do not need to specify an engine ID for the device. For further details on the SNMP engine ID, see RFC 2571.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+An SNMP engine ID is generated automatically but is not displayed or stored in the running configuration. You can display the default or configured engine ID by using the show snmp-server engineID command.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server engineID command:  
+    Switch(config)# snmp-server engineID 1234567890  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no snmp-server engineID
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server engineID" help="Configure a local SNMPv3 engineID"  access="4">
+<ACTION>cdbctl update/cdb/app/snmp_cfg/engineid</ACTION>
+
+        <CTCDESCRIPTION>
+To remove the configured engine ID, use the no snmp-server engineID command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The SNMP engine ID is a unique string used to identify the device for administration purposes. You do not need to specify an engine ID for the device. For further details on the SNMP engine ID, see RFC 2571.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+An SNMP engine ID is generated automatically but is not displayed or stored in the running configuration. You can display the default or configured engine ID by using the show snmp-server engineID command.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample remove from the snmp-server engineID command:  
+    Switch(config)# no snmp-server engineID 1234567890  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server engineID
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server system-contact" help="Specify SNMP system contact parameter" access="4">
+<PARAM name="contact" help="Specify SNMP system contact parameter" ptype="SNMPKLINE"/>
+<ACTION>
+ec="`fnconvert -c encoding -m '${contact}'`"
+cdbctl update/cdb/app/snmp_cfg/contact/$ec
+</ACTION>
+
+        <CTCDESCRIPTION>
+To set the system contact (sysContact) string, use the snmp-server system-contact command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the system contact of the SNMP agent so that these descriptions can be accessed through the configuration file.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No system contact string is set
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is an example of a system contact string:  
+    Switch(config)# snmp-server system-contact admin@centecnetworks.com  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no snmp-server system-contact
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server system-contact" help="Specify SNMP system contact parameter" access="4">
+<ACTION>cdbctl update/cdb/app/snmp_cfg/contact</ACTION>
+
+        <CTCDESCRIPTION>
+To remove the system contact information, use the no snmp-server system-contact command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to unset the system contact of the SNMP agent.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No system contact string is set
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is an example of remove system contact string: 
+    Switch(config)# no snmp-server system-contact
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server system-contact
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server system-location" help="Specify SNMP system location parameter" access="4">
+<PARAM name="location" help="Specify SNMP system location parameter" ptype="SNMPKLINE"/>
+<ACTION>
+ec="`fnconvert -c encoding -m '${location}'`"
+cdbctl update/cdb/app/snmp_cfg/location/$ec
+</ACTION>
+
+        <CTCDESCRIPTION>
+To set the system location string, use the snmp-server system-location command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the system location of the SNMP agent so that these descriptions can be accessed through the configuration file.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No system location string is set.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is an example of a system location string:  
+    Switch(config)# snmp-server system-location Sample Place  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no snmp-server system-location
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server system-location" help="Specify SNMP system location parameter" access="4">
+<ACTION>cdbctl update/cdb/app/snmp_cfg/location</ACTION>
+
+        <CTCDESCRIPTION>
+To remove the location string, use the no snmp-server system-location command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to remove the system location of the SNMP agent.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No system location string is set.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is an example of remove system location string:  
+    Switch(config)# no snmp-server system-location   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server system-location
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server version" help="Set SNMP version" access="4">
+<PARAM name="opt" help="Select snmp version"  ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="all" help="Support all SNMP versions(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="v1" help="Support SNMPv1" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="v2c" help="Support SNMPv2c" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="v3" help="Support SNMPv3" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+<ACTION>cdbctl update/cdb/app/snmp_cfg/version/${opt}</ACTION>
+
+        <CTCDESCRIPTION>
+To specify the support of SNMP version, use the snmp-server version command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the SNMP version the switch supported.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Support v1 v2c and v3 SNMP versions.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server version command:  
+    Switch(config)# snmp-server version all   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server version
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server version" help="Set SNMP version" access="4">
+<ACTION>cdbctl update/cdb/app/snmp_cfg/version/all</ACTION>
+
+        <CTCDESCRIPTION>
+To restore to the default value, use the no snmp-server version command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the SNMP version the switch supported.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Support v1 v2c and v3 SNMP versions.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server version command:  
+    Switch(config)# no snmp-server version      
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server version
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server view" help="Define a SNMPv2 view" access="4">
+<PARAM name="vname" help="Name of the view" ptype="SNMPNAME"/>
+<PARAM name="opt" help="Include or exclude"  ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="excluded" help="View type: exclude a subtree" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="included" help="View type: include a subtree" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+<PARAM name="subtree" help="Subtree name (.A.B.C.....)" ptype="SNMPSUBTREE"/>
+<PARAM name="mask" help="Define the subtree mask" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="mval" help="Subtree mask string in hexadecimal format" ptype="SNMPMASK"/>
+</PARAM>
+<ACTION>
+if [ "${mask}" != "" ]; then
+    cdbctl create/cdb/app/snmp_view/${vname}/type/${opt}/subtree/${subtree}/mask/${mval}
+else
+    cdbctl create/cdb/app/snmp_view/${vname}/type/${opt}/subtree/${subtree}
+fi
+</ACTION>
+
+        <CTCDESCRIPTION>
+To create or update a view entry, use the snmp-server view command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Other SNMP commands require an SNMP view as an argument. You use this command to create a view to be used as arguments for other commands.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No view entry exists.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server view command:  
+    Switch(config)# snmp-server view abc excluded 1.3.6.2  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server view
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server view" help="Define a SNMPv2 view" access="4">
+<PARAM name="vname" help="Name of the view" ptype="SNMPNAME"/>
+<PARAM name="opt" help="Include or exclude"  ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="excluded" help="View type: exclude a subtree" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="included" help="View type: include a subtree" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+<PARAM name="subtree" help="Subtree name (.A.B.C.....)" ptype="SNMPSUBTREE"/>
+
+<ACTION>cdbctl delete/cdb/app/snmp_view/${vname}/type/${opt}/subtree/${subtree}</ACTION>
+
+        <CTCDESCRIPTION>
+To remove the specified Simple Network Management Protocol (SNMP) server view entry, use the no snmp-server view command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No view entry exists.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server view command:  
+    Switch(config)# no snmp-server view abc excluded 1.3.6.2  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server view
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server community" help="Set snmp community string and access" access="4">
+<PARAM name="cname" help="Specify a SNMP community name" ptype="SNMPNAME"/>
+<PARAM name="opt" help="Include or exclude"  ptype="SUBCOMMAND" mode="switch">
+    <PARAM name="read-only" help="Read-only access with the community string" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="read-write" help="Read-Write access with the community string" ptype="SUBCOMMAND" mode="subcommand"/>
+</PARAM>
+<PARAM name="view" help="Restrict this community to a named MIB view (default view is _all_)" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+    <PARAM name="vval" help="MIB view to which this community has access" ptype="SNMPNAME"/>
+</PARAM>
+
+<ACTION>
+if [ "${view}" != "" ]; then
+    cdbctl create/cdb/app/snmp_community/${cname}/type/${opt}/view/${vval}
+else
+    cdbctl create/cdb/app/snmp_community/${cname}/type/${opt}
+fi
+</ACTION>
+
+        <CTCDESCRIPTION>
+To set up the community access string to permit access to the Simple Network Management Protocol (SNMP), use the snmp-server community command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The no snmp-server command disables all versions of SNMP.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP community string is defined.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to set the read/write community string to centec: 
+    Switch(config)# snmp-server community centec read-write  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server enable
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server community" help="Set snmp community string and access" access="4">
+<PARAM name="cname" help="Specify a SNMP community name" ptype="SNMPNAME"/>
+<ACTION>cdbctl delete/cdb/app/snmp_community/${cname}</ACTION>
+
+        <CTCDESCRIPTION>
+To remove the specified community string, use the no snmp-server community command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP community string is defined.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to remove the read/write community string centec: 
+    Switch(config)# no snmp-server community centec    
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server community
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server trap" help="Set trap configuraion"  access="4"/>
+
+
+
+<COMMAND name="snmp-server trap enable" help="Trap enable command" access="4">
+    <PARAM name="opt" help="Select snmp version"  ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="all" help="Enable all traps" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="coldstart" help="Enable cold start trap, take effect after save configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="warmstart" help="Enable warm start trap, take effect after save configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="linkdown" help="Enable linkdown trap" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="linkup" help="Enable linkup trap" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="system" help="Enable system traps" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="vrrp" help="Enable vrrp traps" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+    
+    <ACTION>
+    #if test "${opt}" == "all"; then 
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_coldstart/1
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_warmstart/1
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_linkdown/1
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_linkup/1
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_system/1
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_vrrp/1
+    #else
+        cdbctl update/cdb/app/snmp_cfg/trap_enable_${opt}/1
+    #fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To enable all Simple Network Management Protocol (SNMP) notification types that are available on your system, use the snmp-server trap enable command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The snmp-server trap enable command is used in conjunction with the snmp-server trap target-address command. Use the snmp-server trap target-address command to specify which host or hosts receive SNMP notifications. To send notifications, you must configure at least one snmp-server trap target-address command.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No notifications controlled by this command are sent.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server trap enable command:  
+    Switch(config)# snmp-server trap enable all  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server trap enable" help="Trap enable command" access="4">
+    <PARAM name="opt" help="Select snmp version"  ptype="SUBCOMMAND" mode="switch">
+        <PARAM name="all" help="Enable all traps" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="coldstart" help="Enable cold start trap, take effect after save configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="warmstart" help="Enable warm start trap, take effect after save configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="linkdown" help="Enable linkdown trap" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="linkup" help="Enable linkup trap" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="system" help="Enable system traps" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="vrrp" help="Enable vrrp traps" ptype="SUBCOMMAND" mode="subcommand"/>
+    </PARAM>
+    <ACTION>
+    #if test "${opt}" == "all"; then 
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_coldstart/0
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_warmstart/0
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_linkdown/0
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_linkup/0
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_system/0
+    #    cdbctl update/cdb/app/snmp_cfg/trap_enable_vrrp/0
+    #else
+        cdbctl update/cdb/app/snmp_cfg/trap_enable_${opt}/0
+    #fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To disable all available SNMP notifications, use the no snmp-server trap enable command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No notifications controlled by this command are sent.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from unset the snmp-server trap enable command:  
+    Switch(config)# no snmp-server trap enable all  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap enable
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server trap target-address" help="Set trap remote receiver address" access="4">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="sub1" help="Management port" mode="switch" ptype="SUBCOMMAND" >
+        <PARAM name="ipv4_addr" help="Specify a SNMP IPV4 address" ptype="IP_ADDR">
+            <PARAM name="source-ip" help="bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+                <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+            </PARAM>
+        </PARAM>
+        <PARAM name="ipv6_addr" help="Specify a SNMP IPV6 address" ptype="IPV6_ADDR"/>
+    </PARAM>
+    <PARAM name="community" help="Define the community string which has the access to receive trap" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="cname" help="Specify a SNMP community name" ptype="SNMPNAME"/>
+    </PARAM>
+    <PARAM name="udpport" help="Define the remote port which to receive the trap" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="port_id" help="The port number which area is 0 to 65535, the default is 162" ptype="SNMP_UDP_PORT"/>
+    </PARAM>
+    <ACTION>
+    # get updport
+    if [ -z "${port_id}" ]; then
+        PORT=162
+    else
+        PORT=${port_id}
+    fi
+    if test "${sub1}" == "ipv4_addr"; then      
+        if [ -n "${source-ip}" ]; then
+            cdbctl create/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}/type/5/ifname/${bind_if}/ip/${bind_addr}/
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        fi
+
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv4_addr}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+        fi
+
+        cdbctl create/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/5/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cdbctl create/cdb/app/snmp_trap/${ipv4_addr}/${cname}/$PORT
+            if [ $? -eq 0 ]; then
+                cdbctl update/cdb/app/snmp_trap/${ipv4_addr}/${cname}/$PORT/$NS_BAND/
+            else
+                cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+                if [ -n "${source-ip}" ]; then
+                    cdbctl delete/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}
+                fi
+            fi
+        else
+            if [ -n "${source-ip}" ]; then
+                cdbctl delete/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}
+            fi
+        fi
+    else
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6_addr}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+        fi
+        cdbctl create/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/5/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cdbctl create/cdb/app/snmp_trap/${ipv6_addr}/${cname}/$PORT
+            if [ $? -eq 0 ]; then
+                cdbctl update/cdb/app/snmp_trap/${ipv6_addr}/${cname}/$PORT/$NS_BAND/
+            else
+                cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+            fi
+        fi
+    fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To configure a remote trap managerment IP address, use the snmp-server target-address command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to specify the server target address to whitch the trap is sended.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+The router does not send any trap messages.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server trap target-address command:  
+    Switch(config)# snmp-server trap target-address mgmt-if 192.168.1.100 community test udpport 13  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap enable
+        </CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="no snmp-server trap" help="Set trap configuraion" access="4"/>
+
+<COMMAND name="no snmp-server trap target-address" help="Set trap remote receiver address" access="4">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="sub1" help="Management port" mode="switch" ptype="SUBCOMMAND" >
+        <PARAM name="ipv4_addr" help="Specify a SNMP IPV4 address" ptype="IP_ADDR" />
+        <PARAM name="ipv6_addr" help="Specify a SNMP IPV6 address" ptype="IPV6_ADDR"/>
+    </PARAM>
+    <PARAM name="community" help="Define the community string which has the access to receive trap" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="cname" help="Specify a SNMP community name" ptype="SNMPNAME"/>
+    </PARAM>
+    <PARAM name="udpport" help="Define the remote port which to receive the trap" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="port_id" help="The port number which area is 0 to 65535, the default is 162" ptype="SNMP_UDP_PORT"/>
+    </PARAM>
+    <ACTION>
+    # get updport
+    if [ -z "${port_id}" ]; then
+        PORT=162
+    else
+        PORT=${port_id}
+    fi
+
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+    else
+        NS_BAND=inband
+    fi
+
+    if test "${sub1}" == "ipv4_addr"; then      
+        cdbctl delete/cdb/app/snmp_trap/${ipv4_addr}/${cname}/$PORT/$NS_BAND
+        if [ $? -eq 0 ]; then
+            cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+            cdbctl delete/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}
+        fi
+    else
+        cdbctl delete/cdb/app/snmp_trap/${ipv6_addr}/${cname}/$PORT/$NS_BAND
+        if [ $? -eq 0 ]; then
+            cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+        fi
+    fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove the configuration of remote trap managerment IP address, use the no snmp-server trap target-address command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+The router does not send any trap messages.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from remove the snmp-server trap target-address command:  
+    Switch(config)# no snmp-server trap target-address mgmt-if 192.168.1.100 community test   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server trap delay" help="Set trap delay configuraion" access="4"/>
+
+<COMMAND name="snmp-server trap delay linkup" help="Linkup trap" access="4">
+        <PARAM name="trap_delay_time" help="Linkup trap delay time (Unit:second; default is: no delay)" ptype="TRAP_DELAY_TIME"/>
+        
+        <ACTION>cdbctl update/cdb/l2/brg_global/trap_delay_up/${trap_delay_time}</ACTION>
+        
+        <CTCDESCRIPTION>
+To configure the trap delay linkup time, use the snmp-server trap delay linkup command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the trap delay time for link up interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+0
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server trap delay linkup command:  
+    Switch(config)# snmp-server trap delay linkup 10  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no snmp-server trap delay linkup
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server trap delay linkdown" help="Linkdown trap" access="4">
+        <PARAM name="trap_delay_time" help="Linkdown trap delay time (Unit:second; default is: no delay)" ptype="TRAP_DELAY_TIME"/>
+        
+        <ACTION>cdbctl update/cdb/l2/brg_global/trap_delay_down/${trap_delay_time}</ACTION>
+        
+        <CTCDESCRIPTION>
+To configure the trap delay linkdown time, use the snmp-server trap delay linkdown command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the trap delay time for link down interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+0
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server trap delay linkdown command:  
+    Switch(config)# snmp-server trap delay linkdown 10  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no snmp-server trap delay linkdown
+        </CTCRCMD>
+        
+</COMMAND>
+
+<COMMAND name="no snmp-server trap delay" help="Set trap delay configuraion" access="4"/>
+
+<COMMAND name="no snmp-server trap delay linkup" help="Linkup trap" access="4">
+        <ACTION>cdbctl update/cdb/l2/brg_global/trap_delay_up/0</ACTION>
+        
+        <CTCDESCRIPTION>
+To configure the default trap delay linkup time, use the no snmp-server trap delay linkup command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set the default trap delay time for link up interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+0
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the no snmp-server trap delay linkup command:  
+    Switch(config)# no snmp-server trap delay linkup  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap delay linkup
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server trap delay linkdown" help="Linkdown trap" access="4"> 
+        <ACTION>cdbctl update/cdb/l2/brg_global/trap_delay_down/0</ACTION>
+        
+        <CTCDESCRIPTION>
+To configure the default trap delay linkdown time, use the no snmp-server trap delay linkdown command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to set default the trap delay time for link down interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+0
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the no snmp-server trap delay linkdown command:  
+    Switch(config)# no snmp-server trap delay linkdown  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server trap delay linkdown
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server inform" help="Set inform configuration" access="4"/>
+
+<COMMAND name="snmp-server inform target-address" help="Set inform remote receiver address" access="4">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="sub1" help="Management port" mode="switch" ptype="SUBCOMMAND" >
+        <PARAM name="ipv4_addr" help="Specify a SNMP IPV4 address" ptype="IP_ADDR">
+            <PARAM name="source-ip" help="bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+                <PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+            </PARAM>
+        </PARAM>
+        <PARAM name="ipv6_addr" help="Specify a SNMP IPV6 address" ptype="IPV6_ADDR"/>
+    </PARAM>
+    <PARAM name="community" help="Define the community string which has the access to receive trap" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="cname" help="Specify a SNMP community name" ptype="SNMPNAME"/>
+    </PARAM>
+    <PARAM name="udpport" help="Define the remote port which to receive the trap" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="port_id" help="The port number which area is 0 to 65535, the default is 162" ptype="SNMP_UDP_PORT"/>
+    </PARAM>
+    <ACTION>
+    # get updport
+    if [ -z "${port_id}" ]; then
+        PORT=162
+    else
+        PORT=${port_id}
+    fi
+    if test "${sub1}" == "ipv4_addr"; then      
+        if [ -n "${source-ip}" ]; then
+            cdbctl create/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}/type/5/ifname/${bind_if}/ip/${bind_addr}/
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        fi
+
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv4_addr}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+        fi
+
+        cdbctl create/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/5/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cdbctl create/cdb/app/snmp_inform/${ipv4_addr}/${cname}/$PORT
+            if [ $? -eq 0 ]; then
+                cdbctl update/cdb/app/snmp_inform/${ipv4_addr}/${cname}/$PORT/$NS_BAND/
+            else
+                cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+                if [ -n "${source-ip}" ]; then
+                    cdbctl delete/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}
+                fi
+            fi
+        else
+            if [ -n "${source-ip}" ]; then
+                cdbctl delete/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}
+            fi
+        fi
+    else
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6_addr}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+        fi
+        cdbctl create/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/5/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cdbctl create/cdb/app/snmp_inform/${ipv6_addr}/${cname}/$PORT
+            if [ $? -eq 0 ]; then
+                cdbctl update/cdb/app/snmp_inform/${ipv6_addr}/${cname}/$PORT/$NS_BAND/
+            else
+                cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+            fi
+        fi
+    fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To specify the recipient of a Simple Network Management Protocol (SNMP) inform message, use the snmp-server inform target-address command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to specify the server target address to which the inform is sended.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+The router does not send any inform messages.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server inform target-address command:  
+    Switch(config)# snmp-server inform target-address mgmt-if 192.168.1.100 community test udpport 100  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server inform-receiver
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no snmp-server inform" help="Set inform configuration" access="4"/>
+
+<COMMAND name="no snmp-server inform target-address" help="Set inform remote receiver address" access="4">
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+    <PARAM name="sub1" help="Management port" mode="switch" ptype="SUBCOMMAND" >
+        <PARAM name="ipv4_addr" help="Specify a SNMP IPV4 address" ptype="IP_ADDR"/>
+        <PARAM name="ipv6_addr" help="Specify a SNMP IPV6 address" ptype="IPV6_ADDR"/>
+    </PARAM>
+    <PARAM name="community" help="Define the community string which has the access to receive trap" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="cname" help="Specify a SNMP community name" ptype="SNMPNAME"/>
+    </PARAM>
+    <PARAM name="udpport" help="Define the remote port which to receive the trap" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="port_id" help="The port number which area is 0 to 65535, the default is 162" ptype="SNMP_UDP_PORT"/>
+    </PARAM>
+    <ACTION>
+    # get updport
+    if [ -z "${port_id}" ]; then
+        PORT=162
+    else
+        PORT=${port_id}
+    fi
+
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+    else
+        NS_BAND=inband
+    fi
+
+    if test "${sub1}" == "ipv4_addr"; then      
+        cdbctl delete/cdb/app/snmp_inform/${ipv4_addr}/${cname}/$PORT/$NS_BAND
+        if [ $? -eq 0 ]; then
+            cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+            cdbctl delete/cdb/sys/inband_snat/1#$PORT#${ipv4_addr}
+        fi
+    else
+        cdbctl delete/cdb/app/snmp_inform/${ipv6_addr}/${cname}/$PORT/$NS_BAND
+        if [ $? -eq 0 ]; then
+            cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+        fi
+    fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove the specified host from the configuration, use the no snmp-server inform command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+The router does not send any inform messages.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from remove the snmp-server inform target-address command:  
+    Swtich(config)# no snmp-server inform target-address mgmt-if 192.168.1.100 community test
+        </CTCEXAMPLE>
+        <CTCRCMD>
+snmp-server inform target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server context" help="Define a context name which need to create" access="4">
+    <PARAM name="ctextname" help="Specify the name of the context" ptype="SNMPNAME"/>
+
+    <ACTION>
+        cdbctl create/cdb/app/snmp_context/${ctextname}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To create a Simple Network Management Protocol (SNMP) context, use the snmp-server context command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+When set snmp-server access with context name, only context name be created then snmp server can access connect the device.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP contexts are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from add the snmp-server context command:   
+    Switch(config)# snmp-server context contextA    
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server context
+        </CTCRCMD>
+    
+</COMMAND>
+
+<COMMAND name="no snmp-server context" help="Define a context name which need to delete" access="4">
+    <PARAM name="ctextname" help="Specify the name of the context" ptype="SNMPNAME"/>
+
+    <ACTION>
+        cdbctl delete/cdb/app/snmp_context/${ctextname}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To delete an SNMP context, use the no snmp-server context command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP contexts are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from remove the snmp-server context command:   
+    Switch(config)# no snmp-server context contextA   
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server context
+        </CTCRCMD>
+    
+</COMMAND>
+
+
+<COMMAND name="snmp-server usm-user" help="Define a user who can access the SNMPv3 engine" access="4">
+    <PARAM name="usmname" help="Specify a SNMP USM user name" ptype="SNMPNAME"/>
+    <PARAM name="remote" help="Define the remote engine ID that the user can access" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+        <PARAM name="eid" help="Engine ID octet string of hexadecimal characters" ptype="ENGINEID"/>
+    </PARAM>
+    <PARAM name="authentication" help="Authentication parameters for the user" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="sub1" help="Select md5 or sha Authentication" mode="switch" ptype="SUBCOMMAND">
+            <PARAM name="md5" help="Use MD5 for authentication" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                    <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                    <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+                <PARAM name="authpwd" help="Specify an authentication password" ptype="NAME_STRING"/>
+                <PARAM name="privacy" help="Privacy parameters for the user" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                    <PARAM name="sub2" help="Select des or aes for privacy" mode="switch" ptype="SUBCOMMAND">
+                        <PARAM name="des" help="Use DES for privacy" ptype="SUBCOMMAND" mode="subcommand">
+                            <PARAM name="opt1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                                <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                                <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                            <PARAM name="pripwd" help="Specify a privacy password" ptype="NAME_STRING"/>
+                        </PARAM>
+                        <PARAM name="aes" help="Use AES for privacy" ptype="SUBCOMMAND" mode="subcommand">
+                            <PARAM name="opt1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                                <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                                <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                            <PARAM name="pripwd" help="Specify a privacy password" ptype="NAME_STRING"/>
+                        </PARAM>
+                    </PARAM>
+                </PARAM>
+            </PARAM>
+            <PARAM name="sha" help="Use SHA for authentication" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                    <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                    <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+                <PARAM name="authpwd" help="Specify an authentication password" ptype="NAME_STRING"/>
+                <PARAM name="privacy" help="Privacy parameters for the user" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                    <PARAM name="sub2" help="Select des or aes for privacy" mode="switch" ptype="SUBCOMMAND">
+                        <PARAM name="des" help="Use DES for privacy" ptype="SUBCOMMAND" mode="subcommand">
+                            <PARAM name="opt1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                                <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                                <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                            <PARAM name="pripwd" help="Specify a privacy password" ptype="NAME_STRING"/>
+                        </PARAM>
+                        <PARAM name="aes" help="Use AES for privacy" ptype="SUBCOMMAND" mode="subcommand">
+                            <PARAM name="opt1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+                                <PARAM name="encrypt" help="Specifies a hidden password will follow" ptype="HIDDEN_FLAG"/>
+                                <PARAM name="secret" help="Specify the secret for enable password" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                            <PARAM name="pripwd" help="Specify a privacy password" ptype="NAME_STRING"/>
+                        </PARAM>
+                    </PARAM>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl create/cdb/app/snmp_usm_user/${usmname}/remote/${eid}/authentication/${sub1}/auth_pwd/${opt}/${authpwd}/privacy/${sub2}/pri_pwd/${opt1}/${pripwd}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To configure a new Simple Network Management Protocol (SNMP) usm user, use the snmp-server usm-user command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+To configure a remote user, specify the IP address or port number for the remote SNMP agent of the device where the user resides.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMPv3 users are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from remove the snmp-server usm-user command:  
+    Switch(config)# snmp-server usm-user user1 authentication md5 mypassword privacy des yourpassword  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server usm-user
+        </CTCRCMD>
+</COMMAND>
+
+
+
+<COMMAND name="no snmp-server usm-user" help="Define a user who can access the SNMPv3 engine" access="4">
+    <PARAM name="usmname" help="Specify a SNMP USM user name" ptype="SNMPNAME"/>
+    <ACTION>
+        cdbctl delete/cdb/app/snmp_usm_user/${usmname}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove a specified SNMP usm user, use the snmp-server usm-user command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMPv3 users are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server usm-user command:  
+    Switch(config)# no snmp-server usm-user user1    
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server usm-user
+        </CTCRCMD>
+</COMMAND>
+
+
+<COMMAND name="snmp-server group" help="Define a user security model group" access="4">
+    <PARAM name="grpname" help="Specify the name of the group" ptype="SNMPNAME">
+        <PARAM name="user" help="Define a user security name belongs to the group" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="username" help="Specify the name of the user" ptype="SNMPNAME">
+                <PARAM name="security-model" help="Define the group security model" ptype="SUBCOMMAND" mode="subcommand">
+                     <PARAM name="usm" help="SNMPv3 usm model" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl create/cdb/app/snmp_group_usm/${grpname}/user/${username}/usm/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To configure a new Simple Network Management Protocol (SNMP) group, use the snmp-server group command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to add a new SNMP server group in global configuration mode.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP server groups are configured.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server group command:
+    Switch(config)# snmp-server group g1 user user1 security-model usm
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server group
+        </CTCRCMD>
+    
+</COMMAND>
+
+<COMMAND name="no snmp-server group" help="Define a user security model group" access="4">
+    <PARAM name="grpname" help="Specify the name of the group" ptype="SNMPNAME">
+        <PARAM name="user" help="Define a user security name belongs to the group" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="username" help="Specify the name of the user" ptype="SNMPNAME">
+                <PARAM name="security-model" help="Define the group security model" ptype="SUBCOMMAND" mode="subcommand">
+                     <PARAM name="usm" help="SNMPv3 usm model" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl delete/cdb/app/snmp_group_usm/${grpname}/user/${username}/usm/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove a specified SNMP group, use the no snmp-server group command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP server groups are configured.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from remove the snmp-server group command:
+    Switch(config)# no snmp-server group g1 user user1 security-model usm
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server group
+        </CTCRCMD>
+    
+</COMMAND>
+
+
+<COMMAND name="snmp-server access" help="Define the access for a exact group" access="4">
+    <PARAM name="accessname" help="Specify the name of the group which has this access" ptype="SNMPNAME">
+        <PARAM name="security-model" help="Define the security model of the group" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="usm" help="Define the SNMPv3 usm security model" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="sub1" help="Select noauth or auth or priv" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="noauth" help="Set security level to no authentication" ptype="SUBCOMMAND" mode="subcommand">
+                        <PARAM name="read" help="Restrict this access read area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                           <PARAM name="read_view" help="Read MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="write" help="Restrict this access write area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                           <PARAM name="write_view" help="Write MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="notify" help="Restrict this access notify area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                           <PARAM name="notify_view" help="Notify MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="context" help="Set the access's context name" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                           <PARAM name="context_name" help="Specify a context name" ptype="SNMPNAME"/>
+                            <PARAM name="sub" help="Select prefix or exact,default is exact" mode="switch" optional="true" ptype="SUBCOMMAND">
+                               <PARAM name="prefix" help="Context match(default is exact) type specification: prefix" ptype="SUBCOMMAND" mode="subcommand"/>
+                                <PARAM name="exact" help="Context match(default is exact) type specification: exact" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                        </PARAM>
+                    </PARAM>
+                    <PARAM name="auth" help="Set security level to authentication but with no privacy" ptype="SUBCOMMAND" mode="subcommand">
+                        <PARAM name="read" help="Restrict this access read area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="read_view" help="Read MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="write" help="Restrict this access write area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="write_view" help="Write MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="notify" help="Restrict this access notify area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="notify_view" help="Notify MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="context" help="Set the access's context name" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="context_name" help="Specify a context name" ptype="SNMPNAME"/>
+                            <PARAM name="sub" help="Select prefix or exact,default is exact" mode="switch" optional="true" ptype="SUBCOMMAND">
+                                <PARAM name="prefix" help="Context match(default is exact) type specification: prefix" ptype="SUBCOMMAND" mode="subcommand"/>
+                                <PARAM name="exact" help="Context match(default is exact) type specification: exact" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                        </PARAM>
+                    </PARAM>
+                    <PARAM name="priv" help="Set security level to authentication with privacy" ptype="SUBCOMMAND" mode="subcommand">
+                        <PARAM name="read" help="Restrict this access read area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="read_view" help="Read MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="write" help="Restrict this access write area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="write_view" help="Write MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="notify" help="Restrict this access notify area to a named MIB view" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="notify_view" help="Notify MIB view name" ptype="SNMPNAME"/>
+                        </PARAM>
+                        <PARAM name="context" help="Set the access's context name" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="context_name" help="Specify a context name" ptype="SNMPNAME"/>
+                            <PARAM name="sub" help="Select prefix or exact,default is exact" mode="switch" optional="true" ptype="SUBCOMMAND">
+                                <PARAM name="prefix" help="Context match(default is exact) type specification: prefix" ptype="SUBCOMMAND" mode="subcommand"/>
+                                <PARAM name="exact" help="Context match(default is exact) type specification: exact" ptype="SUBCOMMAND" mode="subcommand"/>
+                            </PARAM>
+                        </PARAM>
+                    </PARAM>
+                    
+                </PARAM>
+            </PARAM>
+
+        </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl create/cdb/app/snmp_access_usm/${accessname}/security_model/usm/${sub1}/read_view/${read_view}/write_view/${write_view}/notify_view/${notify_view}/context/${context_name}/context_type/${sub}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To set the access security of MIB view, use the snmp-server access command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The command is used to create a access security for MIB view.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP access group is defined
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server access command:   
+    Switch(config)# snmp-server access manage security-model usm auth write _all_ read _all_  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server access
+        </CTCRCMD>
+    
+</COMMAND>
+
+<COMMAND name="no snmp-server access" help="Define the access for a exact group" access="4">
+    <PARAM name="accessname" help="Specify the name of the group which has this access" ptype="SNMPNAME">
+        <PARAM name="security-model" help="Define the security model of the group" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="usm" help="Define the SNMPv3 usm security model" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="sub1" help="Select noauth or auth or priv" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="noauth" help="Set security level to no authentication" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="context" help="Set the access's context name" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="context_name" help="Specify a context name" ptype="SNMPNAME"/>
+                        </PARAM>
+                    </PARAM>
+                    <PARAM name="auth" help="Set security level to authentication but with no privacy" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="context" help="Set the access's context name" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="context_name" help="Specify a context name" ptype="SNMPNAME"/>
+                        </PARAM>
+                    </PARAM>
+                    <PARAM name="priv" help="Set security level to authentication with privacy" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="context" help="Set the access's context name" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                            <PARAM name="context_name" help="Specify a context name" ptype="SNMPNAME"/>
+                        </PARAM>
+                    </PARAM>
+                </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl delete/cdb/app/snmp_access_usm/${accessname}/usm/${sub1}/context/${context_name}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove the access security of MIB view, use the no snmp-server access command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP access group is defined
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from delete the snmp-server access command:    
+    Switch(config)# no snmp-server access manage security-model usm noauth    
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server access
+        </CTCRCMD>
+    
+</COMMAND>
+            
+            
+<COMMAND name="snmp-server notify" help="Define a notify name which related to send notification" access="4">
+    <PARAM name="notifyname" help="Specify the name of the notify" ptype="SNMPNAME">
+        <PARAM name="tag" help="Define a notify tag which help to find target address table" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="tagname" help="Specify the name of the tag" ptype="SNMPNAME">
+                <PARAM name="sub" help="Select trap or inform,default is trap" mode="switch" optional="true" ptype="SUBCOMMAND">
+                    <PARAM name="trap" help="Set notify type(default is trap) to TRAP" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="inform" help="Set notify type(default is trap) to INFORM" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+                    
+        </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl create/cdb/app/snmp_notify/${notifyname}/tag/${tagname}/${sub}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To set the notification of traps for Simple Network Management Protocol (SNMP), use the snmp-server notify command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to send events with the notification type of error to the SNMP server.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP notify names are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server notify command:  
+    Switch(config)# snmp-server notify note tag tt  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server notify
+        </CTCRCMD>
+    
+</COMMAND>
+
+<COMMAND name="no snmp-server notify" help="Define a notify name which related to send notification" access="4">
+    <PARAM name="notifyname" help="Specify the name of the notify" ptype="SNMPNAME"/>
+
+    <ACTION>
+        cdbctl delete/cdb/app/snmp_notify/${notifyname}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To delete the notification of traps for Simple Network Management Protocol (SNMP), use the no snmp-server notify command in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to delete the notification name of error to the SNMP server.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No SNMP notify names are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from delete the snmp-server notify command:  
+    Switch(config)# no snmp-server notify note    
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server notify
+        </CTCRCMD>
+    
+</COMMAND>
+
+<COMMAND name="snmp-server target-address" help="Define a target address name which related to send notifications" access="4">
+    <PARAM name="taraddname" help="Specify the name of the target address" ptype="SNMPNAME"/>
+    <PARAM name="param" help="Define a param name which help to find target params table" ptype="SUBCOMMAND" mode="subcommand">
+        <PARAM name="paraname" help="Specify the name of the param" ptype="SNMPNAME">
+            <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+            <PARAM name="sub1" help="Management port" mode="switch" ptype="SUBCOMMAND" >
+                <PARAM name="ipv4_addr" help="Define a remote notification receiver IPv4 address" ptype="IP_ADDR"/>
+                <PARAM name="ipv6_addr" help="Define a remote notification receiver IPv6 address" ptype="IPV6_ADDR"/>
+            </PARAM>
+            <PARAM name="udpport" help="Define the remote port which to receive the notification" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                <PARAM name="port_id" help="The port number which area is 0 to 65535, the default is 162" ptype="SNMP_UDP_PORT"/>
+            </PARAM>
+            <PARAM name="timeout" help="Define the timeout which detemine when to resend the notification" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                <PARAM name="timeout_val" help="The timeout value which area is 0 to 65535, the default is 2 second" ptype="SNMP_TIMEOUT"/>
+            </PARAM>
+            <PARAM name="retries" help="Define the retry time when sends notification failed" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+                <PARAM name="retries_val" help="The retry time value which area is 0 to 255, the default is 3" ptype="SNMP_RETRY"/>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+    <PARAM name="taglist" help="Define taglist which related to notify table" ptype="SUBCOMMAND" mode="subcommand"/>
+    <PARAM name="taglist_val" help="The name of the taglist (128 tags are supported)" ptype="KLINE"/>
+
+    <ACTION>
+    if [ -z "${port_id}" ]; then
+        PORT=162
+    else
+        PORT=${port_id}
+    fi
+
+    if test "${sub1}" == "ipv4_addr"; then
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv4_addr}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+        fi
+
+        cdbctl create/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/5/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cdbctl create/cdb/app/snmp_target_addr/${taraddname}/param/${paraname}/mgmt_if/${mgmt-if}/ip_addr/${ipv4_addr}/udp_port/${port_id}/timeout/${timeout_val}/retries/${retries_val}/taglist/"${taglist_val}"
+            if [ $? -ne 0 ]; then
+                cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+            fi
+        #else
+            #cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+        fi
+    else
+        if [ -n "${mgmt-if}" ]; then
+            NS_BAND=outband
+            cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6_addr}
+            if [ $? -ne 0 ]; then
+                exit 1
+            fi
+        else
+            NS_BAND=inband
+        fi
+
+        cdbctl create/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/5/$NS_BAND/
+        if [ $? -eq 0 ]; then
+            cdbctl create/cdb/app/snmp_target_addr/${taraddname}/param/${paraname}/mgmt_if/${mgmt-if}/ip_addr/${ipv6_addr}/udp_port/${port_id}/timeout/${timeout_val}/retries/${retries_val}/taglist/"${taglist_val}"
+            if [ $? -ne 0 ]; then
+                cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+            fi
+        #else
+            #cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+        fi
+    fi
+    
+    </ACTION>
+
+    
+        <CTCDESCRIPTION>
+To specify the recipient of a Simple Network Management Protocol (SNMP) notification message, use the snmp-server trap target-address command in global configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used to configure a remote manager’s IP address. This command is used for SNMP v3.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No snmp server is configured.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the snmp-server target-address command:
+    Switch(config)# snmp-server target-address targ1 param parm1 10.0.0.2 taglist tmptag1
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server target-address
+        </CTCRCMD>
+</COMMAND>
+            
+            
+<COMMAND name="no snmp-server target-address" help="Define a target address name which related to send notifications" access="4">
+    <PARAM name="taraddname" help="Specify the name of the target address" ptype="SNMPNAME"/>
+    <PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+    <PARAM name="sub1" help="Management port" mode="switch" ptype="SUBCOMMAND" >
+        <PARAM name="ipv4_addr" help="Define a remote notification receiver IPv4 address" ptype="IP_ADDR"/>
+        <PARAM name="ipv6_addr" help="Define a remote notification receiver IPv6 address" ptype="IPV6_ADDR"/>
+    </PARAM>
+    <PARAM name="udpport" help="Define the remote port which to receive the notification" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+        <PARAM name="port_id" help="The port number which area is 0 to 65535, the default is 162" ptype="SNMP_UDP_PORT"/>
+    </PARAM>
+    
+    <ACTION>
+    if [ -z "${port_id}" ]; then
+        PORT=162
+    else
+        PORT=${port_id}
+    fi
+
+    if [ -n "${mgmt-if}" ]; then
+        NS_BAND=outband
+    else
+        NS_BAND=inband
+    fi
+    
+    if test "${sub1}" == "ipv4_addr"; then   
+        cdbctl delete/cdb/app/snmp_target_addr/${taraddname}/mgmt_if/${mgmt-if}/ip_addr/${ipv4_addr}/udp_port/$PORT/
+        if [ $? -eq 0 ]; then
+            cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv4_addr}/$NS_BAND/
+        fi
+    else
+        cdbctl delete/cdb/app/snmp_target_addr/${taraddname}/mgmt_if/${mgmt-if}/ip_addr/${ipv6_addr}/udp_port/$PORT/
+        if [ $? -eq 0 ]; then
+            cdbctl delete/cdb/sys/ns_route/1#$PORT#${ipv6_addr}/$NS_BAND/
+        fi
+    fi
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove the specified snmp-server trap target-address host from the configuration, use the no snmp-server target-address command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This command is used for SNMP v3 trap and inform.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No snmp server is configured.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from delete the snmp-server target-address command:
+    Switch(config)# no snmp-server target-address targ1 10.0.0.2 
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server target-address
+        </CTCRCMD>
+</COMMAND>
+
+<COMMAND name="snmp-server target-params" help="Define the target params name which related to send notifications" access="4">
+    <PARAM name="paraname" help="Specify the name of the target params" ptype="SNMPNAME">
+        <PARAM name="user" help="Define the user who has the access to send notifications" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="username" help="Specify the name of the user" ptype="SNMPNAME">
+                <PARAM name="security-model" help="Define notification security model" ptype="SUBCOMMAND" mode="subcommand">
+                    <PARAM name="sc_sub" help="Select v3" mode="switch" ptype="SUBCOMMAND">
+                        <PARAM name="v3" help="SNMPv3 security model" ptype="SUBCOMMAND" mode="subcommand"/>
+                    </PARAM>
+                    <PARAM name="message-processing" help="Define message processing model" ptype="SUBCOMMAND" mode="subcommand"/>
+                        <PARAM name="msg_sub" help="Select v3" mode="switch" ptype="SUBCOMMAND">
+                            <PARAM name="v3" help="SNMPv3 message processing model" ptype="SUBCOMMAND" mode="subcommand">
+                                <PARAM name="sub" help="Select noauth or auth or priv" mode="switch" ptype="SUBCOMMAND">
+                                    <PARAM name="noauth" help="Set security level to no authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+                                    <PARAM name="auth" help="Set security level to authentication but with no privacy" ptype="SUBCOMMAND" mode="subcommand"/>
+                                    <PARAM name="priv" help="Set security level to authentication with privacy" ptype="SUBCOMMAND" mode="subcommand"/>
+                                </PARAM>
+                            </PARAM>
+                        </PARAM>
+                </PARAM>
+            </PARAM>
+        </PARAM>
+    </PARAM>
+
+    <ACTION>
+        cdbctl create/cdb/app/snmp_target_params/${paraname}/user/${username}/${sub}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To specify the SNMP target information to be used in the generation of SNMP messages, use the snmp-server target-params in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The snmp-server target-params contains the SNMP target information to be used in the generation of SNMP messages.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No target-params are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output for the snmp-server target-params command:
+    Switch(config)# snmp-server target-params param1 user usr1 security-model v3 message-processing v3 noauth
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server target-params
+        </CTCRCMD>
+    
+</COMMAND>
+
+
+<COMMAND name="no snmp-server target-params" help="Define the target params name which related to send notifications" access="4">
+    <PARAM name="paraname" help="Specify the name of the target params" ptype="SNMPNAME"/>
+
+    <ACTION>
+        cdbctl delete/cdb/app/snmp_target_params/${paraname}/
+    </ACTION>
+    
+        <CTCDESCRIPTION>
+To remove the specified snmp-server target information to be used in the generation of SNMP messages, use the no snmp-server target-params in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+No target-params are configured
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output form delete the snmp-server target-params command:  
+    Switch(config)# no snmp-server target-params param1  
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show snmp-server target-params
+        </CTCRCMD>
+    
+</COMMAND>  
+
+
+</VIEW>
+
+</CLISH_MODULE>

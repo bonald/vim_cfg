@@ -1,0 +1,61 @@
+
+#ifndef __TBL_NAT_GLOBAL_DEFINE_H__
+#define __TBL_NAT_GLOBAL_DEFINE_H__
+
+/* TBL_NAT_GLOBAL field defines */
+typedef enum
+{
+    TBL_NAT_GLOBAL_FLD_TIMEOUT              = 0 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_TIMEOUT_ICMP         = 1 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_TIMEOUT_TCP          = 2 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_TIMEOUT_UDP          = 3 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_SESSION_LIMIT        = 4 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL              = 5 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_UPSTREAM_IF  = 6 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_UPSTREAM_DFT = 7 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_DNSTREAM_IF  = 8 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_DNSTREAM_DFT = 9 ,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_UPSTREAM_BEGIN = 10,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_UPSTREAM_END = 11,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_DNSTREAM_BEGIN = 12,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFT_HDL_DNSTREAM_END = 13,  /* RW */
+    TBL_NAT_GLOBAL_FLD_INSIDE_IF_LIST       = 14,  /* RW */
+    TBL_NAT_GLOBAL_FLD_OUTSIDE_IF_LIST      = 15,  /* RW */
+    TBL_NAT_GLOBAL_FLD_RULE_ID_OPB          = 16,  /* READ */
+    TBL_NAT_GLOBAL_FLD_SESSION_ID_OPB       = 17,  /* READ */
+    TBL_NAT_GLOBAL_FLD_CATEGORY_ID_OPB      = 18,  /* READ */
+    TBL_NAT_GLOBAL_FLD_AGING_TIMER          = 19,  /* READ */
+    TBL_NAT_GLOBAL_FLD_TIMER_MARK           = 20,  /* RW */
+    TBL_NAT_GLOBAL_FLD_NFCT_HANDLE          = 21,  /* RW */
+    TBL_NAT_GLOBAL_FLD_MAX                  = 22
+} tbl_nat_global_field_id_t;
+
+/* TBL_NAT_GLOBAL defines */
+typedef struct
+{
+    uint32               timeout;
+    uint32               timeout_icmp;
+    uint32               timeout_tcp;
+    uint32               timeout_udp;
+    uint32               session_limit;
+    uint32               nft_hdl;
+    uint32               nft_hdl_upstream_if;
+    uint32               nft_hdl_upstream_dft;
+    uint32               nft_hdl_dnstream_if;
+    uint32               nft_hdl_dnstream_dft;
+    uint32               nft_hdl_upstream_begin;
+    uint32               nft_hdl_upstream_end;
+    uint32               nft_hdl_dnstream_begin;
+    uint32               nft_hdl_dnstream_end;
+    char                 inside_if_list[GLB_NAT_INSIDE_IF_NUM][IFNAME_SIZE+1];
+    char                 outside_if_list[GLB_NAT_OUTSIDE_IF_NUM][IFNAME_SIZE+1];
+    ctclib_opb_t         rule_id_opb;
+    ctclib_opb_t         session_id_opb;
+    ctclib_opb_t         category_id_opb;
+    ctc_task_t           *aging_timer;
+    uint32               timer_mark;
+    void                 *nfct_handle;
+} tbl_nat_global_t;
+
+#endif /* !__TBL_NAT_GLOBAL_DEFINE_H__ */
+

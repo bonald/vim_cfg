@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+SHOWJSON
+</CTCMODULENAME>
+<VIEW name="Exec">
+    <COMMAND name="show json" help="Show json format data" />
+	<COMMAND name="show json version" 
+		help="Show system version information in json format">
+		<ACTION>cdbctl readjson/cdb/sys/version</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show system version information in json format.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the system version information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show system version information.  
+    Switch# show json version   
+    
+		</CTCEXAMPLE>
+	</COMMAND>
+
+	<COMMAND name="show json environment"
+		help="Display environment in json format">
+		<ACTION>cdbctl readjson/cdb/sys/show_environment</ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show the hardware environment information in json format.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command only can show the hardware environment information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display hardware environment information.  
+    Switch# show json environment   
+    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+temperature
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show json transceiver" help="Display transceiver information in json format">
+		<PARAM name="iface_name" help="Ethernet interface name" optional="true" ptype="IF_NAME_E" default="all"/>	
+		<PARAM name="detail" help="Detail information" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>	
+		
+		<ACTION>cdbctl readjson/cdb/sys/show_fiber/${iface_name}/${detail}</ACTION>
+						
+		<CTCDESCRIPTION>
+Use this command to show the transceiver information in json format.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show the interface transceiver information,or the transceiver detail information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display transceiver information.  
+    Switch# show json transceiver detail    
+         
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show json interface"
+		help="Show interface status and configuration in json format">
+		<PARAM name="iface_name" help="Ethernet interface name" optional="true" ptype="IF_NAME_EAV"/>	
+		<ACTION>		
+			cdbctl update/cdb/sys/update_if_stats/${iface_name}
+			usleep 100000
+			cdbctl readjson/cdb/l2/show_interface/${iface_name}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the configurations and statistics on all interfaces or an interface in json format.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the configurations and statistics on the interface eth-0-1.
+    Switch# show json interface eth-0-1
+    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface status
+		</CTCRCMD>
+	</COMMAND>
+
+<COMMAND name="show json interface summary"
+		help="Show summary information in json format">
+		<PARAM name="part" help="Part" optional="true" ptype="SUBCOMMAND" mode="switch" default = "none">
+			  <PARAM name="iface_name" optional="true" help="Ethernet interface name" ptype="IF_NAME_E"/>
+		</PARAM>
+		<ACTION>
+			cdbctl update/cdb/sys/update_if_stats/${iface_name}
+			usleep 100000
+			if [ "iface_name" == ${part} ]; then
+			cdbctl readjson/cdb/interface/${iface_name}/summary
+			else
+			cdbctl readjson/cdb/interface/summary
+			fi
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to display the summary on all interfaces or an interface in json format. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will display the summary on all interfaces or an interface in the form of list.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+This example shows how to display the summary on the interface eth-0-1.
+
+    Switch# show json interface summary eth-0-1   
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show json memory" help="Show memory data in json format"/>
+	<COMMAND name="show json memory summary" help="Show summary of memory usage in total in json format">
+        <PARAM name="total" help="Summary of memory usage in total" ptype="SUBCOMMAND" mode="subcommand" />
+        <ACTION>cdbctl readjson/cdb/sys/mem_summary</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show summary of memory usage in total in json format. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will show summary of memory usage in total.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+This example shows how to summary of memory usage in total:
+
+    Switch# show json memory summary   
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show memory
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="show json processes" help="Show processes information in json format"/>
+	<COMMAND name="show json processes cpu" help="Show cpu information in json format"/>
+	<COMMAND name="show json processes cpu history" help="Show history of CPU usage in json format">
+        <ACTION>
+            cdbctl readjson/cdb/sys/show_cpu_mem_history/
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to show history of CPU usage in json format.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is sample output from the show history of cpu usage command:
+Centec# show json processes cpu history 
+        
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show cpu history
+        </CTCRCMD>
+    </COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

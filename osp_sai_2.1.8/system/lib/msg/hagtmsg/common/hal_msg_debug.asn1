@@ -1,0 +1,21 @@
+HAL-MSG-DEBUG DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+
+HalMsgDebugReq ::= SEQUENCE
+{
+    module      INTEGER,
+    submodule   INTEGER,
+    flags       INTEGER
+}
+
+HalMsgLCSwitchReq ::= SEQUENCE
+{
+    onoff INTEGER
+}
+
+HalMsgDebugCtrlReq ::= SEQUENCE
+{
+    lcon       INTEGER,
+    linefunon  INTEGER
+}
+END

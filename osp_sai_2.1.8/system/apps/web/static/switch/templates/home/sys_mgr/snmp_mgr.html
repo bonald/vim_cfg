@@ -1,0 +1,511 @@
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="{{hostConf}}">
+            <a href="javascript:;" ng-click="navTabs='hostConf'; hostConf='active'; communityConf=''; snmpv3=''; load()">{{'SNMP Server Configuration' | translate}}</a></li>
+        <li role="presentation" class="{{communityConf}}">
+            <a href="javascript:;" ng-click="navTabs='communityConf'; hostConf=''; communityConf='active'; snmpv3=''; load()">{{'SNMP Community Configuration' | translate}}</a></li>
+        <li role="presentation" class="{{snmpv3}}">
+            <a href="javascript:;" ng-click="navTabs='snmpv3'; hostConf=''; communityConf=''; snmpv3='active'; load()">{{'SNMP-v3 trap Configuration' | translate}}</a></li>
+    </ul>
+
+    <hr />
+
+    <div id="snmp_server_conf" class="panel panel-default" ng-show="navTabs=='hostConf'">
+      <div class="panel-heading">
+          <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+      </div>
+      <div class="panel-body">
+        <form id="snmpSrvConfForm" name="snmpSrvConfForm" class="form"  novalidate>
+
+        <dl>
+         <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Enable Snmp Server '  | translate }}</div>
+            <div class="col-md-2">
+                <btn-switch switch-state="enablesnmpServer" switch-on-change="changeSnmpServerState()" ></btn-switch>
+            </div>
+        </dd> 
+        </dl>
+
+        <dl>        
+        <dd class="row" style="margin-top: 10px;">
+            <div class="col-md-2">{{ 'Enable Snmp Trap'  | translate }}</div>
+            <div class="col-md-2">
+                <btn-switch switch-state="enableSnmpTrap" switch-on-change="changeSnmpTrapState()" ></btn-switch>
+            </div>
+        </dd>  
+        </dl>    
+     
+         <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Set Snmp Version'  | translate }}</div>
+                <div class="col-md-2">
+                 <select class="form-control" ng-change="setSnmpVersion(ver)"
+                      ng-model="ver" ng-options="m for m in versions">
+                 </select>
+                </div>
+            </dd> 
+        </dl>            
+      
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Set Trap Target Address'  | translate }}</div>
+                  <div class="col-md-2">
+                     <select class="form-control" ng-model="targetAddre" ng-options="m for m in targetaddress"></select>
+                  </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvConfForm.trapTargetAddr.$valid]">
+                    <input type="text" name="trapTargetAddr" class="form-control" placeholder="A.B.C.D   Address of target server" ng-model="trapTargetAddr" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required />
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvConfForm.trapTargetCommu.$valid]">
+                    <input type="text" name="trapTargetCommu" class="form-control" placeholder="Snmp community string" ng-pattern="/^[a-zA-Z][a-zA-Z0-9\.\-_]{0,254}$/" ng-model="trapTargetCommu"  required />
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addTrapTargetAddr()" ng-disabled="snmpSrvConfForm.trapTargetAddr.$invalid || snmpSrvConfForm.trapTargetCommu.$invalid"  >{{ 'Submit' | translate }}</button>   
+                </div>                
+            </dd> 
+        </dl>  
+          
+        </form>
+      </div>      
+    </div>
+
+    <div id="snmp_server_conf" class="panel panel-default" ng-show="navTabs=='snmpv3'">
+      <div class="panel-heading">
+          <h3 class="panel-title">{{ 'V3 trap Configuration' | translate }}</h3>
+      </div>
+      <div class="panel-body">
+        <form id="snmpSrvV3Form" name="snmpSrvV3Form" class="form"  novalidate>
+
+         <!--<dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Set Snmp Version'  | translate }}</div>
+                <div class="col-md-2">
+                 <select class="form-control" ng-change="setSnmpVersion(ver)"
+                      ng-model="ver" ng-options="m for m in versions">
+                 </select>
+                </div>
+            </dd>
+        </dl>-->
+          <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Context'  | translate }}</div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapContextName.$valid]">
+                    <input type="text" name="trapContextName" class="form-control" ng-model="trapContextName" placeholder="Context name" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,30}[a-zA-Z0-9]$/" required />
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addContextname()" ng-disabled="snmpSrvV3Form.trapContextName.$invalid "  >{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Usm-user Configuration'  | translate }}</div>
+                 <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetUser.$valid]">
+                    <input type="text" name="trapTargetUser" class="form-control" placeholder="Usm-user name" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,30}[a-zA-Z0-9]$/" ng-model="trapTargetUser"  required />
+                </div>
+            </dd>
+        </dl>
+         <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Password Configuration'  | translate }}</div>
+                <div class="col-md-2">
+                     <select class="form-control" ng-model="trapAuthen" ng-options="m for m in authenpassword"></select>
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetAuthen.$valid]">
+                    <input type="text" name="trapTargetAuthen" class="form-control" placeholder="Authentication password" ng-pattern="/^[^/\']{8,64}$/" ng-model="trapTargetAuthen"  required />
+                </div>
+                <div class="col-md-2">
+                     <select class="form-control" ng-model="trapEncryp" ng-options="m for m in encryppassword"></select>
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetEncry.$valid]">
+                    <input type="text" name="trapTargetEncry" class="form-control" placeholder="Encryption password" ng-pattern="/^[^/\']{8,64}$/" ng-model="trapTargetEncry"  required />
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addTrapTargetUser()" ng-disabled="snmpSrvV3Form.trapTargetUser.$invalid || snmpSrvV3Form.trapTargetAuthen.$invalid || snmpSrvV3Form.trapTargetEncry.$invalid">{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>
+          </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Notify'  | translate }}</div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetNotify.$valid]">
+                    <input type="text" name="trapTargetNotify" class="form-control" placeholder="Notify Name" ng-model="trapTargetNotify" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,30}[a-zA-Z0-9]$/" required />
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetTagname.$valid]">
+                    <input type="text" name="trapTargetTagname" class="form-control" placeholder="Taglist Name" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,30}[a-zA-Z0-9]$/" ng-model="trapTargetTagname"  required />
+                </div>
+                <div class="col-md-2">
+                     <select class="form-control" ng-model="trapNotitype" ng-options="m for m in notifytype"></select>
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addTrapTargetNotify()" ng-disabled="snmpSrvV3Form.trapTargetNotify.$invalid || snmpSrvV3Form.trapTargetTagname.$invalid"  >{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Set Trap Target params'  | translate }}</div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetParams.$valid]">
+                    <input type="text" name="trapTargetParams" class="form-control" placeholder="Target param name" ng-model="trapTargetParams" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,30}[a-zA-Z0-9]$/" required />
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetUsername.$valid]">
+                    <input type="text" name="trapTargetUsername" class="form-control" placeholder="Usm-user name" ng-pattern="/^(?=[a-zA-Z])[a-zA-Z0-9\.\-_]{0,30}[a-zA-Z0-9]$/" ng-model="trapTargetUsername"  required />
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="trapParams" ng-options="m for m in targetParams"></select>
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addTrapTargetParams()" ng-disabled="snmpSrvV3Form.trapTargetParams.$invalid || snmpSrvV3Form.trapTargetUsername.$invalid"  >{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>
+        </dl>
+
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-2">{{ 'Set Trap Target Address'  | translate }}</div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetAddress.$valid]">
+                    <input type="text" name="trapTargetAddress" class="form-control" placeholder="Target address name" ng-pattern="/^[a-zA-Z][a-zA-Z0-9\.\-_]{0,254}$/" ng-model="trapTargetAddress"  required />
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetCommunity.$valid]">
+                    <input type="text" name="trapTargetCommunity" class="form-control" placeholder="Target param name" ng-pattern="/^[a-zA-Z][a-zA-Z0-9\.\-_]{0,254}$/" ng-model="trapTargetCommunity"  required />
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetServer.$valid]">
+                    <input type="text" name="trapTargetServer" class="form-control" placeholder="A.B.C.D Address of target server" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" ng-model="trapTargetServer"  required />
+                </div>
+                <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpSrvV3Form.trapTargetList.$valid]">
+                    <input type="text" name="trapTargetList" class="form-control" placeholder="Taglist name" ng-pattern="/^[a-zA-Z][a-zA-Z0-9\.\-_]{0,254}$/" ng-model="trapTargetList"  required />
+                </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="addTrapTargetAddrV3()" ng-disabled="snmpSrvV3Form.trapTargetAddress.$invalid || snmpSrvV3Form.trapTargetCommunity.$invalid || snmpSrvV3Form.trapTargetList.$invalid || snmpSrvV3Form.trapTargetServer.$invalid"  >{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>
+        </dl>
+        </form>
+      </div>
+    </div>
+
+    <div id="snmp_server_conf" class="panel panel-default" ng-show="navTabs=='communityConf'">
+      <div class="panel-heading">
+          <h3 class="panel-title">{{ 'Community Configuration' | translate }}</h3>
+      </div>
+      <div class="panel-body">
+        <form id="snmpCommunityForm" name="snmpCommunityForm" class="form"  novalidate>         
+          <dl>
+              <dd class="row" style="margin-top: 10px;">
+                  <div class="col-md-2">{{ 'Set Community'  | translate }}</div>
+                  <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpCommunityForm.commuName.$valid]">
+                      <input type="text" name="commuName" class="form-control" placeholder="Community Name" ng-model="communityName" ng-pattern="/^[A-Za-z]([0-9A-Za-z._-]){0,254}$/" required />
+                  </div>
+                  <div class="col-md-2" ng-class="{true: 'has-success', false: 'has-error'}[snmpCommunityForm.trapTargetCommu.$valid]">
+                     <select class="form-control" ng-change="setSnmpCommunity(communityAccess)" ng-model="communityAccess" ng-options="m for m in access">
+                     </select>
+                  </div>
+                  <div class="col-md-2">
+                  <button class="btn btn-primary" ng-click="addSnmpCommunity()" ng-disabled="snmpCommunityForm.commuName.$invalid"  >{{ 'Submit' | translate }}</button>   
+                  </div>                
+              </dd> 
+          </dl>  
+        </form>
+      </div>      
+    </div> 
+
+<hr/>
+   
+</div>      
+ 
+<div class="panel panel-default" ng-show="navTabs=='hostConf' && snmpTargetList.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Trap Target Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'Target-ipaddress' | translate }}</th>
+                        <th class="text-center">{{ 'Community' | translate }}</th>
+                        <th class="text-center">{{ 'VRF' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="srv in snmpTargetList">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ srv.trapaddr }}</td>
+                        <td class="text-center">{{ srv.community }}</td>
+                        <td class="text-center">{{ srv.vrf }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTrapTargetAddr(srv)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="snmpTargetList.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default" ng-show="navTabs=='snmpv3' && snmpTargetV3Context.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Trap Target Context Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'Context' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ct in snmpTargetV3Context">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ ct.context }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delContextName(ct)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="snmpTargetV3Context.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default" ng-show="navTabs=='snmpv3' && snmpTargetV3Usm.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Trap Target Usm Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'USM_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'Authen_Select' | translate }}</th>
+                        <th class="text-center">{{ 'AUTH_PWD' | translate }}</th>
+                        <th class="text-center">{{ 'Encry_Select' | translate }}</th>
+                        <th class="text-center">{{ 'PRIV_PWD' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="uu in snmpTargetV3Usm">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ uu.username }}</td>
+                        <td class="text-center">{{ uu.authensel }}</td>
+                        <td class="text-center">{{ uu.authenpwd }}</td>
+                        <td class="text-center">{{ uu.encrysel }}</td>
+                        <td class="text-center">{{ uu.encrypwd }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTrapTargetUser(uu)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="snmpTargetV3Usm.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default" ng-show="navTabs=='snmpv3' && snmpTargetNotify.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Trap Target Notify Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'NOTIFY_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'TAG_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'Notify_Select' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="nt in snmpTargetNotify">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ nt.notify }}</td>
+                        <td class="text-center">{{ nt.tag }}</td>
+                        <td class="text-center">{{ nt.type }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTrapTargetNotify(nt)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="snmpTargetNotify.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default" ng-show="navTabs=='snmpv3' && snmpTargetParams.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Trap Target Params Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'PARA_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'USM_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'Auth_Mode' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="pa in snmpTargetParams">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ pa.params }}</td>
+                        <td class="text-center">{{ pa.username }}</td>
+                        <td class="text-center">{{ pa.selpar }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTrapTargetParams(pa)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="snmpTargetParams.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default" ng-show="navTabs=='snmpv3' && snmpTargetAddress.length!=0" >
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Trap Target V3 Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'Target-ipaddress' | translate }}</th>
+                        <th class="text-center">{{ 'PARA_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'Server_addr' | translate }}</th>
+                        <th class="text-center">{{ 'TAG_NAME' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ad in snmpTargetAddress">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ ad.trapaddress }}</td>
+                        <td class="text-center">{{ ad.communitys }}</td>
+                        <td class="text-center">{{ ad.server }}</td>
+                        <td class="text-center">{{ ad.traname }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTrapTargetAddress(ad)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-center"><b ng-show="snmpTargetAddress.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-default" ng-show="navTabs=='communityConf'">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Community Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+        <table class="table table-hover margin: 10px;" ng-hide="initLoading">
+            <thead>
+                <tr>
+                    <th class="text-center">{{ '#' | translate }}</th>
+                    <th class="text-center col-md-1">{{ 'Community-Name' | translate }}</th>
+                    <th class="text-center col-md-2">{{ 'Community-Access' | translate }}</th>
+                    <th class="text-center col-md-4">{{ 'Security-name' | translate }}</th>
+                    <th class="text-center">{{ 'Options' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+        <tr ng-repeat="entry in communityAll">
+                    <th class="text-center">{{ $index + 1 }}</th>
+                    <td class="text-center">{{ entry.key }}</td>
+                    <td class="text-center">{{ entry.type }}</td>
+                    <td class="text-center">{{ entry.secidx }}</td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-xs">
+                            <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delSnmpCommunity(entry)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+         
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+ 

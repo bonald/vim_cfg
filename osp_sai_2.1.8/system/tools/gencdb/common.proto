@@ -1,0 +1,994 @@
+package cdb;
+
+message subscribe_request_cdb
+{
+    required uint32 node_type = 1;
+    required uint32 tbl_id = 2;
+    required uint32 field = 3;
+    optional string key = 4;
+}
+
+message subscribe_request_tbl
+{
+    required uint32 sync = 1;
+    repeated uint32 table = 2;
+}
+
+message subscribe_request
+{
+    required fixed32 type = 1;
+    required fixed32 pid  = 2;
+    required fixed32 src  = 3;
+    required fixed32 format  = 4;
+
+    optional subscribe_request_cdb cdb = 5;
+    optional subscribe_request_tbl tbl = 6;
+}
+
+message subscribe_response
+{
+    enum cdb_opertion
+    {
+        OPER_ADD = 0;
+        OPER_SET = 1;
+        OPER_GET = 2;
+        OPER_DEL = 3;
+    }
+
+    required cdb_opertion action = 1;
+    required fixed32 tbl_id = 2;
+    required fixed32 field_id = 3;
+    required fixed32 ds_id  = 4;
+    required fixed32 ds2_id = 5;
+}
+
+message compose_mac_addr_t
+{
+    required bytes mac = 1;
+}
+
+message compose_fdb_key_t
+{
+    required uint32 fid = 1;
+    required bytes mac = 2;
+}
+
+message compose_mstp_digest_t
+{
+    required bytes data = 1;
+}
+
+message compose_brg_allowed_vlan_t
+{
+    required bytes vlan_bmp = 1;
+}
+
+message compose_ptp_common_message_header_t
+{
+    required bytes ptp_common_message_header = 1;
+}
+
+message compose_ptp_msg_announce_t
+{
+    required bytes origin_timestamp = 1;
+    required int32 current_utc_offset = 2;
+    required uint32 grandmaster_priority1 = 3;
+    required uint32 grandmaster_priority2 = 4;
+    required bytes grandmaster_clock_quality = 5;
+    required bytes grandmaster_identity = 6;
+    required uint32 steps_removed = 7;
+    required uint32 time_source = 8;
+}
+
+message compose_ptp_default_t
+{
+	required bytes clock_identity = 1;
+    required uint32 two_step_flag = 2;
+    required uint32 number_ports = 3;
+    required bytes clock_quality = 4;
+    required uint32 priority1 = 5;
+    required uint32 priority2 = 6;
+    required uint32 domain_number = 7;
+    required uint32 slave_only = 8;
+	required uint32 delay_mechanism = 9;
+	required uint32 primary_domain = 10;
+}
+
+message compose_ptp_current_t
+{
+    required int64 offset_from_master = 1;
+	required int64 mean_path_delay = 2;
+	required uint32 steps_removed = 3;
+}
+
+message compose_ptp_parent_t
+{
+    required bytes parent_port_identity = 1;
+	required uint32 parent_stats = 2;
+	required uint32 observed_parent_offset_scaled_log_variance = 3;
+	required int32 observed_parent_clock_phase_change_rate = 4;
+	required bytes grandmaster_identity = 5;
+	required bytes grandmaster_clock_quality = 6;
+	required uint32 grandmaster_priority1 = 7;
+	required uint32 grandmaster_priority2 = 8;
+}
+
+message compose_ptp_time_properties_t
+{
+    required int32 current_utc_offset = 1;
+	required uint32 current_utc_offset_valid = 2;
+	required uint32 leap59 = 3;
+	required uint32 leap61 = 4;
+	required uint32 time_traceable = 5;
+	required uint32 frequency_traceable = 6;
+	required uint32 ptp_timescale = 7;
+	required uint32 time_source = 8;
+}
+
+message compose_ptp_global_c_t
+{
+    required bytes last_sync_tx_ts = 1;
+	required bytes last_sync_rx_ts = 2;
+	required int64 last_master_to_slave_delay = 3;
+	required int64 last_correction_field_with_mean_path_delay = 4;
+	required bytes servo_nns_cache = 5;
+	required int32 mean_nns = 6;
+	required uint32 servo_offset_cnt = 7;
+	required uint32 servo_nns_pos = 8;
+	required uint32 servo_nns_cnt = 9;
+	required uint32 servo_nns_lock_cnt = 10;
+	required bytes servo_nns = 11;
+}
+
+message compose_ptp_port_t
+{
+    required uint32 port_identity_port_num = 1;
+	required uint32 port_state = 2;
+	required int32 log_min_delay_req_interval = 3;
+	required int64 peer_mean_path_delay = 4;
+	required int32 log_announce_interval = 5;
+	required uint32 announce_receipt_timeout = 6;
+	required int32 log_sync_interval = 7;
+	required uint32 delay_mechanism = 8;
+	required int32 log_min_pdelay_req_interval = 9;
+	required uint32 version_number = 10;
+	required int32 faulty_flag = 11;
+}
+
+message compose_glb_ptp_port_address_t
+{
+    required uint32 protocol = 1;
+	required uint32 length = 2;
+	required uint32 dest_ip_addr = 3;
+    required bytes field = 4;
+}
+
+message compose_glb_ptp_timeinterval_t
+{
+	required int64 v = 1;
+    required bytes value = 2;
+}
+
+message compose_ptp_dump_flag_t
+{
+    required bytes ptp_dump_flag = 1;
+}
+
+message compose_ptp_vlan_info_t
+{
+    required bytes vlan = 1;
+}
+
+message compose_ptp_port_p_t
+{
+	required uint32 sent_announce_sequence_id = 1;
+	required uint32 sent_sync_sequence_id = 2;
+	required uint32 sent_delay_req_sequence_id = 3;
+	required uint32 sent_pdelay_req_sequence_id = 4;
+	required uint32 recv_sync_sequence_id = 5;
+    required bytes sync_send_time = 6;
+	required bytes sync_receive_time = 7;
+	required bytes last_sync_correction_field = 8;
+	required int64 last_delay_m_s = 9;
+	required uint32 waiting_for_follow = 10;
+	required bytes delay_req_send_time = 11;
+	required bytes delay_req_receive_time = 12;
+	required bytes last_delay_resp_correction_field = 13;
+	required bytes pdelay_req_send_time = 14;
+	required bytes pdelay_resp_send_time = 15;
+	required bytes pdelay_req_receive_time = 16;
+	required bytes pdelay_resp_receive_time = 17;
+	required bytes last_pdelay_resp_correction_field = 18;
+	required uint32 waiting_for_pdelay_resp_follow = 19;
+	required int64 delay_m_s = 20;
+	required int64 delay_s_m = 21;
+	required int64 pdelay_m_s = 22;
+	required int64 pdelay_s_m = 23;
+	required int64 offset_adjusted = 24;
+}
+
+message compose_ptp_port_c_t
+{
+    required bytes path_delay_cache = 1;
+	required bytes servo_pdc = 2;
+}
+
+message compose_ptp_port_stats_t
+{
+    required uint32 announce = 1;
+	required uint32 sync = 2;
+	required uint32 delay_req = 3;
+	required uint32 delay_resp = 4;
+	required uint32 follow_up = 5;
+	required uint32 pdelay_req = 6;
+	required uint32 pdelay_resp = 7;
+	required uint32 pdelay_resp_follow_up = 8;
+	required uint32 unknown = 9;
+}
+
+message compose_ptp_msg_proc_ops_t
+{
+    required bytes handle_proc = 1;
+	required bytes issue_proc = 2;
+	required bytes forward_proc = 3;
+	required bytes forward_test_proc = 4;
+}
+
+message compose_kernel_if_ipv6_addr_t
+{
+    required bytes ip_addr_v6 = 1;
+	required bytes masklen_v6 = 2;
+}
+
+message compose_tpoam_dm_t
+{
+    required uint32 per_dm_status = 1;
+	required uint32 tx_count = 2;
+	required uint32 rx_count = 3;
+	required bytes para = 4;
+	required bytes rx1dm = 5;
+	required int64 delay_threshold = 6;
+	required uint32 is_event_occur = 7;
+	required uint32 normal_packet_cnt_continue = 8;
+	required uint32 packet_cnt_for_upload = 9;
+}
+
+message compose_tpoam_lm_t
+{
+	required uint32 lm_type = 1;
+    required bytes lm_dual = 2;
+	required bytes lm_single = 3;
+	required uint32 local_loss_threshold = 4;
+	required uint32 remote_loss_threshold = 5;
+	required uint32 sd_enable = 6;
+	required uint32 is_event_occur = 7;
+	required uint32 normal_packet_cnt_continue = 8;
+}
+
+message compose_tpoam_lb_t
+{
+	required uint32 active = 1;
+	required uint32 per_lb_status = 2;
+    required bytes lbm_para = 3;
+	required bytes discovery = 4;
+	required bytes p_lbm_data = 5;
+	required bytes tx_skb = 6;
+	required uint32 payload_len = 7;
+	required uint32 lbm_next_trans_id = 8;
+	required uint32 lbm_tx_count = 9;
+	required uint32 lbr_rx_count = 10;
+	required uint32 lbr_out_order_count = 11;
+	required bytes lbm_start = 12;
+	required bytes lbm_stop = 13;
+	required bytes p_t_lb_timer = 14;
+	required bytes p_t_lb_exec_timer = 15;
+	required bytes pst_lb_cache_list = 16;
+}
+
+message compose_tpoam_event_t
+{
+	required uint32 max_count = 1;
+    required bytes pst_event_cache_list = 2;
+}
+
+message compose_tpoam_stats_t
+{
+    required bytes tpoam_stats = 1;
+}
+
+message compose_tpoam_list_t
+{
+    required bytes pst_dual_lm_cache_list = 1;
+	required bytes pst_dmm_cache_list = 2;
+}
+
+message compose_tpoam_rc_count_t
+{
+	required uint32 section_cnt = 1;
+	required uint32 megid_cnt = 2;
+	required uint32 lmep_cnt = 3;
+	required uint32 rmep_cnt = 4;
+	required uint32 mip_cnt = 5;
+	required uint32 csf_cnt = 6;
+}
+
+message compose_tpoam_exec_t
+{
+    required uint32 exec_type = 1;
+	required uint32 session_id = 2;
+}
+
+message compose_tpoam_trap_cache_t
+{
+	required uint32 tx_count = 1;
+	required uint32 peak_count = 2;
+	required uint32 max_count = 3;
+	required uint32 timer_count = 4;
+    required bytes pst_cache_list = 5;
+	required bytes pst_t_pending_timer = 6;
+}
+
+message compose_tpoam_ratelimit_t
+{
+	required uint32 slice = 1;
+	required uint32 token = 2;
+    required bytes param = 3;
+	required bytes stats = 4;
+}
+
+message compose_tpoam_lmm_exec_t
+{
+	required uint32 exist = 1;
+	required uint32 service_type = 2;
+    required string service_name = 3;
+	required bytes para = 4;
+}
+
+message compose_tpoam_lb_exec_t
+{
+    required uint32 exist = 1;
+	required uint32 service_type = 2;
+    required string service_name = 3;
+	required bytes para = 4;
+}
+
+message compose_tpoam_1dm_dmm_exec_t
+{
+    required uint32 exist = 1;
+	required uint32 service_type = 2;
+    required string service_name = 3;
+	required bytes para = 4;
+}
+
+message compose_upload_tpoam_dm_t
+{
+    required uint32 index = 1;
+	required uint32 bit_flag = 2;
+	required uint32 delay = 3;
+	required uint32 variation = 4;
+}
+
+message compose_upload_tpoam_lm_t
+{
+    required uint32 index = 1;
+	required uint32 bit_flag = 2;
+	required uint32 lm_far_end_frame_loss = 3;
+	required uint32 lm_far_end_frame_loss_ratio = 4;
+	required uint32 lm_near_end_frame_loss = 5;
+	required uint32 lm_near_end_frame_loss_ratio = 6;
+}
+
+message compose_upload_tpoam_ccm_t
+{
+    required uint32 ccm_status = 1;
+}
+
+message compose_glb_board_type_t
+{
+    required uint32 series = 1;
+    required uint32 type = 2;
+}
+
+message compose_glb_stats_t
+{
+    required uint64 packet_count = 1;
+    required uint64 byte_count = 2;
+}
+
+message compose_msti_port_key_t
+{
+    required string name = 1;
+    required uint32 instance = 2;
+}
+
+message compose_binding_key_t
+{
+    required uint32 ipv6 = 1;
+    required bytes mac = 2;
+    required uint32 vid = 3;
+}
+
+message compose_ns_port_forwarding_key_t
+{
+    required uint32 type = 1;
+    required uint32 proto = 2;
+    required uint32 port = 3;
+    required uint32 mapped_addr = 4;
+}
+
+message compose_route_node_key_t
+{
+    required uint32 vrf_id = 1;
+    required uint32 family = 2;
+    required uint32 prefixlen = 3;
+    required uint32 ipv4_addr = 4;
+    repeated uint32 ipv6_addr = 5;
+}
+
+message compose_route_node_key_with_ad_t
+{
+    required uint32 vrf_id = 1;
+    required uint32 family = 2;
+    required uint32 prefixlen = 3;
+    required uint32 ipv4_addr = 4;
+    repeated uint32 ipv6_addr = 5;
+}
+
+message compose_summer_time_t
+{
+    required bytes origin_timestamp = 1;
+}
+
+message compose_which_summer_time_t
+{
+    required bytes origin_timestamp = 1;
+}
+
+message compose_ospf_area_range_key_t
+{
+    required uint32 area_id = 1;
+    required uint32 family = 2;
+    required uint32 prefixlen = 3;
+    required uint32 ipv4_addr = 4;
+    repeated uint32 ipv6_addr = 5;
+}
+
+message compose_ospf6_area_range_key_t
+{
+    required uint32 area_id = 1;
+    required uint32 family = 2;
+    required uint32 prefixlen = 3;
+    required uint32 ipv4_addr = 4;
+    required uint32 ipv6_addr = 5;
+}
+
+message compose_ospf_area_vlink_key_t
+{
+    required uint32 area_id = 1;
+    required uint32 vl_peer = 2;
+}
+
+message compose_rip_timers_t
+{
+    required uint32 update = 1;
+    required uint32 timeout = 2;
+    required uint32 garbage = 3;
+}
+
+message compose_nexthop_key_t
+{
+    required uint32 type = 1;
+    required string ifname = 2;
+    optional uint32 ipv4_addr = 3;
+    repeated uint32 ipv6_addr = 4;
+}
+
+message compose_addr_ipv4_t
+{
+    required uint32 ipv4_addr = 1;
+}
+
+message compose_addr_ipv6_t
+{
+    required uint32 ipv6_addr = 1;
+}
+
+message compose_prefix_ipv4_t
+{
+    required uint32 family = 1;
+    required uint32 prefixlen = 2;
+    required uint32 ipv4_addr = 3;
+}
+
+message compose_prefix_t
+{
+    required uint32 family = 1;
+    required uint32 prefixlen = 2;
+    required uint32 ipv4_addr = 3;
+    repeated uint32 ipv6_addr = 4;
+}
+
+message compose_mstp_brg_id_t
+{
+    required uint32 priority = 1;
+    required bytes address = 2;
+}
+
+message compose_sal_time_t
+{
+    required uint32 time = 1;
+}
+
+message compose_time_range_value_t
+{
+    required uint32 type = 1;
+    optional int32 absolute_start = 2;
+    optional int32 absolute_end = 3;
+    optional int32 periodic_start_day = 4;
+    optional int32 periodic_start_hour = 5;
+    optional int32 periodic_start_min = 6;
+    optional int32 periodic_end_day = 7;
+    optional int32 periodic_end_hour = 8;
+    optional int32 periodic_end_min = 9;
+}
+
+message compose_time_range_timer_t
+{
+    required uint32 status = 1;
+}
+
+message compose_snmp_trap_key_t
+{
+    required compose_addr_t ip_addr = 1;
+    required string community = 2;
+    required uint32 udpport = 3;
+}
+
+message compose_snmp_view_key_t
+{
+    required string name = 1;
+	required uint32 type = 2;
+    required string subtree = 3;
+}
+
+message compose_snmp_group_usm_key_t
+{
+    required string grp_name = 1;
+    required string security_name = 2;
+}
+
+message compose_snmp_inform_key_t
+{
+    required compose_addr_t ip_addr = 1;
+    required string community = 2;
+    required uint32 udpport = 3;
+}
+
+message compose_addr_t
+{
+    required uint32 family = 1;
+    required uint32 ipv4_addr = 3;
+    repeated uint32 ipv6_addr = 4;
+}
+
+message compose_snmp_info_t
+{
+    required string info = 1;
+}
+
+message compose_user_t
+{
+    required string name = 1;
+}
+
+message compose_rsa_keystr_t
+{
+    required bytes rsa = 1;
+}
+
+message compose_timestamp_t
+{
+    required uint32 tv_sec = 1;
+    required uint32 tv_usec = 2;
+}
+
+message compose_mail_t
+{
+    required string server = 1;
+    required string from = 2;
+    required string to = 3;
+    required string cc = 4;
+    required string subject = 5;
+    required string body = 6;
+    required string attach = 7;
+}
+
+message compose_glb_flow_l4_port_t
+{
+    required uint32 operator = 1;
+    required uint32 port = 2;
+    required uint32 port2 = 3;
+}
+
+message compose_glb_flow_tcp_flag_t
+{
+    required uint32 operator = 1;
+    required uint32 tcp_flags = 2;
+}
+
+message compose_nexthop_ecmp_t
+{
+    required uint32 nh_num = 1;
+    repeated compose_nexthop_key_t nh = 2;
+}
+
+message compose_nexthop_ecmp_routed_t
+{
+    required uint32 nh_num = 1;
+    repeated compose_nexthop_key_t nh = 2;
+}
+
+message compose_ace_config_key_t
+{
+    required string acl_name = 1;
+    required uint32 seq_no = 2;
+}
+
+message compose_lldp_msap_id_t
+{
+    required uint32 chassis_id_type = 1;
+    required bytes chassis_id = 2;
+    required uint32 port_id_type = 3;
+    required bytes port_id = 4;
+}
+
+message compose_ptp_foreign_master_t
+{
+    required uint32 foreign_master_port_identity_type = 1;
+    required bytes foreign_master_port_identity = 2;
+    required string name = 3;
+}
+
+message compose_ptp_residence_time_cache_t
+{
+    required uint32 foreign_master_port_identity_type = 1;
+}
+
+message compose_erps_ring_key_t
+{
+    required uint32 domain_id = 1;
+    required uint32 ring_id = 2;
+}
+
+message compose_class_in_policy_config_key_t
+{
+    required string policy_name = 1;
+    required string class_name = 2;
+}
+
+message compose_acl_in_class_config_key_t
+{
+    required string class_name = 1;
+    required string acl_name = 2;
+}
+
+message compose_class_map_action_config_key_t
+{
+    required string policy_name = 1;
+    required string class_name = 2;
+}
+
+message compose_tap_group_ingress_key_t
+{
+    required string tap_group = 1;
+    required string if_name = 2;
+}
+
+message compose_tap_group_ingress_flow_key_t
+{
+    required string tap_group = 1;
+    required string if_name = 2;
+	required string flow_name = 3;
+}
+
+message compose_tap_group_egress_key_t
+{
+    required string tap_group = 1;
+    required string if_name = 2;
+}
+
+message compose_tap_five_tuple_key_t
+{
+    required uint32  ip_sa       = 1;
+    required uint32  ip_da       = 2;
+    required uint32  l4_src_port = 3;
+    required uint32  l4_dst_port = 4;
+    required uint32  l4_protocol = 5;
+}
+
+message compose_tap_tuple_acl_entry_id_t
+{
+    required bytes origin_timestamp = 1;
+}
+
+message compose_auth_server_key_t
+{
+    required compose_prefix_t addr = 1;
+    required uint32 type = 2;
+}
+
+message compose_auth_session_key_t
+{
+    required string name = 1;
+    required uint32 index = 2;
+    required uint32 type = 3;
+}
+
+message compose_lldp_civic_address_t
+{
+    required uint32 len = 1;
+    required uint32 what = 2;
+    required uint32 ca_num = 3;
+    required string countrycode = 4;
+    required string ca_value = 5;
+    required string ca_type = 6;
+    required string ca_length = 7;
+}
+
+message compose_fea_g8032_ring_key_t
+{
+    required uint32 vlan_id = 1;
+    required uint32 ifindex = 2;
+}
+
+message compose_igsp_group_key_t
+{
+    required uint32 ip = 1;
+    required uint32 vid = 2;
+}
+
+message compose_dot1x_radius_key_t
+{
+    required compose_prefix_t addr = 1;
+    required uint32 sin_port = 2;
+}
+
+message compose_dead_radius_key_t
+{
+    required compose_prefix_t addr = 1;
+    required uint32 sin_port = 2;
+    required uint32 ifindex = 3;
+}
+
+message compose_dot1x_mac_key_t
+{
+    required uint32 ifindex = 1;
+    required bytes mac = 2;
+}
+
+message compose_mirror_mac_escape_key_t
+{
+    required bytes mac = 1;
+    required bytes mask = 2;
+}
+
+message compose_ns_route_key_t
+{
+    required uint32  port = 1;
+    required uint32  proto = 2;
+	required uint32 family = 3;
+    required uint32 ipv4_addr = 4;
+    repeated uint32 ipv6_addr = 5;
+}
+
+message compose_openflow_manager_key_t
+{
+    required uint32  ip = 1;
+    required uint32  port = 2;
+    required uint32  proto = 3;
+}
+
+message compose_glb_ptp_port_id_t
+{
+    required string  clock_id = 1;
+    required uint32  port_num = 2;
+}
+
+message compose_inband_snat_key_t
+{
+    required uint32  ip = 1;
+    required uint32  port = 2;
+    required uint32  proto = 3;
+}
+
+message compose_arpace_config_key_t
+{
+    required string arpacl_name = 1;
+    required uint32 seq_no = 2;
+}
+
+message compose_sflow_collector_key_t
+{
+    required compose_prefix_t addr = 1;
+    required uint32 udp_port = 2;
+}
+
+message compose_vrrp_vmac_key_t
+{
+    required uint32 ifindex = 1;
+    required bytes mac = 2;
+}
+
+message compose_ssm_clock_id_t
+{
+    required bytes mac = 1;
+}
+
+message compose_rmon_stats_history_key_t
+{
+    required uint32 history_index = 1;
+    required uint32 stats_index = 2;
+}
+
+message compose_ipsla_packet_stats_key_t
+{
+    required uint32 entry_id = 1;
+    required uint32 packet_index = 2;
+}
+
+message compose_ipsla_test_stats_key_t
+{
+    required uint32 entry_id = 1;
+    required uint32 test_index = 2;
+}
+
+message compose_mrt_key_t
+{
+    required uint32 vrf_id = 1;
+    required uint32 source = 2;
+    required uint32 group = 3;
+}
+
+message compose_vlan_mapping_entry_key_t
+{
+    required uint32 raw_vid = 1;
+    required string table_name = 2;
+}
+
+message compose_egress_mapping_entry_key_t
+{
+    required uint32 raw_cvid = 1;
+    required uint32 raw_svid = 2;
+    required string table_name = 3;
+}
+
+message compose_mapped_vlan_info_key_t
+{
+    required string evc_name = 1;
+    required string table_name = 2;
+}
+
+message compose_nd_prefix_key_t
+{
+    required compose_prefix_t addr = 1;
+    required uint32 ifindex = 2;
+}
+message compose_l2pro_if_action_vlan_t
+{
+    required uint32 l2action = 1;
+    required uint32 l2vlan = 2;
+}
+message compose_glb_qos_color_action_t
+{
+    required uint32 drop_packet = 1;
+    required uint32 tc_valid = 2;
+    required uint32 tc = 3;
+}
+
+message compose_qos_policer_res_key_t
+{
+    required uint32 cir = 1;
+    required uint32 eir = 2;
+    required uint32 cbs = 3;
+    required uint32 ebs = 4;
+    required uint32 mode = 5;
+    required uint32 pps_en = 6;
+    required uint32 direct = 7;
+    required uint32 type = 8;
+}
+
+message compose_l2edit_key_t
+{
+    required bytes src_mac = 1;
+	required bytes dest_mac = 2;
+    required uint32 vid = 3;
+}
+
+message compose_ctclib_opb_t
+{
+    required uint32 data = 1;
+    required uint32 words = 2;
+    required uint32 start_offset = 3;
+    required uint32 max_size = 4;
+    required string desc = 5;
+}
+
+message compose_nat_rule_key_t
+{
+    required uint32  flags = 1;
+    required compose_addr_t  in_local_ip = 2;
+    required uint32  in_local_port = 3;
+    required compose_addr_t  in_glb_ip = 4;
+    required uint32  in_glb_port = 5;
+    required uint32  in_glb_port_hi = 6;
+    required uint32  out_ifindex = 7;
+    required string  acl = 8;
+    required uint32   protocol = 9;
+    required string  pool = 10;
+}
+
+message compose_nat_session_key_t
+{
+    required compose_addr_t inside_local_ip = 1;
+    required compose_addr_t inside_global_ip = 2;
+    required compose_addr_t outside_local_ip = 3;
+    required compose_addr_t outside_global_ip = 4;
+    required uint32 protocol = 5;
+    required uint32 inside_local_port = 6;
+    required uint32 inside_global_port = 7;
+    required uint32 outside_local_port = 8;
+    required uint32 outside_global_port = 9;
+}
+
+message compose_nat_proxy_arp_key_t
+{
+    required uint32 ifindex = 1;
+    required compose_addr_t inside_global_ip = 2;
+}
+message compose_glb_poe_cfg_t
+{
+    required bytes enable = 1;
+	required bytes force_power = 2;
+    required uint32 mode = 3;
+	required bytes priority = 4;
+    required uint32 power_limit = 5;    
+}
+
+message compose_cfm_ma_key_t
+{
+    required uint32 vid = 1;
+    required string md_name = 2;
+}
+
+message compose_cfm_lmep_key_t
+{
+    required uint32 level = 1;
+    required uint32 vid = 2;
+	required uint32 ifindex = 3;
+}
+
+message compose_cfm_rmep_key_t
+{
+    required uint32 level = 1;
+    required uint32 vid = 2;
+	required uint32 rmep_id = 3;
+}
+
+message compose_cfm_time_key_t
+{
+    required uint32 time = 1;
+    required uint32 seq = 2;
+}
+
+message compose_pim_sm_gprefix_t
+{
+    required string ip = 1;
+    required uint32 masklen = 2;
+}
+
+message compose_pim_static_rp_addr_t
+{
+    required string ip = 1;
+    required string group = 2; 
+    required uint32 masklen = 3;
+}

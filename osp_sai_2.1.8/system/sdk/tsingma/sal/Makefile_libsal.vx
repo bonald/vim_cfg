@@ -1,0 +1,20 @@
+
+include $(MK_DIR)/sys_vx.mk
+OBJ_DIR=$(OBJ_BASE_DIR)/sal
+
+LIB = sal
+OBJS = $(wildcard $(OBJ_DIR)/src/vxworks/*.o) $(wildcard $(OBJ_DIR)/src/common/*.o)
+DEPS = $(wildcard $(OBJ_DIR)/src/vxworks/*.d) $(wildcard $(OBJ_DIR)/src/common/*.d)
+
+$(LIB_DIR)/lib$(LIB).a: $(OBJS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/lib$(LIB).a
+
+

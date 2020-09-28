@@ -1,0 +1,1256 @@
+LCM-DEBUG DEFINITIONS AUTOMATIC TAGS ::= BEGIN  
+
+BridgeStpPortStateReq ::= SEQUENCE
+{
+	portid        INTEGER,
+	instance      INTEGER
+}
+
+BridgeStpPortStateRes ::= SEQUENCE
+{
+	state         INTEGER 
+}
+
+MsgRatelimitItem ::= SEQUENCE
+{
+    uCastEnable       INTEGER,
+    uCastUnit         INTEGER,
+    uCastThresh       INTEGER,
+    uCastRunningCount INTEGER,
+    bCastEnable       INTEGER,
+    bCastThresh       INTEGER,
+    bCastUnit         INTEGER,
+    bCastRunningCount INTEGER,
+    mCastEnable       INTEGER,
+    mCastThresh       INTEGER,
+    mCastUnit         INTEGER,
+    mCastRunningCount INTEGER
+}
+
+RateLimitStateReq ::= SEQUENCE
+{
+	portid        SEQUENCE OF INTEGER
+}
+
+RateLimitStateRes ::= SEQUENCE
+{
+	state         SEQUENCE OF MsgRatelimitItem 
+}
+
+AclTcamUsageMsg ::= SEQUENCE                    
+{                                               
+    macIpv4Total INTEGER,                       
+    macIpv4Used  INTEGER,                       
+    ipv6Total    INTEGER,                       
+    ipv6Used     INTEGER,                       
+    labelTotal   INTEGER,                       
+    labelUsed    INTEGER                        
+}                                               
+                                                
+AclGetFreeLabelIndexMsg ::= SEQUENCE        
+{                                               
+    chipId   INTEGER,                           
+    aclType  INTEGER,	                          
+    from     INTEGER,                           
+    dataType INTEGER                            
+}                                               
+                                                
+AceFreeLableIndex ::= SEQUENCE                  
+{                                               
+    addType  INTEGER,                           
+    start    INTEGER,                           
+    end      INTEGER                            
+}                                               
+                                                
+AclFreeLableIndexMsg ::= SEQUENCE               
+{                                               
+    chipId         INTEGER,                     
+    countThisTime  INTEGER,                     
+    freeLblIndex   SEQUENCE OF AceFreeLableIndex
+}                                               
+                                                
+AclGetTcamUsgMsg ::= SEQUENCE                   
+{                                               
+    chipId   INTEGER,                           
+    dataType INTEGER                            
+}                                               
+                                                
+DSAclQos ::= SEQUENCE                           
+{                                               
+    discardPkt INTEGER,                         
+    denyMpls   INTEGER,                         
+    denyBridge INTEGER,                         
+    denyLearning INTEGER,                       
+    denyRoute    INTEGER,                       
+    fwdPtrValid  INTEGER,                       
+    color        INTEGER,                       
+    prio         INTEGER,                       
+    randLogEn    INTEGER,                       
+    aclLogId     INTEGER,                       
+    prioValid    INTEGER,                       
+    randTholdShift INTEGER,                     
+    qosPolicyValid      INTEGER,                
+    qosPolicy           INTEGER,                
+    fwdPtr              INTEGER,                
+    statsPtr            INTEGER,                
+    flowPolicerPtr      INTEGER                 
+}                                               
+                                                
+DSAclQosMacKey ::= SEQUENCE                     
+{                                               
+    aclLablUp  INTEGER,                         
+    aclLablLow INTEGER,                         
+    tblId      INTEGER,                         
+    isIpKey    INTEGER,                         
+    cosCfi     INTEGER,                         
+    l3Type     INTEGER,                         
+    macdaUp    INTEGER,                         
+    qosLable   INTEGER,                         
+    l2Type     INTEGER,                         
+    vlanId     INTEGER,                         
+    macsaUp    INTEGER,                         
+    macdaLow   INTEGER,                         
+    macsaLow   INTEGER                          
+}                                               
+                                                
+DSAclQosIpv4Key ::= SEQUENCE                    
+{                                               
+    l2QosLabl         INTEGER,                  
+    l3QosLabl         INTEGER,                  
+    aclLabl           INTEGER,                  
+    tblId0            INTEGER,                  
+    isIpKey           INTEGER,                  
+    cosCfi            INTEGER,                  
+    tblId1            INTEGER,                  
+    l3Type            INTEGER,                  
+    macdaUp           INTEGER,                  
+    routedPkt         INTEGER,                  
+    isTcp             INTEGER,                  
+    isUdp             INTEGER,                  
+    isApp             INTEGER,                  
+    ipHeaderErr       INTEGER,                  
+    ipOpt             INTEGER,                  
+    mappedVlanid      INTEGER,                  
+    macsaUp           INTEGER,                  
+    l2Type            INTEGER,                  
+    dscp              INTEGER,                  
+    l4infoMapped      INTEGER,                  
+    qosLabel          INTEGER,                  
+    fragInfo          INTEGER,                  
+    l4destPort        INTEGER,                  
+    l4srcPort         INTEGER,                  
+    macsaLower        INTEGER,                  
+    macdaLower        INTEGER,                  
+    ipda              INTEGER,                  
+    ipsa              INTEGER                   
+} 
+
+DSAclQosIpv6Key ::= SEQUENCE
+{
+    l2QosLabel        INTEGER,       
+    l3QosLabel        INTEGER,       
+    macdaUp           INTEGER,       
+    macdaLower        INTEGER,       
+    tableId0          INTEGER,       
+    tableId1          INTEGER,       
+    cosCfi            INTEGER,       
+    l3Type            INTEGER,       
+    l2Type            INTEGER,       
+    macsaUp           INTEGER,       
+    macsaLower        INTEGER,       
+    mappedVlanid      INTEGER,       
+    ipv6Flowlabel     INTEGER,       
+    ipv6ExHeader      INTEGER,       
+    routedPkt         INTEGER,       
+    istcp             INTEGER,       
+    dscp              INTEGER,       
+    l4infoMapped      INTEGER,       
+    l4destport        INTEGER,       
+    l4srcport         INTEGER,       
+    aclLabel          INTEGER,       
+    qosLabel          INTEGER,       
+    ipheadErr         INTEGER,       
+    ipOption          INTEGER,       
+    isudp             INTEGER,       
+    isapp             INTEGER,       
+    fragInfo          INTEGER,             
+    ipda13            INTEGER,       
+    ipda2             INTEGER,       
+    ipda4             INTEGER,       
+    ipda5             INTEGER,       
+    ipsa13            INTEGER,       
+    ipsa2             INTEGER,       
+    ipsa4             INTEGER,       
+    ipsa5             INTEGER     
+}  
+
+AclTcamEntry ::= SEQUENCE
+{
+    index    INTEGER,
+    chipid   INTEGER,
+    ifType   INTEGER,
+    type     INTEGER,
+    key   CHOICE
+    {
+        macKey  DSAclQosMacKey,
+        ipv4Key DSAclQosIpv4Key,
+        ipv6Key DSAclQosIpv6Key
+    },
+    
+    mask  CHOICE
+    {
+        macMask  DSAclQosMacKey,
+        ipv4Mask DSAclQosIpv4Key,
+        ipv6Mask DSAclQosIpv6Key
+    }
+}
+
+AclTcamDataMsg ::= SEQUENCE
+{
+    entryNumThisTime   INTEGER,
+    aclTcamEntries     SEQUENCE OF AclTcamEntry
+}
+
+AclTcamGetMsg ::= SEQUENCE
+{
+    ifType       INTEGER,
+    aclKeyType   INTEGER,
+    entryNumSent INTEGER
+}
+
+AclTcamGetOneEntryMsg ::= SEQUENCE
+{
+    chipId     INTEGER,
+    aclKeyType INTEGER,
+    entryNum   INTEGER
+    
+}
+
+DSMacKey ::= SEQUENCE
+{
+    tableid0          INTEGER,  
+    tableid1          INTEGER,  
+    cos               INTEGER,  
+    cfi               INTEGER,  
+    l2type            INTEGER,  
+    chipid            INTEGER,  
+    srcport           INTEGER,  
+    delbit            INTEGER,               
+    userVrfidExtend   INTEGER,  
+    l3type            INTEGER,  
+    fid               INTEGER,  
+    l2HeaderProto     INTEGER,  
+    macdaUp           INTEGER,  
+    reservSrcPort     INTEGER,  
+    macdaLower        INTEGER  
+}    
+
+DSMacDA ::= SEQUENCE
+{
+    stormCtlEn         INTEGER,       
+    srcPortCheckEn     INTEGER,       
+    equalCostPathNum   INTEGER,       
+    srcMismatchDisc    INTEGER,       
+    srcMismatchLearn   INTEGER,       
+    srcDisc            INTEGER,       
+    learnEn            INTEGER,       
+    stpCheckEn         INTEGER,       
+    isbpdu            INTEGER,       
+    macsaExcepEn       INTEGER,       
+    macdaExcepEn       INTEGER,       
+    srcPort            INTEGER,       
+    protocolExcepType  INTEGER,       
+    priorityPathEn     INTEGER,       
+    fwdPtr             INTEGER    
+}
+
+L2TcamEntryMsg ::= SEQUENCE
+{
+    chipid  INTEGER,
+    index   INTEGER,
+    entryNumSent INTEGER,
+    bitmapUpTo   INTEGER
+}
+
+L2MacTcamEntry ::= SEQUENCE
+{
+    index   INTEGER,
+    chipid  INTEGER,
+    macKeyData    DSMacKey,
+    macKeyMask    DSMacKey,
+    macda         DSMacDA
+}
+
+L2TcamEntriesMsg ::= SEQUENCE
+{
+    entryNumThisTime    INTEGER,
+    bitmapUpTo          INTEGER,
+    l2TcamEntry         SEQUENCE OF L2MacTcamEntry
+}   
+
+L2EntryCountReq ::= SEQUENCE
+{
+    chipid  INTEGER
+}
+
+L2EntryCountResp ::= SEQUENCE
+{
+    filterCnt       INTEGER,
+    withVIDCnt      INTEGER,
+    withoutVIDCnt   INTEGER,
+    snoopingCnt     INTEGER,
+    defaultCnt      INTEGER,
+    mcastCnt        INTEGER
+}   
+
+IPv4RouteKey ::= SEQUENCE
+{
+    delbit          INTEGER,   
+    istcp           INTEGER,   
+    isudp           INTEGER,   
+    isapp           INTEGER,   
+    ipoptions       INTEGER,   
+    l4InfoMapped    INTEGER,     
+    l4DstPort       INTEGER,   
+    l4SrcPort       INTEGER,   
+    l4Type          INTEGER,   
+    tblid0          INTEGER,   
+    tblid1          INTEGER,   
+    fragInfo        INTEGER,   
+    dscp            INTEGER,   
+    vrfid           INTEGER,   
+    ipda            INTEGER,    
+    ipsa            INTEGER
+}    
+
+IPv6RouteKey ::= SEQUENCE
+{
+    cos                INTEGER,   
+    cfi                INTEGER,   
+    delbit             INTEGER,   
+    tblid0             INTEGER,   
+    routedPacket       INTEGER,   
+    istcp              INTEGER,   
+    isudp              INTEGER,   
+    isapp              INTEGER,   
+    dscp               INTEGER,   
+    ipv6ExtHeaders     INTEGER,   
+    ipv6FlowLabel      INTEGER,   
+    vid                INTEGER,   
+    macdah             INTEGER,   
+    macsah             INTEGER,   
+    macdal             INTEGER,   
+    macsal             INTEGER,    
+    vrfid              INTEGER,   
+    l3type             INTEGER,   
+    l4InfoMapped       INTEGER,   
+    l4DstPort          INTEGER,   
+    l4SrcPort          INTEGER,   
+    etherType          INTEGER,   
+    tblid1             INTEGER,   
+    tblid2             INTEGER,   
+    iphdrErr           INTEGER,   
+    ipOptions          INTEGER,   
+    fragInfo           INTEGER,   
+    layer4Type         INTEGER,   
+    l2Type	           INTEGER,   
+    ipsa4              INTEGER,   
+    ipsa2              INTEGER,   
+    ipsa3              INTEGER,    
+    ipsa1              INTEGER,   
+    ipsa0              INTEGER,   
+    ipda4              INTEGER,   
+    ipda2              INTEGER,   
+    ipda3              INTEGER,   
+    ipda1              INTEGER,   
+    ipda0              INTEGER 
+}   
+
+DSIpDA ::= SEQUENCE
+{
+    isatapCheckEn       INTEGER,  
+    icmpCheckEn         INTEGER,  
+    mcastRpfFailCpuEn   INTEGER,  
+    bidiPimGroup        INTEGER,  
+    bidiPimGroupValid   INTEGER,  
+    priorityPathEn      INTEGER,  
+    ipdaExceptionEn     INTEGER,  
+    equaCostPathNum     INTEGER,  
+    tunnelPacketType    INTEGER,  
+    rpfIfid             INTEGER,  
+    l3IfType            INTEGER,  
+    tunnelGreOptions    INTEGER,   
+    tunnelPayLoadOffset INTEGER,    
+    ttlCheckEn          INTEGER,  
+    payLoadSelect       INTEGER,     
+    dsfwdPtr            INTEGER,     
+    denyPbr             INTEGER      
+}   
+
+DSIpSA ::= SEQUENCE
+{
+    rpfCheckEn     INTEGER,  
+    rpfIfidValid3  INTEGER,  
+    rpfIfidValid2  INTEGER,  
+    moreRpfIf      INTEGER,  
+    rpfIfidValid1  INTEGER,  
+    rpfIfidValid0  INTEGER,  
+    rpfIfid3       INTEGER,  
+    rpfIfid2       INTEGER,  
+    rpfIfid1       INTEGER,   
+    rpfIfid0       INTEGER
+}  
+
+DSFwd ::= SEQUENCE
+{
+    lengthAdjType     INTEGER, 
+    critiPkt          INTEGER, 
+    destMap           INTEGER, 
+    destIdDicard      INTEGER, 
+    statsPtrValid     INTEGER, 
+    sendLocalPhyPort  INTEGER, 
+    nexthopPtr        INTEGER, 
+    statsPtr          INTEGER  
+}
+
+DSNexthop ::= SEQUENCE   
+{
+    l2RewriteType   INTEGER,  
+    l3RewriteType   INTEGER,  
+    byPassAll       INTEGER,  
+    mtuCheckEn      INTEGER,  
+    destVlanidValid INTEGER,  
+    localPhyPort    INTEGER,  
+    payloadOp       INTEGER,  
+    l3EditPtr       INTEGER,   
+    destVlanid      INTEGER,
+    l2EditPtr       INTEGER
+}    
+
+DSDestPort ::= SEQUENCE
+{
+    dot1qEtherTypeEn     INTEGER,          
+    untagDefautVid       INTEGER,    
+    portPolicerValid     INTEGER,      
+    transmitEn           INTEGER,       
+    l2AclEn              INTEGER,      
+    l2QosLookupEn        INTEGER,     
+    bridgeEn             INTEGER,       
+    l2SpanEn             INTEGER,       
+    l2SpanId             INTEGER,    
+    forceMackey          INTEGER,     
+    l2QosHighPrio        INTEGER,    
+    egressFilterEn       INTEGER,               
+    muxPortType          INTEGER,                          
+    routedPort           INTEGER,                            
+    globalDestPort       INTEGER,                            
+    vlanFlowPolicerValid INTEGER,                         
+    l2AclHighPrio        INTEGER,                       
+    stpCheckDisable      INTEGER,                          
+    replaceCos           INTEGER,                             
+    vplsPortType         INTEGER,                             
+    replaceDscp          INTEGER,    
+    destPortBundleId     INTEGER,    
+    defaultVid           INTEGER,    
+    l2AclLabel           INTEGER,    
+    l2QosLabel           INTEGER  
+}
+
+DSSrcPort ::= SEQUENCE
+{
+    qosPolicy            INTEGER,    
+    keepVlanTag          INTEGER,    
+    ingressFilterEn      INTEGER,    
+    macSecurityDiscard   INTEGER,     
+    l2AclEn              INTEGER,    
+    vlanTagCtl           INTEGER,    
+    defaultPcp           INTEGER,    
+    protocolVlanBase     INTEGER,     
+    protocolVlanEn       INTEGER,     
+    l2AclHighPrio        INTEGER,    
+    bridgeEn             INTEGER,    
+    defaultVid           INTEGER,    
+    l2AclLabel           INTEGER,    
+    l2QosLabel           INTEGER,    
+    defaultRepalceTagEn  INTEGER,       
+    portCrossConnect     INTEGER,    
+    routedPort           INTEGER,    
+    l2SpanEn             INTEGER,    
+    allowMcastMacsa      INTEGER,    
+    sourcePortBundleId   INTEGER,       
+    l2SpanId             INTEGER,    
+    l2QosLookupEn        INTEGER,    
+    useOuterTtl          INTEGER,    
+    learningDisable      INTEGER,    
+    forceMackey          INTEGER,    
+    l2QosHighPriority    INTEGER,             
+    srcQueueSelect       INTEGER,        
+    vplsPortType         INTEGER,         
+    vlanFlowPolicerValid INTEGER,    
+    portPolicerValid     INTEGER         
+} 
+
+DSPhyPort ::= SEQUENCE
+{
+    decryptionEn       INTEGER,  
+    dot1qEtherTypeEn   INTEGER,   
+    packetTypeValid    INTEGER,  
+    packetType         INTEGER,  
+    useridType         INTEGER,  
+    useridLabel        INTEGER,  
+    portSecurityIndex  INTEGER,        
+    globalSrcPort      INTEGER,  
+    useridEn           INTEGER
+} 
+
+DSSrcVlan ::= SEQUENCE 
+{
+    v6UcastSaType	      INTEGER, 
+    l3SpanId            INTEGER, 
+    l3AclRoutedOnly     INTEGER, 
+    l3AclEn             INTEGER, 
+    l3QosLookupEn       INTEGER, 
+    l3IfType            INTEGER, 
+    v4UcastEn           INTEGER, 
+    v4McastEn           INTEGER, 
+    v6UcastEn           INTEGER, 
+    v6McastEn           INTEGER, 
+    v4UcastSaType       INTEGER, 
+    v4McastRpfEn        INTEGER, 
+    v6McastRpfEn        INTEGER, 
+    mplsEn              INTEGER, 
+    igmpSnoopEn         INTEGER, 
+    routeAllPackets     INTEGER, 
+    routerMacType       INTEGER, 
+    stpId               INTEGER, 
+    routerMacLabel      INTEGER, 
+    l3SpanEn            INTEGER,  
+    receieveEn          INTEGER, 
+    fwdStatsBucket      INTEGER, 
+    vrfidORfid          INTEGER, 
+    l3AclLabel          INTEGER, 
+    l3QosLabel          INTEGER    
+}   
+
+DSDestVlan ::= SEQUENCE
+{
+    mtuExceptionen     INTEGER,
+    transmitEn         INTEGER,
+    v4UcastEn          INTEGER,
+    v4McastEn          INTEGER,
+    v6UcastEn          INTEGER,
+    v6McastEn          INTEGER,
+    mtuCheckEn         INTEGER,
+    replaceDscp        INTEGER,
+    mtuSize            INTEGER,
+    mcastTtlThreshold  INTEGER,
+    macsaType          INTEGER,
+    stpid              INTEGER,
+    l3AclRoutedOnly    INTEGER,
+    l3AclEn            INTEGER,
+    l3QosLookupEn      INTEGER,
+    l3SpanEn           INTEGER,
+    l3SpanId           INTEGER,
+    fwdStatBucket      INTEGER,
+    macsa              INTEGER,
+    l3AclLabel         INTEGER, 
+    l3QosLabel         INTEGER
+}
+
+DSProtoVlan ::=SEQUENCE
+{
+     protoVlanidValid   INTEGER,
+     cpuExcpEn          INTEGER,
+     discard            INTEGER,
+     replaceTagEn       INTEGER,
+     ptlvid             INTEGER
+}  
+
+L2EditEth4w ::= SEQUENCE
+{
+    deviceMcastMac       INTEGER, 
+    overWriteEtherType   INTEGER, 
+    type                 INTEGER, 
+    macsaValid           INTEGER, 
+    macdah               INTEGER, 
+    outputVid            INTEGER,
+    pktType              INTEGER,
+    outputVidValid       INTEGER,
+    macdal               INTEGER
+}
+
+L2EditEth8w ::= SEQUENCE
+{
+    outputVidValid        INTEGER,  
+    deviceMcastMac        INTEGER,  
+    overWriteEtherType    INTEGER,  
+    type                  INTEGER,  
+    macsaValid            INTEGER,  
+    encryptionEn          INTEGER,  
+    encryptionKeyIndex    INTEGER,  
+    macsah                INTEGER,  
+    pktType               INTEGER,   
+    outputVid             INTEGER,
+    macdah                INTEGER,
+    macdal                INTEGER,
+    macsal                INTEGER   
+}
+
+L2EditLpbk ::= SEQUENCE
+{
+    lbLengthAdjustType  INTEGER, 
+    lbDestMap           INTEGER,
+    lbNextHopPtr        INTEGER 
+}
+
+L2EditFlx4w ::= SEQUENCE
+{
+    rewriteByteNum  INTEGER,  
+    pktType         INTEGER,
+    rewiteStringH   INTEGER,
+    rewriteStringL  INTEGER
+}
+
+L2EditFlx8w ::= SEQUENCE
+{
+    rewriteByteNum    INTEGER,
+    pktType           INTEGER,
+    rewriteString3    INTEGER,
+    rewriteString2    INTEGER,
+    rewriteString1    INTEGER,
+    rewriteString0    INTEGER
+}  
+
+L3EditMpls4w ::= SEQUENCE
+{
+   mapExp0              INTEGER, 
+   exp0                 INTEGER, 
+   ttl0                 INTEGER, 
+   label0               INTEGER, 
+   martiniEncapValid    INTEGER, 
+   mapTtl0              INTEGER, 
+   labelValid           INTEGER, 
+   mapTtl1              INTEGER, 
+   mcastLabel0          INTEGER, 
+   mcastLabel1          INTEGER, 
+   mapExp1              INTEGER, 
+   exp1                 INTEGER,
+   ttl1                 INTEGER,
+   label1               INTEGER 
+}  
+
+L3EditMpls8w ::= SEQUENCE
+{
+    mapExp0             INTEGER,   
+    exp0                INTEGER,      
+    ttl0                INTEGER,      
+    label0              INTEGER,     
+    martiniEncapValid   INTEGER,   
+    mapTtl0             INTEGER,     
+    labelValid1         INTEGER,     
+    mapTtl1             INTEGER,   
+    labelValid2         INTEGER,    
+    mapTtl2             INTEGER,    
+    labelValid3         INTEGER,    
+    mapTtl3             INTEGER,    
+    mcastLabel0         INTEGER,     
+    mcastLabel1         INTEGER,      
+    mcastLabel2         INTEGER,    
+    mcastLabel3      	  INTEGER,            
+    mapExp1             INTEGER,                       
+    exp1                INTEGER,                             
+    ttl1                INTEGER,                             
+    label1   	          INTEGER,                            
+    mapExp2             INTEGER,                       
+    exp2                INTEGER,                            
+    ttl2                INTEGER,                            
+    label2              INTEGER,                           
+    mapExp3             INTEGER,                       
+    exp3                INTEGER,                             
+    ttl3                INTEGER,                             
+    label3              INTEGER      
+}     
+
+L3EditNAT ::= SEQUENCE
+{
+    replaceL4Destport INTEGER,
+    l4Destport        INTEGER,
+    replaceIpda      	INTEGER,
+    ipda              INTEGER
+}
+
+DSL3EditTunnelV4 ::= SEQUENCE
+{
+    innerHeaderType       INTEGER, 
+    greFlagsMipTypeUp     INTEGER, 
+    greVerMipTypeLower    INTEGER, 
+    dscp                  INTEGER, 
+    ttl                   INTEGER, 
+    ipProtoType           INTEGER, 
+    isAtpTunnel           INTEGER, 
+    ipIdentificType       INTEGER, 
+    mapDscp               INTEGER, 
+    mapTtl                INTEGER, 
+    copyDontFrag          INTEGER, 
+    dontFrag              INTEGER, 
+    innerHeaderValid      INTEGER, 
+    tunnel6to4            INTEGER, 
+    tunnelSa6to4          INTEGER, 
+    greKeyUdpDestPort     INTEGER, 
+    greProtoUdpSrcPort    INTEGER, 
+    ipsa                  INTEGER, 
+    ipda                  INTEGER  
+}
+
+DSL3EditTunnelV6 ::= SEQUENCE
+{
+   greHeaderType    INTEGER,
+   greFlag          INTEGER,
+   greVersion       INTEGER,
+   dscp             INTEGER,
+   ttl              INTEGER,
+   ipProtoType      INTEGER,
+   isAtpTunnel      INTEGER,
+   ipIdentificType  INTEGER,
+   mapDscp          INTEGER,
+   mapTtl    	      INTEGER,
+   greKey           INTEGER,
+   greProtocol      INTEGER,
+   ipsa3            INTEGER,
+   ipsa2            INTEGER,
+   ipsa1            INTEGER,
+   ipsa0            INTEGER,
+   ipda3            INTEGER,
+   ipda2            INTEGER,
+   ipda1            INTEGER,
+   ipda0            INTEGER
+}  
+
+DSL3EditFlex ::= SEQUENCE
+{
+    rewriteByteNum   INTEGER,  
+    pktType          INTEGER,  
+    rewriteString3   INTEGER,  
+    rewriteString2   INTEGER,  
+    rewriteString1   INTEGER,  
+    rewriteString0   INTEGER
+}
+
+DSMetEntry ::= SEQUENCE
+{
+    lengthAdjustType   INTEGER,   
+    remoteBay          INTEGER,     
+    isLinkAgg          INTEGER,   
+    translateDestid    INTEGER,   
+    endLocalRep        INTEGER,   
+    nextMetEntryPtr    INTEGER,                     
+    replicationCtl     INTEGER, 
+    ucastid            INTEGER  
+}
+
+IPSaNAT ::= SEQUENCE
+{
+    forceIpSaFwd      INTEGER,  
+    ipsaFwdPtrVld     INTEGER,  
+    replaceL4SrcPort  INTEGER,   
+    rplIpSa           INTEGER,    
+    l4SrcPort         INTEGER,  
+    ipsa              INTEGER
+} 
+
+DSMPLS ::= SEQUENCE
+{
+   statsPtrMode         INTEGER,  
+   llspValid            INTEGER,  
+   overWritePrio        INTEGER,  
+   equalCostPathNum     INTEGER,  
+   llspPriority         INTEGER,  
+   ttlThreshold         INTEGER,  
+   pktType              INTEGER,  
+   nextTtlMode          INTEGER,  
+   offsetBytes          INTEGER,  
+   mplsFlowPolicerPtr   INTEGER,  
+   sbit                 INTEGER,  
+   useLabelTtl          INTEGER,  
+   priorityPathEn       INTEGER,  
+   nextTtlValue         INTEGER,  
+   sbitCheckEn          INTEGER,  
+   mplsContinue         INTEGER,  
+   dsfwdPtr             INTEGER
+}
+
+STPState ::= SEQUENCE
+{
+    stpState INTEGER
+}
+
+VlanStatus ::= SEQUENCE
+{
+    vlanidValidh32 INTEGER,
+    vlanidValidl32 INTEGER
+}
+
+DSbidiPimGroup ::= SEQUENCE
+{
+    bidiPimBlock  INTEGER
+}
+
+DSMplsCtl ::= SEQUENCE
+{
+    numofLabelsMcast          INTEGER, 
+    numofLabels               INTEGER, 
+    labelSpaceSizeTypeMcast   INTEGER,    
+    labelSpaceSizeType        INTEGER, 
+    labelBaseMcast            INTEGER,  
+    labelBase                 INTEGER
+}
+
+DSStormCtl ::= SEQUENCE
+{
+    usepktCount     INTEGER,
+    ucastEn         INTEGER,
+    mcastEn         INTEGER,
+    bcastEn         INTEGER,
+    threshold       INTEGER,
+    runningCount    INTEGER 
+}   
+
+DSAging ::= SEQUENCE
+{
+    agingStatus   INTEGER
+}
+
+DSPolicer ::= SEQUENCE
+{
+    profile     INTEGER,
+    useL3Length INTEGER,
+    stormMode   INTEGER,
+    peakCount   INTEGER,
+    colorBlindMode  INTEGER,
+    policerEn       INTEGER,
+    colorDropCode   INTEGER,
+    commitCount     INTEGER,
+    oldts           INTEGER
+}
+
+DSPolicerProfile  ::= SEQUENCE
+{
+    peakThresholdShift    INTEGER,
+    peakThreshold         INTEGER,
+    commitThresholdShift  INTEGER,
+	  commitThreshold       INTEGER,                           
+    commitRate            INTEGER,
+    peakRate              INTEGER,                                            
+    tsTickShift           INTEGER 
+}  
+
+DSRouterMac ::= SEQUENCE
+{
+    routerMac3Type   INTEGER,    
+    routerMac2Type   INTEGER,
+    routerMac1Type   INTEGER,
+    routerMac0Type   INTEGER,
+    routerMac3Byte   INTEGER,
+    routerMac2Byte   INTEGER,
+    routerMac1Byte   INTEGER,
+    routerMac0Byte   INTEGER  
+}
+
+XGmacMdioCmd ::= SEQUENCE
+{
+    xgmacMdiocmdSt       INTEGER,    
+    xgmacMdiocmdOp       INTEGER,    
+    xgmacMdiocmdPrtad    INTEGER,       
+    xgmacMdiocmdDevad    INTEGER,       
+    xgmacMdiocmdData     INTEGER
+}  
+
+DSUsrID ::= SEQUENCE
+{
+    usridExpEn                INTEGER,                 
+    bypassAll                 INTEGER,                
+    userReplaceTagEn          INTEGER,        
+    dsfwdPtrValid             INTEGER,                       
+    userVlanid                INTEGER,                             
+    bindDataUp                INTEGER,                         
+    flowPolicerPtrValid       INTEGER,                               
+    statsPtrValid             INTEGER,                                     
+    userVlanidValid           INTEGER,                    
+    discardBindingMismatch    INTEGER,               
+    bindMacsa                 INTEGER,          
+    userVrfidValid	          INTEGER,                      
+    bindDataLower             INTEGER 
+}
+
+TrunkTbl ::= SEQUENCE
+{
+    destChipid   INTEGER,
+    destQueue    INTEGER
+}
+
+L3TcamEntryMsg ::= SEQUENCE
+{
+    chipid   INTEGER,
+    blockid  INTEGER,
+    index    INTEGER,
+    entryNumSent INTEGER,
+    bitmapUpto   INTEGER
+}
+
+IPv4TcamEntryMsg ::= SEQUENCE
+{
+    index      INTEGER,
+    chipid     INTEGER,
+    keydata    IPv4RouteKey,
+    keymask    IPv4RouteKey,
+    dsipda     DSIpDA,
+    dsipsa     DSIpSA
+}
+
+SRAMEntryReqMsg ::= SEQUENCE
+{
+     chipid         INTEGER,
+     blockid        INTEGER,
+     index          INTEGER,
+     entryNumSent   INTEGER,
+     bitmapUpto     INTEGER,
+     tblType        INTEGER
+}
+
+SRAMEntryMsg ::= SEQUENCE
+{
+    index   INTEGER,
+    chipid  INTEGER,
+    tbltype INTEGER,
+    
+    data CHOICE
+    {
+        keydata   IPv4RouteKey,
+        keymask   IPv4RouteKey,
+        dsipda    DSIpDA,
+        dsipsa    DSIpSA,
+        dsfwd     DSFwd,
+        dsnh      DSNexthop,
+        met       DSMetEntry,
+        destport  DSDestPort,
+        phyport   DSPhyPort,
+        srcport   DSSrcPort,
+        destvlan  DSDestVlan,
+        protovlan DSProtoVlan,
+        srcvlan   DSSrcVlan,
+        dsmac     DSMacDA,
+        dsaclqos  DSAclQos,
+        sanat     IPSaNAT,
+        usrid     DSUsrID,
+        mpls      DSMPLS,
+        stpstate  STPState,
+        dsbidi    DSbidiPimGroup,
+        vlanstatus VlanStatus,
+        mplsctl    DSMplsCtl,
+        stmctl     DSStormCtl,
+        dsaging    DSAging,
+        policer    DSPolicer,
+        policerprofile DSPolicerProfile,
+        routermac   DSRouterMac,
+        xgmac       XGmacMdioCmd,
+        eth4w       L2EditEth4w,
+        eth8w       L2EditEth8w,
+        loopback    L2EditLpbk,
+        flx4w       L2EditFlx4w,
+        flx8w       L2EditFlx8w,
+        mpls4w      L3EditMpls4w,
+        mpls8w      L3EditMpls8w,
+        nat         L3EditNAT,
+        tunnelv4    DSL3EditTunnelV4,
+        flex        DSL3EditFlex,
+        tunnelv6    DSL3EditTunnelV6,
+        dstrunk     TrunkTbl        
+    }
+}
+
+IPv4TcamEntriesMsg ::= SEQUENCE
+{
+    entryNumThisTime  INTEGER,
+    bitmapUpto        INTEGER,
+    ipv4TcamEntries   SEQUENCE OF IPv4TcamEntryMsg
+}
+
+IPv6TcamEntryMsg ::= SEQUENCE
+{
+    index     INTEGER,
+    chipid    INTEGER,
+    keydata   IPv6RouteKey,
+    keymask   IPv6RouteKey,
+    ipda      DSIpDA,
+    ipsa      DSIpSA
+}
+
+IPv6TcamEntriesMsg ::= SEQUENCE
+{
+    entryNumThisTime  INTEGER,
+    bitmapUpto        INTEGER,
+    ipv6TcamEntries   SEQUENCE OF IPv6TcamEntryMsg
+}
+
+UsrIDVlanKey ::= SEQUENCE
+{
+    usridLable  INTEGER,
+    delbit      INTEGER,
+    tblid       INTEGER,
+    vlanid      INTEGER,
+    gsrcPort    INTEGER,
+    cos         INTEGER,
+    customerid  INTEGER
+}
+
+UsrIDMacKey ::= SEQUENCE
+{
+    tblid0        INTEGER,  
+    useridLabel   INTEGER,  
+    cos           INTEGER,  
+    cfi           INTEGER,  
+    l2type        INTEGER,  
+    macdaUpper    INTEGER,  
+    macdaLower    INTEGER,  
+    l3type        INTEGER,  
+    vlanid        INTEGER,   
+    macsaUpper    INTEGER,  
+    macsaLower    INTEGER,  
+    tableid1      INTEGER,  
+    delbit        INTEGER 
+}
+
+UsrIDIPv4Key ::= SEQUENCE
+{
+    etherTypeUpper   INTEGER, 
+    ethertypeLower   INTEGER, 
+    macdaUpper       INTEGER, 
+    macdaLower       INTEGER, 
+    istcp            INTEGER, 
+    isudp            INTEGER, 
+    isapp            INTEGER, 
+    ipop             INTEGER, 
+    vlanid           INTEGER, 
+    macsaUpper       INTEGER, 
+    macsaLower       INTEGER, 
+    tblid288         INTEGER, 
+    tblid144         INTEGER,
+    fraginf          INTEGER, 
+    dscp             INTEGER, 
+    l3type           INTEGER, 
+    l4infMap         INTEGER, 
+    l4dstPort        INTEGER, 
+    l4srcPort        INTEGER, 
+    ipda             INTEGER, 
+    ipsa             INTEGER, 
+    tblidPub         INTEGER, 
+    cos              INTEGER, 
+    cfi              INTEGER, 
+    l2type           INTEGER, 
+    useridLabel      INTEGER, 
+    delbit           INTEGER,
+    routedpkt        INTEGER,
+    iphdrErr         INTEGER
+}
+
+UsrIDIPv6Key ::= SEQUENCE
+{
+    tblidpub         INTEGER,
+   tblid288         INTEGER,
+   tblid576         INTEGER,
+   cfi              INTEGER,  
+   routedpkt        INTEGER,
+   cos              INTEGER,
+   istcp            INTEGER,
+   isudp            INTEGER,
+   isapp            INTEGER,
+   fraginf          INTEGER,
+   iphdrerr         INTEGER,
+   ipOptions        INTEGER,
+   l4infMap         INTEGER,
+   useridLabel      INTEGER,
+   dscp             INTEGER,
+   delbit           INTEGER,
+   etherTypeUpper   INTEGER,
+   etherTypeLower   INTEGER,
+   macdaUpper       INTEGER,
+   macdaLower       INTEGER,
+   l3type           INTEGER,
+   l2type           INTEGER,
+   ipv6extHdr       INTEGER,
+   macsaUpper       INTEGER,
+   macsaLower       INTEGER,
+   vlanid           INTEGER,
+   ipv6Flowlbl      INTEGER,
+   l4dstPort        INTEGER,
+   l4srcPort        INTEGER, 
+   ipsa8            INTEGER, 
+   ipdafd           INTEGER, 
+   ipdac9           INTEGER, 
+   ipda74           INTEGER, 
+   ipda30           INTEGER, 
+   ipda8            INTEGER, 
+   ipsafd           INTEGER, 
+   ipsac9           INTEGER, 
+   ipsa74           INTEGER, 
+   ipsa30           INTEGER
+}
+
+VlanClassvlanEntry ::= SEQUENCE
+{
+    key  UsrIDVlanKey,
+    mask UsrIDVlanKey,
+    ds   DSUsrID
+}
+
+VlanClassmacEntry ::= SEQUENCE
+{
+    key  UsrIDMacKey,
+    mask UsrIDMacKey,
+    ds   DSUsrID
+}
+
+VlanClassipv4Entry ::= SEQUENCE
+{
+    key  UsrIDIPv4Key,
+    mask UsrIDIPv4Key,
+    ds   DSUsrID
+}
+
+VlanClassipv6Entry ::= SEQUENCE
+{
+    key  UsrIDIPv6Key,
+    mask UsrIDIPv6Key,
+    ds   DSUsrID
+}
+
+VlanClassTcamEntry ::= SEQUENCE
+{
+    index    INTEGER,
+    type CHOICE
+    {
+        vlan     VlanClassvlanEntry,
+        mac      VlanClassmacEntry,
+        ipv4     VlanClassipv4Entry,
+        ipv6     VlanClassipv6Entry
+    }
+}
+
+VlanClassTcamEntrisMsg ::= SEQUENCE
+{
+    chipid     INTEGER,
+    index      INTEGER,
+    validinfo  INTEGER,
+    keytype    INTEGER,
+    entryNumThisTime INTEGER,
+    entryNumSent     INTEGER,
+    bitmapUpto       INTEGER,
+    tcamEntry   SEQUENCE OF VlanClassTcamEntry
+}
+
+VlanClassTcamEntryMsg ::= SEQUENCE
+{
+    chipid  INTEGER,
+    keytype INTEGER,
+    index   INTEGER,
+    bitmapUpto INTEGER
+}      
+
+SrcVlanCtl ::= SEQUENCE
+{
+    macBaseStatsEn  INTEGER,
+    intfStatsEn     INTEGER,
+    stpStateShift   INTEGER,
+    vlanStatusTblBase INTEGER,
+    vlanTblBase       INTEGER
+}   
+
+RegEntryMsg ::= SEQUENCE
+{
+    chipid  INTEGER,
+    regType INTEGER
+}                  
+
+RegEntryRespMsg ::= SEQUENCE
+{
+    regType  INTEGER,
+    vlanctl  SrcVlanCtl
+}         
+
+MPLSEntryMsg ::= SEQUENCE
+{
+    chipid   INTEGER,
+    index    INTEGER,
+    entryNumSent INTEGER,
+    bitmapUpto   INTEGER
+}
+
+MPLSEntry ::= SEQUENCE
+{
+    index   INTEGER,
+    chipid  INTEGER,
+    mpls    DSMPLS
+}
+
+MPLSEntriesMsg ::= SEQUENCE
+{
+    entryNumThisTime  INTEGER,
+    bitmapUpto        INTEGER,
+    mplsEntry   SEQUENCE OF MPLSEntry
+}
+
+ShowForwardMsg ::= SEQUENCE
+{
+    chipid        INTEGER,
+    chanid        INTEGER,
+    pktid         INTEGER,
+    pktLen        INTEGER,
+    pktInfo       PrintableString
+}
+
+DebugCmodelMsg ::= SEQUENCE
+{
+    module      INTEGER,
+    switches    INTEGER
+}
+
+CmodelInfoMsg ::= SEQUENCE
+{
+    msgInfo    PrintableString
+}
+
+TcamInfoMsgReq ::= SEQUENCE
+{
+    fpos     INTEGER
+}
+
+TcamInfoMsgAck ::= SEQUENCE
+{
+    fpos     INTEGER,
+    msgInfo  PrintableString
+}
+
+ChsmMsgDebugReq ::= SEQUENCE
+{
+    level       PrintableString (SIZE (1..MAX)),
+    module      PrintableString (SIZE (1..MAX)),
+    submodule   PrintableString (SIZE (1..MAX)),
+    flags     INTEGER,
+    clearall  INTEGER
+}
+
+ChsmMsgDebugCtrlReq ::= SEQUENCE
+{
+    lcon       INTEGER,
+    linefunon  INTEGER
+}
+END                                             
+                                                
+                                                
+    
+    
+    
+    
+    
+    
+

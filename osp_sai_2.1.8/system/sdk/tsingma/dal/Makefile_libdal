@@ -1,0 +1,55 @@
+ifeq ($(targetbase),linux)
+include $(MK_DIR)/sys.mk
+
+
+LIB = dal
+SRCS = $(shell find src/common -name "*.c")
+ifeq ($(BOARD),ctc-sim)
+SRCS += src/linux/user/dal_user_sim.c
+else
+ifeq ($(ChipAgent),TRUE)
+SRCS += src/linux/user/dal_user_sim.c
+else
+SRCS += src/linux/user/dal_user.c
+endif
+endif
+
+#SRCS = $(shell find src/linux/user -name "*.c")
+
+CPPFLAGS += -I$(SDK_DIR)/dal/include
+CPPFLAGS += -I$(SDK_DIR)/dal/src/linux
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/driver
+CPPFLAGS += -I$(SDK_DIR)/driver/api
+include $(MK_DIR)/tsingma.mk
+
+include $(MK_DIR)/lib.mk
+
+CFLAGS += -Werror -Wall
+
+endif
+
+ifeq ($(targetbase),vxworks)
+BLD_DIR=$(SDK_DIR)/build.$(CPU).$(VER)
+OBJ_DIR=$(BLD_DIR)/obj.$(BOARD)/dal
+LIB_DIR=$(BLD_DIR)/lib.$(BOARD)
+BIN_DIR=$(BLD_DIR)/bin.$(BOARD)
+
+LIB = dal
+OBJS = $(wildcard $(OBJ_DIR)/src/vxworks/*.o) $(wildcard $(OBJ_DIR)/src/common/*.o)
+DEPS = $(wildcard $(OBJ_DIR)/src/vxworks/*.d) $(wildcard $(OBJ_DIR)/src/common/*.d)
+
+$(LIB_DIR)/lib$(LIB).a: $(OBJS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/lib$(LIB).a
+
+.PHONY: FORCE
+FORCE:
+endif

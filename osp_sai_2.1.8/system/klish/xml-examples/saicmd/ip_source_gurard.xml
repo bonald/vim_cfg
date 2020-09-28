@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+IP SOURCE GUARD
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ip source"
+		help="Ip source guard configuration"/>
+		
+	<COMMAND name="show ip source binding" help="List of ip source guard binding item" lock="false" interrupt="true">
+		<PARAM name="interface" help=" Specify interface parameter" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+			<PARAM name="iface_name" help="Ethernet interface name"	ptype="IF_NAME_EA"/>
+		</PARAM>
+
+		<ACTION>
+			if [ ${interface} ]; then
+				cdbctl show/cdb/l2/show_ipsg/interface/${iface_name}
+			else
+				cdbctl show/cdb/l2/show_ipsg/all
+			fi;
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To display the entries of IP source bindings on the switch, use the show ip source binding command in privileged EXEC mode. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+If interface is not specified, all ip-source-binding entries should be shown.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None  
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    Switch# show ip source binding
+    The total number of ip binding is 1, the max ip number limit is 127
+    IP source guard binding table:
+    VLAN MAC Address    Type   Interface     State    IP Address
+    ================================================================================
+    3    0001.0002.0003 static   eth-0-1    ip         10.0.0.2
+
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip source binding
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="ip source"
+		help="Specify ip source guard parameter"/>
+		
+	<COMMAND name="ip source binding" help="Add ip source guard static binding item">
+
+		<PARAM name="mac" help=" Specify MAC address" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="mac_addr" help="MAC(Hardware) address" ptype="MAC_ADDR"/>
+        </PARAM>
+
+		<PARAM name="vlan"   help="Specify VLAN parameter"  ptype="SUBCOMMAND" mode="subcommand" >
+            <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+        </PARAM>
+
+ 		<PARAM name="ip" help=" Specify IP address" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="ip_addr" help="IP address" ptype="IP_ADDR"/>
+         </PARAM>
+
+        <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+            <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+        </PARAM>
+
+		<ACTION>
+	        cdbctl create/cdb/l2/ipsg_fib/add_static/${mac_addr}/${vlan_id}/${ip_addr}/${if_id}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip source binding global configuration command on the switch to configure static IP source bindings on the switch. Use the no form of this command to delete static bindings.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+A static IP source binding entry has an IP address, its associated MAC address, and its associated VLAN number. The same MAC and IP can only be bound in one binding entry. Duplication of MAC or IP in binding entries is not allowed.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the ip source binding command:
+    Switch(config)# ip source binding mac 0001.1234.1234 vlan 1 ip 172.20.50.5 interface eth-0-1
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip source binding
+	   </CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no ip source" help="Specify ip source guard parameter"/>
+
+	<COMMAND name="no ip source binding" help="Add ip source guard static binding item">
+		<PARAM name="mac" help=" Specify MAC address" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="mac_addr" help="MAC(Hardware) address" ptype="MAC_ADDR"/>
+        </PARAM>
+
+		<PARAM name="vlan"   help="Specify VLAN parameter"  ptype="SUBCOMMAND" mode="subcommand" >
+            <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+        </PARAM>
+
+ 		<PARAM name="ip" help=" Specify IP address" ptype="SUBCOMMAND" mode="subcommand" >
+			<PARAM name="ip_addr" help="IP address" ptype="IP_ADDR"/>
+         </PARAM>
+
+        <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand"> 
+            <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+        </PARAM>
+
+		<ACTION>
+	        cdbctl delete/cdb/l2/ipsg_fib/del_static/${mac_addr}/${vlan_id}/${ip_addr}/${if_id}
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use the ip source binding global configuration command on the switch to configure static IP source bindings on the switch. Use the no form of this command to delete static bindings.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To delete a static IP source binding entry, its associated IP address, its associated MAC address, and its associated VLAN number.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the ip source binding command:
+    Switch(config)# no ip source binding mac 0001.1234.1234 vlan 1 ip 172.20.50.5 interface eth-0-1
+	   </CTCEXAMPLE>
+
+	   <CTCRCMD>
+ip source binding
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip source binding entries" help=" List of ip source guard binding item" >
+	    <PARAM name="type" help="Ip source guard binding entries" ptype="SUBCOMMAND" mode="switch" optional="true">
+	        <PARAM name="interface" help="Inteface" ptype="SUBCOMMAND" mode="subcommand" optional="true"> 
+	            <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EA"/>
+	        </PARAM>
+
+			<PARAM name="vlan"   help="Specify VLAN parameter"  ptype="SUBCOMMAND" mode="subcommand" optional="true">
+	            <PARAM name="vlan_id" help="VLAN ID" ptype="VLAN_ID"/>
+	        </PARAM>
+		</PARAM>
+
+		<ACTION>
+			if [ ${type} ]; then
+		        cdbctl delete/cdb/l2/ipsg_fib/clear_ipsg/${vlan_id}/${if_id}/if_vlan
+	        else
+		        cdbctl delete/cdb/l2/ipsg_fib/clear_ipsg/all/all/all
+			fi;
+		</ACTION>
+    
+ 		<CTCDESCRIPTION>
+Use the no ip source binding entries global configuration command on the switch to clear static IP source bindings on the switch.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+If neither vlan-id nor interface-id is specified, all static ip source binding entries will be deleted.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample output from the clear ip source binding command:
+    Switch(config)# no ip source binding entries interface eth-0-1
+    Switch(config)# no ip source binding entries vlan 2
+    Switch(config)# no ip source binding entries
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+show ip source binding
+	   </CTCRCMD>    
+	</COMMAND>
+
+	<COMMAND name="ip source maximal" help="The maximal value we assign"/>
+
+	<COMMAND name="ip source maximal binding" help="Specify ip source guard binding item"/>
+
+	<COMMAND name="ip source maximal binding number" help="Specify ip source guard binding item's number"/>
+		
+	<COMMAND name="ip source maximal binding number per-port" help="Add ip source guard static binding item">
+		<PARAM name="num_id" help="Ip source guard binding item number (0 means we have no limitation on it. Default 10 items.)" ptype="IPSG_MAX_PORT_BINDING" />
+
+		<ACTION>
+	        cdbctl update/cdb/l2/brg_global/ipsg_max_port_binding/max_port_binding/${num_id}		
+		</ACTION>
+
+		<CTCDESCRIPTION>
+To specify the maximum number of bindings for each interface, use the ip source maximal binding command in global configuration mode. To restore to the default value, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Using for configuring maximal binding number, and default value is 10.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example shows how to specify the maximum number of bindings:
+    Switch(config)# ip source maximal binding number per-port 20
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip source maximal binding number per-port
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip source maximal" help="The maximal value we assign"/>
+
+	<COMMAND name="no ip source maximal binding" help="Specify ip source guard binding item"/>
+
+	<COMMAND name="no ip source maximal binding number" help="Specify ip source guard binding item's number"/>
+		
+	<COMMAND name="no ip source maximal binding number per-port" help="Specify number on per port" >
+
+		<ACTION>
+	        cdbctl update/cdb/l2/brg_global/ipsg_max_port_binding/max_port_binding/10
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+To specify the maximum number of bindings for each interface, use the ip source maximal binding command in global configuration mode. To restore to the default value, use the no form of this command.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+Using for configuring maximal binding number, and default value is 10.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+None
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example shows how to unset the maximum number of bindings:
+    Switch(config)# no ip source maximal binding number per-port
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+ip source maximal binding number per-port
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="ip verify source" help="Specify ip source guard parameter" lock="false" interrupt="true">
+
+		<PARAM name="source_type" help="Specify ip source guard parameter" ptype="SUBCOMMAND" mode="switch" >
+			<PARAM name="ip" help="Enable ip filtering" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ip-mac" help="Enable ip and mac filtering" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ip-mac-vlan" help="Enable ip, mac and vlan filtering" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="ip-vlan" help="Enable ip and vlan filtering" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+
+		<ACTION>
+	        cdbctl update/cdb/interface/${iface}/ip_source_type/ipsg_enable/${source_type}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the ip verify source interface configuration command on the switch stack or on a standalone switch to enable IP source guard on an interface. Use the no form of this command to disable IP source guard.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+When IP source guard is enabled on an access port, the ip-mac-vlan keyword is equivalent to the ip-mac keyword.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+By default, IP source guard is disabled on interfaces.  
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example shows how to enable IP source guard on an interface:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# ip verify source ip-mac
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+no ip verify source
+	   </CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ip verify source" help="Specify ip source guard parameter">
+
+		<ACTION>
+	        cdbctl update/cdb/interface/${iface}/ip_source_type/ipsg_disable
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use the ip verify source interface configuration command on the switch stack or on a standalone switch to enable IP source guard on an interface. Use the no form of this command to disable IP source guard.
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To disable the IP source guard when it is enabled on port before.
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+By default, IP source guard is disabled on interfaces.  
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following example shows how to disable IP source guard on an interface:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# no ip verify source
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+ip verify source
+	   </CTCRCMD>
+	</COMMAND>	
+
+</VIEW>
+
+</CLISH_MODULE>

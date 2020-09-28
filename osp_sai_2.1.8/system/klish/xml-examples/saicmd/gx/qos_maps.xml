@@ -1,0 +1,1219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+QOS MAPS
+</CTCMODULENAME>
+
+
+<!-- show related CLIs -->
+<VIEW name="Exec">
+
+    <!-- show cmap related CLIs -->
+    <COMMAND name="show qos" help="Quality of Service">
+    </COMMAND>
+    
+    <COMMAND name="show qos domain" help="QoS domain">
+        <PARAM name="id" help="Domain ID,0 is default" ptype="QOS_DOMAIN_ID"/>
+        <PARAM name="map-table" help="Map table" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="dir" help="Dir" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="all" help="Both ingress and egress table" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="ingress" help="Egress table" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="egress" help="Ingress table" ptype="SUBCOMMAND" mode="subcommand" /> 
+        </PARAM>
+        <PARAM name="type" test='"${dir}"="ingress"' help="Type" ptype="SUBCOMMAND" mode="switch" >
+            <PARAM name="all" help="All ingress map table" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="cos-tc-color" help="COS map to tc and color" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="exp-tc-color" help="EXP map to tc and color" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="dscp-tc-color" help="DSCP map to tc and color" ptype="SUBCOMMAND" mode="subcommand" /> 
+        </PARAM>
+        <PARAM name="type" test='"${dir}"="egress"' help="Type" ptype="SUBCOMMAND" mode="switch" >
+            <PARAM name="all" help="All egress map table" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="tc-color-cos" help="tc and color map to cos" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="tc-color-exp" help="tc and color map to exp" ptype="SUBCOMMAND" mode="subcommand" /> 
+            <PARAM name="tc-color-dscp" help="Tc and color map to dscp" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+    
+        <ACTION>
+
+	       cdbctl update/cdb/qos/qos_global/check_qos_enable/1
+		if [ "$?" != "0" ]; then
+		   exit 1
+		fi
+
+                case "${dir}" in
+                "all")
+
+                    cdbctl show/cdb/qos/qos_domain/${id}/type/cos-tc-color/
+                    cdbctl show/cdb/qos/qos_domain/${id}/type/exp-tc-color/
+                    cdbctl show/cdb/qos/qos_domain/${id}/type/dscp-tc-color/
+                    
+                    cdbctl show/cdb/qos/qos_domain/${id}/type/tc-color-cos/
+                    cdbctl show/cdb/qos/qos_domain/${id}/type/tc-color-exp/
+                    cdbctl show/cdb/qos/qos_domain/${id}/type/tc-color-dscp/
+                ;;
+
+                "ingress")
+                    if test "${type}" != "all"; then
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/${type}/
+                    else
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/cos-tc-color/
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/exp-tc-color/
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/dscp-tc-color/
+                    fi
+                ;;
+
+                "egress")
+                    if test "${type}" != "all"; then
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/${type}/
+                    else
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/tc-color-cos/
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/tc-color-exp/
+                        cdbctl show/cdb/qos/qos_domain/${id}/type/tc-color-dscp/
+                    fi
+                ;;
+                esac
+
+        </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the both ingress and egress information of QoS map-table.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of map-table in QoS domain 0.  
+    Switch# show qos domain 0 map-table all  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos domain
+		</CTCRCMD>
+ 
+    </COMMAND>
+
+    
+    <COMMAND name="show qos global" help="Gloabl information">
+
+        <ACTION>cdbctl show/cdb/qos/qos_global</ACTION>
+   
+ 		<CTCDESCRIPTION>
+Use this command to display the information of QoS global.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the information of qos global.  
+    Switch# show qos global  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos global
+		</CTCRCMD>
+
+    </COMMAND>
+</VIEW>    
+    
+    
+
+<!-- configuration related CLIs -->
+<VIEW name="Configure">
+    <!-- qos classify configuration related CLIs -->
+	<COMMAND name="qos" help="Quality of Service">
+        </COMMAND>
+        
+    <COMMAND name="no qos" help="Quality of Service">
+    </COMMAND>
+
+    <COMMAND name="qos domain" help="Qos domain" view="Configure-qos-domain-view" viewid="id=${id}">
+            <PARAM name="id" help="Domain ID" ptype="QOS_DOMAIN_ID"/>
+  
+            <ACTION>cdbctl create/cdb/qos/qos_domain/${id}</ACTION>
+        
+ 		<CTCDESCRIPTION>
+Use this command to creat a qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to creat qos domain 1.  
+    Switch(config)# qos domain 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos domain
+		</CTCRCMD>
+
+	</COMMAND>
+
+    <COMMAND name="qos global" help="Configure qos global information" view="Configure-qos-global-view">
+	</COMMAND>
+</VIEW>
+    
+<VIEW name="Configure-qos-global-view"
+	prompt="${SYSTEM_NAME}(config-qos-global)# "
+	depth="1">
+
+<!-- Inheritance -->
+
+	<NAMESPACE ref="Configure" help="false" completion="false"/>
+
+    <COMMAND name="exit" help="Exit from qos global configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+    <COMMAND name="quit" help="Exit from qos global configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        
+	<COMMAND name="no" help="Negate a command or set its defaults"/>
+            
+    <COMMAND name="qos" help="Quality of service"/>
+    <COMMAND name="qos enable" help="Enable qos globally">
+ 
+            <ACTION>cdbctl update/cdb/qos/qos_global/qos_enable/1;usleep 500000</ACTION>
+      
+ 		<CTCDESCRIPTION>
+Use this command to enable qos. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Qos disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable qos  
+    Switch(config-qos-global)# qos enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no qos enable
+		</CTCRCMD>
+
+        </COMMAND>
+        
+	<COMMAND name="no qos" help="Quality of service"/>
+        <COMMAND name="no qos enable" help="Enable qos globally">
+
+            <ACTION>cdbctl update/cdb/qos/qos_global/qos_enable/0;sleep 10</ACTION>
+     
+ 		<CTCDESCRIPTION>
+Use this command to disable qos. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Qos disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable qos.  
+    Switch(config-qos-global)# no qos enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+qos enable
+		</CTCRCMD>
+
+    </COMMAND>
+
+    <COMMAND name="qos ipg" help="Qos ipg">
+       <PARAM name="type" help="Enable or disable" ptype="SUBCOMMAND" mode="switch">
+		<PARAM name="enable" help="qos rate-limiting include ipg (default enable)" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+		<PARAM name="disable" help="qos rate-limiting not include ipg" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+	</PARAM>
+ 
+            <ACTION>cdbctl update/cdb/qos/qos_global/qos_ipg_enable/${type}</ACTION>
+      
+ 		<CTCDESCRIPTION>
+Use this command to set qos rate-limiting if include ipg or not. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable qos ipg
+    Switch(config-qos-global)# qos ipg enable  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos global
+		</CTCRCMD>
+
+        </COMMAND>
+    
+</VIEW>
+
+ 
+
+<VIEW name="Configure-qos-domain-view"
+	prompt="${SYSTEM_NAME}(config-qos-domain-${id})# "
+	depth="1">
+
+<!-- Inheritance -->
+
+	<NAMESPACE ref="Configure"	help="false" completion="false"/>
+
+    <COMMAND name="exit" help="Exit from domain configuration mode" lock="false"> 
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+        <COMMAND name="quit" help="Exit from main configuration mode" lock="false">
+            <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        
+        <COMMAND name="no" help="Negate a command or set its defaults"/>
+        
+        <COMMAND name="cos" help="Code of service">
+            <PARAM name="cos_value" help="Select which COS will be specified map" ptype="COS_ID"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <PARAM name="map_value" test='"${type}"="tc"' help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" test='"${type}"="tc"' help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2tc/${cos_value}/${map_value}/
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2color/${cos_value}/${color_value}/
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure qos mapping cos to tc and color in qos domain.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: cos x to tc x and color green, such as cos 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set cos 2 to tc 5 color yellow in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)# cos 2 to tc 5 color yellow  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+cos range
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no cos" help="Code of service">
+            <PARAM name="cos_value" help="Select which COS will be specified map" ptype="COS_ID"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2tc/${cos_value}//
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2color/${cos_value}//
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure default qos mapping cos to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: cos x to tc x and color green. such as cos 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default cos to tc and color mapping in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no cos 2 to tc  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no cos range
+		</CTCRCMD>
+
+        </COMMAND>
+
+        <COMMAND name="cos range" help="Cos list">
+            <PARAM name="cos_value" help="Cos(0..7) list, example: 0-2,4,6-7" ptype="NAME_STRING"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <PARAM name="map_value" test='"${type}"="tc"' help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" test='"${type}"="tc"' help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            
+            <ACTION>
+                if [ "${type}" == "phb" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2phb/${cos_value}/${map_value}/
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2tc/${cos_value}/${map_value}/
+                    if [ "$?" == "0" ]; then
+                   		cdbctl update/cdb/qos/qos_domain/${id}/cos2color/${cos_value}/${color_value}/
+                    fi
+                fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure qos mapping cos range to tc and color in qos domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: cos x to tc x and color green. such as cos 2 to tc 2 color green.  
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set cos 2-5 to tc 2 and color yellow mapping in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#cos range 2-5 to tc 2 color yellow  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+cos
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no cos range" help="Cos list">
+            <PARAM name="cos_value" help="Cos(0..7) list, example: 0-2,4,6-7" ptype="NAME_STRING"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                if [ "${type}" == "phb" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2phb/${cos_value}//
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/cos2tc/${cos_value}//
+                    if [ "$?" == "0" ]; then
+                    	cdbctl update/cdb/qos/qos_domain/${id}/cos2color/${cos_value}//
+                    fi
+                fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure default qos mapping, cos range to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: cos x to tc x and color green. such as cos 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default mapping about cos 2-5 to tc and color in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no cos range 2-5 to tc  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no cos
+		</CTCRCMD>
+
+        </COMMAND>
+
+ 	<COMMAND name="exp" help="Mpls exp field">
+            <PARAM name="exp_value" help="Select which EXP will be specified map" ptype="COS_ID"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <PARAM name="map_value" test='"${type}"="tc"' help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" test='"${type}"="tc"' help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Exp_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2tc/${exp_value}/${map_value}/
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2color/${exp_value}/${color_value}/
+            </ACTION>
+            
+		<CTCDESCRIPTION>
+Use this command to configure qos mapping exp to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: exp x to tc x and color green. such as exp 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set exp 2 to tc 5 color yellow in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#exp 2 to tc 5 color yellow  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no exp
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no exp" help="Mpls exp field">
+            <PARAM name="exp_value" help="Select which EXP will be specified map" ptype="COS_ID"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2tc/${exp_value}//
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2color/${exp_value}//
+            </ACTION>
+			
+		<CTCDESCRIPTION>
+Use this command to configure default qos mapping exp to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: exp x to tc x and color green. such as exp 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default exp to tc and color mapping in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no exp 2 to tc  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+exp
+		</CTCRCMD>
+	</COMMAND> 
+
+	<COMMAND name="exp range" help="Exp list">
+            <PARAM name="exp_value" help="Exp(0..7) list, example: 0-2,4,6-7" ptype="NAME_STRING"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <PARAM name="map_value" test='"${type}"="tc"' help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" test='"${type}"="tc"' help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            
+            <ACTION>
+                if [ "${type}" == "phb" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2phb/${exp_value}/${map_value}/
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2tc/${exp_value}/${map_value}/
+                    if [ "$?" == "0" ]; then
+                    	cdbctl update/cdb/qos/qos_domain/${id}/exp2color/${exp_value}/${color_value}/
+                    fi
+                fi
+            </ACTION>
+			
+		<CTCDESCRIPTION>
+Use this command to configure qos mapping exp range to tc and color in qos domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: exp x to tc x and color green. such as exp 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set exp 2-5 to tc 2 and color yellow mapping in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#exp range 2-5 to tc 2 color yellow  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no exp range
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no exp range" help="Exp list">
+            <PARAM name="exp_value" help="Exp(0..7) list, example: 0-2,4,6-7" ptype="NAME_STRING"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                if [ "${type}" == "phb" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2phb/${exp_value}//
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/exp2tc/${exp_value}//
+                    if [ "$?" == "0" ]; then
+                    	cdbctl update/cdb/qos/qos_domain/${id}/exp2color/${exp_value}//
+                    fi
+                fi
+            </ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure default qos mapping, exp range to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: exp x to tc x and color green. such as exp 2 to tc 2 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default mapping about exp 2-5 to tc and color in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no exp range 2-5 to tc  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+exp range
+		</CTCRCMD>
+	</COMMAND>
+
+
+        <COMMAND name="dscp" help="Differentiated service code point">
+            <PARAM name="dscp_value" help="Select which DSCP will be specified map" ptype="DSCP_VALUE"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <PARAM name="map_value" test='"${type}"="tc"' help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" test='"${type}"="tc"' help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            
+            <ACTION>
+                cdbctl update/cdb/qos/qos_domain/${id}/dscp2tc/${dscp_value}/${map_value}/
+                cdbctl update/cdb/qos/qos_domain/${id}/dscp2color/${dscp_value}/${color_value}/
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure qos mapping, dscp to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: dscp x to tc x/8 and color green. such as dscp 12 to tc 1 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set qos mapping about dscp 12 to tc 3 and color yellow in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#dscp 12 to tc 3 color yellow  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dscp range
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no dscp" help="Differentiated service code point">
+            <PARAM name="dscp_value" help="Select which DSCP will be specified map" ptype="DSCP_VALUE"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_domain/${id}/dscp2tc/${dscp_value}//
+                    cdbctl update/cdb/qos/qos_domain/${id}/dscp2color/${dscp_value}//
+            </ACTION>
+ 
+   		<CTCDESCRIPTION>
+Use this command to configure default qos mapping, dscp to tc and color in qos domain.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: dscp x to tc x/8 and color green. such as dscp 12 to tc 1 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default qos mapping about dscp 12 to tc and color in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no dscp 12 to tc  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no dscp range
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="dscp range" help="Dscp list">
+            <PARAM name="dscp_value" help="Dscp(0..63) list, example: 0-2,21-30" ptype="NAME_STRING"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <PARAM name="map_value" test='"${type}"="tc"' help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" test='"${type}"="tc"' help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            
+            <ACTION>
+	            cdbctl update/cdb/qos/qos_domain/${id}/dscp2tc/${dscp_value}/${map_value}/
+                   if [ "$?" == "0" ]; then
+                    	cdbctl update/cdb/qos/qos_domain/${id}/dscp2color/${dscp_value}/${color_value}/
+                   fi
+            </ACTION>
+ 
+   		<CTCDESCRIPTION>
+Use this command to configure qos mapping, dscp range to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: dscp x to tc x/8 and color green. such as cos 12 to tc 1 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set qos mapping about dscp 0-20  to tc 3 and color yellow in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#dscp range 0-20 to tc 3 color yellow  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+dscp
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no dscp range" help="Dscp list">
+            <PARAM name="dscp_value" help="Dscp(0..63) list, example: 0-2,10,21-30" ptype="NAME_STRING"/>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="tc" help="Traffic class" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                    cdbctl update/cdb/qos/qos_domain/${id}/dscp2tc/${dscp_value}/${map_value}/
+                    if [ "$?" == "0" ]; then
+                    	cdbctl update/cdb/qos/qos_domain/${id}/dscp2color/${dscp_value}/${color_value}/
+                    fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure default qos mapping, dscp range to tc and color in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is : dscp x to tc x/8 and color green. such as cos 12 to tc 1 color green.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default qos mapping about dscp 0-15 to tc and color in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no dscp range 0-15 to tc  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no dscp
+		</CTCRCMD>
+
+        </COMMAND>
+
+        <COMMAND name="tc" help="Traffic class">
+            <PARAM name="tc_value" help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="cos" help="Code of service" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="exp" help="Mpls exp field" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="dscp" help="Differentiated service code point" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="map_value" help="CoS value" test='"${type}"="cos"' ptype="COS_ID"/>
+            <PARAM name="map_value" help="Exp value" test='"${type}"="exp"' ptype="COS_ID"/>
+            <PARAM name="map_value" help="Dscp value" test='"${type}"="dscp"' ptype="DSCP_VALUE"/>
+            
+            <ACTION>
+                if [ "${type}" == "cos" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2cos/${tc_value}/${color_value}/${map_value}/
+                elif [ "${type}" == "exp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2exp/${tc_value}/${color_value}/${map_value}/
+                elif [ "${type}" == "dscp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2dscp/${tc_value}/${color_value}/${map_value}/
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/pri_color2exp/${pri_value}/${color_value}/${map_value}/
+                fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure qos mapping, tc and color to cos ,exp or dscp in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: tc x and color all to cos x, exp x and dscp x*8. such as tc 3 and color green to cos 3, exp 3, dscp 24.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set qos mapping about tc 3 and color yellow to cos 6 in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#tc 3 color yellow to cos 6  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+tc range
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no tc" help="Traffic class">
+            <PARAM name="tc_value" help="Tc value" ptype="COS_ID"/>
+            <PARAM name="color" help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="cos" help="Code of service" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="exp" help="Mpls exp field" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="dscp" help="Differentiated service code point" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                if [ "${type}" == "cos" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2cos/${tc_value}/${color_value}//
+                elif [ "${type}" == "exp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2exp/${tc_value}/${color_value}//
+                elif [ "${type}" == "dscp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2dscp/${tc_value}/${color_value}//
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/pri_color2exp/${pri_value}/${color_value}//
+                fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure default qos mapping, tc and color to cos, exp or dscp in qos domain.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: tc x and color all to cos x, exp x and dscp x*8. such as tc 3 and color green to cos 3, exp 3, dscp 24.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default qos mapping about tc 3 and color yellow to cos in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no tc 3 color yellow to cos  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no tc range
+		</CTCRCMD>
+
+        </COMMAND>
+
+        <COMMAND name="tc range" help="Tc range">
+            <PARAM name="tc_value" help="tc(0..7) value range, example: 0-3,5" ptype="NAME_STRING"/>
+            <PARAM name="color" help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="cos" help="Code of service" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="exp" help="Mpls exp field" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="dscp" help="Differentiated service code point" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="map_value" help="CoS value" test='"${type}"="cos"' ptype="COS_ID"/>
+            <PARAM name="map_value" help="Exp value" test='"${type}"="exp"' ptype="COS_ID"/>
+            <PARAM name="map_value" help="Dscp value" test='"${type}"="dscp"' ptype="DSCP_VALUE"/>
+            
+            <ACTION>
+                if [ "${type}" == "cos" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2cos/${tc_value}/${color_value}/${map_value}/
+                elif [ "${type}" == "exp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2exp/${tc_value}/${color_value}/${map_value}/
+                elif [ "${type}" == "dscp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2dscp/${tc_value}/${color_value}/${map_value}/
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/pri_color2exp/${pri_value}/${color_value}/${map_value}/
+                fi
+            </ACTION>
+
+   		<CTCDESCRIPTION>
+Use this command to configure qos mapping, tc range and color to cos, exp or dscp in qos domain.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is: tc x and color all to cos x, exp x and dscp x*8. such as tc 3 and color green to cos 3, exp 3, dscp 24.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set qos mapping about tc range 2-4 and color yellow to cos 6 in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#tc range 2-4 color yellow to cos 6  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+tc
+		</CTCRCMD>
+
+        </COMMAND>
+        
+        <COMMAND name="no tc range" help="Tc range">
+            <PARAM name="tc_value" help="Tc(0..7) value range, example: 0-3,5" ptype="NAME_STRING"/>
+            <PARAM name="color" help="Color" mode="subcommand" ptype="SUBCOMMAND">
+                <PARAM name="color_value" help="Cos_value" mode="switch" ptype="SUBCOMMAND">
+                    <PARAM name="green" help="Green" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="yellow" help="Yellow" ptype="SUBCOMMAND" mode="subcommand"/>
+                    <PARAM name="red" help="Red" ptype="SUBCOMMAND" mode="subcommand"/>
+                </PARAM>
+            </PARAM>
+            <PARAM name="to" help="To" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="type" help="Type" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="cos" help="Code of serivce" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="exp" help="Mpls exp field" ptype="SUBCOMMAND" mode="subcommand"/>
+                <PARAM name="dscp" help="Differentiated service code point" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            
+            <ACTION>
+                if [ "${type}" == "cos" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2cos/${tc_value}/${color_value}//
+                elif [ "${type}" == "exp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2exp/${tc_value}/${color_value}//
+                elif [ "${type}" == "dscp" ]; then
+                    cdbctl update/cdb/qos/qos_domain/${id}/tc_color2dscp/${tc_value}/${color_value}//
+                else
+                    cdbctl update/cdb/qos/qos_domain/${id}/pri_color2exp/${pri_value}/${color_value}//
+                fi
+            </ACTION>
+   
+   		<CTCDESCRIPTION>
+Use this command to configure default qos mapping, tc range and color to cos, exp or dscp in qos domain. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default mapping is : tc x and color all to cos x, exp x and dscp x*8. such as tc 3 and color green to cos 3, exp 3, dscp 24.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default qos mapping about tc range 2-4 and color yellow to cos in qos domain 1.  
+    Switch(config)# qos domain 1  
+    Switch(config-qos-domain-1)#no tc range 2-4 color yellow to cos  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no tc
+		</CTCRCMD>
+
+        </COMMAND>
+</VIEW>
+
+
+
+<VIEW name="Configure">
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+    <COMMAND name="no qos" help="Quality of Service">
+	</COMMAND>
+        
+    <COMMAND name="qos" help="Quality of Service">
+	</COMMAND>
+	
+    <COMMAND name="qos domain" help="Qos domain">
+            <PARAM name="value" help="Domain ID(default 0)" ptype="QOS_DOMAIN_ID"/>
+			
+            <ACTION>cdbctl update/cdb/aclqos_if/domain/${iface}/qos_domain/${value}/</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure QoS domain for an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to change the QoS domain of interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default QoS domain for each interface is 0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure QoS domain for an interface.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# qos domain 5  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show qos interface
+		</CTCRCMD>
+
+	</COMMAND>
+        
+    
+        
+    <COMMAND name="no qos domain" help="Qos domain">
+
+            <ACTION> cdbctl update/cdb/aclqos_if/domain/${iface}/qos_domain/0/</ACTION>
+
+		    <CTCDESCRIPTION>
+To return to the default QoS domain of interface value, use this command.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+This command is used to change the QoS domain of interface.   
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default QoS domain for each interface is 0.  
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to cancel this setting.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no qos domain  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show qos interface
+		    </CTCRCMD>
+
+    </COMMAND>
+
+	<COMMAND name="replace" help="Replace">
+	</COMMAND>
+    <COMMAND name="replace dscp" help="Replace dscp">
+
+            <ACTION>cdbctl update/cdb/aclqos_if/replace_dscp/${iface}/replace_dscp/1/</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure replace dscp for an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configre replace dscp of interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default action of replace dscp for each interface is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure replace dscp for an interface.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# replace dscp  
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no replace dscp
+		</CTCRCMD>
+
+	</COMMAND>
+        
+    <COMMAND name="no replace" help="Replace">
+	</COMMAND>
+        
+    
+        
+    <COMMAND name="no replace dscp" help="Replace dscp">
+
+            <ACTION> cdbctl update/cdb/aclqos_if/replace_dscp/${iface}/replace_dscp/0/</ACTION>
+				
+		    <CTCDESCRIPTION>
+To return to the default action of replace dscp, use this command.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+This command is used to change the replace dscp action of interface.   
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default action of replace dscp for each interface is disable.  
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to cancel this setting.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no replace dscp  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+replace dscp
+		    </CTCRCMD>
+
+    </COMMAND>
+
+    <COMMAND name="replace cos" help="Replace cos(default)">
+	
+            <ACTION>cdbctl update/cdb/aclqos_if/replace_cos/${iface}/replace_cos/1/</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure replace cos for an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configre replace cos of interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default action of replace cos for each interface is disable.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure replace cos for an interface.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# replace cos  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no replace cos
+		</CTCRCMD>
+
+	</COMMAND>
+        
+    <COMMAND name="no replace cos" help="Replace cos(default)">
+	
+            <ACTION> cdbctl update/cdb/aclqos_if/replace_cos/${iface}/replace_cos/0/</ACTION>
+				
+		    <CTCDESCRIPTION>
+To return to the default action of replace cos, use this command.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+This command is used to change the replace cos action of interface.   
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+The default action of replace cos for each interface is disable.  
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to cancel this setting.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no replace cos  
+
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+replace cos
+		    </CTCRCMD>
+
+    </COMMAND>
+
+
+ 	<COMMAND name="trust" help="Port trust">
+ 		<PARAM name="trust_type" help="Trust type" ptype="SUBCOMMAND" mode="switch">
+	 		<PARAM name="cos" help="Code of service(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+	 		<PARAM name="dscp-exp" help="Differentiated service code point and mpls exp" ptype="SUBCOMMAND" mode="subcommand"/>
+	 		<PARAM name="port" help="Port" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		
+		<ACTION> cdbctl update/cdb/aclqos_if/trust/${iface}/${trust_type}/</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to configure trust type for an interface, such as trust cos, trust dscp-exp, trust port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default trust state of an interface is trust cos.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure trust dscp-exp for an interface.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# trust dscp-exp  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no trust
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no trust" help="Port trust">
+	
+		<ACTION> cdbctl update/cdb/aclqos_if/trust/${iface}/cos/</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default trust state for an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default trust state of an interface is trust cos.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set default trust state for an interface.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no trust  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+trust
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="set" help="Set"/>
+	<COMMAND name="no set" help="Set"/>
+	
+    <COMMAND name="set cos" help="Set port cos(default is 0)">
+		<PARAM name="map_value" help="Cos value"  ptype="COS_ID"/>
+		
+		<ACTION> cdbctl update/cdb/aclqos_if/port_tc/${iface}/port_tc/${map_value}/</ACTION>
+		
+	<CTCDESCRIPTION>
+Use this command to set interface cos.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default cos of an interface is 0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set interface eth-0-1 cis 5.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# set cos 5  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no set cos
+		</CTCRCMD>
+	</COMMAND>
+	
+    <COMMAND name="no set cos" help="Set port cos(default is 0)" >
+		
+		<ACTION> cdbctl update/cdb/aclqos_if/port_tc/${iface}/port_tc/0/</ACTION>
+		
+	<CTCDESCRIPTION>
+Use this command to set default cos for an interface.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The default cos of an interface is 0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set interface eth-0-1 default cos.  
+    Switch(config)# interface eth-0-1  
+    Switch(config-if-eth-0-1)# no set cos  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+set cos
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+</CLISH_MODULE>
+

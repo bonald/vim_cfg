@@ -1,0 +1,83 @@
+ifeq ($(ARCH),um)
+include $(MK_DIR)/sys64.mk
+endif
+ifeq ($(ARCH),powerpc)
+include $(MK_DIR)/sys.mk
+endif
+
+ifeq ($(ARCH),arm)
+include $(MK_DIR)/sys.mk
+endif
+
+ifeq ($(ARCH),x86_64)
+include $(MK_DIR)/sys.mk
+endif
+
+LIB = ptfagent
+
+CPPFLAGS += -DPTFLIB
+
+CPPFLAGS += -Wno-error=return-type
+CPPFLAGS += -Wno-error=unused-function
+
+ifeq ($(ARCH),um)
+# um is m32, then could not uses -I/usr/lib64/glib-2.0/include
+GLIB_INCDIR=$(shell pkg-config --cflags glib-2.0)
+# GLIB_INCDIR=-I/usr/include/glib-2.0 -I$(THIRD_PARTY_DIR)/thrift/c_glib/lib32
+# GLIB_INCDIR=-I/ctcdata/users/sw/kcao/usr/include/glib-2.0 -I/ctcdata/users/sw/kcao/usr/lib64/glib-2.0/include 
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),powerpc)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),arm)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),arm64)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+ifeq ($(ARCH),x86_64)
+GLIB_INCDIR+= -I$(GLIB_USER)/include/glib-2.0
+GLIB_INCDIR+= -I$(GLIB_USER)/lib64/glib-2.0/include
+GLIB_LIB= -lgobject-2.0 -lglib-2.0
+endif
+
+CPPFLAGS += -I.
+
+CPPFLAGS += -I$(TOP_DIR)/lib/sal/include
+CPPFLAGS += -I$(TOP_DIR)/lib/util/include
+CPPFLAGS += -I$(TOP_DIR)/lib/genlog
+CPPFLAGS += -I$(TOP_DIR)/sai/inc
+CPPFLAGS += -I$(THIRD_PARTY_DIR)
+CPPFLAGS += -I$(THIRD_PARTY_DIR)/thrift/c_glib
+CPPFLAGS += $(GLIB_INCDIR)
+
+SRCS = 
+SRCS = $(shell find ./thrift ./gen-c_glib -name "*.c")
+SRCS += ptf_agent.c sai_handler.c
+
+ifeq ($(ARCH),um)
+include $(MK_DIR)/solib64.mk
+endif
+ifeq ($(ARCH),powerpc)
+include $(MK_DIR)/solib.mk
+endif
+ifeq ($(ARCH),arm)
+include $(MK_DIR)/solib.mk
+endif
+ifeq ($(ARCH),arm64)
+include $(MK_DIR)/solib.mk
+endif
+ifeq ($(ARCH),x86_64)
+include $(MK_DIR)/solib.mk
+endif

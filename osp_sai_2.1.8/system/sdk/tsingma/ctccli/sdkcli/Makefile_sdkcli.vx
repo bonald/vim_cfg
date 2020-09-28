@@ -1,0 +1,49 @@
+
+################################## vxworks #####################################
+ifeq ($(targetbase),vxworks)
+
+include $(MK_DIR)/sys_vx.mk
+OBJ_DIR=$(OBJ_BASE_DIR)/ctccli/sdkcli
+
+
+ifeq ($(USW),yes)
+all_targets = sdkcli usw
+else
+all_targets = sdkcli $(CHIPNAME)
+endif
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+sdkcli: FORCE
+	$(CTC_MAKE) -f Makefile.vx
+
+clean_sdkcli: FORCE
+	$(CTC_MAKE) -f Makefile.vx clean
+
+foam: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/foam -f Makefile.vx
+
+clean_foam: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/foam -f Makefile.vx clean
+usw: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/usw -f Makefile.vx
+
+clean_usw: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/usw -f Makefile.vx clean
+
+goldengate: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/goldengate -f Makefile.vx
+
+clean_goldengate: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/goldengate -f Makefile.vx clean
+
+greatbelt: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/greatbelt -f Makefile.vx
+
+clean_greatbelt: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/ctccli/sdkcli/greatbelt -f Makefile.vx clean
+
+.PHONY: FORCE
+FORCE:
+endif

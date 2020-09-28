@@ -1,0 +1,15 @@
+include $(MK_DIR)/sys.mk
+
+PROG = reboot_record
+
+SRCS = reboot_record.c localbus_drv.c i2c_drv.c
+ifeq ($(OS_TYPE),cnos)
+CPPFLAGS += -I$(CTC_LIB_DIR)/include
+CPPFLAGS += -I$(CTC_LIB_DIR)/sal/include
+endif
+ifeq ($(OS_TYPE),ipi)
+CPPFLAGS += -I$(TOP_DIR)/include
+CPPFLAGS += -I$(TOP_DIR)/sal/include
+endif
+
+include $(MK_DIR)/prog.mk

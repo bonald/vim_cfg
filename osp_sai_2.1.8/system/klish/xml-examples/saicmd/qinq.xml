@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+SWITCH INTERFACE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+
+	<COMMAND name="show dot1q" help="802.1Q configuration"/>
+	<COMMAND name="show dot1q ethertype" help="Ethernet link layer protocol type value">
+		<PARAM name="interface" help="Ethernet interface" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+		</PARAM>
+		
+		<ACTION>
+			cdbctl show/cdb/l2/show_dot1q_ethertype/${iface_name}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the dot1q ethertype on all interfaces or an interface. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will display the dot1q ethertype on all interfaces or an interface in the form of list.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+This example shows how to display the dot1q ethertype on the interface eth-0-1.
+
+    Switch# show dot1q ethertype interface eth-0-2
+	Interface Ethertype
+	---------+---------
+	eth-0-2   0x8100
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+N/A
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="switchport trunk vlan-translation" help="Set the layer2 interface to enable vlan translation">
+
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_translation_en/1
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to enable vlan translation on trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable vlan translation on trunk port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport trunk vlan-translation
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport trunk vlan-translation" help="Set the layer2 interface to enable vlan translation">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_translation_en/0
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to disable vlan translation on trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable vlan translation on trunk port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# no switchport trunk vlan-translation
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport trunk vlan-translation
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport trunk vlan-translation mapping" help="Configure the VLAN mapping parameters"/>
+
+	<COMMAND name="no switchport trunk vlan-translation mapping" help="Configure the VLAN mapping parameters"/>
+
+	<COMMAND name="switchport trunk vlan-translation mapping table" help="Configure the VLAN mapping table parameters">
+		<PARAM name="vmt_name" help="VLAN mapping table name" ptype="NAME_STRING"/>
+
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_mapping_table/trunk/${vmt_name}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure vlan mapping table for vlan translation on trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure vlan mapping table for vlan translation on trunk port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation mapping table vmt  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport trunk vlan-translation mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport trunk vlan-translation mapping table" help="Configure the VLAN mapping table parameters">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_mapping_table/trunk
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to delete vlan mapping table for vlan translation on trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+null
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete vlan mapping table for vlan translation on trunk port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation
+    Switch(config-if-eth-0-1)# no switchport trunk vlan-translation mapping table vmt    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport trunk vlan-translation mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport trunk vlan-translation mapping miss-forward" help="Forward the packets that miss VLAN mapping table">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_trans_default_fwd/1
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure translation of the unmaped-vlan packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+drop
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure translation of the unmaped-vlan packets:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation mapping miss-forward  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport trunk vlan-translation mapping miss-forward
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport trunk vlan-translation mapping miss-forward" help="Drop the packets that miss VLAN mapping table">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_trans_default_fwd/0
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure drop of the unmaped-vlan packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+drop
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure translation of the unmaped-vlan packets:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk vlan-translation
+    Switch(config-if-eth-0-1)# no switchport trunk vlan-translation mapping miss-forward  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport trunk vlan-translation mapping miss-forward
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport dot1q-tunnel"
+		help="Set dot1q-tunnel port">
+
+	</COMMAND>
+	
+	<COMMAND name="no switchport dot1q-tunnel"
+		help="Unset dot1q-tunnel port">
+				
+	</COMMAND>
+	
+	<COMMAND name="switchport dot1q-tunnel native" help="Native vlan">
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="vlan" optional="true" help="VLAN that will be added" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+			</PARAM>
+			<PARAM name="inner-vlan" optional="true" help="Untagged inner VLAN ID" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+			if [ "vlan" == ${mode} ]; then
+				cdbctl update/cdb/interface/${iface}/brgif/pvid/${vlan_id}/dot1q-tunnel
+			elif [ "inner-vlan" == ${mode} ]; then
+				cdbctl update/cdb/interface/${iface}/brgif/inner_native_vid/${vlan_id}/dot1q-tunnel
+			fi
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the default VLAN for this dot1q-tunnel port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure default vlan 10 for dot1q-tunnel port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel native vlan 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport dot1q-tunnel native vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport dot1q-tunnel native" help="Unset dot1q-tunnel port native vlan"/>
+	<COMMAND name="no switchport dot1q-tunnel native vlan" help="Unset native vlan">
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/pvid/1/dot1q-tunnel
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the default VLAN for this dot1q-tunnel port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure default vlan 1 for dot1q-tunnel port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# no switchport dot1q-tunnel native vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport dot1q-tunnel native vlan
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="switchport dot1q-tunnel allowed"
+		help="Set dot1q-tunnel port allowed vlan">
+	</COMMAND>
+
+	<COMMAND name="switchport dot1q-tunnel allowed vlan"
+		help="Allowed vlans">
+		<PARAM name="action" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="add" help="Add" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>
+			<PARAM name="remove" help="Remove" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="none" help="None" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/allowed_vlan/dot1q-tunnel/${action}/${vlan_list}</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure whether the specified VLAN flow can pass this dot1q-tunnel port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the specified VLAN flow pass through the port:    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel allowed vlan add 10    
+    This example shows how to configure the all VLAN flow pass through the port:    
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel allowed vlan all    
+    This example shows how to configure the all VLAN flow can not pass through the port:    
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel allowed vlan none    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport dot1q-tunnel type" help="Set the switching dot1q-tunnel interface's type">
+		<PARAM name="mode" help="Mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="basic" optional="true" help="Dot1q-tunnel baisc type (default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="selective" optional="true" help="Dot1q-tunnel selective type" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/qinq_type/${mode}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the QinQ type for this dot1q-tunnel port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+basic
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the QinQ type for this dot1q-tunnel port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel type selective  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport dot1q-tunnel type
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport dot1q-tunnel type" help="Set the switching dot1q-tunnel interface's type">
+
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/qinq_type/basic
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the this dot1q-tunnel port to basic type.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+basic
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the this dot1q-tunnel port to basic type:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel type selective  
+    Switch(config-if-eth-0-1)# no switchport dot1q-tunnel type
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport dot1q-tunnel type
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport dot1q-tunnel vlan" help="Configure the VLAN parameters"/>
+	<COMMAND name="no switchport dot1q-tunnel vlan" help="Configure the VLAN parameters"/>
+	
+	<COMMAND name="switchport dot1q-tunnel vlan mapping" help="Configure the VLAN mapping parameters"/>
+	<COMMAND name="no switchport dot1q-tunnel vlan mapping" help="Configure the VLAN mapping parameters"/>
+
+	<COMMAND name="switchport dot1q-tunnel vlan mapping table" help="Configure the VLAN mapping table parameters">
+		<PARAM name="vmt_name" help="VLAN mapping table name" ptype="NAME_STRING"/>
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_mapping_table/dot1q-tunnel/${vmt_name}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure VLAN mapping table for this seltecive dot1q-tunnel port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure VLAN mapping table for this seltecive dot1q-tunnel port.:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel type selective  
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel vlan mapping table vmt  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport dot1q-tunnel vlan mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport dot1q-tunnel vlan mapping table" help="Configure the VLAN mapping table parameters">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/vlan_mapping_table/dot1q-tunnel
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure VLAN mapping table for this seltecive dot1q-tunnel port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure VLAN mapping table for this seltecive dot1q-tunnel port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel type selective  
+    Switch(config-if-eth-0-1)# no switchport dot1q-tunnel vlan mapping table   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport dot1q-tunnel vlan mapping table
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport dot1q-tunnel vlan mapping miss-forward" help="Forward the packets that miss VLAN mapping table">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/qinq_default_fwd/1
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure translation of the unmaped-vlan packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+drop
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure translation of the unmaped-vlan packets:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# switchport dot1q-tunnel vlan mapping miss-forward  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport dot1q-tunnel vlan mapping miss-forward
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport dot1q-tunnel vlan mapping miss-forward" help="Drop the packets that miss VLAN mapping table">
+		
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/qinq_default_fwd/0
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure drop of the unmaped-vlan packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to dot1q-tunnel port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+drop
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure drop of the unmaped-vlan packets:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode dot1q-tunnel
+    Switch(config-if-eth-0-1)# no switchport dot1q-tunnel vlan mapping miss-forward  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no switchport dot1q-tunnel vlan mapping miss-forward
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="vlan dot1q" help="Dot1q parameters"/>
+	<COMMAND name="no vlan dot1q" help="Dot1q parameters"/>
+	<COMMAND name="vlan dot1q tag" help="Tag parameters"/>
+	<COMMAND name="no vlan dot1q tag" help="Tag parameters"/>
+
+	<COMMAND name="vlan dot1q tag native" help="Tag native vlan">	
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/dot1q_tag_native_en/1
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to enable tag native.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable tag native.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable tag native:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# vlan dot1q tag native
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no vlan dot1q tag native
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no vlan dot1q tag native" help="Tag native vlan">	
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/brgif/dot1q_tag_native_en/0
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to enable tag native.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable tag native.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable tag native:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# vlan dot1q tag native
+		</CTCEXAMPLE>
+		<CTCRCMD>
+vlan dot1q tag native
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="dot1q" help="Specify 802.1Q configuration information"/>
+	<COMMAND name="dot1q ethertype" help="Ethernet link layer protocol type value">	
+		<PARAM name="ethertype" help="The value(in HEX), the default value is 8100(in HEX)" ptype="ETHERTYPE_VALUE"/>
+
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/svlan_tpid/${ethertype}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to set the ethertype of svlan.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set the ethertype of svlan.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0x8100
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the ethertype of svlan:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# dot1q ethertype 9100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no dot1q" help="Specify 802.1Q configuration information"/>
+	<COMMAND name="no dot1q ethertype" help="Ethernet link layer protocol type value">	
+
+		<ACTION>
+			cdbctl update/cdb/interface/${iface}/svlan_tpid/8100
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+	Use this command to set the ethertype of svlan to default 0x8100.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+	This command is used to set the ethertype of svlan to default 0x8100.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+	0x8100
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	    This example shows how to set the ethertype of svlan to default 0x8100:
+	    Switch(config)# interface eth-0-1
+	    Switch(config-if-eth-0-1)# no dot1q ethertype
+		</CTCEXAMPLE>
+		<CTCRCMD>
+	dot1q ethertype
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+</CLISH_MODULE>

@@ -1,0 +1,62 @@
+# contents below built automatically by configure; do not edit by hand
+module_list_c= \
+	mibII/vacm_vars.c \
+	ucd-snmp/memory.c \
+	ucd-snmp/vmstat.c \
+	ucd-snmp/loadave.c \
+	mibII/tcp.c \
+	mibII/udp.c \
+	mibII/icmp.c \
+	mibII/snmp_mib.c \
+	smux/smux.c \
+	agentx/master.c \
+	agentx/subagent.c \
+	notification/snmpNotifyTable.c \
+	notification/snmpNotifyFilterProfileTable.c \
+	target/target_counters_5_5.c \
+	target/snmpTargetAddrEntry.c \
+	target/snmpTargetParamsEntry.c \
+	target/target.c \
+	util_funcs/header_generic.c \
+	mibII/vacm_context.c \
+	mibII/vacm_conf.c \
+	snmpv3/snmpMPDStats_5_5.c \
+	snmpv3/usmStats_5_5.c \
+	snmpv3/snmpEngine.c \
+	snmpv3/usmConf.c \
+	snmpv3/usmUser.c \
+	util_funcs/header_simple_table.c \
+	mibII/kernel_linux.c \
+	mibII/tcpTable.c \
+	mibII/udpTable.c \
+	mibII/updates.c \
+	agentx/protocol.c \
+	agentx/client.c \
+	agentx/master_admin.c \
+	agentx/agentx_config.c \
+	header_complex.c \
+	snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable.c \
+	hardware/memory/hw_mem.c \
+	hardware/memory/memory_linux.c \
+	hardware/cpu/cpu.c \
+	hardware/cpu/cpu_linux.c \
+	mibII/ip.c \
+	notification-log-mib/notification_log.c \
+	snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable_interface.c \
+	snmp-notification-mib/snmpNotifyFilterTable/snmpNotifyFilterTable_data_access.c \
+	mibII/ipAddr.c \
+	mibII/at.c \
+	mibII/var_route.c \
+	mibII/route_write.c \
+	if-mib/ifTable/ifTable.c \
+	if-mib/data_access/interface.c \
+	if-mib/ifTable/ifTable_interface.c \
+	if-mib/ifTable/ifTable_data_access.c \
+	util_funcs.c \
+	if-mib/data_access/interface_linux.c \
+	if-mib/data_access/interface_ioctl.c \
+	ip-mib/data_access/ipaddress_common.c \
+	ip-mib/data_access/ipaddress_linux.c \
+	ip-mib/data_access/ipaddress_ioctl.c
+
+# end configure generated code

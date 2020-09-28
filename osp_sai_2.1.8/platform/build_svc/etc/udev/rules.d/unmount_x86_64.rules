@@ -1,0 +1,3 @@
+ACTION!="remove",GOTO="farsight"
+DEVNAME=="sd[a-z][0-9]",RUN+="/etc/unmount.sh"
+LABEL="farsight"

@@ -1,0 +1,361 @@
+
+<div class="row col-md-12">
+    <table class="if-table">
+    <tr >
+		<td ng-repeat="x in ifLine1" class="if-table">
+            <span ng-if="x.phy_type != '1000BASE_T' && x.phy_type != '10BASE_T' && x.key.search('_')<0">
+                <span ng-switch on ="x.up + x.running">
+                    <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+					<p class="text-center">{{x.portnum}}</p>
+                </span></span>
+            <span ng-if="x.phy_type == '1000BASE_T' || x.phy_type == '10BASE_T'&& x.key.search('_')<0">
+                <span ng-switch on ="x.up + x.running">
+                    <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <p class="text-center">{{x.portnum}}</p>
+                </span></span>
+            <span ng-if="x.key.search('_')>= 0">
+                <table class="if-sub-table">
+                    <tr >
+                        <td class="if-sub-table">
+                        <span ng-if="ifLine1.subif[x.count].phy_type != '1000BASE_T' && ifLine1.subif[x.count].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count].up + ifLine1.subif[x.count].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count].speed}},{{ifLine1.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running=='1')?'up':((ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count].speed}},{{ifLine1.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running=='1')?'up':((ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count].speed}},{{ifLine1.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running=='1')?'up':((ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine1.subif[x.count].phy_type == '1000BASE_T' || ifLine1.subif[x.count].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count].up + ifLine1.subif[x.count].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count].speed}},{{ifLine1.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running=='1')?'up':((ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running!='1')?'down':'admin down')}}"/>/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count].speed}},{{ifLine1.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running=='1')?'up':((ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count].speed}},{{ifLine1.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running=='1')?'up':((ifLine1.subif[x.count].up=='1'&&ifLine1.subif[x.count].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count].portnum}}</p>
+                            </span></span>
+                        </td>
+                        <td class="if-sub-table">
+                        <span ng-if="ifLine1.subif[x.count+1].phy_type != '1000BASE_T' && ifLine1.subif[x.count+1].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count+1].up + ifLine1.subif[x.count+1].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+1].speed}},{{ifLine1.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running=='1')?'up':((ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+1].speed}},{{ifLine1.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running=='1')?'up':((ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+1].speed}},{{ifLine1.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running=='1')?'up':((ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count+1].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine1.subif[x.count+1].phy_type == '1000BASE_T' || ifLine1.subif[x.count+1].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count+1].up + ifLine1.subif[x.count+1].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+1].speed}},{{ifLine1.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running=='1')?'up':((ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+1].speed}},{{ifLine1.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running=='1')?'up':((ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+1].speed}},{{ifLine1.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running=='1')?'up':((ifLine1.subif[x.count+1].up=='1'&&ifLine1.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count+1].portnum}}</p>
+                            </span></span>
+                        </td>
+                    </tr>
+                    <tr >
+                        <td class="if-sub-table">
+                        <span ng-if="ifLine1.subif[x.count+2].phy_type != '1000BASE_T' && ifLine1.subif[x.count+2].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count+2].up + ifLine1.subif[x.count+2].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+2].speed}},{{ifLine1.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running=='1')?'up':((ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+2].speed}},{{ifLine1.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running=='1')?'up':((ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+2].speed}},{{ifLine1.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running=='1')?'up':((ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count+2].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine1.subif[x.count+2].phy_type == '1000BASE_T' || ifLine1.subif[x.count+2].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count+2].up + ifLine1.subif[x.count+2].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+2].speed}},{{ifLine1.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running=='1')?'up':((ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+2].speed}},{{ifLine1.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running=='1')?'up':((ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+2].speed}},{{ifLine1.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running=='1')?'up':((ifLine1.subif[x.count+2].up=='1'&&ifLine1.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count+2].portnum}}</p>
+                            </span></span>
+                        </td>
+                        <td class="if-sub-table" >
+                        <span ng-if="ifLine1.subif[x.count+3].phy_type != '1000BASE_T' && ifLine1.subif[x.count+3].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine1.subif[x.count+3].up + ifLine1.subif[x.count+3].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+3].speed}},{{ifLine1.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running=='1')?'up':((ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+3].speed}},{{ifLine1.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running=='1')?'up':((ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+3].speed}},{{ifLine1.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running=='1')?'up':((ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count+3].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine1.subif[x.count+3].phy_type == '1000BASE_T' || ifLine1.subif[x.count+3].phy_type == '10BASE_T'" >
+                            <span ng-switch on ="ifLine1.subif[x.count+3].up + ifLine1.subif[x.count+3].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+3].speed}},{{ifLine1.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running=='1')?'up':((ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+3].speed}},{{ifLine1.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running=='1')?'up':((ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine1.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine1.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine1.subif[x.count+3].speed}},{{ifLine1.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running=='1')?'up':((ifLine1.subif[x.count+3].up=='1'&&ifLine1.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine1.subif[x.count+3].portnum}}</p>
+                            </span></span>
+                        </td>
+                    </tr>
+                </table>
+                </span>
+        </td>
+    </tr>
+        <tr >
+            <td ng-repeat="x in ifLine2" class="if-table">
+            <span ng-if="x.phy_type != '1000BASE_T' && x.phy_type != '10BASE_T'&& x.key.search('_')<0">
+                <span ng-switch on ="x.up + x.running">
+                    <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" data-toggle="tooltip" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <p class="text-center">{{x.portnum}}</p>
+                </span></span>
+            <span ng-if="x.phy_type == '1000BASE_T' || x.phy_type == '10BASE_T'&& x.key.search('_')<0">
+                <span ng-switch on ="x.up + x.running">
+                    <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" title="{{'Port'|translate}}:{{x.key|switchPort}}&#10;{{'Type'|translate}}:{{x.phy_type}}&#10;{{'Speed'|translate}}:{{x.speed}},{{x.duplex}}&#10;{{'Status' | translate}}:{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}"/>
+                    <p class="text-center">{{x.portnum}}</p>
+                </span></span>
+                <span ng-if="x.key.search('_')>= 0">
+                <table class="if-sub-table">
+                    <tr >
+                        <td class="if-sub-table">
+                        <span ng-if="ifLine2.subif[x.count].phy_type != '1000BASE_T' && ifLine2.subif[x.count].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count].up + ifLine2.subif[x.count].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine2.subif[x.count].phy_type == '1000BASE_T' || ifLine2.subif[x.count].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count].up + ifLine2.subif[x.count].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count].speed}},{{ifLine2.subif[x.count].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running=='1')?'up':((ifLine2.subif[x.count].up=='1'&&ifLine2.subif[x.count].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count].portnum}}</p>
+                            </span></span>
+                        </td>
+                        <td class="if-sub-table">
+                        <span ng-if="ifLine2.subif[x.count+1].phy_type != '1000BASE_T' && ifLine2.subif[x.count+1].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count+1].up + ifLine2.subif[x.count+1].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+1].speed}},{{ifLine2.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running=='1')?'up':((ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+1].speed}},{{ifLine2.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running=='1')?'up':((ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+1].speed}},{{ifLine2.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running=='1')?'up':((ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count+1].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine2.subif[x.count+1].phy_type == '1000BASE_T' || ifLine2.subif[x.count+1].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count+1].up + ifLine2.subif[x.count+1].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+1].speed}},{{ifLine2.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running=='1')?'up':((ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+1].speed}},{{ifLine2.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running=='1')?'up':((ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+1].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+1].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+1].speed}},{{ifLine2.subif[x.count+1].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running=='1')?'up':((ifLine2.subif[x.count+1].up=='1'&&ifLine2.subif[x.count+1].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count+1].portnum}}</p>
+                            </span></span>
+                        </td>
+                    </tr>
+                    <tr >
+                        <td class="if-sub-table">
+                        <span ng-if="ifLine2.subif[x.count+2].phy_type != '1000BASE_T' && ifLine2.subif[x.count+2].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count+2].up + ifLine2.subif[x.count+2].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+2].speed}},{{ifLine2.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running=='1')?'up':((ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+2].speed}},{{ifLine2.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running=='1')?'up':((ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+2].speed}},{{ifLine2.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running=='1')?'up':((ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count+2].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine2.subif[x.count+2].phy_type == '1000BASE_T' || ifLine2.subif[x.count+2].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count+2].up + ifLine2.subif[x.count+2].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+2].speed}},{{ifLine2.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running=='1')?'up':((ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+2].speed}},{{ifLine2.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running=='1')?'up':((ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+2].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+2].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+2].speed}},{{ifLine2.subif[x.count+2].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running=='1')?'up':((ifLine2.subif[x.count+2].up=='1'&&ifLine2.subif[x.count+2].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count+2].portnum}}</p>
+                            </span></span>
+                        </td>
+                        <td class="if-sub-table" >
+                        <span ng-if="ifLine2.subif[x.count+3].phy_type != '1000BASE_T' && ifLine2.subif[x.count+3].phy_type != '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count+3].up + ifLine2.subif[x.count+3].running">
+                                <img ng-switch-when="00" ng-src="./images/sfp_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+3].speed}},{{ifLine2.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running=='1')?'up':((ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/sfp_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+3].speed}},{{ifLine2.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running=='1')?'up':((ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/sfp_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+3].speed}},{{ifLine2.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running=='1')?'up':((ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count+3].portnum}}</p>
+                            </span></span>
+                        <span ng-if="ifLine2.subif[x.count+3].phy_type == '1000BASE_T' || ifLine2.subif[x.count+3].phy_type == '10BASE_T'">
+                            <span ng-switch on ="ifLine2.subif[x.count+3].up + ifLine2.subif[x.count+3].running">
+                                <img ng-switch-when="00" ng-src="./images/rj45_white_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+3].speed}},{{ifLine2.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running=='1')?'up':((ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="10" ng-src="./images/rj45_grey_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+3].speed}},{{ifLine2.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running=='1')?'up':((ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+                                <img ng-switch-when="11" ng-src="./images/rj45_green_small.gif" title="{{'Port'|translate}}:{{ifLine2.subif[x.count+3].key|switchPort}}&#10;{{'Type'|translate}}:{{ifLine2.subif[x.count+3].phy_type}}&#10;{{'Speed'|translate}}:{{ifLine2.subif[x.count+3].speed}},{{ifLine2.subif[x.count+3].duplex}}&#10;{{'Status' | translate}}:{{(ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running=='1')?'up':((ifLine2.subif[x.count+3].up=='1'&&ifLine2.subif[x.count+3].running!='1')?'down':'admin down')}}"/>
+								<p class="text-center">{{ifLine2.subif[x.count+3].portnum}}</p>
+                            </span></span>
+                        </td>
+                    </tr>
+                </table>
+                    </span>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<div class="row col-md-6" >
+    <table class="table">
+        <tr>
+            <td></td>
+            <td><img ng-src="./images/sfp_green_small.gif" /></td>
+            <td><img ng-src="./images/sfp_grey_small.gif"  /></td>
+            <td><img ng-src="./images/sfp_white_small.gif"  /></td>
+            <td><img ng-src="./images/rj45_green_small.gif"  /></td>
+            <td><img ng-src="./images/rj45_grey_small.gif"  /></td>
+            <td><img ng-src="./images/rj45_white_small.gif"  /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{'SFP Active'|translate}}</td>
+            <td>{{'SFP Inactive'|translate}}</td>
+            <td>{{'SFP Disable'|translate}}</td>
+            <td>{{'RJ45 Active'|translate}}</td>
+            <td>{{'RJ45 Inactive'|translate}}</td>
+            <td>{{'RJ45 Disable'|translate}}</td>
+        </tr>
+    </table>
+
+</div>
+<div class="row">
+</div>
+<div class="row">
+    <div class="col-md-4" id="deviceInfor">
+        <table class="table">
+        <tr>
+            <td>{{'Product ID'| translate}}</td>
+            <td>{{version[0].product + '-' + card[0].hardware_name}}</td>
+        </tr>
+        <tr>
+            <td>{{'Device Name'| translate}}</td>
+            <td>{{sysglobal[0].hostname}}</td>
+        </tr>
+        <tr>
+            <td>{{'Serial Number'| translate}}</td>
+            <td>{{card[0].serial_no}}</td>
+        </tr>
+        <tr>
+            <td>{{'Software Version'| translate}}</td>
+            <td>{{version[0].package + '-' + version[0].version}}</td>
+        </tr>
+        <tr>
+            <td>{{'Image Name'| translate}}</td>
+            <td>{{bootimage}}</td>
+        </tr>
+        </table>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-4" id="deviceInfor">
+        <table class="table">
+            <tr>
+                <td>{{'Hardware Version'| translate}}</td>
+                <td>{{card[0].hardware_ver}}</td>
+            </tr>
+            <tr>
+                <td>{{'BootRom Version'| translate}}</td>
+                <td>{{card[0].bootrom_ver}}</td>
+            </tr>
+            <tr>
+                <td>{{'EPLD Version'| translate}}</td>
+                <td>{{card[0].epld_ver}}</td>
+            </tr>
+            <tr>
+                <td>{{'MAC Address'| translate}}</td>
+                <td>{{sysglobal[0].route_mac}}</td>
+            </tr>
+            <tr>
+                <td>{{'Uptime'| translate}}</td>
+                <td>{{uptime[0].uptime}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <hr width="100%" size="20"  style="border-top-width: 10px"/>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>{{'Power'|translate}}</th>
+                    <th >{{'Status'|translate}}</th>
+                    <th >{{'Mode'|translate}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in psu">
+                    <td>{{x.name}}</td>
+                    <td>{{x.run_status}}</td>
+                    <td>{{x.mode}}</td>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>{{'Sensor'|translate}}</th>
+                    <th >{{'Status'|translate}}</th>
+                    <th >{{'Temperature'|translate}}</th>
+                    <th>{{'Position'|translate}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in sensor">
+                    <td>{{x.name}}</td>
+                    <td>{{x.status}}</td>
+                    <td>{{x.temperature}}</td>
+                    <td>{{x.position}}</td>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    <div class="col-md-1"></div>
+        <div class="col-md-4">
+            <div class="row">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th >{{'CPU Usage'|translate}}</th>
+                        <th >{{'Memory Usage'|translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{cpu[0].total + '%'}}</td>
+                        <td>{{memory[0].usage}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>{{'Fan'|translate}}</th>
+                        <th >{{'Speed Rate'|translate}}</th>
+                        <th>{{'Mode'|translate}}</th>
+                        <th >{{'Status'|translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="x in fan">
+                        <td>{{x.name}}</td>
+                        <td>{{x.percent+'%'}}</td>
+                        <td>{{x.mode}}</td>
+                        <td ng-if="x.status == 'OK'"><img height="24px"  ng-src="./images/gree_fan.gif"/> </td>
+                        <td ng-if="x.status != 'OK'"><p style="color:red;">FAIL</p> </td>
+                    </tbody>
+                </table>
+            </div>
+
+
+    </div>
+</div>
+<div class="panel-body" style="width:700px;margin:10px auto">
+        <form name="StatusForm" class="form form-inline" novalidate>
+            <div class="form-group" style="float:left" >
+                <label>{{ 'Refresh interval(Second)' | translate }}</label>
+                <select class="form-control" ng-options="interval for interval in refreshIntervalArr" ng-model="refreshInterval" ng-change="selectchange()"></select>
+            </div>
+            <div class="form-group" style="float:left">
+                <label>{{ 'TimeOut(Min)'}}</label>
+                <input type="text"  style="width:100px;height:30px"  ng-model="http_timeout">
+            </div>
+        </form>
+</div>
+

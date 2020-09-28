@@ -1,0 +1,40 @@
+include ../Makefile.env.inc
+
+all_targets =
+all_targets += libredis
+#all_targets += redis_server
+#all_targets += redis_cli
+#all_targets += redis_benchmark
+#all_targets += redis_checkaof
+all: $(all_targets) FORCE
+
+libredis: FORCE
+	$(OSP_MAKE) -C deps -f Makefile.ctc
+clean_libredis: FORCE
+	$(OSP_MAKE) -C deps -f Makefile.ctc clean
+
+redis_server: libredis FORCE
+	@mkdir -p $(BLD_DIR)/etc
+	@cp -fr $(REDIS_DIR)/redis.conf $(BLD_DIR)/etc/redis.conf ;
+	$(OSP_MAKE) -C src -f Makefile_server.ctc
+clean_redis_server: FORCE
+	$(OSP_MAKE) -C src -f Makefile_server.ctc clean
+
+redis_cli: libredis FORCE
+	$(OSP_MAKE) -C src -f Makefile_cli.ctc
+clean_redis_cli: FORCE
+	$(OSP_MAKE) -C src -f Makefile_cli.ctc clean
+
+redis_benchmark: libredis FORCE
+	$(OSP_MAKE) -C src -f Makefile_benchmark.ctc
+clean_redis_benchmark: FORCE
+	$(OSP_MAKE) -C src -f Makefile_benchmark.ctc clean
+
+redis_checkaof: libredis FORCE
+	$(OSP_MAKE) -C src -f Makefile_checkaof.ctc
+clean_redis_checkaof: FORCE
+	$(OSP_MAKE) -C src -f Makefile_checkaof.ctc clean	
+	
+	
+.PHONY: FORCE
+FORCE:

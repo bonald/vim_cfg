@@ -1,0 +1,25 @@
+
+include $(MK_DIR)/sys_vx.mk
+
+OBJ_DIR=$(OBJ_BASE_DIR)/app
+
+LD_FLAGS += --subsystem=windows -e _WinMainCRTStartup
+DEP_LIBS += $(VXLIB_DIR)/common/libnet.a $(VXLIB_DIR)/common/libos.a $(VXLIB_DIR)/common/librpc.a
+
+LD_LIBS += -L$(VXLIB_DIR)/common -L$(VXLIB_DIR)/gnu -lnet -los -lrpc 
+
+PROG = vxWorks
+OBJS += $(WIND_BASE)/host/x86-win32/i386-pc-mingw32/lib/crt1.o
+OBJS += $(TGT_DIR)/proj/$(PROJECT_NAME)/default/dataSegPad.o
+OBJS += $(TGT_DIR)/proj/$(PROJECT_NAME)/default/partialImage.o
+OBJS += $(TGT_DIR)/proj/$(PROJECT_NAME)/default/ctdt.o
+OBJS += $(BIN_DIR)/ctcsdk
+
+$(BIN_DIR)/$(PROG): $(OBJS) $(DEP_LIBS)
+	$(shell mkdir -p $(dir $@))
+	@echo "LD  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	$(LD) $(LD_FLAGS) $(OBJS) -T $(TGT_DIR)/h/tool/gnu/ldscripts/link.SIMNT $(LD_LIBS) -o $(BIN_DIR)/$(PROG)
+
+.PHONY: clean
+clean:
+	rm -rf $(BIN_DIR)/$(PROG)

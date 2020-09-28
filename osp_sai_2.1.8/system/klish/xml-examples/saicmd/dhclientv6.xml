@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+DHCPV6 CLIENT
+</CTCMODULENAME>		
+    
+<VIEW name="Exec">
+
+<COMMAND name="show dhcpv6" help="Show DHCPv6 configurations"/>
+<COMMAND name="clear dhcpv6" help="DHCPv6"/>
+
+<COMMAND name="show dhcpv6 client" help="DHCPv6 Client information">
+	<PARAM name="iface_name"  help="Ethernet interface name" ptype="IF_NAME_EAV" optional="true" >
+		<PARAM name="verbose" help="DHCPv6 client verbose information" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+	</PARAM>
+	<ACTION>
+	HAVE_DHCLIENT6=`ps -ef | grep dhclient6 | grep -v grep`
+	if [ -z "$HAVE_DHCLIENT6" ]; then
+	    echo "% Dhcpv6 client function is not supported on this device"
+	else
+	    cdbctl show/cdb/dhcp/show_dhclient6/interface/${iface_name}/${verbose}
+	fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To show information of DHCPv6 client on one or all interfaces, use the show dhcpv6 client command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+To see more detail information, add verbose at the last of command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to display DHCPv6 client information on one interfaces:         
+    Switch# show dhcpv6 client
+    vlan20 DHCPv6 client information:  
+      Current state: BOUND  Allocated IP: 3000::1000   
+      preferred/expired: 201/261 seconds  
+      Transaction ID: 0x6ea5d2             
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcpv6 client verbose" help="DHCPv6 client verbose information">
+	<ACTION>
+	HAVE_DHCLIENT6=`ps -ef | grep dhclient6 | grep -v grep`
+	if [ -z "$HAVE_DHCLIENT6" ]; then
+	    echo "% Dhcpv6 client function is not supported on this device"
+	else
+	    cdbctl show/cdb/dhcp/show_dhclient6/verbose
+	fi
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To show information of DHCPv6 client on one or all interfaces, use the show dhcpv6 client command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+To see more detail information, add verbose at the last of command.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to display DHCPv6 client information:                      
+    Switch# show dhcpv6 client verbose                
+    DHCPv6 client informations:
+    ============================================================
+    vlan20 DHCPv6 client information:
+      Current state: RENEWING
+      Allocated IP: 3000::1000 
+      preferred/expired: 173/233 seconds
+      Lease from 2018-12-12 02:31:29 to 2018-12-12 02:36:29
+      server DUID: 00:01:00:01:23:a2:27:24:1c:7c:b5:75:ba:00
+      Client DUID: 00:01:00:01:23:a3:2d:51:c8:1c:af:5a:24:00
+      Transaction ID: 0x6e88e9
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="show dhcpv6 client statistics" help="Statistics information">
+	<ACTION>
+	HAVE_DHCLIENT6=`ps -ef | grep dhclient6 | grep -v grep`
+	if [ -z "$HAVE_DHCLIENT6" ]; then
+	    echo "% Dhcpv6 client function is not supported on this device"
+	else
+	    cdbctl show/cdb/dhcp/show_dhclient6/statistics
+	fi	
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To show statistics of DHCPv6 client, use the show dhcpv6 client statistics command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+Use this command to show the statistics of DHCPv6 client, like DHCPv6 packets counter.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to display DHCPv6 packets statistics:                      
+    Switch# show dhcpv6 client statistics          
+    DHCPv6 client packet statistics:
+    ============================================================
+    DHCPv6 ADVERTISE       received: 14
+    DHCPv6 REPLY           received: 61
+    DHCPv6 Others          received: 0
+    DHCPv6 SOLICIT             sent: 15
+    DHCPv6 REQUEST             sent: 3
+    DHCPv6 RENEW               sent: 28
+    DHCPv6 REBIND              sent: 5
+    DHCPv6 DECLINE             sent: 2
+    DHCPv6 RELEASE             sent: 2
+    DHCPv6 Others              sent: 0
+    DHCPv6 packet       send failed: 0
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="clear dhcpv6 client" help="DHCPv6 Client"/>
+
+<COMMAND name="clear dhcpv6 client statistics" help="Statistics information">
+	<ACTION>
+	HAVE_DHCLIENT6=`ps -ef | grep dhclient6 | grep -v grep`
+	if [ -z "$HAVE_DHCLIENT6" ]; then
+	    echo "% Dhcpv6 client function is not supported on this device"
+	else
+	    cdbctl delete/cdb/dhcp/show_dhclient6/statistics
+	fi	
+
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To clear statistics of DHCPv6 client, use the clear dhcpv6 client statistics command in privileged EXEC mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+This command will clear DHCPv6 packet counter.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+None
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to clear DHCPv6 statistics:              
+    Switch# clear dhcpv6 client statistics             
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+<COMMAND name="management ipv6 address dhcp" help="IPv6 Address negotiated via DHCPv6">
+	<ACTION>
+	HAVE_DHCLIENT6=`ps -ef | grep dhclient6 | grep -v grep`
+	if [ -z "$HAVE_DHCLIENT6" ]; then
+	    echo "% Dhcpv6 client function is not supported on this device"
+	else
+	    cdbctl update/cdb/sys/manage_if/dhclientv6_enable/1
+	fi	
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To acquire an IPv6 address for management interface by DHCPv6 client, use the management ipv6 address dhcp command in global configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Use this command to enable IPv6 address dhcp.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCPv6 Client is not enabled on management interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to enable DHCPv6 client function on management interface:            
+    Switch(config-if)# management ipv6 address dhcp
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no management ipv6 address dhcp" help="IPv6 Address negotiated via DHCPv6">
+	<ACTION>
+	HAVE_DHCLIENT6=`ps -ef | grep dhclient6 | grep -v grep`
+	if [ -z "$HAVE_DHCLIENT6" ]; then
+	    echo "% Dhcpv6 client function is not supported on this device"
+	else
+	    cdbctl update/cdb/sys/manage_if/dhclientv6_enable/0
+	fi		
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To disable DHCPv6 client on management interface use the no management ipv6 address dhcp command in global configuration mode.
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Use this command to disable IPv6 address dhcp.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCPv6 Client is not enabled on management interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to disable DHCPv6 client function on management interface:        
+    Switch(config-if)# no management ipv6 address dhcp          
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+<COMMAND name="ipv6 address dhcp" help="IPv6 Address negotiated via DHCP">
+	<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcpv6_client_enable/1
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To acquire an IPv6 address from DHCPv6 client, use the ipv6 address dhcp command in interface configuration mode. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  Once this command was enable on an UP interface, it will acquire IPv6 address immediately, otherwise the DHCPv6 client function of the interface will be in SUSPEND status.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCPv6 Client is not enabled on interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to enable DHCPv6 client function:        
+    Switch(config-if)# ipv6 address dhcp          
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+<COMMAND name="no ipv6 address dhcp" help="IPv6 Address negotiated via DHCP">
+	<ACTION>
+cdbctl update/cdb/l3/route_if/${iface}/dhcpv6_client_enable/0
+	</ACTION>
+
+	<CTCDESCRIPTION>
+To disable DHCPv6 client, use the no ipv6 address dhcp command in interface configuration mode. 
+	</CTCDESCRIPTION>
+	<CTCUSAGE>
+  DHCPv6 client will be disabled by no ipv6 address dhcp command, it will send a DHCPRELEASE message to server and remove any IPv6 address.
+	</CTCUSAGE>
+	<CTCDEFAULT>
+  DHCPv6 Client is not enabled on interface.
+	</CTCDEFAULT>
+	<CTCEXAMPLE> 
+    The following example shows how to disable DHCPv6 client function:          
+    Switch(config-if)# no ipv6 address dhcp     
+	</CTCEXAMPLE>
+	<CTCRCMD>
+	</CTCRCMD>
+</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

@@ -1,0 +1,12 @@
+include $(MK_DIR)/sys.mk
+LIB = mux
+SRCS  = mux_api.c
+SRCS  += mux_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/mux
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+
+include $(MK_DIR)/lib.mk

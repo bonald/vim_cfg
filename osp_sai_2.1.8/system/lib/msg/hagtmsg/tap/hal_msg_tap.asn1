@@ -1,0 +1,48 @@
+HAL-MSG-TAP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES
+    ;
+
+HalMsgTapGroupReq ::= SEQUENCE
+{
+    id      	 INTEGER,
+    nexthopid    INTEGER,
+    sessionid    INTEGER,
+    groupid      INTEGER,
+	loopnexthopid INTEGER,
+    truncation   INTEGER
+}
+
+HalMsgTapGroupIngressGportReq ::= SEQUENCE
+{
+    id    			INTEGER,
+    truncation      INTEGER,
+    sessionid       INTEGER,
+    nexthopid       INTEGER,
+    groupid    		INTEGER,
+    gport           INTEGER,
+	marksource      INTEGER,
+	vlanid          INTEGER
+}
+
+HalMsgTapGroupEgressGportReq ::= SEQUENCE
+{
+    id    			INTEGER,
+    truncation      INTEGER,
+    sessionid       INTEGER,
+    nexthopid       INTEGER,
+    groupid    		INTEGER,
+    gport           INTEGER,
+    withStamp       INTEGER
+}
+
+HalMsgTapTSEtherReq ::= SEQUENCE
+{
+    macda           HalMsgDefL2MacAddr,
+    macsa           HalMsgDefL2MacAddr,
+    etherType      INTEGER
+}
+
+END

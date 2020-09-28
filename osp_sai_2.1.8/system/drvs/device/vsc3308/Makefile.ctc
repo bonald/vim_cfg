@@ -1,0 +1,11 @@
+include $(MK_DIR)/sys.mk
+LIB = vsc3308
+SRCS  = vsc3308_api.c
+SRCS  += vsc3308_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/vsc3308
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/log
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

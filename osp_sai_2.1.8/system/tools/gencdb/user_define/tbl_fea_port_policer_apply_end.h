@@ -1,0 +1,2 @@
+tbl_fea_port_policer_apply_t*
+tbl_fea_port_policer_apply_get_fea_port_policer_apply_by_name(const char* ifname);

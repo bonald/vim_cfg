@@ -1,0 +1,35 @@
+
+export WARN_NOERROR = y
+
+all_targets =  common omapip dst
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+common: FORCE
+	make -C common -f Makefile
+
+clean_common: FORCE
+	make -C common -f Makefile clean
+    
+omapip: FORCE
+	make -C omapip -f Makefile
+
+clean_omapip: FORCE
+	make -C omapip -f Makefile clean
+    
+dst: FORCE
+	make -C dst -f Makefile
+
+#minires: FORCE
+#	make -C minires -f Makefile
+
+#clean_minires: FORCE
+#	make -C minires -f Makefile clean
+
+clean_dst: FORCE
+	make -C dst -f Makefile clean
+
+.PHONY: FORCE
+FORCE:

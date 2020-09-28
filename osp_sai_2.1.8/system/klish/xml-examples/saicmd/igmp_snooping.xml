@@ -1,0 +1,1925 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+IGMP Snooping
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ip igmp" help="IGMP"/>
+
+	<COMMAND name="show ip igmp snooping" help="IGMP Snooping">
+		<ACTION>cdbctl show/cdb/l2/show_igsp</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping global and VLAN configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping global and VLAN configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping configurations:  
+    Switch# show ip igmp snooping
+	Global IGMP Snooping configuration:
+	-------------------------------------+-----------
+	Igmp Snooping                       : Enabled   
+	Fast-Leave                          : Disabled  
+	Report-Suppression                  : Enabled   
+	Version                             : 2         
+	Robustness Variable                 : 2         
+	Max Member Number                   : 2048      
+	Unknown Multicast Behavior          : Flood     
+
+	VLAN 1:
+	--------
+	Igmp Snooping                       : Enabled   
+	Fast-Leave                          : Disabled  
+	Report-Suppression                  : Enabled   
+	Version                             : 2         
+	Robustness Variable                 : 2         
+	Max Member Number                   : 2048      
+	Unknown Multicast Behavior          : Flood     
+	Group Access-list                   : N/A       
+	Mrouter Port Aging Interval (sec)   : 255       
+	Mrouter Port                        : eth-0-4(static)
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping global
+show ip igmp snooping vlan
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show ip igmp snooping global" help="Global information">
+		<ACTION>cdbctl show/cdb/l2/show_igsp/global</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping global configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping global configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping global configurations:
+	Switch# show ip igmp snooping global 
+	Global IGMP Snooping configuration:
+	-------------------------------------+-----------
+	Igmp Snooping                       : Enabled   
+	Fast-Leave                          : Disabled  
+	Report-Suppression                  : Enabled   
+	Version                             : 2         
+	Robustness Variable                 : 2         
+	Max Member Number                   : 2048      
+	Unknown Multicast Behavior          : Flood     
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ip igmp snooping vlan" help="VLAN information">
+		<PARAM name="show_vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+
+		<ACTION>cdbctl show/cdb/l2/show_igsp/vlan/${show_vlan_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping VLAN configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping VLAN configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping configurations of VLAN 2:
+	Switch# show ip igmp snooping vlan 2 
+	Global IGMP Snooping configuration:
+	-------------------------------------+-----------
+	Igmp Snooping                       : Enabled   
+	Fast-Leave                          : Disabled  
+	Report-Suppression                  : Enabled   
+	Version                             : 2         
+	Robustness Variable                 : 2         
+	Max Member Number                   : 2048      
+	Unknown Multicast Behavior          : Flood     
+
+	VLAN 2:
+	--------
+	Igmp Snooping                       : Enabled   
+	Fast-Leave                          : Disabled  
+	Report-Suppression                  : Enabled   
+	Version                             : 2         
+	Robustness Variable                 : 2         
+	Max Member Number                   : 2048      
+	Unknown Multicast Behavior          : Flood     
+	Group Access-list                   : N/A       
+	Mrouter Port Aging Interval (sec)   : 255       
+	Mrouter Port                        : 
+ 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+show ip igmp snooping global
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ip igmp snooping querier" help="Querier">
+		<PARAM name="vlan" help="VLAN information" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="show_vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+		</PARAM>
+
+		<ACTION>cdbctl show/cdb/l2/show_igsp/querier/${show_vlan_id}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping querier configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping querier configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping querier configurations:
+	Switch# show ip igmp snooping querier
+	Global Igmp Snooping Querier Configuration:
+	-------------------------------------+-----------
+	Version                             : 2         
+	Last Member Query Count             : 2         
+	Last Member Query Interval (msec)   : 1000      
+	Max Query Response Time (sec)       : 10        
+	Query Interval (sec)                : 125       
+	Global Source Address               : 0.0.0.0   
+  TCN Query                           : Disabled  
+	TCN Query Count                     : 2         
+	TCN Query Interval (sec)            : 10        
+	TCN Query Max Respose Time (sec)    : 5         
+
+	VLAN 1:
+	-------------------------------------+-----------
+	Elected querier is                  : 0.0.0.0   
+	-------------------------------------+-----------
+	Admin State                         : Disabled  
+	Admin Version                       : 2         
+	Operational State                   : Non-Querier
+	Querier Configure Address           : N/A       
+	Querier Operational Address         : 0.0.0.0   
+	Last Member Query Count             : 2         
+	Last Member Query Interval (msec)   : 1000      
+	Max Query Response Time (sec)       : 10        
+	Query Interval (sec)                : 125       
+	Querier Timeout (sec)               : 255       
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ip igmp snooping mrouter" help="Mrouter">
+		<PARAM name="vlan" help="VLAN information" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="show_vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+		</PARAM>
+
+		<ACTION>cdbctl show/cdb/l2/show_igsp/mrouter/${show_vlan_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping mrouter configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping mrouter configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping mrouter configurations:
+	Switch# show ip igmp snooping mrouter
+	VLAN     Interface        Mode     Uptime          Expires-time   
+	--------+----------------+--------+---------------+---------------
+	1        eth-0-9          dynamic  00:04:38        243            
+	1        eth-0-2          static   -               -                   
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+mrouter interface
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show ip igmp snooping groups" help="Groups">
+		<PARAM name="vlan" help="VLAN information" optional="true" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="show_vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+		</PARAM>
+
+		<ACTION>cdbctl show/cdb/l2/show_igsp/groups/${show_vlan_id}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping groups.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping groups, includes static and dynamic.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping groups inforamtion:
+	Switch# show ip igmp snooping groups
+	VLAN     Interface      Group-Address    Uptime         Expires-time  
+	--------+--------------+----------------+--------------+--------------
+	2        eth-0-1        224.2.3.4        00:00:04       stopped              
+	2        eth-0-2        230.1.1.1        00:00:03       00:04:17   
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping groups count
+static-group
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="show ip igmp snooping groups count" help="Groups count">
+		<ACTION>cdbctl show/cdb/l2/show_igsp/groups/count</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display IGMP snooping groups count.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display IGMP snooping groups count.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display IGMP snooping groups count inforamtion:
+	Switch# show ip igmp snooping groups count 
+	Dynamic Multicast Groups Count : 0
+	Static Multicast Groups Count  : 0 (Active : 0)
+	Total Multicast Groups Count   : 0 (Active : 0)   
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping groups
+static-group
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="clear ip igmp" help="IGMP"/>
+	<COMMAND name="clear ip igmp snooping" help="IGMP Snooping"/>
+	<COMMAND name="clear ip igmp snooping group" help="Dynamic group">
+		<PARAM name="group_id" help="Dynamic group address" optional="true" ptype="IP_ADDR" default="all"/>
+		<PARAM name="vlan" help="VLAN information" optional="true" ptype="SUBCOMMAND" mode="subcommand" default="none">
+			<PARAM name="vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/l2/clear_igsp/groups/${group_id}/${vlan_id}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to clear IGMP snooping dynamic groups.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear IGMP snooping all dynamic groups, or dynamic groups of specific VLAN and/or address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear all IGMP snooping dynamic groups:
+	Switch# clear ip igmp snooping group
+
+    This example shows how to clear IGMP snooping dynamic groups of VLAN 2:
+	Switch# clear ip igmp snooping group vlan 2
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping groups
+		</CTCRCMD>
+
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+	<COMMAND name="ip igmp" help="IGMP"/>
+	<COMMAND name="no ip igmp" help="IGMP"/>
+
+	<COMMAND name="ip igmp snooping" help="IGMP Snooping">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/enable/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable global IGMP snooping.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable global IGMP snooping. By default, IGMP snooping should be enabled.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable global IGMP snooping:                  
+	Switch(config)# ip igmp snooping 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping" help="IGMP Snooping">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/enable/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable global IGMP snooping.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable global IGMP snooping.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable global IGMP snooping:
+	Switch(config)# no ip igmp snooping 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping version" help="IGMP version">
+		<PARAM name="version" help="IGMP version (Default: 2)" ptype="IGMP_VERSION"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/version/${version}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping version. The parameter range is [1, 3].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping version.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping version:
+	Switch(config)# ip igmp snooping version 3
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping version" help="IGMP version">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/version/2</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping version to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping version to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping version to default value:
+	Switch(config)# no ip igmp snooping version
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping fast-leave" help="Fast leave">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/fast_leave/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable global IGMP snooping fast-leave.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable global IGMP snooping fast-leave.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable global IGMP snooping fast-leave:
+	Switch(config)# ip igmp snooping fast-leave
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping fast-leave" help="IGMP Snooping">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/fast_leave/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable global IGMP snooping fast-leave.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable global IGMP snooping fast-leave.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable global IGMP snooping fast-leave:
+	Switch(config)# no ip igmp snooping fast-leave
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping last-member-query-count" help="Last Member Query Count">
+		<PARAM name="count" help="Last Member Query Count (Default: 2)" ptype="IGMP_LMQC"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/lmqc/${count}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping last member query count. The parameter range is [2, 7].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping last member query count.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping last-member-query-count:
+	Switch(config)# ip igmp snooping last-member-query-count 3
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping last-member-query-count" help="Last Member Query Count">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/lmqc/2</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping last member query count to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping last member query count to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear global IGMP snooping last-member-query-count:
+	Switch(config)# no ip igmp snooping last-member-query-count
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping last-member-query-interval" help="Last Member Query Interval">
+		<PARAM name="interval" help="Last Member Query Interval (Default: 1000 ms)" ptype="IGMP_LMQI"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/lmqi/${interval}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping last member query interval. The parameter range is [1000, 25500] milliseconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping last member query interval.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping last member query interval:
+	Switch(config)# ip igmp snooping last-member-query-interval 2000
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping last-member-query-interval" help="Last Member Query Interval">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/lmqi/1000</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping last member query interval to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping last member query interval to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping last member query interval to default value:
+	Switch(config)# no ip igmp snooping last-member-query-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping robustness-variable" help="Robustness Variable">
+		<PARAM name="value" help="Robustness Variable value (Default: 2)" ptype="IGMP_ROBUST_VAR"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/robustness_var/${value}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping robustness variable. The parameter range is [2, 7].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping robustness variable.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping robustness variable:
+	Switch(config)# ip igmp snooping robustness-variable 4
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping robustness-variable" help="Robustness Variable">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/robustness_var/2</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping robustness variable to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping robustness variable to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping robustness variable:
+	Switch(config)# no ip igmp snooping robustness-variable
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping discard-unknown" help="Discard unknown multicast traffic">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/discard_unknown/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable global IGMP snooping discard unknown multicast traffic.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable global IGMP snooping discard unknown multicast traffic.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable global IGMP snooping discard unknown multicast traffic:
+	Switch(config)# ip igmp snooping discard-unknown
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping discard-unknown" help="Discard unknown multicast traffic">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/discard_unknown/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable global IGMP snooping discard unknown multicast traffic.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable global IGMP snooping discard unknown multicast traffic.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable global IGMP snooping discard unknown multicast traffic:
+	Switch(config)# no ip igmp snooping discard-unknown
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping report-suppression" help="Report Suppression">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/report_suppress/1</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable global IGMP snooping report suppression.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable global IGMP snooping report suppression.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable global IGMP snooping report suppression:
+	Switch(config)# ip igmp snooping report-suppression
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping report-suppression" help="Report Suppression">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/report_suppress/0</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable global IGMP snooping report suppression.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable global IGMP snooping report suppression.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable global IGMP snooping report suppression:
+	Switch(config)# no ip igmp snooping report-suppression
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping querier" help="IGMP querier"/>
+	<COMMAND name="no ip igmp snooping querier" help="IGMP querier"/>
+
+	<COMMAND name="ip igmp snooping querier query-interval" help="Query Interval">
+		<PARAM name="interval" help="Query Interval value (Default: 125 s)" ptype="IGMP_QUERY_INTERVAL"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/query_interval/${interval}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping querier query-interval. The parameter range is [2, 18000] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping querier query-interval.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+125
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping querier query-interval:
+	Switch(config)# ip igmp snooping querier query-interval 1000
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping querier query-interval" help="Query Interval">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/query_interval/125</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping querier query-interval to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping querier query-interval to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+125
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping querier query-interval to default value:
+	Switch(config)# no ip igmp snooping querier query-interval
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping querier max-response-time" help="Maximum response time">
+		<PARAM name="interval" help="Querier timeout value (Default: 10 s)" ptype="IGMP_QUERY_RESP"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/querier_max_response_time/${interval}</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping querier max response time. The parameter range is [1, 25] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping querier max response time.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping querier max response time:
+	Switch(config)# ip igmp snooping querier max-response-time 5
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping querier max-response-time" help="Maximum response time">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/querier_max_response_time/10</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to configure global IGMP snooping querier max response time to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure global IGMP snooping querier max response time to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure global IGMP snooping querier max response time to default value:
+	Switch(config)# no ip igmp snooping querier max-response-time
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping global" help="Global"/>
+	<COMMAND name="no ip igmp snooping global" help="Global"/>
+
+	<COMMAND name="ip igmp snooping global source-address" help="Source IP address">
+		<PARAM name="address" help="IP address" ptype="IP_ADDR"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/global_src/${address}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping global source-address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping global source-address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.0.0.0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping global source-address:
+	Switch(config)# ip igmp snooping global source-address 10.10.10.1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping global source-address" help="Source IP address">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/global_src</ACTION>
+		<CTCDESCRIPTION>
+Use this command to clear IGMP snooping global source-address.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to clear IGMP snooping global source-address.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.0.0.0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear IGMP snooping global source-address:
+	Switch(config)# no ip igmp snooping global source-address
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping max-member-num" help="Total Max Member Number">
+		<PARAM name="number" help="Max Allowed Member Number (Default: 2048)" ptype="IGMP_MEM_NUM"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/max_member_number/${number}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping global max member number. The parameter range is [1, 2048].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping global max member number.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2048
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping max member number:
+	Switch(config)# ip igmp snooping max-member-num 1024
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping max-member-num" help="Total Max Member Number">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/max_member_number/2048</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping global max member number to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping global max member number to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2048
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping max member number to default value:
+	Switch(config)# no ip igmp snooping max-member-num
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping querier tcn" help="IGMP snooping querier TCN related parameters"/>
+	<COMMAND name="no ip igmp snooping querier tcn" help="IGMP snooping querier TCN related parameters"/>
+
+	<COMMAND name="ip igmp snooping querier tcn enable" help="Enable">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_enable/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable IGMP snooping querier TCN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable IGMP snooping querier TCN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable IGMP snooping querier TCN:
+	Switch(config)# ip igmp snooping querier tcn enable
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping querier tcn enable" help="Enable">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_enable/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable IGMP snooping querier TCN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable IGMP snooping querier TCN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable IGMP snooping querier TCN:
+	Switch(config)# no ip igmp snooping querier tcn enable
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping querier tcn query-count" help="TCN query count">
+		<PARAM name="count" help="TCN query count value (Default: 2)" ptype="IGMP_TCN_COUNT"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_query_count/${count}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier TCN query count. The parameter range is [1, 10].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier TCN query count.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier TCN query count:
+	Switch(config)# ip igmp snooping querier tcn query-count 5
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping querier tcn query-count" help="TCN query count">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_query_count/2</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier TCN query count to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier TCN query count to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier TCN query count to default value:
+	Switch(config)# no ip igmp snooping querier tcn query-count
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping querier tcn query-interval" help="TCN query interval">
+		<PARAM name="interval" help="TCN query interval value (Default: 10s)" ptype="IGMP_TCN_INTERVAL"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_query_interval/${interval}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier TCN query interval. The parameter range is [1, 255] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier TCN query interval.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier TCN query interval:
+	Switch(config)# ip igmp snooping querier tcn query-interval 5
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping querier tcn query-interval" help="TCN query interval">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_query_interval/10</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier TCN query interval to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier TCN query interval to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier TCN query interval to default value:
+	Switch(config)# no ip igmp snooping querier tcn query-interval
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping querier tcn query-max-response-time" help="TCN query max response time">
+		<PARAM name="time" help="TCN query max response time value (Default: 5)" ptype="IGMP_TCN_RESP"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_query_max_response_time/${time}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier TCN max response time. The parameter range is [1, 10] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier TCN max response time.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier TCN max response time:
+	Switch(config)# ip igmp snooping querier tcn query-max-response-time 4
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no ip igmp snooping querier tcn query-max-response-time" help="TCN query max response time">
+		<ACTION>cdbctl update/cdb/l2/igsp_global/tcn_query_max_response_time/5</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier TCN max response time to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier TCN max response time to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+5
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier TCN max response time to default value:
+	Switch(config)# no ip igmp snooping querier tcn query-max-response-time
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ip igmp snooping vlan" help="VLAN" view="configure-igsp-view" viewid="vlan_id=${vlan_id}">
+		<PARAM name="vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+
+		<ACTION>cdbctl read/cdb/l2/igsp_intf/${vlan_id}/check_exist</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enter IGMP snooping VLAN view.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enter IGMP snooping VLAN view.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enter IGMP snooping VLAN view:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-igsp-view"
+	prompt="${SYSTEM_NAME}(config-igmp-snooping-${vlan_id})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from IGMP snooping mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from IGMP snooping mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+
+	<COMMAND name="enable" help="Enable">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/enable/${vlan_id}/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable IGMP snooping on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable IGMP snooping on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable IGMP snooping on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# enable
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+	show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no enable" help="Enable">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/enable/${vlan_id}/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable IGMP snooping on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable IGMP snooping on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable IGMP snooping on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no enable
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="version" help="IGMP version">
+		<PARAM name="version" help="IGMP version (Default: 2)" ptype="IGMP_VERSION"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/version/${vlan_id}/${version}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping version on specific VLAN. The parameter range is [1, 3].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping version on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping version on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# version 3
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no version" help="IGMP version">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/version/${vlan_id}/2</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping version on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping version on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping version on specific VLAN 2 to default value:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no version
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="fast-leave" help="Fast leave">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/fast_leave/${vlan_id}/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable IGMP snooping fast leave on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable IGMP snooping fast leave on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable IGMP snooping fast leave on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# fast-leave
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+	show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no fast-leave" help="Fast leave">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/fast_leave/${vlan_id}/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable IGMP snooping fast leave on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable IGMP snooping fast leave on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable IGMP snooping fast leave on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no fast-leave
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="last-member-query-count" help="Last Member Query Count">
+		<PARAM name="count" help="Last Member Query Count value (Default: 2)" ptype="IGMP_LMQC"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/lmqc/${vlan_id}/${count}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping last member query count on specific VLAN. The parameter range is [2, 7].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping last member query count on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping last member query count on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# last-member-query-count 3
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no last-member-query-count" help="Last Member Query Count">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/lmqc/${vlan_id}/2</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping last member query count on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping last member query count on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping last member query count on specific VLAN 2 to default value:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no last-member-query-count
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="last-member-query-interval" help="Last Member Query Interval">
+		<PARAM name="interval" help="Last Member Query Interval value (Default: 1000 ms)" ptype="IGMP_LMQI"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/lmqi/${vlan_id}/${interval}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping last member query interval on specific VLAN. The parameter range is [1000, 25500] milliseconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping last member query interval on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping last member query interval on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# last-member-query-interval 2000
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no last-member-query-interval" help="Last Member Query Interval">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/lmqi/${vlan_id}/1000</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping last member query interval on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping last member query interval on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+1000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping last member query interval on specific VLAN 2 to default value:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no last-member-query-interval
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="robustness-variable" help="Robustness Variable">
+		<PARAM name="value" help="Robustness Variable value (Default: 2)" ptype="IGMP_ROBUST_VAR"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/robustness_var/${vlan_id}/${value}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping robustness variable on specific VLAN. The parameter range is [2, 7].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping robustness variable on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping robustness variable on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# robustness-variable 3
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no robustness-variable" help="Robustness Variable">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/robustness_var/${vlan_id}/2</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping robustness variable on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping robustness variable on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping robustness variable on specific VLAN 2 to default value:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no robustness-variable
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="discard-unknown" help="Discard unknown multicast traffic">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/discard_unknown/${vlan_id}/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable IGMP snooping discard unknown on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable IGMP snooping discard unknown on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable IGMP snooping discard unknown on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# discard-unknown
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no discard-unknown" help="Discard unknown multicast traffic">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/discard_unknown/${vlan_id}/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable IGMP snooping discard unknown on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable IGMP snooping discard unknown on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable IGMP snooping discard unknown on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no discard-unknown
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="report-suppression" help="Report Suppression">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/report_suppress/${vlan_id}/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable IGMP snooping report suppression on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable IGMP snooping report suppression on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable IGMP snooping report suppression on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# report-suppression
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no report-suppression" help="Report Suppression">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/report_suppress/${vlan_id}/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable IGMP snooping report suppression on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable IGMP snooping report suppression on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable IGMP snooping report suppression on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no report-suppression
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="max-member-num" help="Max Member Number">
+		<PARAM name="number" help="Max Allowed Member Number on this vlan (Default: 2048)" ptype="IGMP_MEM_NUM"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/max_member_number/${vlan_id}/${number}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping max member number on specific VLAN. The parameter range is [1, 2048].
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping max member number on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2048
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping max member number on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# max-member-num 10
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no max-member-num" help="Max Member Number">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/max_member_number/${vlan_id}/2048</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping max member number on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping max member number on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+2048
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping max member number on specific VLAN 2 to default value:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no max-member-num
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping vlan
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="querier" help="Enable IGMP querier">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/querier_enable/${vlan_id}/1</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable IGMP snooping querier on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to enable IGMP snooping querier on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable IGMP snooping querier on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# querier
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no querier" help="Enable IGMP querier">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/querier_enable/${vlan_id}/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable IGMP snooping querier on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to disable IGMP snooping querier on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable IGMP snooping querier on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no querier
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="querier query-interval" help="Query Interval">
+		<PARAM name="interval" help="Query Interval value (Default: 125s)" ptype="IGMP_QUERY_INTERVAL"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/query_interval/${vlan_id}/${interval}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier query-interval on specific VLAN. The parameter range is [2, 18000] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier query-interval on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+125
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier query-interval on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# querier query-interval 10
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no querier query-interval" help="Query Interval">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/query_interval/${vlan_id}/125</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier query-interval on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier query-interval on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+125
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier query-interval on specific VLAN 2 to default value:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no querier query-interval
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="querier timeout" help="Other querier timeout">
+		<PARAM name="interval" help="Querier timeout value (Default: 255s)" ptype="IGMP_QUERY_TIMEOUT"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/admin_other_query_interval/${vlan_id}/${interval}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier timeout on specific VLAN. The parameter range is [60, 300] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier timeout on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier timeout on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# querier timeout 100
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no querier timeout" help="Other querier timeout">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/admin_other_query_interval/${vlan_id}/0</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier timeout on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier timeout on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier timeout on specific VLAN 2 to default value:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no querier timeout
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="querier max-response-time" help="Maximum response time">
+		<PARAM name="interval" help="Query Reponse Time (Default: 10s)" ptype="IGMP_QUERY_RESP"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/querier_max_response_time/${vlan_id}/${interval}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier max response time on specific VLAN. The parameter range is [1, 25] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier max response time on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier max response time on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# querier max-response-time 5
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no querier max-response-time" help="Maximum response time">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/querier_max_response_time/${vlan_id}/10</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier max response time on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier max response time on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier max response time on specific VLAN 2 to default value:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no querier max-response-time
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="querier address" help="Address">
+		<PARAM name="address" help="Address value" ptype="IP_ADDR"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/querier_config_address/${vlan_id}/${address}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping querier address on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping querier address on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure IGMP snooping querier address on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# querier address 12.1.1.1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no querier address" help="Address">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/querier_config_address/${vlan_id}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete IGMP snooping querier address on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete IGMP snooping querier address on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete IGMP snooping querier address on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no querier address
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="static-group" help="Static Group to be Joined">
+		<PARAM name="address" help="Multicast Address to be Joined" ptype="IP_ADDR"/>
+		<PARAM name="interface" help="Interface" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_EA"/>
+
+		<ACTION>cdbctl create/cdb/l2/igsp_group/${vlan_id}/${address}/${ifname}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to add IGMP snooping static group entry on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to add IGMP snooping static group entry on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add IGMP snooping static group entry on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# static-group 224.10.10.1 interface eth-0-1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping groups
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no static-group" help="Static Group to be Joined">
+		<PARAM name="address" help="Multicast Address to be Joined" ptype="IP_ADDR"/>
+		<PARAM name="interface" help="Interface" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_EA"/>
+
+		<ACTION>cdbctl delete/cdb/l2/igsp_group/${vlan_id}/${address}/${ifname}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete IGMP snooping static group entry on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete IGMP snooping static group entry on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete IGMP snooping static group entry on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no static-group 224.10.10.1 interface eth-0-1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping groups
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="mrouter-aging-interval" help="Mrouter aging interval">
+		<PARAM name="interval" help="Mrouter aging interval value (Default: 255s)" ptype="IGMP_MR_AGING_TIME"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/mrouter_aging_interval/${vlan_id}/${interval}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping mrouter aging interval on specific VLAN. The parameter range is [1, 65535] seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping mrouter aging interval on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure mrouter aging interval on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# mrouter-aging-interval 100
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no mrouter-aging-interval" help="Mrouter aging interval">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/mrouter_aging_interval/${vlan_id}/255</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure IGMP snooping mrouter aging interval on specific VLAN to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to configure IGMP snooping mrouter aging interval on specific VLAN to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+255
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure mrouter aging interval on specific VLAN 2 to default value:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no mrouter-aging-interval
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping querier
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="mrouter" help="Mrouter"/>
+	<COMMAND name="no mrouter" help="Mrouter"/>
+
+	<COMMAND name="mrouter interface" help="Mrouter interface">
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_EA"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/mrouter_list/${vlan_id}/add/${ifname}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to add IGMP snooping static mrouter interface on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to add IGMP snooping static mrouter interface on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add IGMP snooping static mrouter interface on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# mrouter interface eth-0-1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping mrouter
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no mrouter interface" help="Mrouter interface">
+		<PARAM name="ifname" help="Interface name" ptype="IF_NAME_EA"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/mrouter_list/${vlan_id}/del/${ifname}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete IGMP snooping static mrouter interface on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete IGMP snooping static mrouter interface on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete IGMP snooping static mrouter interface on specific VLAN 2:  
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no mrouter interface eth-0-1
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping mrouter
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="access-group" help="IGMP Snooping group access group">
+	    <PARAM name="name" help="IP Named Standard Access list" ptype="NAME_STRING"/>
+
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/acl_name/${vlan_id}/${name}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to add or overwrite IGMP snooping access list group on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to add or overwrite IGMP snooping access list group on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add or overwrite IGMP snooping access list group on specific VLAN 2:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# access-group abc
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+	<COMMAND name="no access-group" help="IGMP Snooping group access group">
+		<ACTION>cdbctl update/cdb/l2/igsp_intf/acl_name/${vlan_id}</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete IGMP snooping access list group on specific VLAN.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete IGMP snooping access list group on specific VLAN.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete IGMP snooping access list group on specific VLAN 2:
+	Switch(config)# ip igmp snooping vlan 2
+	Switch(config-igmp-snooping-2)# no access-group
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ip igmp snooping
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

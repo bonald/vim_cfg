@@ -1,0 +1,19 @@
+all_targets = common vxworks
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+common: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/sal/src/common -f Makefile.vx
+
+clean_common: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/sal/src/common -f Makefile.vx clean
+
+vxworks: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/sal/src/vxworks -f Makefile.vx
+
+clean_vxworks: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/sal/src/vxworks -f Makefile.vx clean
+
+.PHONY: FORCE
+FORCE:

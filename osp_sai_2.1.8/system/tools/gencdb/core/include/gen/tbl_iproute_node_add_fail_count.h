@@ -1,0 +1,63 @@
+
+#ifndef __TBL_IPROUTE_NODE_ADD_FAIL_COUNT_H__
+#define __TBL_IPROUTE_NODE_ADD_FAIL_COUNT_H__
+
+int32
+tbl_iproute_node_add_fail_count_add_iproute_node_add_fail_count_sync(tbl_iproute_node_add_fail_count_t *p_rn, uint32 sync);
+
+int32
+tbl_iproute_node_add_fail_count_del_iproute_node_add_fail_count_sync(tbl_iproute_node_add_fail_count_key_t *p_rn_key, uint32 sync);
+
+int32
+tbl_iproute_node_add_fail_count_set_iproute_node_add_fail_count_field_sync(tbl_iproute_node_add_fail_count_t *p_rn, tbl_iproute_node_add_fail_count_field_id_t field_id, uint32 sync);
+
+int32
+tbl_iproute_node_add_fail_count_add_iproute_node_add_fail_count(tbl_iproute_node_add_fail_count_t *p_rn);
+
+int32
+tbl_iproute_node_add_fail_count_del_iproute_node_add_fail_count(tbl_iproute_node_add_fail_count_key_t *p_rn_key);
+
+int32
+tbl_iproute_node_add_fail_count_set_iproute_node_add_fail_count_field(tbl_iproute_node_add_fail_count_t *p_rn, tbl_iproute_node_add_fail_count_field_id_t field_id);
+
+tbl_iproute_node_add_fail_count_t*
+tbl_iproute_node_add_fail_count_get_iproute_node_add_fail_count(tbl_iproute_node_add_fail_count_key_t *p_rn_key);
+
+char*
+tbl_iproute_node_add_fail_count_key_val2str(tbl_iproute_node_add_fail_count_t *p_rn, char *str, uint32 str_len);
+
+int32
+tbl_iproute_node_add_fail_count_key_str2val(char *str, tbl_iproute_node_add_fail_count_t *p_rn);
+
+int32
+tbl_iproute_node_add_fail_count_dump_one(tbl_iproute_node_add_fail_count_t *p_rn, tbl_iter_args_t *pargs);
+
+char*
+tbl_iproute_node_add_fail_count_key_name_dump(tbl_iproute_node_add_fail_count_t *p_rn, char* str);
+
+char*
+tbl_iproute_node_add_fail_count_key_value_dump(tbl_iproute_node_add_fail_count_t *p_rn, char* str);
+
+char*
+tbl_iproute_node_add_fail_count_field_name_dump(tbl_iproute_node_add_fail_count_t *p_rn, int32 field_id, char* str);
+
+char*
+tbl_iproute_node_add_fail_count_field_value_dump(tbl_iproute_node_add_fail_count_t *p_rn, int32 field_id, char* str);
+
+char**
+tbl_iproute_node_add_fail_count_table_dump(tbl_iproute_node_add_fail_count_t *p_rn, char** str);
+
+int32
+tbl_iproute_node_add_fail_count_table_parser(char** array, char* key_value, tbl_iproute_node_add_fail_count_t *p_rn);
+
+int32
+tbl_iproute_node_add_fail_count_iterate(TBL_ITER_CB_FUNC fn, tbl_iter_args_t *pargs);
+
+tbl_iproute_node_add_fail_count_master_t*
+tbl_iproute_node_add_fail_count_get_master();
+
+tbl_iproute_node_add_fail_count_master_t*
+tbl_iproute_node_add_fail_count_init_iproute_node_add_fail_count();
+
+#endif /* !__TBL_IPROUTE_NODE_ADD_FAIL_COUNT_H__ */
+

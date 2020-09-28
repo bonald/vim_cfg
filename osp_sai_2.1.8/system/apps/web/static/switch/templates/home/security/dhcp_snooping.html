@@ -1,0 +1,396 @@
+
+<!-- global swith -->
+<div class="row">
+<div class="col-md-6">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'enable dhcp snooping'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state="enable_dhcp_snooping" switch-on-change="changeEnableState()" ></btn-switch>
+                </div>
+            </dd> 
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'enable service dhcp'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state="enable_dhcp_service" switch-on-change="changeserviceState()" ></btn-switch>
+                </div>
+            </dd>              
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'verify mac-address'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state=enable_verify_mac switch-on-change="changeVerifyState()" ></btn-switch>
+                </div>
+            </dd>           
+   
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'allow-untrusted'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state=allow_untrusted switch-on-change="changeUntrustedState()" ></btn-switch>
+                </div>
+            </dd>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'snooping information option'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state=information_option switch-on-change="changeInformationOptionState()" ></btn-switch>
+                </div>
+            </dd>               
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'database save'  | translate }}</div>
+<!--                
+                <div class="col-md-3">
+                    <btn-switch switch-state=SaveState switch-on-change="changeSaveState()" ></btn-switch>
+                </div>
+-->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-submit" ng-click="changeSaveState()" >{{ 'Submit' | translate }}</button>
+                </div>                   
+            </dd>
+            <dd class="row col-md-2" style="margin-top: 10px;">
+                <button class="btn btn-primary" ng-click="clear()">{{ 'Clear Dhcp Snooping Statistics' | translate }}</button>
+            </dd>
+            
+        </dl>
+    </div>
+</div>
+</div>
+
+<div class="col-md-6">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+      <table class="table table-hover">
+        <thead>
+
+        </thead>
+        <tbody>
+
+          <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplayAutoSave" ng-change="chooseAutoSave()"/></th>
+            <th>{{'database auto-save interval' | translate}}</th>     
+          </tr>    
+    
+          <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplayRemoteId" ng-change="chooseRemoteId()"/></th>
+            <th>{{'information option format remote-id' | translate}}</th>
+          </tr> 
+         <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplaySnoopVlan" ng-change="chooseSnoopVlan()"/></th>
+            <th>{{'dhcp snooping vlan' | translate}}</th>
+          </tr>       
+          <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplaySnoopDB" ng-change="chooseSnoopDB()"/></th>
+            <th>{{'load dhcp snooping database' | translate}}</th>
+          </tr>      
+          <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplaySnoopTrust" ng-change="chooseSnoopTrust()"/></th>
+            <th>{{'snooping trust port' | translate}}</th>
+          </tr> 
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- global conf -->
+<!--
+<div class="row">
+-->
+
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- buttons -->
+        <div class="form-inline">
+            <!-- add -->
+            <button type="button" class="btn btn-default" ng-click="addFdbFlag = true" ng-hide="addFdbFlag" ng-disabled="initLoading">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+            </button>
+            <button type="button" class="btn btn-default" ng-click="addFdbFlag = false" ng-show="addFdbFlag">
+                <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+            </button>
+			
+			<!-- flush -->
+<!--      
+            <button type="button" class="btn btn-default" ng-click="load()">{{ 'Update' | translate }}</button>
+-->            
+			<!-- delete all -->
+            <button type="button" class="btn btn-default" ng-click="deleteAll()" ng-show="bind_entry.length > 0"> {{ 'Delete All' | translate }}</button>
+            
+            <!-- delete -->
+            <button type="button" class="btn btn-default" ng-click="deleteMulti()" ng-show="isDeleteEnable()">{{ 'Delete' | translate }}</button>
+			
+        </div>
+
+        <!-- add form -->
+        <form class="form-inline" style="margin-top: 15px;" name="addFdbForm" ng-show="addFdbFlag" novalidate>
+            <!-- mac address -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.macAddr.$valid]">
+                <label>{{ 'MAC address' | translate }}</label>
+                <input type="text" class="form-control" name="macAddr" ng-model="newFdb.macAddr" size="39" placeholder="MAC address in HHHH.HHHH.HHHH format" ng-pattern="/^([\da-fA-F]{1,4}\.){2}[\da-fA-F]{1,4}$/" required />
+            </div>
+
+            <!-- vlan -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.vlan.$valid]">
+                <label>VLAN</label>
+                <input type="number" class="form-control" name="vlan" ng-model="newFdb.vlan" placeholder="VLAN number (1..4094)" ng-min="1" ng-max="4094" required />
+            </div>
+
+            <!-- IP Address -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.ip.$valid]">
+                <label>IP Address</label>
+                <input type="text" class="form-control" name="ip" ng-model="newFdb.ip" placeholder="IPv4 address" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" style="width:110px" required />
+            </div>
+            
+            <!-- port -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.port.$valid]">
+                <label>{{ 'Port' | translate }}</label>
+                <select class="form-control" name="port" ng-model="newFdb.port" ng-options="value | switchPort for (key, value) in portIndexObj" required></select>
+            </div>
+
+            <!-- Expiry -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFdbForm.expiry.$valid]">
+                <label>{{ 'Expiry' | translate }}</label>
+                 <input type="number" class="form-control" name="expiry" ng-model="newFdb.expiry"  placeholder="Expiry second(s)(0 for static entry)(0..86400)"  ng-min="0" ng-max="86400" style="width:330px" required />
+            </div>
+
+            <!-- submit -->
+            <button class="btn btn-primary" ng-disabled="addFdbForm.$invalid || loading" ng-click="addNewFdb()">OK</button>
+        </form>
+    </div>
+</div>
+
+<!-- display detail #1 snooping binding -->
+
+<div class="row">
+<!--
+<div ng-class="{true: 'col-md-12', false: 'col-md-1'}[enable_dhcp_snooping]" ng-if="enable_dhcp_snooping==true" >
+-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'binding entry' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+
+        <!-- channel group table -->
+        <table class="table table-hover" ng-hide="addChannelGroupShow">
+            <thead>
+                <tr>
+                    <th class="text-center"><input class="checkbox" type="checkbox" ng-model="SELCTLALL" ng-change="chooseAll()" /></th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ 'VLAN' | translate }}</th>
+                    <th class="text-center">{{ 'MAC' | translate }}</th>
+                    <th class="text-center">{{ 'Interface' | translate }}</th>
+                    <th class="text-center">{{ 'Lease(s)' | translate }}</th>
+                    <th class="text-center">{{ 'IP Address' | translate }}</th>
+                    <th class="text-center">{{ 'Type' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entry in bind_entry | limitTo:pgItemNumEachPage:(pgCurrent - 1) * pgItemNumEachPage">
+                    <td class="text-center"><input class="checkbox" type="checkbox" ng-model="entry.box" ng-change="choose()" /></td>
+                    <td class="text-center">{{ $index }}</td>
+                    <td class="text-center"><a href="javascript:;" ng-click="modifyChannelGroup(entry.lag_name, entry.member_ports)">{{ entry.vlan }}</a></td>
+                    <td class="text-center">{{ entry.mac }}</td>
+                    <td class="text-center">{{ entry.Interface |switchPort}}</td>
+                    <td class="text-center">{{ entry.Lease }}</td>
+                    <td class="text-center">{{ entry.ip }}</td>
+                    <td class="text-center">{{ entry.type }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <!-- channel group table end -->
+        <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+        <p class="text-center"><b ng-show="bind_entry.length == 0">N/A</b></p>
+    </div>
+    <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+        <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+    </div>
+</div>
+<!--
+</div>
+-->
+</div>
+
+<!-- display detail #2 statistics-->
+<div class="row">
+<!--
+<div ng-class="{true: 'col-md-12', false: 'col-md-1'}[enable_dhcp_snooping]" ng-if="enable_dhcp_snooping==true" >
+-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'snooping statistics' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+
+        <dl ng-repeat="stats in statistics">
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'DHCP packets'  | translate }}</div>
+                <div class="col-md-3">{{ stats.dhcp }}                </div>
+            </dd> 
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'BOOTP packets'  | translate }}</div>
+                <div class="col-md-3">{{ stats.bootp }}                </div>
+            </dd>    
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Packets forwarded '  | translate }}</div>
+                <div class="col-md-3">{{ stats.forwarded }}                </div>
+            </dd>           
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Packets invalid'  | translate }}</div>
+                <div class="col-md-3">{{ stats.invalid }}                </div>
+            </dd>      
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Packets MAC address verify failed '  | translate }}</div>
+                <div class="col-md-3">{{ stats.MAC }}                </div>
+            </dd>         
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-3">{{ 'Packets dropped '  | translate }}</div>
+                <div class="col-md-3">{{ stats.dropped }}                </div>
+            </dd>                
+        </dl>
+        
+        <!-- add channel group end -->
+
+    </div>
+</div>
+<!--
+</div>
+-->
+</div>
+
+
+<div class="row">
+<div ng-class="{true: 'col-md-12', false: 'col-md-1'}[DisplayAutoSave]" ng-if="DisplayAutoSave==true">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'database auto-save interval' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <form name="dhcpAutoSaveIntervalForm" novalidate>  
+                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[dhcpAutoSaveIntervalForm.interval.$valid]">
+                    <p><input type="number" name="interval" ng-model="interval.value" id="interval" placeholder="15~1200" class="form-control" min="15" max="1200" /></p>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default" ng-click="modifySaveInterval()" ng-disabled="dhcpAutoSaveIntervalForm.$valid==false">{{'Submit'|translate}}</button>
+                </div>
+            </form>  
+        </div>        
+     </div>   
+</div>
+</div>
+
+<!-- format remote-id -->
+<div class="row">
+<div ng-class="{true: 'col-md-12', false: 'col-md-1'}[DisplayRemoteId]" ng-if="DisplayRemoteId==true" ng-init="remote_id.value = """>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'information option format remote-id' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+        <form name="remoteIDForm" novalidate>
+          <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[remoteIDForm.remoteID.$valid]">
+              <p><input type="text" name="remoteID" ng-model="remote_id.value" id="remote_id" ng-maxlength="63" placeholder="User defined string for remote id string（Less than 63 characters）" class="form-control"  ng-pattern="/^([a-zA-Z0-9\._\-]){1,63}$/" required></p>
+           </div>
+
+          <div class="form-group">
+                  <button type="submit" class="btn btn-default" ng-click="modifyRemoteId()" ng-disabled="remoteIDForm.remoteID.$invalid" >{{'Submit'|translate}}</button>
+          </div>
+        </form>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- snooping vlan -->
+<div class="row">
+<div ng-class="{true: 'col-md-12', false: 'col-md-1'}[DisplaySnoopVlan]" ng-if="DisplaySnoopVlan==true" ng-init="remote_id.value = ''">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'dhcp snooping vlan' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+        <form name="dhcpSnoopingVlanForm" novalidate>
+          <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[dhcpSnoopingVlanForm.SnoopVlan.$valid]">
+              <p><input type="number" class="form-control" name="SnoopVlan" ng-model="snoop_vlan.value" ng-min="1" ng-max="4094" placeholder="vlan id(1~4094)"  required></p>
+          </div>
+        
+          <div class="form-group">
+                  
+            <button class="btn btn-primary" ng-click="addSnoopVlan()" ng-disabled="dhcpSnoopingVlanForm.$valid==false">{{ 'Enable' | translate }}</button>
+            <button class="btn btn-primary" ng-click="delSnoopVlan()" ng-disabled="dhcpSnoopingVlanForm.$valid==false">{{ 'Disable' | translate }}</button>                      
+          </div>
+        </form>
+		
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- load dhcp snooping database -->
+<div class="row">
+<div ng-class="{true: 'col-md-12', false: 'col-md-1'}[DisplaySnoopDB]" ng-if="DisplaySnoopDB==true" ng-init="snoop_db.value = ''">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'load dhcp snooping database' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+         <form name="dhcpSnoopingDBForm" novalidate>       
+          <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[dhcpSnoopingDBForm.SnoopDB.$valid]">
+              <p><input type="text" class="form-control" name="SnoopDB"  ng-model="snoop_db.value" ng-maxlength="48" placeholder="database file name" ng-pattern="/^[\da-zA-Z\._][\da-zA-Z\.\-_\(\)\/]{0,47}$/" required></p>
+          </div>
+
+          <div class="form-group">
+              <button type="submit" class="btn btn-default" ng-click="loadDB()">{{'Submit'|translate}}</button>
+          </div>
+        </form>
+        </div>
+	</div>
+</div>
+</div>
+
+<!-- port snooping trust conf -->
+<div class="row">
+<div class="col-md-12" ng-show="DisplaySnoopTrust" >
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'snooping trust port' | translate }}</h3>
+    </div>
+    
+    <div class="panel-body">
+
+        <!-- add trust port -->
+        <form id="addTrustPortForm" name="addTrustPortForm" class="form"  novalidate>
+   
+            <div class="form-group row">
+                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="if in interface">
+                    <input type="CHECKBOX" checked="checked" ng-model="multiSelIf[interface.indexOf(if)]"  />
+                    <label>{{ if.key | switchPort }}</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" ng-click="addTrustPort()" ng-disabled="multiSelIf.indexOf(true) == -1">{{ 'Enable' | translate }}</button>
+            <button class="btn btn-primary" ng-click="delTrustPort()" ng-disabled="multiSelIf.indexOf(true) == -1">{{ 'Disable' | translate }}</button>            
+        </form>
+        <!-- add trust port end -->
+
+    </div>
+</div>
+
+</div>
+</div>

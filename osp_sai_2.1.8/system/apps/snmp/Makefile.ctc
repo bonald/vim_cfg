@@ -1,0 +1,52 @@
+export WARN_NOERROR = y
+
+all_targets = snmplib libmibs libagent snmpd apps
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+snmpd: snmplib libagent FORCE
+	make -C agent -f Makefile.ctc
+
+clean_snmpd: FORCE
+	make -C agent -f Makefile.ctc clean
+ 
+snmplib: FORCE
+	make -C snmplib -f Makefile.ctc
+
+clean_snmplib: FORCE
+	make -C snmplib -f Makefile.ctc clean
+    
+libhelpers: FORCE
+	make -C agent/helpers -f Makefile.ctc
+
+clean_libhelpers: FORCE
+	make -C agent/helpers -f Makefile.ctc clean
+ 
+libmibs: FORCE
+	make -C agent -f Makefile.libnetsnmpmibs.ctc
+
+clean_libmibs: FORCE
+	make -C agent -f Makefile.libnetsnmpmibs.ctc clean
+    
+libagent: snmplib FORCE
+	make -C agent -f Makefile.libnetsnmpagent.ctc
+
+clean_libagent: FORCE
+	make -C agent -f Makefile.libnetsnmpagent.ctc clean
+
+agent: FORCE
+	make -C agent -f Makefile.ctc
+
+clean_agent: FORCE
+	make -C agent -f Makefile.ctc clean
+    
+apps: snmplib libagent FORCE
+	make -C apps -f Makefile.ctc
+
+clean_apps: FORCE
+	make -C apps -f Makefile.ctc clean
+
+.PHONY: FORCE
+FORCE:

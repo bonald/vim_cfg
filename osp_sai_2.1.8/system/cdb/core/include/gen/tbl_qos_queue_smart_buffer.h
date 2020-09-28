@@ -1,0 +1,63 @@
+
+#ifndef __TBL_QOS_QUEUE_SMART_BUFFER_H__
+#define __TBL_QOS_QUEUE_SMART_BUFFER_H__
+
+int32
+tbl_qos_queue_smart_buffer_add_qos_queue_smart_buffer_sync(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, uint32 sync);
+
+int32
+tbl_qos_queue_smart_buffer_del_qos_queue_smart_buffer_sync(tbl_qos_queue_smart_buffer_key_t *p_qos_queue_smart_buffer_key, uint32 sync);
+
+int32
+tbl_qos_queue_smart_buffer_set_qos_queue_smart_buffer_field_sync(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, tbl_qos_queue_smart_buffer_field_id_t field_id, uint32 sync);
+
+int32
+tbl_qos_queue_smart_buffer_add_qos_queue_smart_buffer(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer);
+
+int32
+tbl_qos_queue_smart_buffer_del_qos_queue_smart_buffer(tbl_qos_queue_smart_buffer_key_t *p_qos_queue_smart_buffer_key);
+
+int32
+tbl_qos_queue_smart_buffer_set_qos_queue_smart_buffer_field(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, tbl_qos_queue_smart_buffer_field_id_t field_id);
+
+tbl_qos_queue_smart_buffer_t*
+tbl_qos_queue_smart_buffer_get_qos_queue_smart_buffer(tbl_qos_queue_smart_buffer_key_t *p_qos_queue_smart_buffer_key);
+
+char*
+tbl_qos_queue_smart_buffer_key_val2str(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, char *str, uint32 str_len);
+
+int32
+tbl_qos_queue_smart_buffer_key_str2val(char *str, tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer);
+
+int32
+tbl_qos_queue_smart_buffer_dump_one(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, tbl_iter_args_t *pargs);
+
+char*
+tbl_qos_queue_smart_buffer_key_name_dump(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, char* str);
+
+char*
+tbl_qos_queue_smart_buffer_key_value_dump(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, char* str);
+
+char*
+tbl_qos_queue_smart_buffer_field_name_dump(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, int32 field_id, char* str);
+
+char*
+tbl_qos_queue_smart_buffer_field_value_dump(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, int32 field_id, char* str);
+
+char**
+tbl_qos_queue_smart_buffer_table_dump(tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer, char** str);
+
+int32
+tbl_qos_queue_smart_buffer_table_parser(char** array, char* key_value, tbl_qos_queue_smart_buffer_t *p_qos_queue_smart_buffer);
+
+int32
+tbl_qos_queue_smart_buffer_iterate(TBL_ITER_CB_FUNC fn, tbl_iter_args_t *pargs);
+
+tbl_qos_queue_smart_buffer_master_t*
+tbl_qos_queue_smart_buffer_get_master();
+
+tbl_qos_queue_smart_buffer_master_t*
+tbl_qos_queue_smart_buffer_init_qos_queue_smart_buffer();
+
+#endif /* !__TBL_QOS_QUEUE_SMART_BUFFER_H__ */
+

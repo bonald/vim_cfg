@@ -1,0 +1,178 @@
+#!/bin/sh
+
+######################################################################
+# Copyright (C) 2004-2018 Centec Networks. All rights reserved.
+# OSP cboot init script, which is used to bootstrap the debian 7 system.  
+######################################################################
+
+############################ configurations ############################
+# Global constants
+FLASH="/mnt/flash"
+
+# System bootup configurations
+export CONFIG_ROOTMNT=/fsroot
+export CONFIG_ROOTMNT_LOOP=/.fsroot_ro
+export CONFIG_QUIET=n
+
+# System default vars
+export DEFAULT_DEBIAN_ROOTFS=fsroot.swi
+
+# Running vars
+export RUN_DEBIAN_ROOTFS=
+export RUN_DEBIAN_ROOTFS_RW=
+############################ configurations ############################
+
+############################ function ############################
+_log_msg()
+{
+	if [ "$CONFIG_QUIET" = "y" ]; then return; fi
+	printf "$@"
+}
+
+log_success_msg()
+{
+	_log_msg "Success: $@\n"
+}
+
+log_failure_msg()
+{
+	_log_msg "Failure: $@\n"
+}
+
+log_warning_msg()
+{
+	_log_msg "Warning: $@\n"
+}
+
+log_begin_msg()
+{
+	_log_msg "Begin: $@ ... "
+}
+
+log_end_msg()
+{
+	_log_msg "done.\n"
+}
+
+install_busybox_and_environment()
+{
+    busybox --install -s
+
+    [ -e /dev/null ] || mknod /dev/null c 1 3
+    [ -e /dev/console ] || mknod /dev/console c 5 1
+
+    /usr/sbin/udevd --daemon
+    /usr/sbin/udevstart
+}
+
+loading_ubifs_filesystem()
+{
+    ubiattach /dev/ubi_ctrl -m 5 >/dev/null
+    ubiattach /dev/ubi_ctrl -m 4 >/dev/null
+
+    mount -t ubifs -o sync ubi0:system /mnt/flash
+    [ -d /mnt/flash/boot ] || mkdir /mnt/flash/boot -p
+    mount -t ubifs -r ubi1:boot /mnt/flash/boot
+}
+
+loading_debian_rootfs_with_aufs()
+{
+# Verification rootfs
+
+# Boot from debian squash rootfs
+## 1. setup rootfs directory
+    mkdir -p $CONFIG_ROOTMNT
+
+## 2. setup read-only directory from squash rootfs
+    losetup /dev/loop0 ${RUN_DEBIAN_ROOTFS_PATH}
+    mkdir -p $CONFIG_ROOTMNT_LOOP
+    mount /dev/loop0 $CONFIG_ROOTMNT_LOOP
+
+## 3. setup new mount point using aufs from read-write and read-only directories
+    mkdir -p $CONFIG_ROOTMNT
+    mount -t aufs -o dirs=$RUN_DEBIAN_ROOTFS_RW_PATH:$CONFIG_ROOTMNT_LOOP=ro none $CONFIG_ROOTMNT
+}
+
+repair_mount()
+{
+# fix mnt/flash
+    [ -d ${CONFIG_ROOTMNT}/mnt/flash ] || mkdir ${CONFIG_ROOTMNT}/mnt/flash -p
+    mount -n -o move /mnt/flash ${CONFIG_ROOTMNT}/mnt/flash
+ 
+# fix $CONFIG_ROOTMNT_LOOP
+    [ -d ${CONFIG_ROOTMNT}/${CONFIG_ROOTMNT_LOOP} ] || mkdir ${CONFIG_ROOTMNT}/${CONFIG_ROOTMNT_LOOP} -p
+    mount -n -o move ${CONFIG_ROOTMNT_LOOP} ${CONFIG_ROOTMNT}/${CONFIG_ROOTMNT_LOOP}
+}
+############################ function ############################
+
+echo "Loading, please wait..."
+
+# Default PATH differs between shells, and is not automatically exported
+# by klibc dash.  Make it consistent.
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+PATH=/switch/usr/local/ovs-vswitch/bin:$PATH
+
+# System boot
+[ -d /dev ] || mkdir -m 0755 /dev
+[ -d /root ] || mkdir -m 0700 /root
+[ -d /sys ] || mkdir /sys
+[ -d /proc ] || mkdir /proc
+[ -d /tmp ] || mkdir /tmp
+mount -t sysfs -o nodev,noexec,nosuid sysfs /sys
+mount -t proc -o nodev,noexec,nosuid proc /proc
+
+# Install busybox and environment
+[ "$CONFIG_QUIET" != "y" ] && log_begin_msg "Install busybox and environment"
+install_busybox_and_environment
+[ "$CONFIG_QUIET" != "y" ] && log_end_msg
+
+# Loading ubifs
+[ "$CONFIG_QUIET" != "y" ] && log_begin_msg "Install ubifs filesystem"
+loading_ubifs_filesystem
+[ "$CONFIG_QUIET" != "y" ] && log_end_msg
+
+# Enter cboot shell by user input
+echo "Enter Centec debug shell? (y/n)"
+read -t 5 -n 1 input
+if [[ "$input" == "y" || "$input" == "Y" ]]; then
+    echo -e "\nWelcome to cboot\n"
+    exec /bin/init -z
+fi
+echo " "
+# Set running vars; TODO(choose system rootfs)
+RUN_DEBIAN_ROOTFS=${DEFAULT_DEBIAN_ROOTFS}
+RUN_DEBIAN_ROOTFS_PATH=/mnt/flash/${DEFAULT_DEBIAN_ROOTFS}
+RUN_DEBIAN_ROOTFS_RW_PATH=/mnt/flash/.${DEFAULT_DEBIAN_ROOTFS#/}.rw
+
+# Check file exist
+if [ ! -e ${RUN_DEBIAN_ROOTFS_PATH} ]; then
+    log_warning_msg "DEBIAN rootfs not exist, Welcome to cboot"
+    exec /bin/init -z
+fi
+
+[ -d ${RUN_DEBIAN_ROOTFS_RW_PATH} ] || mkdir ${RUN_DEBIAN_ROOTFS_RW_PATH} -p
+
+# Loading debian rootfs
+[ "$CONFIG_QUIET" != "y" ] && log_begin_msg "Debian ${RUN_DEBIAN_ROOTFS} loading"
+loading_debian_rootfs_with_aufs
+[ "$CONFIG_QUIET" != "y" ] && log_end_msg
+
+# export system environment variables
+ENVIRONMENT_FILE=$CONFIG_ROOTMNT/etc/environment
+if [ -f $ENVIRONMENT_FILE ]; then
+    source $ENVIRONMENT_FILE
+fi
+
+[ "$CONFIG_QUIET" != "y" ] && log_begin_msg "repair mount"
+repair_mount
+[ "$CONFIG_QUIET" != "y" ] && log_end_msg
+
+unset CONFIG_ROOTMNT_LOOP
+unset CONFIG_QUIET
+unset DEFAULT_DEBIAN_ROOTFS
+unset RUN_DEBIAN_ROOTFS
+unset RUN_DEBIAN_ROOTFS_RW
+
+# switch rootfs, runlevel: 2
+exec /sbin/switch_root $CONFIG_ROOTMNT /sbin/init <${CONFIG_ROOTMNT}/dev/console >${CONFIG_ROOTMNT}/dev/console
+echo "[DEBUG]fail......."

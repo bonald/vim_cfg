@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+					 http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+	<COMMAND name="show track" help="Track information">
+		<PARAM name="object_id" optional="true" help="Track object indentifier" ptype="TRACK_OBJECT_ID"/>
+		<ACTION>
+			cdbctl show/cdb/l3/show_track/${object_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the running information of track.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the running information of track.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to show the sflow running information:  
+	DUT1# show track 1  
+	Track 1  
+		Type                : Interface Linkstate  
+		Interface           : eth-0-1  
+		State               : up  
+		Delay up            : 10 seconds  
+		Delay down          : 10 seconds  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="track" help="Enable a track process" view="configure-track-view" viewid="object_id=${object_id}">
+		<PARAM name="object_id" help="Track object indentifier" ptype="TRACK_OBJECT_ID"/>
+		<PARAM name="mode" optional="true" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="interface" help="Interface for this track" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="track_ifname" help="Interface name" ptype="IF_NAME_EAVL">
+					<PARAM name="linkstate" help="Track linkstate" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="ip" help="IP protocol" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="sla" help="IP Service Level Agreement" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="entry_id" help="Entry Number" ptype="IPSLA_ENTRY_ID">
+					<PARAM name="rtr_mode" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+						<PARAM name="reachability" help="Reachability" ptype="SUBCOMMAND" mode="subcommand"/>
+						<PARAM name="state" help="State" ptype="SUBCOMMAND" mode="subcommand"/>
+					</PARAM>
+				</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			if [ "interface" == ${mode} ]; then
+				cdbctl create/cdb/l3/track_object/${object_id}/interface/${track_ifname}
+			elif [ "ip" == ${mode} ]; then
+				if [ "reachability" == ${rtr_mode} ]; then
+					cdbctl create/cdb/l3/track_object/${object_id}/rtr/${entry_id}/reachability
+				else
+					cdbctl create/cdb/l3/track_object/${object_id}/rtr/${entry_id}/state
+				fi
+			else
+				cdbctl create/cdb/l3/track_object/${object_id}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to create a track object.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to create a track object.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to create a track object:  
+	DUT1(config)# track 1 interface eth-0-1 linkstate  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no track
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no track" help="Object tracking configuration commands">
+		<PARAM name="object_id" help="Track object indentifier" ptype="TRACK_OBJECT_ID"/>
+		<ACTION>
+			cdbctl delete/cdb/l3/track_object/${object_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a track object.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to delete a track object.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to delete a track object:  
+	DUT1(config)# no track 1  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+track
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="configure-track-view"
+	prompt="${SYSTEM_NAME}(config-track-${object_id})# "
+	depth="1">
+
+	<NAMESPACE ref="Exec"
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="true"/>
+
+	<COMMAND name="exit"
+		help="Exit from TRACK mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from TRACK mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+	</COMMAND>
+
+	<COMMAND name="delay" help="Tracking delay">
+		<PARAM name="delay_mode" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="up" help="Delay up change notification" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="down" help="Delay down change notification" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<PARAM name="delay_time" help="Seconds to delay" ptype="TRACK_DELAY_TIME"/>
+		<ACTION>
+			if [ "up" == ${delay_mode} ]; then
+				cdbctl update/cdb/l3/track_object/${object_id}/delay_up/${delay_time}
+			elif [ "down" == ${delay_mode} ]; then
+				cdbctl update/cdb/l3/track_object/${object_id}/delay_down/${delay_time}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set delay up or down time of a track object.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set delay up or down time of a track object.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to set the delay time for a track object:  
+	DUT1(config-track-1)# delay up 20  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no delay
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no delay" help="Tracking delay">
+		<PARAM name="delay_mode" help="mode" ptype="SUBCOMMAND" mode="switch" default="none">
+			<PARAM name="up" help="Delay up change notification" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="down" help="Delay down change notification" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			if [ "up" == ${delay_mode} ]; then
+				cdbctl update/cdb/l3/track_object/${object_id}/delay_up/0
+			elif [ "down" == ${delay_mode} ]; then
+				cdbctl update/cdb/l3/track_object/${object_id}/delay_down/0
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset delay up or down time of a track object.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset delay up or down time of a track object.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows how to unset the delay time for a track object:  
+	DUT1(config-track-1)# no delay up  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+delay
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

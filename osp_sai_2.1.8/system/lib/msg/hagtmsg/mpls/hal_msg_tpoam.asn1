@@ -1,0 +1,198 @@
+HAL-MSG-TPOAM DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES 
+    ;
+    
+HalMsgTpoamMegidReq ::= SEQUENCE
+{
+    id                  OCTET STRING
+}
+
+HalMsgTpoamLMepKey ::= SEQUENCE
+{
+    oamType             INTEGER,
+    id                  INTEGER,
+    megid               OCTET STRING,
+    mepid               INTEGER
+}
+
+HalMsgTpoamRMepKey ::= SEQUENCE
+{
+    oamType             INTEGER,
+    id                  INTEGER,
+    rmepid              INTEGER
+}
+
+HalMsgTpoamAddLMepReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+    nhid                INTEGER,
+    level               INTEGER,
+    dmEnable            INTEGER,
+    active              INTEGER,
+    interval            INTEGER,
+    isAps               INTEGER,
+    apsGroupId          INTEGER,
+    unrov               INTEGER,
+    ttl                 INTEGER,
+    exp                 INTEGER,
+    maIndex             INTEGER,
+    mepIndex            INTEGER
+}
+
+HalMsgTpoamDelLMepReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey
+}
+
+HalMsgTpoamEnableCcReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+    enable              INTEGER
+}
+
+HalMsgTpoamClearRdiReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey
+}
+
+HalMsgTpoamRdiReasonReq ::= SEQUENCE
+{
+    rdiReason           INTEGER
+}
+
+HalMsgTpoamChannelTypeReq ::= SEQUENCE
+{
+    channelType         INTEGER
+}
+
+HalMsgTpoamUpdateNhReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+    isAps               INTEGER,
+    apsGroupId          INTEGER,
+    unrov               INTEGER,
+    nhID                INTEGER
+}
+
+HalMsgTpoamAddRMepReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamRMepKey,
+    level               INTEGER,
+    active              INTEGER
+}
+
+HalMsgTpoamDelRMepReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamRMepKey
+}
+
+HalMsgTpoamEventReq ::= SEQUENCE
+{
+    count               INTEGER,
+    rawData             OCTET STRING
+}
+
+HalMsgTpoamAddOamReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+	flag                INTEGER,
+    nhid                INTEGER,
+    level               INTEGER,
+	ccEnable            INTEGER,
+    dmEnable            INTEGER,
+	lmEnable            INTEGER,
+	rdiEnable           INTEGER,
+    active              INTEGER,
+    interval            INTEGER,
+    isAps               INTEGER,
+    apsGroupId          INTEGER,
+    unrov               INTEGER,
+    ttl                 INTEGER,
+    exp                 INTEGER,
+    maIndex             INTEGER,
+    mepIndex            INTEGER,
+	rmepIndex           INTEGER,
+	rmepid              INTEGER,
+	lmType              INTEGER,
+    lmCosType           INTEGER,
+	lmCosValue          INTEGER,
+	lmStatsInterval     INTEGER,
+	withoutGal          INTEGER,
+	firstMep            INTEGER,
+	isProtection        INTEGER
+}
+
+HalMsgTpoamDelOamReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+    nhid                INTEGER,
+    level               INTEGER,
+    dmEnable            INTEGER,
+    active              INTEGER,
+    interval            INTEGER,
+    isAps               INTEGER,
+    apsGroupId          INTEGER,
+    unrov               INTEGER,
+    ttl                 INTEGER,
+    exp                 INTEGER,
+    maIndex             INTEGER,
+    mepIndex            INTEGER,
+	rmepIndex           INTEGER,
+	rmepid              INTEGER,
+	lastMep             INTEGER
+}
+
+HalMsgTpoamUpdateExpReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+    exp                 INTEGER
+}
+
+HalMsgTpoamSetRdiReq ::= SEQUENCE
+{
+    key                 HalMsgTpoamLMepKey,
+    enable              INTEGER
+}
+
+HalMsgTpoamSetLmEnableReq ::= SEQUENCE
+{
+	oamType             INTEGER,
+    keyId               INTEGER,
+	mepIndex            INTEGER,
+    enable              INTEGER,
+    lmType              INTEGER,
+    cosType             INTEGER,
+    cosValue            INTEGER,
+    statsInterval       INTEGER
+}
+
+HalMsgTpoamSetLmSDEnableReq ::= SEQUENCE
+{
+	oamType             INTEGER,
+    keyId               INTEGER,
+	mepIndex            INTEGER,
+    enable              INTEGER,
+    ratioLimit          INTEGER,
+    lmType              INTEGER,
+    cosType             INTEGER,
+    cosValue            INTEGER
+}
+
+HalMsgTpoamSFReasonReq ::= SEQUENCE
+{
+    sfReason            INTEGER
+}
+
+HalMsgTpoamHagtAPSReq ::= SEQUENCE
+{
+    enable              INTEGER
+}
+
+HalMsgTpoamSetPwModeReq ::= SEQUENCE
+{
+    enable              INTEGER
+}
+END

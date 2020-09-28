@@ -1,0 +1,74 @@
+<div class="col-lg-8 col-lg-offset-1">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form">
+
+                    <div class="form-group">
+                        <label>{{ 'Select image file' | translate }}{{'(Upload files to boot)' | translate }}</label>
+                        <input type="file" nv-file-select uploader="uploader" ng-click="clearAllFiles()" ng-disabled="uploading || waiting" />
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped" ng-class="{'progress-bar-success': uploadSuccess, 'progress-bar-danger': uploadError, 'active': uploading}" role="progressbar" style="width: {{ uploadPercent }}%"></div>
+                    </div>
+                    <div ng-show="uploading" class="alert alert-info" role="alert">{{ 'Uploading the file, please do not leave this page' | translate }}</div>
+
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{'Upload and reboot with the new image' | translate}}" ng-click="uploadImage(true)" ng-disabled="uploading || waiting">{{ 'Upload and apply' | translate }}</button>
+                        <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{'Upload image only' | translate}}" ng-click="uploadImage(false)" ng-disabled="uploading || waiting">{{ 'Upload only' | translate }}</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ 'Current Information' | translate }}</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table" style="margin-bottom: 0;">
+                    <tr>
+                        <th>{{ 'Image Name' | translate }}</th>
+                        <td>{{ bootImage }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'Software Version' | translate }}</th>
+                        <td>{{ version.version }}</td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--upload file to flash-->
+<div class="col-lg-8 col-lg-offset-1">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form">
+
+                    <div class="form-group">
+                        <label>{{ 'Select local file' | translate }}{{'(Upload files to flash)' | translate }}</label>
+                        <input type="file" nv-file-select uploader="uploader_flash" ng-click="clearAllFiles()" ng-disabled="uploading || waiting" />
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped" ng-class="{'progress-bar-success': uploadSuccess_flash, 'progress-bar-danger': uploadError_flash, 'active': uploading_flash}" role="progressbar" style="width: {{ uploadPercent_flash }}%"></div>
+                    </div>
+                    <div ng-show="uploading_flash" class="alert alert-info" role="alert">{{ 'Uploading the file, please do not leave this page' | translate }}</div>
+
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{'Upload file to flash' | translate}}" ng-click="uploadfile2flash()" ng-disabled="uploading_flash || waiting">{{ 'Upload' | translate }}</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

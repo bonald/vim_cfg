@@ -1,0 +1,145 @@
+include ../../../Makefile.env.inc
+include $(MK_DIR)/sys.mk
+
+CPPFLAGS += -Wno-error=format-contains-nul
+CPPFLAGS += -Wno-error=unused-function
+
+PROG = ntpd
+
+# ntpd sources
+SRCS = \
+    version.c \
+	ntp_config.c		\
+	ntp_io.c		\
+	ntp_parser.c		\
+	ntp_scanner.c		\
+	ntpd.c			\
+	ntpd-opts.c		\
+	../sntp/libopts/libopts.c
+	
+# libntpd sources
+SRCS += \
+    cmd_args.c		\
+	ntp_control.c		\
+	ntp_crypto.c		\
+	ntp_filegen.c		\
+	ntp_leapsec.c		\
+	ntp_loopfilter.c	\
+	ntp_monitor.c		\
+	ntp_peer.c		\
+	ntp_proto.c		\
+	ntp_refclock.c		\
+	ntp_request.c		\
+	ntp_restrict.c		\
+	ntp_signd.c		\
+	ntp_timer.c		\
+	ntp_util.c		\
+	rc_cmdlength.c		\
+	refclock_acts.c		\
+	refclock_arbiter.c	\
+	refclock_arc.c		\
+	refclock_as2201.c	\
+	refclock_atom.c		\
+	refclock_bancomm.c	\
+	refclock_chronolog.c	\
+	refclock_chu.c		\
+	refclock_conf.c		\
+	refclock_datum.c	\
+	refclock_dumbclock.c	\
+	refclock_fg.c		\
+	refclock_gpsdjson.c	\
+	refclock_gpsvme.c	\
+	refclock_heath.c	\
+	refclock_hopfser.c	\
+	refclock_hopfpci.c	\
+	refclock_hpgps.c	\
+	refclock_irig.c		\
+	refclock_jjy.c		\
+	refclock_jupiter.c	\
+	refclock_leitch.c	\
+	refclock_local.c	\
+	refclock_mx4200.c	\
+	refclock_neoclock4x.c	\
+	refclock_nmea.c		\
+	refclock_oncore.c	\
+	refclock_palisade.c	\
+	refclock_parse.c	\
+	refclock_pcf.c		\
+	refclock_pst.c		\
+	refclock_ripencc.c	\
+	refclock_shm.c		\
+	refclock_tpro.c		\
+	refclock_true.c		\
+	refclock_tt560.c	\
+	refclock_ulink.c	\
+	refclock_wwv.c		\
+	refclock_wwvb.c		\
+	refclock_zyfer.c	\
+	refclock_tsyncpci.c	
+
+ifeq ($(ENABLE_L2),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/L2
+endif
+
+ifeq ($(ENABLE_MPLS),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/mpls
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/hal/MPLS
+endif
+
+CPPFLAGS+= -DHAVE_CONFIG_H -I$(APP_TOP_DIR)/include -I$(APP_TOP_DIR)/ntp -I$(APP_TOP_DIR)/ntp/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/include/
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/unix/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/sntp/libopts
+CPPFLAGS+= -I$(APP_TOP_DIR)/ntp/lib/isc/pthreads/include
+
+DEP_LIBS = $(LIB_DIR)/libntp.a
+LD_LIBS = -L$(LIB_DIR) -lntp -lcrypto -lm -pthread -lrt
+
+SCRIPTS_PATH=../scripts
+NTP_TRACE=ntptrace
+NTP_VER=ntpver
+ETC_DIR?=$(BLD_DIR)/etc
+CONF_FILE=ntp.conf
+KEYS_FILE=ntpkeys.conf
+DEBUG_FILE=ntpd.debug
+NTP_IPTABLES=ntp-iptables.sh
+
+EXTRA_CLEANS=$(BIN_DIR)/$(NTP_VER) $(BIN_DIR)/$(NTP_TRACE)
+EXTRA_CLEANS+=$(ETC_DIR)/$(CONF_FILE) $(ETC_DIR)/$(KEYS_FILE)
+
+all: $(BIN_DIR)/$(PROG) $(ETC_DIR)/$(CONF_FILE) $(ETC_DIR)/$(KEYS_FILE) $(ETC_DIR)/$(DEBUG_FILE) $(ETC_DIR)/$(NTP_IPTABLES) FORCE
+
+$(ETC_DIR)/$(NTP_IPTABLES): $(NTP_IPTABLES)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(NTP_IPTABLES) $@
+
+$(ETC_DIR)/$(DEBUG_FILE): $(DEBUG_FILE)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(DEBUG_FILE) $@
+
+$(ETC_DIR)/$(KEYS_FILE): $(KEYS_FILE)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(KEYS_FILE) $@
+
+$(ETC_DIR)/$(CONF_FILE): $(CONF_FILE)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(CONF_FILE) $@
+
+$(BIN_DIR)/$(NTP_VER): $(SCRIPTS_PATH)/$(NTP_VER)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(SCRIPTS_PATH)/$(NTP_VER) $@
+
+$(BIN_DIR)/$(NTP_TRACE): $(SCRIPTS_PATH)/$(NTP_TRACE)
+	@echo "CP  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	if [ ! -d $(dir $@) ]; then mkdir -p $(dir $@); fi && \
+	cp $(SCRIPTS_PATH)/$(NTP_TRACE) $@
+
+include $(MK_DIR)/prog.mk
+
+.PHONY: FORCE
+FORCE:

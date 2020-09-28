@@ -1,0 +1,595 @@
+#!/bin/sh
+
+######################################################################
+# Copyright (C) 2004-2015 Centec Networks. All rights reserved.
+# OSP sysinit script.  
+######################################################################
+
+SWITCH_DIR=""
+HAVE_DEBIAN="no"
+if [ -f /switch/etc/rc.sysinit.debian ]; then
+    SWITCH_DIR="/switch"
+    HAVE_DEBIAN="yes"
+fi
+
+STARTUP_LOG=/mnt/flash/cold/log/startup_log
+OVS_DIR=$SWITCH_DIR/usr/local/openvswitch
+TAP_DIR=$SWITCH_DIR/usr/local/tap
+# export this env var to be used in child scripts.
+export OVS_DIR
+# Append ovs utilities path to PATH.
+if [ $HAVE_DEBIAN == "yes" ]; then
+    export PATH=$SWITCH_DIR/sbin:$SWITCH_DIR/usr/sbin:$SWITCH_DIR/bin:$SWITCH_DIR/usr/bin:$OVS_DIR/bin:$PATH
+    export LD_LIBRARY_PATH=/lib/powerpc-linux-gnu:/usr/lib/powerpc-linux-gnu:$SWITCH_DIR/lib:$SWITCH_DIR/usr/lib
+else
+    export PATH=$PATH:$OVS_DIR/bin
+fi
+
+
+DEFAULT_NS=default
+MGMT_NS=mgmt
+# check if a dir is mountpoint
+is_mount() {
+    mountpoint -q $1
+    return $?
+}
+
+# mount dir if it is not mounted, "mount -t devpts none /dev/pts"
+_mount() {
+    for last; do true; done
+    is_mount $last
+    if [ "$?" -ne "0" ]; then
+        mkdir -p $last
+        mount $@
+    fi
+}
+
+# mknod if it is not created
+_mknod() {
+    mknod $@ > /dev/null 2>&1
+}
+
+
+if [ $HAVE_DEBIAN != "yes" ]; then
+    $SWITCH_DIR/bin/busybox --install -s $SWITCH_DIR/bin
+    _mount -t proc none /proc
+    _mount -t sysfs sysfs /sys
+fi
+
+# Namespace create
+/switch/etc/init-ns.sh
+
+# need enable CONFIG_DEBUG_KMEMLEAK,now release version
+# not config CONFIG_DEBUG_KMEMLEAK, so maybe have error
+# info when system startup
+
+#add by guhg  for bug 33476 ,2015-07-08
+if [ "$(zcat /proc/config.gz |grep CONFIG_DEBUG_KMEMLEAK=y)" == "CONFIG_DEBUG_KMEMLEAK=y" ]; then
+    mount -t debugfs nodev /sys/kernel/debug/
+fi
+
+if [ $HAVE_DEBIAN != "yes" ]; then
+    _mknod /dev/null c 1 3
+    
+    $SWITCH_DIR/usr/sbin/udevd --daemon 
+    $SWITCH_DIR/usr/sbin/udevstart
+fi
+
+_mknod /dev/ctc_allctrl                        c 99  0
+_mknod /dev/ctc_hw                             c 100 0
+_mknod /dev/ctc_asic_normal                    c 101 0
+_mknod /dev/ctc_phy                            c 102 0
+_mknod /dev/ctc_asic_fatal                     c 103 0
+_mknod /dev/ctc_foam_normal                    c 104 0
+_mknod /dev/ctc_cpm                            c 105 0
+_mknod /dev/ctc_gpio                           c 106 0
+_mknod /dev/ctc_sys_led                        c 107 0
+_mknod /dev/ctc_shm                            c 110 0
+_mknod /dev/ctc_memchk_one_page_shm            c 111 0
+_mknod /dev/ctc_reset                          c 112 0
+_mknod /dev/ctc_power                          c 113 0
+_mknod /dev/ctc_watchdog                       c 114 0
+_mknod /dev/linux_dal0                         c 198 0
+_mknod /dev/linux_dal1                         c 199 0
+_mknod /dev/ctc_board_ctl                      c 200 0
+if [ $HAVE_DEBIAN != "yes" ]; then
+    _mknod /dev/rtc                                c 254 0
+fi
+
+if [ $HAVE_DEBIAN != "yes" ]; then
+    mkdir -p /dev/pts
+    _mount -t devpts none /dev/pts
+fi
+
+if [ $HAVE_DEBIAN != "yes" ]; then
+# Run startup monitor prog
+#monitor &
+
+bootID=`cat /proc/mtd | grep Boot |grep NAND | awk -F "mtd|:" '{print $2}'`
+systemID=`cat /proc/mtd | grep System |grep NAND | awk -F "mtd|:" '{print $2}'`
+
+boot_size=`cat /proc/mtd |grep Boot |grep NAND | awk '{printf $2}'`
+system_size=`cat /proc/mtd | grep System |grep NAND | awk '{printf $2}'`
+
+echo -n "Mounting /dev/mtdblock$systemID... "
+ubiattach /dev/ubi_ctrl -m $systemID 
+sleep 2
+if ! mount -t ubifs -o sync ubi0:system /mnt/flash > /dev/null 2>&1; then
+    echo "failed!"
+
+	echo "Create ubi filesystem on system partition ..."
+	ubidetach -p /dev/mtd$systemID
+    #ubiformat  /dev/mtd$systemID -y
+    #echo "Done!" 
+    ubiattach /dev/ubi_ctrl -m $systemID 
+    sleep 1
+	if [ "$system_size" == 08000000 ]; then
+		#for 256M flash
+		ubimkvol  /dev/ubi0 -N system -s 110MiB
+	else
+		if [ "$system_size" == 18000000 ]; then
+			#for 512M flash
+			ubimkvol  /dev/ubi0 -N system -s 350MiB
+		else
+			ubimkvol  /dev/ubi0 -N system -s 1800MiB
+		fi
+	fi
+    sleep 1
+    echo -n "Retry Mounting /dev/mtdblock$systemID... "
+    if ! mount -t ubifs -o sync ubi0:system /mnt/flash >/dev/null 2>&1; then
+		echo "retry mount /dev/mtdblock$systemID failed!"
+	else
+		echo "OK!" 
+	fi 
+else
+    echo "OK!"
+fi
+
+#for bug 34560 by tongzb 2016-09-26
+if [ ! -d /mnt/flash/boot ]; then
+    mkdir /mnt/flash/boot
+fi
+
+echo -n "Mounting /dev/mtdblock$bootID... "
+ubiattach /dev/ubi_ctrl -m $bootID 
+sleep 1		
+
+if ! mount -t ubifs -r ubi1:boot /mnt/flash/boot > /dev/null 2>&1; then
+    echo "failed!"
+
+    echo "Create ubi filesystem on boot partition ..."
+    ubidetach -p /dev/mtd$bootID
+    #ubiformat  /dev/mtd$bootID -y
+    #echo "Done!" 
+    ubiattach /dev/ubi_ctrl -m $bootID 
+    sleep 1
+    ubimkvol  /dev/ubi1 -N boot -s 70MiB 
+    sleep 1
+    echo -n "Retry Mounting /dev/mtdblock$bootID... "
+    if ! mount -t ubifs ubi1:boot /mnt/flash/boot > /dev/null 2>&1; then 
+		echo "Retry Mount /dev/mtdblock$bootID failed!"
+	fi
+
+	if ! mount -t ubifs -o remount -r ubi1:boot /mnt/flash/boot/ >/dev/null 2>&1; then
+		echo "Retry Mount /dev/mtdblock$bootID failed!"
+	else
+		echo "OK!"
+	fi
+else
+    echo "OK!"
+fi
+fi
+
+if [ -f /mnt/flash/.zone.conf ]; then
+    source /mnt/flash/.zone.conf
+fi
+
+touch /var/run/utmp
+
+linux_ver=`uname -r`
+if [ ! -d /lib/modules/$linux_ver ]; then
+    mkdir -p /lib/modules/$linux_ver
+fi
+
+if [ ! -d /mnt/flash/info ]; then
+    mkdir /mnt/flash/info
+fi
+
+if [ ! -d /mnt/flash/log ]; then
+    mkdir /mnt/flash/log
+fi
+
+if [ ! -f /mnt/flash/log/lastlog ]; then
+    touch /mnt/flash/log/lastlog
+fi
+
+if [ ! -f /mnt/flash/log/wtmp ]; then
+    touch /mnt/flash/log/wtmp
+fi
+
+if [ ! -d /mnt/flash/conf ]; then
+    mkdir /mnt/flash/conf
+fi
+
+#for bug 45620, disable cold log
+#prepare for cold
+if [ ! -d /mnt/flash/cold ]; then
+    mkdir /mnt/flash/cold
+fi
+
+#startup_log use this dir for back up
+if [ ! -d /mnt/flash/cold/bak ]; then
+    mkdir /mnt/flash/cold/bak
+fi
+
+if [ ! -d /mnt/flash/cold/log ]; then
+    mkdir /mnt/flash/cold/log
+fi
+
+#if [ ! -d /mnt/flash/cold/running ]; then
+#    mkdir /mnt/flash/cold/running
+#fi
+
+#if [ ! -d /mnt/flash/cold/cmd ]; then
+#    mkdir /mnt/flash/cold/cmd
+#fi
+
+if [ -f $STARTUP_LOG ]; then
+    touch $STARTUP_LOG
+fi
+
+#Added by liuht for bug26642, 2013-01-20
+if [ ! -d /mnt/flash/cold/diag ]; then
+    mkdir /mnt/flash/cold/diag
+fi
+
+#Added by liuht for bug27036, 2014-02-21
+if [ ! -d /mnt/flash/reboot-info ]; then
+    mkdir /mnt/flash/reboot-info
+fi
+
+echo "Cold dir prepare done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+if [ ! -h /mnt/flash/conf/.profile ]; then
+    ln -s $SWITCH_DIR/etc/memory_profile /mnt/flash/conf/.profile
+fi
+
+#Modified by liuht for bug 27657, 2014-03-25
+if [ ! -f /mnt/flash/cold/power.log  ] ; then
+    touch /mnt/flash/cold/power.log
+fi
+
+$SWITCH_DIR/etc/memory_detect.sh
+
+board_type_detect
+boardseries=`cat /tmp/ctcos_board_info | grep product_series | awk '{ print $2}'`
+boardtype=`cat /tmp/ctcos_board_info | grep board_type | awk '{ print $2}'`
+
+insmod $SWITCH_DIR/lib/ctc_boards.ko board_series=0x$boardseries board_type=0x$boardtype
+insmod $SWITCH_DIR/lib/ctc_restart.ko
+insmod $SWITCH_DIR/lib/dal.ko
+insmod $SWITCH_DIR/lib/ctc_hw.ko
+insmod $SWITCH_DIR/lib/ctc_gpio.ko
+insmod $SWITCH_DIR/lib/ctc_phy.ko
+insmod $SWITCH_DIR/lib/ctc_power.ko
+insmod $SWITCH_DIR/lib/ctc_reset.ko
+insmod $SWITCH_DIR/lib/ctc_watchdog.ko
+#insmod $SWITCH_DIR/lib/kernel_monitor.ko
+#echo "Insmod kernel modules done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+pizza_box=y
+# hardware clock is saved in UTC timezone.
+hwclock --hctosys -u >/dev/null 2>&1
+#
+#manip=`board_type_detect ip`
+#macaddr=`board_type_detect mac`
+#mgtmac=`board_type_detect mgtmac`
+#ifconfig eth0 hw ether $mgtmac
+#if [ "$pizza_box" == "n" ]; then
+#    ifconfig eth0 $manip netmask 255.255.0.0 up
+#fi
+#ifconfig eth0 up mtu 9500
+
+#lictl -p /mnt/flash 2>&1 > /dev/null
+
+# Configure loopback interface
+ifconfig lo 127.0.0.1 up
+
+# Configure VM
+sysctl -w vm.overcommit_memory=2 2>&1 > /dev/null
+sysctl -w vm.overcommit_ratio=95 2>&1 > /dev/null
+
+# Configure coredump
+sysctl -w kernel.core_pattern="|$SWITCH_DIR/usr/bin/core_helper %e" 2>&1 > /dev/null
+
+# Configure socket
+sysctl -w net.core.rmem_max=32000000 2>&1 > /dev/null
+sysctl -w net.core.rmem_default=4000000 2>&1 > /dev/null
+sysctl -w net.core.wmem_max=32000000 2>&1 > /dev/null
+sysctl -w net.core.wmem_default=4000000 2>&1 > /dev/null
+
+#Configure default IGMP version=2
+sysctl -w net.ipv4.conf.default.force_igmp_version=2 2>&1 > /dev/null
+
+#Configure socket max memberships
+sysctl -w net.ipv4.igmp_max_memberships=1000 2>&1 > /dev/null
+
+# Configure TCP/IP stack
+sysctl -w net.ipv4.conf.all.accept_source_route=1 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.autoconf=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.autoconf=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.dad_transmits=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.dad_transmits=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.router_solicitations=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.router_solicitations=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.router_solicitation_delay=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.router_solicitation_delay=0 2>&1 > /dev/null
+sysctl -w net.ipv4.route.max_size=65536 2>&1 > /dev/null
+sysctl -w net.ipv4.route.gc_thresh=4096 2>&1 > /dev/null
+sysctl -w net.ipv6.route.max_size=65536 2>&1 > /dev/null
+sysctl -w net.ipv6.route.gc_thresh=4096 2>&1 > /dev/null
+
+# Disable IPv6
+sysctl -w net.ipv6.conf.all.disable_ipv6=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.disable_ipv6=0 2>&1 > /dev/null
+
+# For nsm/uarp
+sysctl -w net.ipv4.neigh.default.ucast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.mcast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.app_solicit=1 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.retrans_time_ms=3000 2>&1 > /dev/null
+
+#for icmp redirect, for bug 13190
+sysctl -w net.ipv4.conf.all.send_redirects=0 2>&1 > /dev/null
+# For nsm/ndp
+sysctl -w net.ipv6.neigh.default.ucast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.mcast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.app_solicit=1 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.retrans_time_ms=3000 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh1=256 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh2=1024 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh3=2048 2>&1 > /dev/null
+
+# enlarge kernel neigh number
+echo 3072  > /proc/sys/net/ipv4/neigh/default/gc_thresh1
+echo 12288 > /proc/sys/net/ipv4/neigh/default/gc_thresh2
+echo 24576 > /proc/sys/net/ipv4/neigh/default/gc_thresh3
+
+# Enable TCP Syncookies
+#echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+# Init veth pair that is used for mgmt/default namespace port forwarding.
+/switch/etc/init-veth.sh
+
+#echo "Starting SYSLOGD..."
+rm -fr /switch/etc/syslog-ng.conf
+init-syslog-ng.sh
+angel syslog-ng -Ff /switch/etc/syslog-ng.conf >/dev/null
+### echo "Syslog init done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+# running sysrepod if enabled
+if [ -f $SWITCH_DIR/usr/bin/sysrepod ]; then
+    $SWITCH_DIR/usr/bin/sysrepod >/dev/null 2>&1
+    $SWITCH_DIR/usr/bin/sysrepo-plugind >/dev/null 2>&1
+fi
+
+#echo "Starting CROND..."
+rm /var/spool/cron/crontabs -rf
+mkdir -p /var/spool/cron/crontabs
+rm /etc/crontabs -rf
+mkdir -p /etc/crontabs
+#add crontab
+# Openflow conf syncup scripts. 
+echo "*/30 * * * * $OVS_DIR/bin/ovsdb_sync.sh >/dev/null 2>&1 " >>  /var/spool/cron/crontabs/root
+echo "*/30 * * * * sync && echo 3 > /proc/sys/vm/drop_caches" >> /var/spool/cron/crontabs/root
+echo "*/10 * * * * cat /dev/null > /var/log/lastlog && cat /dev/null > /var/log/wtmp " >>  /var/spool/cron/crontabs/root
+# Modified by zhangdy on 20150411, the new busybox (v1.22.1) 's -c options should be the directory
+# which must contains the crond tabs
+crond -b -c /var/spool/cron/crontabs -L /dev/null
+
+echo "Starting NTPD..."
+# initialize drift file for ntp
+echo "0.000" > $SWITCH_DIR/etc/ntp/drift >/dev/null 2>&1 
+ntpd -U 30 -c $SWITCH_DIR/etc/ntp.conf -p /var/run/ntpd.pid -g -l /dev/null &
+echo "Ntpd init done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+# startup snmp trap agent
+if [ $HAVE_DEBIAN != "yes" ]; then
+    export PYTHONHOME=$SWITCH_DIR/usr
+    export PYTHONPATH=$SWITCH_DIR/usr/lib/python2.7:$SWITCH_DIR/usr/lib/python2.7/site-packages:$SWITCH_DIR/usr/lib/python2.7/lib-dynload/:$SWITCH_DIR/usr/lib/python2.7/site-packages/rpc_server/lib/
+fi
+# TAP also use python agent
+if [ -d $TAP_DIR ]; then
+    $SWITCH_DIR/usr/sbin/trap_agent -d >/dev/null 2>&1
+fi
+
+# startup web flask
+rm /var/web -rf
+tar xzf $SWITCH_DIR/var/web.bin -C /var/ >/dev/null 2>&1
+rm /var/rpcapi -rf
+tar xzf $SWITCH_DIR/var/rpcapi.bin -C /var/ >/dev/null 2>&1
+
+if [ ! -d /conf/ssh ]; then
+    mkdir -p /conf/ssh
+fi
+
+if [ ! -d /var/run/sshd ]; then
+    mkdir -p /var/run/sshd
+fi
+if [ ! -d /var/empty ]; then
+    mkdir -p /var/empty
+fi
+if [ $HAVE_DEBIAN == "yes" ]; then
+    rm /etc/ssh/* -rf
+    cp $SWITCH_DIR/etc/ssh/* /etc/ssh/ -rf
+fi
+
+#while true; do
+#    if [ -f /tmp/oem_info ] ; then
+#        break;
+#    fi
+#    sleep 1;
+#done
+#echo "Get oem info done" >> $STARTUP_LOG && date >> $STARTUP_LOG
+
+rm -fr /tmp/fea_done
+
+# start redis-server 
+#if [ ! -d $TAP_DIR -a ! -d $OVS_DIR ]; then
+#	redis-server /switch/etc/redis.conf
+#fi
+
+echo "Start PMs..."
+#zebra &
+ccs &
+cds &
+ncs &
+sleep 2
+switch &
+
+if [ -f $SWITCH_DIR/usr/sbin/routed ]; then
+    routed &
+fi
+
+if [ ! -d $TAP_DIR ]; then
+    opm & 
+    ptp &
+    ssm &
+fi
+
+appcfg &
+bhm &
+authd &
+
+if [ ! -d $TAP_DIR ]; then
+#	bgpd &
+	zebra -d
+	ospfd -d
+    pimd -d
+#	ripd -d
+	dhcrelay -4 -d -q
+	dhcsnooping -d
+    echo "" > /switch/etc/dhclient.conf
+    dhclient &
+	dhclient6 -6
+fi
+
+chsm &
+ctctop &
+
+# start openflow
+if [ -d $OVS_DIR ]; then
+    # Setup backup conf dir.
+    OPENFLOW_CONF_DIR="/mnt/flash/.openflow/"
+    mkdir -p $OPENFLOW_CONF_DIR
+
+    # Recover the backuped conf tar.gz
+    if [ -f $OPENFLOW_CONF_DIR/conf_backup.tar.gz ] ; then
+        cp -rf $OPENFLOW_CONF_DIR/conf_backup.tar.gz $OVS_DIR/etc/db/conf_backup.tar.gz
+        line=`tar xzvf $OVS_DIR/etc/db/conf_backup.tar.gz -C $SWITCH_DIR/ 2>&1 | grep conf_backup.db`
+        if [ "$line" != "" ] ; then
+            #echo "Success to decompress ovsdb backup file: conf_backup.tar.gz"
+            cp -rf $SWITCH_DIR/$line $OVS_DIR/etc/db/conf.db
+	    echo "Recover user saved ovs conf db successfully."
+        fi
+    fi
+# added by wangl for clear db
+	if [ -f $OVS_DIR/etc/db/conf_org.db ] ; then
+	    cp -f $OVS_DIR/etc/db/conf_org.db $OVS_DIR/etc/db/conf.db
+	fi
+	
+    echo "Start OpenFlow..."
+    $OVS_DIR/bin/ovsdb-server $OVS_DIR/etc/db/conf.db --remote=punix:$OVS_DIR/var/run/db.sock --remote=db:Open_vSwitch,Open_vSwitch,manager_options --pidfile=$OVS_DIR/var/run/ovsdb-server.pid --unixctl=$OVS_DIR/var/run/ovsdb-server.ctl --verbose=ANY:syslog:off --detach > /dev/null 2>&1
+    $OVS_DIR/bin/ovs-vswitchd unix:$OVS_DIR/var/run/db.sock --pidfile=$OVS_DIR/var/run/ovs-vswitchd.pid --verbose=ANY:syslog:err > /dev/null 2>&1 &
+fi
+
+sleep 2
+fea &
+
+echo "Waiting the system initialize..."
+# waiting fea done
+let wait_count=0
+while true; do          
+    if [ -f /tmp/fea_done ] ; then
+        break;           
+    fi
+    echo -n "."
+    sleep 1;
+    let wait_count=wait_count+1
+    
+    if [ $wait_count -ge 120 ] ; then
+        echo "system can't be started in 120 seconds, return to bash..."
+        break;
+    fi
+done
+
+cdbctl update/cdb/sys/sys_global/init_done/1
+cdbctl update/cdb/sys/sys_global/hostname/Switch
+
+
+if grep nopass /proc/cmdline 2>&1 >/dev/null; then
+    nopassword /mnt/flash/startup-config.conf
+fi
+
+if [ ! -f /mnt/flash/startup-config.conf ]; then
+    if [ ! -d $TAP_DIR ]; then
+        cdbctl update/cdb/sys/manage_if/addr/192.168.0.1/24
+    fi
+fi
+
+echo "Loading startup configuration file"
+klish -q -s /mnt/flash/startup-config.conf
+
+# added by kcao for insure startup_done is called
+cdbctl update/cdb/sys/sys_global/startup_done/1
+
+cdbctl create/cdb/sys/ns_port_forwarding/0#0#23#0.0.0.0/ip/0.0.0.0
+cdbctl create/cdb/sys/ns_port_forwarding/0#0#80#0.0.0.0/ip/0.0.0.0
+cdbctl create/cdb/sys/ns_port_forwarding/0#0#443#0.0.0.0/ip/0.0.0.0
+
+# If this is OVS enabled image, try to load startup entries.
+if [ -d $OVS_DIR ]; then
+    $OVS_DIR/bin/load_startup_entry.sh &
+fi
+
+ret="`grep http /mnt/flash/startup-config.conf | grep service | grep -v banner | grep -v password | grep -v description |awk '{print $3}'`"
+if [ "$ret" == "disable" ]; then
+    echo "Http service disabled..."
+else
+    python /var/web/run_server.py start 2>&1 >/dev/null
+    touch /tmp/webui_en
+fi
+
+# Load user-defined hook for customer of OpenFlow.
+if [ -d $OVS_DIR ]; then    
+    $OVS_DIR/bin/load_post_init_hook.sh &
+fi
+
+if [ -f /mnt/flash/logo.gif ] ; then
+    cp -f /mnt/flash/logo.gif /var/web/static/switch/images/logo_show.gif
+else
+    grep "Centec Networks" /tmp/oem_info 2>&1 > /dev/null
+    if [ "$?" == "0" ]; then
+        if [ -f /var/web/static/switch/images/logo.gif ] ; then
+            cp -f /var/web/static/switch/images/logo.gif /var/web/static/switch/images/logo_show.gif
+        fi
+    fi
+fi
+
+if [ -f $SWITCH_DIR/usr/bin/sysrepod ]; then
+    sysrepoctl -i -g $SWITCH_DIR/etc/sysrepo/yang/hwvtep-ttp@2018-06-10.yang -o root:root -p 755 > /dev/null 2>&1 
+fi
+
+ctcmon &
+
+if [ "x$boardseries" == "x1" ];then
+	if [ "x$boardtype" == "x14" ];then
+cat > /tmp/bypass.sh << EOF
+write epld 0 0x2 0xb5
+!
+exit
+EOF
+		lcsh -f /tmp/bypass.sh
+	fi
+fi
+echo -n "Ready to service!"

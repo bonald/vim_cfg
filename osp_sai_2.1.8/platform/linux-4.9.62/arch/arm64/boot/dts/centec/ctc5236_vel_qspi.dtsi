@@ -1,0 +1,222 @@
+/*
+ * dts file for Centec CTC5236(TsingMa) SoC
+ *
+ * (C) Copyright 2004-2017 Centec Networks (suzhou) Co., LTD.
+ *
+ * Jay Cao <caoj@centecnetworks.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/ctc5236-clks.h>
+
+/ {
+	compatible = "centec,ctc5236";
+	#address-cells = <2>;
+	#size-cells = <2>;
+	interrupt-parent = <&gic>;
+
+	cpus {
+		#address-cells = <2>;
+		#size-cells = <0>;
+
+		cpu-map {
+			cluster0 {
+				core0 {
+					cpu = <&cpu0>;
+				};
+				core1 {
+					cpu = <&cpu1>;
+				};
+			};
+		};
+
+		cpu0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53", "arm,armv8";
+			reg = <0 0x000>;
+			enable-method = "spin-table";
+			cpu-release-addr = <0 0x1010fff0>;
+		};
+
+		cpu1: cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53", "arm,armv8";
+			reg = <0 0x001>;
+			enable-method = "spin-table";
+			cpu-release-addr = <0 0x1010fff0>;
+		};
+	};
+	
+	gic: interrupt-controller@31201000 {
+			compatible = "arm,gic-400";
+			#interrupt-cells = <3>;
+			interrupt-controller;
+			reg = <0x0 0x31201000 0 0x1000>,
+		  	      <0x0 0x31202000 0 0x2000>,
+			      <0x0 0x31204000 0 0x2000>,
+			      <0x0 0x31206000 0 0x2000>;
+			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>;
+                };
+
+	timer {
+		compatible = "arm,armv8-timer";
+		interrupt-parent = <&gic>;
+		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
+	};
+
+	soc {
+		compatible = "simple-bus";
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+		
+		#include "ctc5236-clock-vel.dtsi"
+
+		ocram: sram@00100000 {
+			compatible = "mmio-sram";
+			reg = <0x0 0x10100000 0x0 0x10000>;
+		};
+
+		serial0: serial@33000000 {
+                        compatible = "arm,pl011","arm,primecell";
+                        reg = <0x0 0x33000000 0x0 0x1000>;
+                        interrupts = <GIC_SPI 25 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>;
+                        clocks = <&uart_clk>, <&sup_clk>;
+                        clock-names = "uart_clk", "apb_pclk";
+                        status="disabled";
+                };
+				
+		mdio: mdio@33620000 {
+			compatible = "ctc,mdio";
+			reg = <0x0 0x33620000 0x0 0x10000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+			phy0: ethernet-phy@0 {
+				index = <0x00>;
+				reg = <0x01>;
+			};
+			phy1: ethernet-phy@1 {
+				index = <0x01>;
+				reg = <0x02>;
+			};
+		};
+		
+		enet0: ethernet@33410000 {
+			compatible = "ctc,mac-test";
+			device_type = "network";
+			#address-cells = <2>;
+			#size-cells = <2>;
+			interrupt-parent = <&gic>;
+			status = "disabled";
+			index = <0x00>;
+			reg = <0x0 0x33410000 0x0 0x10000>,
+				<0x0 0x33400000 0x0 0x10000>;
+			phy-handle = <&phy0>;
+			interrupts = <GIC_SPI 40 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 41 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>;
+		};
+
+		enet1: ethernet@33420000 {
+			compatible = "ctc,mac-test";
+			device_type = "network";
+			#address-cells = <2>;
+			#size-cells = <2>;
+			interrupt-parent = <&gic>;
+			status = "disabled";
+			index = <0x01>;
+			reg = <0x0 0x33420000 0x0 0x10000>,
+				<0x0 0x33400000 0x0 0x10000>;
+			phy-handle = <&phy1>;
+			interrupts = <GIC_SPI 42 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 43 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>;
+		};
+		
+		ehci0: usb@30500000 {
+			compatible = "ctc-ehci";
+			reg = <0x0 0x30500000 0x0 0x1000>;
+			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+		
+		spi: spi@33100000 {
+			compatible = "arm,pl022","arm,primecell";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x0 0x33100000 0x0 0x100000>;
+			clocks = <&sup_clk>;
+			clock-names = "apb_pclk";    
+			num-cs = <4>;   
+			ctc,external-base = <0x33200000>;
+			ctc,external-offest = <0x128>;
+			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+		
+		qspi: qspi@10000000 {
+			compatible = "ctc, igdaxi001a-qspi";
+			#address-cells = <1>;	
+			#size-cells = <0>;
+			reg = <0x0 0x10000000 0x0 0x10000>; 
+			num-cs = <2>;
+			idle-cycle = <2>;
+			post-cycle = <1>;
+			pre-cycle = <2>;
+			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+                 switch: switch@31100000 {                      
+			compatible = "centec,dal-localbus";    
+			reg = <0x0 0x31100000 0x0 0x1000>;     
+			interrupts = <GIC_SPI 128 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 129 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 130 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 131 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 132 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 133 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 134 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>,
+				<GIC_SPI 135 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_HIGH)>;
+			status ="disabled";                     
+		};  
+		i2c0: i2c0@33700000{
+			compatible = "snps,designware-i2c";
+			#address-cells = <1>;	
+			#size-cells = <0>;
+			reg = <0x0 0x33700000 0x0 0x1000>;
+			i2c-sda-hold-time-ns = <300>;
+			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&i2c_clk>;
+			status ="disabled";
+		};		
+		
+		i2c1: i2c1@33701000{
+			compatible = "snps,designware-i2c";
+			#address-cells = <1>;	
+			#size-cells = <0>;
+			reg = <0x0 0x33701000 0x0 0x1000>;
+			i2c-sda-hold-time-ns = <300>;
+			interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&i2c_clk>;
+			status ="disabled";
+		};
+
+               sdhci: sdhci@30400000 {
+			compatible = "centec,ctc5236-sdhci";
+			status = "disabled";
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+			max-frequency = <150000000>;
+			reg = <0x0 0x30400000 0x0 0x1000>;
+                };
+	};
+   
+};
+  

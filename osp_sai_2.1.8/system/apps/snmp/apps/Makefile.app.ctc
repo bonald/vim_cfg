@@ -1,0 +1,24 @@
+include ../../../Makefile.env.inc
+include $(MK_DIR)/sys.mk
+
+SNMPAPPNAME?=snmpset
+PROG = $(SNMPAPPNAME)
+SRCS = $(SNMPAPPNAME).c
+
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/agent
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/include -I$(APP_TOP_DIR)/snmp/agent/mibgroup
+CPPFLAGS+= -DNETSNMP_ENABLE_IPV6 -Ulinux -Dlinux=linux
+
+ifeq ($(SNMPAPPNAME),snmptrapd)
+DEP_LIBS = $(LIB_DIR)/libnetsnmp.a $(LIB_DIR)/libnetsnmpagent.so
+DEP_LIBS+= $(LIB_DIR)/libnetsnmpmibs.a
+DEP_LIBS+= $(LIB_DIR)/libsnmptrapd.a
+LD_LIBS  = -L$(LIB_DIR) -lsnmptrapd -lnetsnmpmibs -lnetsnmpagent 
+LD_LIBS += -lnetsnmp -lnetsnmpmibs -ldl -lm -lcrypto
+LD_LIBS  += -L$(LIB_DIR) -lpthread -lcrypt -lcrypto -lrt
+else
+DEP_LIBS = $(LIB_DIR)/libnetsnmp.a
+LD_LIBS= -L$(LIB_DIR) -lnetsnmp -lpthread -lcrypt -lcrypto -lrt
+endif
+
+include $(MK_DIR)/prog.mk

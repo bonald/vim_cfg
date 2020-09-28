@@ -1,0 +1,39 @@
+/* 导航栏的小三角 */
+span.tri-down {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+}
+
+span.tri-right {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-left: 4px dashed;
+    border-bottom: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+span.rect {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    margin-left: 2px;
+    vertical-align: middle;
+    border: 4px solid rgba(0, 0, 0, 0);
+}
+
+
+.padding-15px {
+    padding: 8px;
+}
+

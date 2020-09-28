@@ -1,0 +1,26 @@
+ifeq ($(targetbase),vxworks)
+
+include $(MK_DIR)/sys_vx.mk
+
+OBJ_DIR=$(OBJ_BASE_DIR)/dal
+
+all_targets = vxworks common
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+vxworks: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal/src/vxworks -f Makefile.vx
+
+clean_vxworks: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal/src/vxworks -f Makefile.vx clean
+
+common: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal/src/common -f Makefile.vx
+
+clean_common: FORCE
+	$(CTC_MAKE) -C $(SDK_DIR)/dal/src/common -f Makefile.vx clean
+
+.PHONY: FORCE
+FORCE:
+endif

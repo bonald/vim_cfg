@@ -1,0 +1,47 @@
+/*
+ * dts file for Centec CTC5236(TsingMa) SoC Veloce Board
+ *
+ * (C) Copyright 2004-2017 Centec Networks (suzhou) Co., LTD.
+ *
+ * Jay Cao <caoj@centecnetworks.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ */
+
+/dts-v1/;
+#include "ctc5236_vel.dtsi"
+
+/ {
+	model = " CTC5236(TsingMa) Veloce Board";
+	compatible = "ctc5236,ctc5236-vel";
+
+	memory {
+		device_type = "memory";
+		reg = <0 0x80000000 0 0x80000000>;
+	};
+
+	chosen {
+		stdout-path = "serial0:18750000n8";
+	};
+
+	aliases {
+		serial0 = &serial0;
+	};
+};
+
+&serial0 {
+	status = "okay";
+};
+
+&ehci0 {
+	status = "okay";
+};
+
+&sdhci {
+	bus-width = <8>;
+	non-removable;
+	status = "okay";
+};

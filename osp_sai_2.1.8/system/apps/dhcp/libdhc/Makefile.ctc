@@ -1,0 +1,59 @@
+include $(MK_DIR)/sys.mk
+
+LIB = dhc
+SRCS = $(wildcard *.c)
+
+CPPFLAGS+= -I$(APP_TOP_DIR)/dhcp -I$(APP_TOP_DIR)/dhcp/includes
+CPPFLAGS+= -DLINUX_MAJOR=2 -DLINUX_MINOR=6
+
+ifeq ($(ENABLE_L2),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/L2
+endif
+
+ifeq ($(ENABLE_DIFFSERV),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/diffserv
+endif
+
+ifeq ($(ENABLE_DSTE),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/dste
+endif
+
+ifeq ($(ENABLE_MPLS),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/mpls_client
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/mpls
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/hal/MPLS
+endif
+
+ifeq ($(ENABLE_VR),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/vr
+endif
+
+ifeq ($(ENABLE_CSPF),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/cspf
+endif
+
+ifeq ($(ENABLE_MCAST_IPV4),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/igmp
+else
+ifeq ($(ENABLE_IGMP_SNOOP),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/igmp
+endif
+endif
+
+ifeq ($(ENABLE_MCAST_IPV6),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/mld
+else
+ifeq ($(ENABLE_MLD_SNOOP),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/mld
+endif
+endif
+
+ifeq ($(ENABLE_OSPFD),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/ospf_common
+else
+ifeq ($(ENABLE_OSPF6D),yes)
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib/ospf_common
+endif
+endif
+
+include $(MK_DIR)/lib.mk

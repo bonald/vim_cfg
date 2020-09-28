@@ -1,0 +1,93 @@
+<!-- option -->
+<div class="col-md-12">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- select -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-default" ng-click="setCheckboxAll(true)">{{ 'Select all' | translate }}</button>
+            <button type="button" class="btn btn-default" ng-click="setCheckboxAll(false)">{{ 'Clear all' | translate }}</button>
+            <button type="button" class="btn btn-default" ng-click="setCheckboxAll('inverse')">{{ 'Inverse' | translate }}</button>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- info -->
+<div ng-class="{true: 'col-md-8', false: 'col-md-12'}[hasSel()]">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Port' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center"><input type="checkbox" ng-model="multiSelAllCtl" ng-click="setCheckboxAll(multiSelAllCtl)"/></th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">{{ 'Port' | translate }}</th>
+                        <th class="text-center">{{ 'Mode' | translate }}</th>
+                        <th class="text-center">{{ 'PVID' | translate }}</th>
+                        <th class="text-center">{{ 'Permit VLAN' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in ifInfo">
+                        <th class="text-center"><input type="checkbox" ng-model="multiSel[$index]"/></th>
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ x.key | switchPort }}</td>
+                        <td class="text-center">{{x.vlan_type!='access' && x.vlan_type != 'trunk' ? 'routed' : x.vlan_type}}</td>
+                        <td class="text-center">{{ x.brgif.pvid }}</td>
+                        <td class="text-center">{{ x.brgif.allowed_vlan }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="access-trunk-multi-modify" class="col-md-4" ng-show="hasSel()">
+    <div class="panel panel-default ifFixed">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Modify' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form" name="AccessTrunkForm" novalidate>
+                <!-- Port -->
+                <div class="form-group">
+                    <label>{{ 'Port' | translate }}</label>
+                    <p>
+                        <span style="display: inline-block;" ng-repeat="x in selected.arrIndex">{{ ifInfo[x].key | switchPort }}&nbsp;</span>
+                    </p>
+                </div>
+
+                <!-- mode -->
+                <div class="form-group">
+                    <label>{{ 'Mode' | translate }}</label>
+                    <p>{{ selected.type }}</p>
+                </div>
+
+                <!-- PVID -->
+                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[AccessTrunkForm.pvid.$valid]">
+                    <label>PVID</label>
+                    <input class="form-control" type="number" name="pvid" ng-model="modify.pvid" placeholder="1~4094" ng-min="1" ng-max="4094" required/>
+                </div>
+
+                <!-- permit vlan -->
+                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[vlanRangeAvail()]" ng-if="selected.type == 'trunk'">
+                    <label>Permit VLAN</label>
+                    <input class="form-control" type="text" name="permitVlan" ng-model="modify.permitVlan" placeholder="eg: 2-5,7,10-20" required/>
+                </div>
+
+                <!-- submit -->
+                <button class="btn btn-primary" ng-disabled="AccessTrunkForm.$invalid || loading || AccessTrunkForm.pvid.$invalid || (!vlanRangeAvail() && select.type == 'trunk')" ng-click="modify()">OK</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+

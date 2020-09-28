@@ -1,0 +1,105 @@
+HAL-MSG-L3MC DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgL3mcPortStr
+    FROM HAL-MSG-L3TYPES    
+    ;
+
+
+HalMsgL3mcGroupInfoReq ::= SEQUENCE
+{
+    group	   INTEGER,
+    source         INTEGER,
+    groupMaskLen   INTEGER,
+    sourceMaskLen  INTEGER,
+    vrfId          INTEGER,
+    rpfIntf        INTEGER,
+    rpfIntfValid   INTEGER,
+    flag	   INTEGER,
+    groupid	   INTEGER,
+    statsid	   INTEGER,
+    memberNum      INTEGER,
+    vid 	   INTEGER,
+    l3Iftype	   INTEGER,
+    localMemberChipBmp INTEGER,
+    maxGchipNum    INTEGER,
+    gPort          HalMsgL3mcPortStr
+}
+
+HalMsgL3mcEntryStatPollReq ::= SEQUENCE
+{
+    group	   INTEGER,
+    source         INTEGER,
+    groupMaskLen   INTEGER,
+    sourceMaskLen  INTEGER,
+    statsid	   INTEGER    
+}
+
+HalMsgL3mcStatResponse ::= SEQUENCE
+{
+    group	   INTEGER,
+    source         INTEGER,
+    byteCnt	   OCTET STRING,
+    pktCnt         OCTET STRING
+}
+
+HalMsgMvrVlanMcEnReq ::= SEQUENCE
+{
+    l3ifId	   INTEGER,
+    isEn           INTEGER
+}
+
+HalMsgMvrVlanMcRpfEnReq ::= SEQUENCE
+{
+    l3ifId	   INTEGER,
+    isEn           INTEGER
+}
+HalMsgMvrNoMacLkpEnReq ::= SEQUENCE
+{
+    isEn           INTEGER
+}
+
+HalMsgL3mcAddDefaultEntryReq ::= SEQUENCE
+{
+    isIpv4En     INTEGER,
+    isIpv6En     INTEGER
+}
+
+HalMsgL3mcIPv6GroupInfoReq ::= SEQUENCE
+{
+    group	         PrintableString,
+    source         PrintableString,
+    groupMaskLen   INTEGER,
+    sourceMaskLen  INTEGER,
+    vrfId          INTEGER,
+    rpfIntf        INTEGER,
+    rpfIntfValid   INTEGER,
+    flag	         INTEGER,
+    groupid	       INTEGER,
+    statsid	       INTEGER,    
+    memberNum      INTEGER,
+    vid 	         INTEGER,
+    l3Iftype	     INTEGER,
+    localMemberChipBmp INTEGER,
+    maxGchipNum    INTEGER,
+    gPort          HalMsgL3mcPortStr
+}
+
+HalMsgL3mcIPv6EntryStatPollReq ::= SEQUENCE
+{
+    group	         PrintableString,
+    source         PrintableString,
+    groupMaskLen   INTEGER,
+    sourceMaskLen  INTEGER,
+    statsid	       INTEGER    
+}
+
+HalMsgL3mcIPv6StatResponse ::= SEQUENCE
+{
+    group	         PrintableString,
+    source         PrintableString,
+    byteCnt	       OCTET STRING,
+    pktCnt         OCTET STRING
+}
+
+END

@@ -1,0 +1,51 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <form name="PingForm" class="form form-inline" novalidate>
+            <div class="form-group">
+                <label>VRF ID:</label>
+                <select class="form-control" ng-model="selVrf" ng-options="x for x in vrfIds" name="selVrf"></select>
+            </div>
+
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[PingForm.count.$valid]">
+                <label>{{ 'Count' | translate }}</label>
+                <input class="form-control" type="number" ng-model="count" ng-min="1" ng-max="20" name="count" placeholder="1-20" required/>
+            </div>
+            <div class="form-group" ng-if= "selVrf=='default'">
+                <label>{{ 'Source IP' | translate }}</label>
+                <input class="form-control" type="text" ng-model="$parent.srcIP" name="srcIP" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required/>
+            </div>
+            <div class="form-group" ng-if= "selVrf=='default'" ng-click="iftable()">
+                <label>{{ 'Source Interface' }}</label>
+                <select class="form-control" ng-model="$parent.srcif" name="srcif"  ng-options="(m.full_name | switchPort) for m in $parent.ifname_all">
+                </select>
+            </div>
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[PingForm.destIP.$valid]">
+                <label>{{ 'Destination IP' | translate }}</label>
+                <input class="form-control" type="text" ng-model="destIP" name="destIP" ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" required/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" ng-disabled="loading || PingForm.$invalid" ng-click="ping()">OK</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Console' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!--
+        <table>
+            <tr ng-repeat="line in content">
+                <td>{{ line }}</td>
+            </tr>
+        </table>
+        -->
+        <textarea class="form-control" ng-model="content" rows="15"></textarea>
+    </div>
+</div>

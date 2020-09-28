@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+VRRP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+     <COMMAND name="show vrrp" help="VRRP information">
+        <PARAM name="vrid" help="Virtual router identifier" optional="true" ptype="VRRP_ID"/>
+        <ACTION>
+        cdbctl show/cdb/l3/show_vrrp/${vrid}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To display a brief or detailed status of one or all configured Virtual Router 
+Redundancy Protocol (VRRP) groups on the router, use the show vrrp command in 
+Privileged EXEC mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+If no group is specified, all groups are displayed
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample output from the show vrrp command:
+    Switch# show vrrp
+    vrrp version         : 3
+    vrrp session count   : 0
+    
+    VRID 1
+     State               : Master
+     Virtual IP          : 10.0.20.254(Not IP owner)
+     Interface           : eth-0-10
+     VMAC                : 0000.5e00.0101
+     Advt timer          : 1
+     Preempt mode        : TRUE
+     Conf pri            : 200            Run pri   : 200
+     Master router ip    : 10.0.20.1
+     Master priority     : 200            
+     Master advt timer   : 1
+     Master down timer   : 3
+     Preempt delay       : 100 second(s)
+     Learn master mode   : FALSE
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+    
+</VIEW>
+
+<VIEW name="Configure">
+
+    <COMMAND name="vrrp" help="Virtual Redundancy Routing Protocol (VRRP)"/>
+    
+    <COMMAND name="vrrp version" help="VRRP version">
+        <PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch" default="v2">
+            <PARAM name="v2" help="Specify the device to support V2 for VRRP(default is v2)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="v3" help="Specify the device to support V3 for VRRP" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+        if [ "v2" == ${value} ]; then
+            cdbctl update/cdb/l3/vrrp_global/vrrp_version/2
+        else
+            cdbctl update/cdb/l3/vrrp_global/vrrp_version/3
+        fi
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To set Virtual Router Redundancy Protocol (VRRP) version to version v2 or v3. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+vrrp version 2 
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample shows how to set vrrp version 2:
+    Switch(config)# vrrp version v2
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no vrrp" help="Virtual Redundancy Routing Protocol (VRRP)"/>
+
+    <COMMAND name="no vrrp version" help="VRRP version">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_global/vrrp_version/2
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To set Virtual Router Redundancy Protocol (VRRP) version to default value, version v2. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+vrrp version 2 
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample shows how to set vrrp version to default value:
+    Switch(config)# no vrrp version
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show vrrp
+        </CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="router vrrp" 
+        help="Virtual Redundancy Routing Protocol (VRRP)"
+        view="configure-router-view"
+		viewid="vrid=${vrid}">
+        <PARAM name="vrid" help="Virtual router identifier" ptype="VRRP_ID"/>
+        <ACTION>
+        cdbctl create/cdb/l3/vrrp_session/${vrid}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To create a Virtual Router Redundancy Protocol (VRRP) group, use the router vrrp 
+command in Global Configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+None
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None 
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample shows how to create a VRRP group:
+    Switch(config)# router vrrp 1
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no router vrrp" help="Start VRRP configuration">
+        <PARAM name="vrid" help="Virtual router identifier" ptype="VRRP_ID"/>
+        <ACTION>
+        cdbctl delete/cdb/l3/vrrp_session/${vrid}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To remove this VRRP group, use the no router vrrp. 
+        </CTCDESCRIPTION>		
+        <CTCUSAGE>
+None
+        </CTCUSAGE>		
+        <CTCDEFAULT>
+None 
+        </CTCDEFAULT>		
+        <CTCEXAMPLE>
+    The following is a sample shows how to delete a VRRP group:
+    Switch(config)# no router vrrp 1     
+        </CTCEXAMPLE>		
+        <CTCRCMD>
+show vrrp
+        </CTCRCMD>
+    </COMMAND>
+</VIEW>
+
+<VIEW name="configure-router-view"
+    prompt="${SYSTEM_NAME}(config-router)# "
+    depth="1">
+
+    <NAMESPACE ref="Exec"
+        prefix="do"
+        help="true"
+        completion="true"/>
+
+    <COMMAND name="exit"
+        help="End current mode and down to previous mode"
+        lock="false">
+        <ACTION builtin="clish_nested_up"/>
+    </COMMAND>
+
+    <COMMAND name="quit"
+        help="Exit current mode and down to previous mode"
+        lock="false">
+        <ACTION builtin="clish_nested_up"/>
+    </COMMAND>
+
+    <COMMAND name="no"
+        help="Negate a command or set its defaults">
+    </COMMAND>
+
+    <COMMAND name="advertisement-interval" help="Set advertisement interval">
+        <PARAM name="interval" help="Interval (in seconds), default is 1 second" ptype="VRRP_INTERVAL"/>
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/advt_interval/${interval}/sec
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To configure the interval between successive advertisements sent by the master 
+virtual router in a Virtual Router Redundancy Protocol (VRRP) group, use the 
+advertisement-interval command in router configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The advertisements sent by the master virtual router notify the state and priority 
+of the current master virtual router.
+The advertisement-interval command configures the time between successive 
+advertisement packets and the time before other routers declare the master router 
+to be down. Routers or access servers on which timer value are not configured can 
+learn timer values from the master router. The timers configured on the master 
+router always override any other timer settings. All routers in a VRRP group must 
+use the same timer value. If the same timer value is not set, the routers in the 
+VRRP group will not communicate with each other and any misconfigured router will 
+change its state to master.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+1 second
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample shows how to configure the master virtual router to 
+    send advertisements every 4 seconds:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# advertisement-interval 4
+        </CTCEXAMPLE>
+        <CTCRCMD>
+advertisement-interval msec
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no advertisement-interval" help="Set advertisement interval">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/advt_interval/1/sec
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To configure the interval between successive advertisements sent by the master 
+virtual router in a Virtual Router Redundancy Protocol (VRRP) group, use the 
+no advertisement-interval command in router configuration mode to restore the 
+default value.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The advertisements sent by the master virtual router notify the state and priority 
+of the current master virtual router.
+The advertisement-interval command configures the time between successive 
+advertisement packets and the time before other routers declare the master router 
+to be down. Routers or access servers on which timer value are not configured can 
+learn timer values from the master router. The timers configured on the master 
+router always override any other timer settings. All routers in a VRRP group must 
+use the same timer value. If the same timer value is not set, the routers in the 
+VRRP group will not communicate with each other and any misconfigured router will 
+change its state to master.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+1 second
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample shows how to configure vrrp advertisement interval
+    to default value 1 second:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# no advertisement-interval
+        </CTCEXAMPLE>
+        <CTCRCMD>
+advertisement-interval msec
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="advertisement-interval msec" help="Milli-second mode">
+        <PARAM name="interval" help="Interval (must be times of 100 milli-seconds)" ptype="VRRP_MSEC_INTERVAL"/>
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/advt_interval/${interval}/msec
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To configure the advertisement interval with milli-second mode between successive 
+advertisements sent by the master virtual router in a VRRP group, use the 
+advertisement-interval msec command in router configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The advertisements be sent by the master virtual router notify the state and 
+priority of the current master virtual router.
+The advertisement-interval msec command configures the time between successive 
+advertisement packets and the time before other routers declare the master router 
+to be down. Routers or access servers on which timer values are not configured can 
+learn timer values from the master router. The timers configured on the master 
+router always override any other timer settings. All routers in a VRRP group must 
+use the same timer value. If the same timer value is not set, the routers in the 
+VRRP group will not communicate with each other and any misconfigured router will 
+change its state to master.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+none
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the master virtual router to send 
+    advertisements every 100 milli-seconds:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# advertisement-interval msec 100
+        </CTCEXAMPLE>
+        <CTCRCMD>
+advertisement-interval
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="interface" help="interface IFNAME">
+        <PARAM name="if_id" help="Interface ID" ptype="IF_NAME_EAV"/>
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/ifname/${if_id}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To enable the Virtual Router Redundancy Protocol (VRRP) protocol on a specified 
+interface, use the interface command in router mode. To disable VRRP protocol on 
+this interface, use the no form of this command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The max VRRP group number should be no more than 3 for one VRRP interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+none
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample output from the interface command:
+    Switch(config)#router vrrp 1
+    Switch(config-router)#interface eth-0-1
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no interface" help="interface IFNAME">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/ifname/null
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To disable VRRP protocol on this interface, use the no interface in router mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The max VRRP group number should be no more than 3 for one VRRP interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+none
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following is a sample output from the interface command:
+    Switch(config)#router vrrp 1
+    Switch(config-router)#no interface
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="learnmaster-mode" help="Set learnmaster mode for the session">
+        <PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch" default="false">
+            <PARAM name="true" help="Learnmaster enabled" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="false" help="Learnmaster disabled(default)" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+        if [ "true" == ${value} ]; then
+            cdbctl update/cdb/l3/vrrp_session/${vrid}/learn_master/1
+        else
+            cdbctl update/cdb/l3/vrrp_session/${vrid}/learn_master/0
+        fi
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To enable the backup router to learn advertisement interval from master router, 
+use the learnmaster-mode true command in router mode.To disable learn advertisement 
+interval from master router, use the learnmaster-mode false. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+By default, backup router does not learn advertisement interval from master router.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default is false.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure a backup router learning 
+    advertisement interval from master router:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# learnmaster-mode true
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="preempt-mode" help="Set preempt mode for the session">
+        <PARAM name="value" help="Type" ptype="SUBCOMMAND" mode="switch" default="true">
+            <PARAM name="true" help="Preemption enabled(default)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="false" help="Preemption disabled" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+        if [ "true" == ${value} ]; then
+            cdbctl update/cdb/l3/vrrp_session/${vrid}/preempt_mode/1
+        else
+            cdbctl update/cdb/l3/vrrp_session/${vrid}/preempt_mode/0
+        fi
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To configure the router to take over as master virtual router for a Virtual Router 
+Redundancy Protocol (VRRP) group if it has higher priority than the current master 
+virtual router, use the preempt-mode true command in router mode. To disable this 
+function, use the preempt-mode disable command.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+By default, the router configured preempt-mode true will take over as master 
+virtual router for the group if it has a higher priority than the current master 
+virtual router.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default is true
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the router to preempt the current 
+    master virtual router when its priority of 200 is higher than that of the 
+    current master virtual router:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# preempt-mode true
+    Switch(config-router)# priority 200
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="preempt" help="Set preempt interval"/>
+    <COMMAND name="no preempt" help="Set preempt interval"/>
+
+    <COMMAND name="preempt delay" help="Interval time">
+        <PARAM name="delay" help="Interval (in seconds)" ptype="VRRP_DELAY_INTERVAL"/>
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/preempt_delay/${delay}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To configure the master down interval when preempt takes effect.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The original master down interval =(3*advt_interval) + skew_time. when preempt 
+delay time is configured, then master down interval =(3*advt_interval) + skew_time 
++ preempt_delay. By default, preempt delay is 0 second.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default is 0 second
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the router to preempt the current 
+    master virtual router when its priority of 200 is higher than that of the 
+    current master virtual router, but delay 30 seconds to preempt:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# preempt-mode true
+    Switch(config-router)# priority 200
+    Switch(config-router)# preempt delay 30
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no preempt delay" help="Interval time">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/preempt_delay/0
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To configure the master down interval when preempt takes effect.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+The original master down interval =(3*advt_interval) + skew_time. when preempt 
+delay time is configured, then master down interval =(3*advt_interval) + skew_time 
++ preempt_delay. By default, preempt delay is 0 second.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default is 0 second
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure preempt delay to default value 
+    0 second:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# no preempt delay
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="virtual-ip" help="Set virtual IP address for the virtual router">
+        <PARAM name="ip_addr" help="IP address" ptype="IP_ADDR"/>
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/vip/${ip_addr}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To enable the Virtual Router Redundancy Protocol (VRRP) on an interface and 
+identify the IP address of the virtual router, use the virtual-ip command in router
+configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+For VRRP to elect a designated router, at least one router on the cable must have 
+been configured with the primary address of the virtual router.VRRP does not 
+support address learning. All addresses must be configured.
+All routers in the VRRP group must be configured with the same primary address for 
+the virtual router. If different primary addresses are configured, the routers in 
+the VRRP group will not communicate with each other and any mis-configured routers 
+in the group will change their state to master.
+The virtual IP address must be in the same subnet with VRRP interface, and if 
+virtual IP is equal to the interface IP address, it is called IP address owner.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure virtual ip:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# virtual-ip 10.0.1.20
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>        
+    </COMMAND>
+
+    <COMMAND name="no virtual-ip" help="Set virtual IP address for the virtual router">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/vip/null
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To remove the IP address of the virtual router, use no virtual-ip.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+To remove the IP address of the virtual router, use no virtual-ip.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to remove virtual-ip:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# no virtual-ip
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="enable" help="Enable VRRP session">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/enable/1
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To enable a VRRP session, use the enable command in router configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+To enable a VRRP session, use the enable command in router configuration mode.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Disabled
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to enable vrrp:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# enable
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>        
+    </COMMAND>
+
+    <COMMAND name="disable" help="Disable VRRP session">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/enable/0
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To disable a VRRP session, use the disable command in router configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+To disable a VRRP session, use the disable command in router configuration mode.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Disabled
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to disable vrrp:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# disable
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>        
+    </COMMAND>
+
+    <COMMAND name="priority" help="Set router priority within virtual router">
+        <PARAM name="value" help="Priority (should be 255 if own virtual IP address), default is 100" ptype="VRRP_PRIORITY"/>
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/config_priority/${value}
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To set the priority level of the router within a Virtual Router Redundancy Protocol
+(VRRP) group, use the priority command in router configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to control which router becomes the master virtual router.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default is 100.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the router with a priority of 254:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# priority 254
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no priority" help="Set router priority within virtual router">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/config_priority/100
+        </ACTION>
+				
+        <CTCDESCRIPTION>
+To remove  the priority level of the router within a Virtual Router Redundancy 
+Protocol(VRRP) group, use the no priority command in router configuration mode. 
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to control which router becomes the master virtual router.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+Default is 100.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the router priority to default value:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# no priority
+        </CTCEXAMPLE>
+        <CTCRCMD>
+router vrrp
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="track" help="Enable a track object">
+        <PARAM name="object_id" help="Track object indentifier" ptype="TRACK_OBJECT_ID"/>
+        <PARAM name="decrement" optional="true" help="mode" ptype="SUBCOMMAND" mode="subcommand">
+            <PARAM name="priority_delta" help="Priority decrement" ptype="VRRP_PRIORITY_DELTA"/>
+        </PARAM>
+
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/trackobj_id/${object_id}/${priority_delta}/
+        </ACTION>
+
+        <CTCDESCRIPTION>
+To set the track object and priority decrement of a vrrp session, use the priority command in router configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to set the track object and priority decrement of a vrrp session.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the router with a priority of 254:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# track 1 decrement 20
+        </CTCEXAMPLE>
+        <CTCRCMD>
+no track
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no track" help="Disable a track object">
+        <ACTION>
+        cdbctl update/cdb/l3/vrrp_session/${vrid}/trackobj_id
+        </ACTION>
+
+        <CTCDESCRIPTION>
+To remove the track object and priority decrement of a vrrp session, use the priority command in router configuration mode, use the no priority command in router configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to remove the track object and priority decrement of a vrrp session.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure the router priority to default value:
+    Switch(config)# router vrrp 1
+    Switch(config-router)# no track
+        </CTCEXAMPLE>
+        <CTCRCMD>
+track
+        </CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+</CLISH_MODULE>

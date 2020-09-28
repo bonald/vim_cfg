@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+IPUC_V6
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+    <COMMAND name="show ipv6" help="Internet Protocol version 6 (IPv6)" lock="false" interrupt="true"/>
+    <COMMAND name="show ipv6 route" help="Route info" lock="false" interrupt="true">
+        <PARAM name="route_type" help="route_type" optional="true" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="ip" help="IPv6 address (e.g. fe80::1)" ptype="IPV6_ADDR"/>
+            <PARAM name="ip_prefix" help="IPv6 address and prefix length (e.g. 3ffe:506::1/48)" ptype="IPV6_ADDR_MASK"/>
+            <PARAM name="connected" help="Connected" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="static" help="Static routes" ptype="SUBCOMMAND" mode="subcommand" />
+            <PARAM name="summary" help="Summary of all routes" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+            cdbctl update/cdb/l3/show_ipv6_route
+            if [ "$?" != "0" ]; then
+                exit 1
+            fi
+            
+            if [ "${route_type}" == "ip" ]; then
+                vtysh -c "show ipv6 route ${ip}"
+            elif [ "${route_type}" == "ip_prefix" ]; then
+                vtysh -c "show ipv6 route ${ip_prefix}"
+            elif [ "${route_type}" == "add-fib-fail" ]; then
+                cdbctl show/cdb/l3/show_ipv6_route/${route_type}
+            else
+                vtysh -c "show ipv6 route ${route_type}"
+            fi
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to show the IPv6 routes.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to show the IPv6 routes.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows the IPv6 routes:
+    Switch#  show ipv6 route
+    Codes: C - connected, S - static, R - RIPng,
+           O - OSPFv6, I - IS-IS, B - BGP,
+           > - selected route, * - FIB route,
+           [*] - [AD/Metric]
+
+    S   3000::/48 [1/0] via 2000::1 inactive
+        </CTCEXAMPLE>
+        <CTCRCMD>
+ipv6 route
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show ipv6 route add-fib-fail" help="Routes not in hardware" lock="false" interrupt="true" hidden="true">
+        <ACTION>
+            cdbctl update/cdb/l3/show_ipv6_route
+            if [ "$?" != "0" ]; then
+                exit 1
+            fi
+            
+            cdbctl show/cdb/l3/show_ipv6_route/add-fib-fail
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="show ipv6 interface" help="IPv6 interface status and configuration">
+        <PARAM name="route_type" help="route_type" optional="true" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="iface_name" help="Interface name" ptype="IF_NAME_ALL" default="all">
+                <PARAM name="brief" help="Brief summary of IPv6 status and configuration" ptype="SUBCOMMAND" mode="subcommand" optional="true" />
+            </PARAM>
+            <PARAM name="brief" help="Brief summary of IPv6 status and configuration" ptype="SUBCOMMAND" mode="subcommand" />
+        </PARAM>
+        <ACTION>
+            cdbctl show/cdb/l3/show_ipv6_if_brief/${iface_name}/${brief}
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to show the IPv6 statues on the interface.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to show the IPv6 statues on the interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+None
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows the IPv6 statues:
+    Switch#  show ipv6 interface
+    Interface eth-0-1
+      Interface current state: UP
+      The maximum transmit unit is 1500 bytes
+      IPv6 is enabled, link-local address is fe80::327c:c0ff:fe6f:5f00
+      Global unicast address(es):
+        2000::1, subnet is 2000::/48
+      ICMP redirects are always sent
+      ND DAD is enabled, number of DAD attempts: 1
+      ND router advertisement is disabled
+      ND reachable time is 30000 milliseconds
+      ND advertised reachable time is 30000 milliseconds
+      ND retransmit interval is 1000 milliseconds
+      ND advertised retransmit interval is 0 milliseconds
+      ND router advertisements max interval: 600 secs
+      ND router advertisements min interval: 198 secs
+      ND router advertisements live for 1800 seconds
+      ND router advertisements hop-limit is 0
+      Hosts use stateless autoconfig for addresses
+        </CTCEXAMPLE>
+        <CTCRCMD>
+ipv6 address
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear ipv6 route" help="Establish static routes" hidden="true">
+        <PARAM name="static" help="Static routes" ptype="SUBCOMMAND" mode="subcommand" hidden="true"/>
+        <ACTION>
+            cdbctl update/cdb/l3/clear_ipv6_route_static
+        </ACTION>
+    </COMMAND>
+</VIEW>
+
+
+<VIEW name="Configure">
+    <COMMAND name="ipv6" help="Internet Protocol version 6 (IPv6)"/>
+
+    <COMMAND name="no ipv6" help="Internet Protocol version 6 (IPv6)"/>
+
+    <COMMAND name="ipv6 route" help="Establish static routes">
+        <PARAM name="ipv6"   help="IPv6 destination prefix (e.g. 3ffe:506::/32)" ptype="IPV6_ADDR_MASK"/>
+        <PARAM name="part" help="Part" ptype="SUBCOMMAND" mode="switch" default = "all">
+            <PARAM name="ipv6_gw" help="IPv6 address of next-hop" ptype="IPV6_ADDR"/>
+            <PARAM name="null" help="Null interface" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="null_value" help="Port number" optional="false" test='"${ipv6_gw}"=""' ptype="NULL_INTERFACE_NUMBER"/>
+            </PARAM>
+        </PARAM>
+        <PARAM name="route_type" help="route_type" optional="true" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="distance" help="Distance value, default is 1" ptype="DISTANCE"/>
+            <PARAM name="iface_name" help="Interface name" test='"${null_value}"=""' ptype="IF_NAME_EAV">
+                <PARAM name="distance" help="Distance value, default is 1" optional="true" ptype="DISTANCE"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ "ipv6_gw" == ${part} ]; then
+                cdbctl create/cdb/l3/static_route_cfg/ipv6/${ipv6}/ipv6_gw/${ipv6_gw}/distance/${distance}/interface/${iface_name}
+	     else
+		  cdbctl create/cdb/l3/static_route_cfg/ipv6/${ipv6}/null/${null_value}/distance/${distance}/interface/${iface_name}
+	     fi
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to establish IPv6 static routes in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+If the next-hop address is link-local address, output interface is needed to assign.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+By default, there is not any static IPv6 route configured.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure IPv6 static route:
+    Switch(config)# ipv6 route 3001::1/64 fe80::1234 eth-0-2
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show ipv6 route
+        </CTCRCMD>
+    </COMMAND>
+	
+
+    <COMMAND name="no ipv6 route" help="Establish static routes">
+        <PARAM name="ipv6"   help="IPv6 destination prefix (e.g. 3ffe:506::/32)" ptype="IPV6_ADDR_MASK"/>
+        <PARAM name="part" help="Part" ptype="SUBCOMMAND" optional="true" mode="switch" default = "all">
+            <PARAM name="ipv6_gw" help="IPv6 address of next-hop" optional="true" ptype="IPV6_ADDR">
+                <PARAM name="iface_name" help="Interface name" ptype="IF_NAME_EAV" optional="true"/>
+            </PARAM>
+            <PARAM name="null" help="Null interface" ptype="SUBCOMMAND" optional="true" mode="subcommand">
+                <PARAM name="null_value" help="Port number" optional="false" test='"${ipv6_gw}"=""' ptype="NULL_INTERFACE_NUMBER"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+         if [ "ipv6_gw" == ${part} ]; then
+                cdbctl delete/cdb/l3/static_route_cfg/ipv6/${ipv6}/ipv6_gw/${ipv6_gw}/interface/${iface_name}
+	  else
+		  cdbctl delete/cdb/l3/static_route_cfg/ipv6/${ipv6}/null/${null_value}/interface/${iface_name}
+	  fi
+            
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to remove IPv6 static routes in global configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+If the next-hop address not assign, it will delete all of static routes whose destination address matches.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+By default, there is not any static IPv6 route configured.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to remove IPv6 static route:
+    Switch(config)# no ipv6 route 3001::1/64 fe80::1234 eth-0-2
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show ipv6 route
+        </CTCRCMD>
+    </COMMAND>
+</VIEW>
+
+<VIEW name="configure-if-view">
+    <COMMAND name="ipv6" help="Internet Protocol version 6 (IPv6)"/>
+    <COMMAND name="no ipv6" help="Internet Protocol version 6 (IPv6)"/>
+
+    <COMMAND name="ipv6 address" help="Set the IPv6 address of an interface">
+        <PARAM name="address_type" help="address_type" optional="false" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="ip_prefix" help="IPv6 address and prefix length (e.g. 3ffe:506::1/48)" ptype="IPV6_ADDR_MASK">
+                <PARAM name="eui-64" help="Use eui-64 interface identifier" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="ip" help="IPv6 address (e.g. fe80::1)" ptype="IPV6_ADDR">
+                <PARAM name="link-local" help="Use link-local address" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="auto" help="Automatically generate link-local address" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="link-local" help="Link-local address" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            if [ "${address_type}" == "ip_prefix" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv6/add/${address_type}/${ip_prefix}/${eui-64}
+            elif [ "${address_type}" == "ip" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv6/add/${address_type}/${ip}
+            else
+                cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv6/add/${address_type}
+            fi
+            
+            if [ "$?" != "0" ]; then
+            	exit 1
+            else
+            	usleep 100000
+            fi	
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to set an IPv6 address for an interface in interface configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This configuration should not affect the ipv4 functions and other IPv6 configuration on the interface.
+The maximum count of the Link-local address is 1; the maximum count of the global address is 8.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+By default, there is not any IPv6 address.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to configure IPv6 address:
+    Switch(config-if-eth-0-1)# ipv6 address fe80::1233 link-local
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show ipv6 interface
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ipv6 address" help="Unset the IPv6 address of an interface">
+        <PARAM name="address_type" help="address_type" optional="true" ptype="SUBCOMMAND" mode="switch" default="all">
+            <PARAM name="ip_prefix" help="IPv6 address and prefix length (e.g. 3ffe:506::1/48)" ptype="IPV6_ADDR_MASK">
+                <PARAM name="eui-64" help="Use eui-64 interface identifier" optional="true" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="ip" help="IPv6 address (e.g. fe80::1)" ptype="IPV6_ADDR">
+                <PARAM name="link-local" help="Use link-local address" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+            <PARAM name="auto" help="Automatically generate link-local address" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="link-local" help="Link-local address" ptype="SUBCOMMAND" mode="subcommand"/>
+            </PARAM>
+        </PARAM>
+        <ACTION>
+            tmpfile="`mktemp /tmp/clearXXXXXX`"
+            cdbctl read/cdb/l3/route_if/${iface} | grep -E "dhcp_client_enable=1" > $tmpfile
+
+            if [ "$?" == "0" -a "${ip}" == "all" -a "${secondary}" == "" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/dhcp_client_enable/0
+                rm -fr $tmpfile
+                exit 0; 
+            fi
+            rm -fr $tmpfile
+      
+            if [ "${address_type}" == "ip_prefix" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv6/del/${address_type}/${ip_prefix}/${eui-64}
+            elif [ "${address_type}" == "ip" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv6/del/${address_type}/${ip}
+            else
+                cdbctl update/cdb/l3/route_if/${iface}/ifc_ipv6/del/${address_type}
+            fi
+            
+            	if [ "$?" != "0" ]; then
+            		exit 1
+            	else
+            		usleep 100000
+            	fi
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to remove an IPv6 address for an interface in interface configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+This configuration should not affect the ipv4 functions and other IPv6 configuration on the interface.
+The maximum count of the Link-local address is 1; the maximum count of the global address is 8.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+By default, there is not any IPv6 address.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to remove an IPv6 address:
+    Switch(config-if-eth-0-1)# no ipv6 address fe80::1233 link-local
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show ipv6 interface
+        </CTCRCMD>
+    </COMMAND>
+    
+    <COMMAND name="ipv6 verify" help="Reverse-path check">
+        <PARAM name="unicast" help="IPv6 unicast" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="reverse-path" help="Reverse-path" ptype="SUBCOMMAND" mode="subcommand"/>
+        <ACTION>
+            cdbctl update/cdb/l3/route_if/${iface}/unicast_rpf_en_v6/1
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to enable URPF (unicast reverse path forwarding) on the interface in interface configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to enable URPF (unicast reverse path forwarding) on the interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+By default, URPF is disabled.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to enable URPF:
+    Switch(config-if-eth-0-1)# ipv6 verify unicast reverse-path
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show ipv6 interface
+        </CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="no ipv6 verify" help="Reverse-path check">
+        <PARAM name="unicast" help="IPv6 unicast" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="reverse-path" help="Reverse-path" ptype="SUBCOMMAND" mode="subcommand"/>
+        <ACTION>
+            cdbctl update/cdb/l3/route_if/${iface}/unicast_rpf_en_v6/0
+        </ACTION>
+        <CTCDESCRIPTION>
+Use this command to disable URPF (unicast reverse path forwarding) on the interface in interface configuration mode.
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+Use this command to disable URPF (unicast reverse path forwarding) on the interface.
+        </CTCUSAGE>
+        <CTCDEFAULT>
+By default, URPF is disabled.
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+    The following example shows how to disable URPF:
+    Switch(config-if-eth-0-1)# no ipv6 verify unicast reverse-path
+        </CTCEXAMPLE>
+        <CTCRCMD>
+show ipv6 interface
+        </CTCRCMD>
+    </COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

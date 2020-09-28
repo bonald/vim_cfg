@@ -1,0 +1,21 @@
+ifeq ($(OS_TYPE),cnos)
+CPPFLAGS += -I$(CTC_LIB_DIR)/include
+CPPFLAGS += -I$(TOP_DIR)/lib/sal/include
+CPPFLAGS += -I$(TOP_DIR)/lib/util/include
+CPPFLAGS += -I$(TOP_DIR)/lib/task
+CPPFLAGS += -I$(TOP_DIR)/lib/genlog
+CPPFLAGS += -I$(SDK_DIR)/core/api/include
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+CPPFLAGS += -I$(SDK_DIR)/core
+CPPFLAGS += -I$(DRV_TOP_DIR)
+else
+CPPFLAGS += -I$(TOP_DIR)/include
+CPPFLAGS += -I$(TOP_DIR)/sal/include
+CPPFLAGS += -I$(TOP_DIR)/lib/util/include
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/core/api/include
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+CPPFLAGS += -I$(SDK_DIR)/core/init
+CPPFLAGS += -I$(SDK_DIR)/core
+CPPFLAGS += -I$(DRV_TOP_DIR)
+endif

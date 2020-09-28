@@ -1,0 +1,220 @@
+-- Imports declare
+
+ADT DEFINITIONS ::= BEGIN
+
+IMPORTS
+      SnmpAdminString
+      FROM SNMP-FRAMEWORK-MIB
+      
+      ifIndex
+      FROM RFC1213-MIB
+      
+      DisplayString, TimeTicks, Counter32, OBJECT-IDENTITY,
+      mib-2, MODULE-IDENTITY, IpAddress, Counter64,
+      Unsigned32, Integer32, Gauge32, OBJECT-TYPE,
+      NOTIFICATION-TYPE
+      FROM SNMPv2-SMI
+
+      OwnerString
+      FROM RMON-MIB
+      
+      NOTIFICATION-GROUP, MODULE-COMPLIANCE, OBJECT-GROUP
+      FROM SNMPv2-CONF
+      
+      InetAddressPrefixLength, InetAddress, InetAddressType
+      FROM INET-ADDRESS-MIB
+      
+      InterfaceIndex, InterfaceIndexOrZero, ifIndex
+      FROM IF-MIB
+      
+      VrId
+      FROM VRRP-MIB      
+      
+      TestAndIncr, TimeStamp, AutonomousType, DisplayString,
+      PhysAddress, TEXTUAL-CONVENTION, TruthValue, DateAndTime,
+      MacAddress, RowStatus
+        FROM SNMPv2-TC
+      
+      enterprises
+        FROM SNMPv2-SMI;
+        
+-- Child OID declare
+
+     adt MODULE-IDENTITY
+       LAST-UPDATED "200505160000Z" -- May 16, 2005
+       ORGANIZATION "IETF IP Version 6 (IPv6) Working Group"
+       CONTACT-INFO
+               "Allied Data Technologies."
+       DESCRIPTION
+               "Allied Data Technologies."
+
+       REVISION     "200505160000Z" -- May 16, 2005
+       DESCRIPTION
+               "Allied Data Technologies."
+       REVISION     "199908241200Z" -- August 24, 1999
+       DESCRIPTION
+               "Allied Data Technologies."
+      ::= { enterprises 1549 }
+
+------------------------------------------------------------------
+--                      ADT Identifiers              --
+------------------------------------------------------------------
+
+adtSwitch                 OBJECT IDENTIFIER ::= { adt 27975 }
+
+switch                    OBJECT IDENTIFIER ::= { adtSwitch 1 }
+	
+product                   OBJECT IDENTIFIER ::= { switch 1 }
+system                    OBJECT IDENTIFIER ::= { switch 2 }
+traps                     OBJECT IDENTIFIER ::= { switch 3 }
+common                    OBJECT IDENTIFIER ::= { switch 4 }
+
+ 
+memory                    OBJECT IDENTIFIER ::= { system 1 }
+systemStats               OBJECT IDENTIFIER ::= { system 2 }
+operate                   OBJECT IDENTIFIER ::= { system 3 }
+--sysImageTable             OBJECT IDENTIFIER ::= { system 4 }
+sysImageTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE  OF SysImageEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION
+        "The system image management table."
+    ::= { system 4 }
+
+flash                     OBJECT IDENTIFIER ::= { system 5 }
+cf                        OBJECT IDENTIFIER ::= { system 6 }
+sysTrap                   OBJECT IDENTIFIER ::= { system 7 }
+time                      OBJECT IDENTIFIER ::= { system 8 }
+
+
+syslog                    OBJECT IDENTIFIER ::= { common 2 }
+mirror                    OBJECT IDENTIFIER ::= { common 3 }
+portSecurity              OBJECT IDENTIFIER ::= { common 4 }
+stormControl              OBJECT IDENTIFIER ::= { common 5 }
+ntp                       OBJECT IDENTIFIER ::= { common 6 }
+acl                       OBJECT IDENTIFIER ::= { common 7 }
+qos                       OBJECT IDENTIFIER ::= { common 8 }
+igsp                      OBJECT IDENTIFIER ::= { common 9 }
+linkAgg                   OBJECT IDENTIFIER ::= { common 10 }
+qBridgeExt                OBJECT IDENTIFIER ::= { common 11 }
+dot1xExt                  OBJECT IDENTIFIER ::= { common 12 }
+timeRange                 OBJECT IDENTIFIER ::= { common 13 }
+stpExt                    OBJECT IDENTIFIER ::= { common 14 }
+igmpExt                   OBJECT IDENTIFIER ::= { common 16 }
+boardHealthyMonitor       OBJECT IDENTIFIER ::= { common 17 }
+arpInsp                   OBJECT IDENTIFIER ::= { common 20 }
+pimsmExt                  OBJECT IDENTIFIER ::= { common 21 }
+ospfExt                   OBJECT IDENTIFIER ::= { common 22 }
+user                      OBJECT IDENTIFIER ::= { common 30 }
+snmpExt                   OBJECT IDENTIFIER ::= { common 32 }
+stm                       OBJECT IDENTIFIER ::= { common 33 }
+dnsClient                 OBJECT IDENTIFIER ::= { common 34 }
+ssh                       OBJECT IDENTIFIER ::= { common 35 }
+dhcp                      OBJECT IDENTIFIER ::= { common 36 }
+lswdevMMib                OBJECT IDENTIFIER ::= { common 37 }
+lswTrapMib                OBJECT IDENTIFIER ::= { common 39 }
+ipSourceGuard             OBJECT IDENTIFIER ::= { common 40 }
+interface                 OBJECT IDENTIFIER ::= { common 42 }
+management                OBJECT IDENTIFIER ::= { common 43 }
+mvr                       OBJECT IDENTIFIER ::= { common 44 }
+erps                      OBJECT IDENTIFIER ::= { common 45 }
+prefixList                OBJECT IDENTIFIER ::= { common 46 }
+ipUnicast                 OBJECT IDENTIFIER ::= { common 47 }
+vrf                       OBJECT IDENTIFIER ::= { common 48 }
+aaa                       OBJECT IDENTIFIER ::= { common 49 }
+evc                       OBJECT IDENTIFIER ::= { common 51 }
+qinq                      OBJECT IDENTIFIER ::= { common 52 }
+rmonExt                   OBJECT IDENTIFIER ::= { common 53 }
+routeMap                  OBJECT IDENTIFIER ::= { common 54 }
+ripExt                    OBJECT IDENTIFIER ::= { common 57 }
+ldpExt                    OBJECT IDENTIFIER ::= { common 60 }
+bgp                       OBJECT IDENTIFIER ::= { common 68 }
+mpls                      OBJECT IDENTIFIER ::= { common 69 }
+smartlink                 OBJECT IDENTIFIER ::= { common 70 }
+flowctrl                  OBJECT IDENTIFIER ::= { common 71 }
+cputraffic                OBJECT IDENTIFIER ::= { common 72 }
+portisolate               OBJECT IDENTIFIER ::= { common 73 }
+phyloopback               OBJECT IDENTIFIER ::= { common 74 }
+monitorlink               OBJECT IDENTIFIER ::= { common 75 }
+
+
+
+-- Module declares
+-- Sub Module: product
+
+	e3008TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,8ts."
+	    ::= { product 3080 } 
+	    
+	e30016TX OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,16tx."
+	    ::= { product 3160 }
+	
+	e30024TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,24ts."
+	    ::= { product 3240 }
+	
+	e30024ST OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,24st."
+	    ::= { product 3241 }
+	
+	e30048TS OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E300,48ts."
+	    ::= { product 3480 }
+	    
+	e33048T OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E330,48t."
+	    ::= { product 3485 }
+	    
+	e602 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,2 slots."
+	    ::= { product 6020 }  
+	
+	e606 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,6 slots."
+	    ::= { product 6060 }  
+	
+	e614 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E600,14 slots."
+	    ::= { product 6140 }  
+	       
+	e802 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,2 slots"
+	    ::= { product 8020 } 
+	
+	e806 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,6 slots"
+	    ::= { product 8060 } 
+	
+	e814 OBJECT-IDENTITY
+		STATUS	current
+		DESCRIPTION
+	        "E800,14 slots"
+	    ::= { product 8140 } 
+	             
+
+
+

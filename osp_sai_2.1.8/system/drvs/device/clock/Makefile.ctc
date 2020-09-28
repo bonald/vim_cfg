@@ -1,0 +1,13 @@
+SRCS += $(wildcard device/clock/*.c)
+
+include $(MK_DIR)/sys.mk
+LIB = clock
+SRCS += $(wildcard *.c)
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/clock
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+
+include $(MK_DIR)/lib.mk

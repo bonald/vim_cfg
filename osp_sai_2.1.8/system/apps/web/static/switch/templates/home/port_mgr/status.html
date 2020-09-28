@@ -1,0 +1,482 @@
+<!-- global conf -->
+<div class="panel panel-default" ng-show='display_combo == true'>
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'Switch Port Type'  | translate }}</div>
+                <div class="col-md-2">
+                <!--
+                    <btn-switch switch-state="enable_aaa" switch-on-change="updateAAAState()" ></btn-switch>  -->
+                    <select class="form-control"  ng-model="portType" ng-options="m for m in portSwitchType"  ng-change="switchPortType()">
+                    </select>
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<!-- info -->
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Port' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+
+                        <th>{{'Port' | translate}}</th>
+                		<th>{{'Status' | translate}}</th>
+                		<th>{{'Duplex' | translate}}</th>
+                        <th ng-show="System_product == 'Tap-350' || System_product == 'Tap-580' || System_product == 'Tap-550' || System_product == 'Tap-530'">{{'Svlan-tpid' | translate}}</th>
+                		<th>{{'Speed' | translate}}</th>
+               		    <th ng-show="Sysinfo.isCnosProduct" >{{'Vlan-Type' | translate}}</th>
+                		<th>{{'Phy-Type'| translate}}</th>
+                        <th ng-show="System_product == 'Tap-350' || System_product == 'Tap-580' || System_product == 'Tap-550' || System_product == 'Tap-530'" >{{'Filter'| translate}}</th>
+               		    <th>{{'Description' | translate}}</th>
+
+                        <th ng-show="Sysinfo.isCnosProduct">{{'Mode' | translate}}</th>
+                        <th ng-show="Sysinfo.isCnosProduct">{{'jumboframe' | translate}}</th>
+                        <th ng-show="System_product != 'Tap-350' && System_product != 'CNOS-350'">{{'Split' | translate}}</th>
+               		    <th class="col-md-1">{{'Enable' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr ng-repeat="x in if">
+
+                            <td>{{x.full_name | switchPort }}</td>
+                            <td>{{(x.up=='1'&&x.running=='1')?'up':((x.up=='1'&&x.running!='1')?'down':'admin down')}}</td>
+
+                            <td><a href="javascript:;" ng-click="viewDuplexDetail(x)">{{ x.duplex }}</a></td>
+                            <td ng-show="System_product == 'Tap-350' || System_product == 'Tap-580' || System_product == 'Tap-550' || System_product == 'Tap-530'"><a href="javascript:;" ng-click="viewSvlanTpidDetail(x)">{{ (x.hw_type!='LAG')?x.svlan_tpid_mode:"N/A" }}</a></td>
+                            <td><a href="javascript:;" ng-click="viewSpeedDetail(x)">{{ x.speed }}</a></td>
+                            <td ng-show="Sysinfo.isCnosProduct"><a href="javascript:;" ng-click="viewVlanTypeDetail(x)">{{x.vlan_type!='access'&&x.vlan_type!='trunk'?'N/A':x.vlan_type}}</a></td>
+                            <td>{{x.phy_type}}</td>
+                            <td ng-show="System_product == 'Tap-350' || System_product == 'Tap-580' || System_product == 'Tap-550' || System_product == 'Tap-530'"><a href="javascript:;" ng-click="viewFlowDetail(x)">{{ (x.egs_acl=='')?'N/A':x.egs_acl }}</a></td>
+                            <td><a href="javascript:;" ng-click="viewDetailDescription(x)">{{ (x.desc.length!=0)?x.desc:"N/A" }}</a></td>
+
+                            <td ng-show="Sysinfo.isCnosProduct"><a href="javascript:;" ng-click="viewProtocolModeDetail(x)">{{ x.mode }}</a></td>
+                            <td ng-show="Sysinfo.isCnosProduct"><a href="javascript:;" ng-click="viewJumboDetail(x)">{{ (x.jumboframe_en=="1")?"Yes":"No" }}</a></td>
+                            <td ng-show="System_product != 'Tap-350' && System_product != 'CNOS-350'"><a href="javascript:;" ng-click="viewDetailPortSplist(x)">{{ (x.split_type=="splited")?"Yes":(x.split_type=="not_split")?"No":"N/A" }}</a></td>
+                            <td><btn-switch switch-state="x.up == 1 ? true : false" switch-on-change="setPortStatus(x)" switch-disabled="loading"></btn-switch></td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Port Flow -->
+<div class="modal fade" id="portFlowModal"  ng-init=" ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portFlowConfForm" name="portFlowConfForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                            <div class="col-md-3">{{ 'Enable'  | translate }}</div>
+                            <div class="col-md-6" ng-class="{true: 'has-success', false: 'has-error'}[portFlowConfForm.flowEn.$valid]">
+                                <btn-switch switch-state="portFlowEn" name="flowEn" switch-on-change="setPortFlowEn()" ></btn-switch>
+                            </div>
+                        </dd> 
+
+                        <dd class="row" style="margin-top: 10px;" ng-show='portFlowEn != false'>
+                            <div class="col-md-3">{{ 'Flow Name'  | translate }}</div>
+                            <div class="col-md-6" ng-class="{true: 'has-success', false: 'has-error'}[portFlowConfForm.flowName.$valid]">
+                                <select class="form-control"  ng-model="portFlowName" name="flowName" ng-options="entry.key for entry in flow_arr" ng-change="selectPortFlow(name)">
+                                </select> 
+                            </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setFlowOne()" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Split  -->
+<div class="modal fade" id="portSplitModal"  ng-init="split_type = '10giga'">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName | switchPort }}</h4>
+                <span class="label label-warning">Notice:Configuration should be written in startup-config, and take effect at next reload</span>
+            </div>
+
+            <div class="modal-body", ng-show="dispPort.split_type=='splited' && split_cfg_has_changed==false ">
+                <form id="portDescriptionForm" name="portDescriptionForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div  class="text-center">{{ 'Current port status is split,are you sure to aggregate port ?'  | translate }}</div>
+                        </dd> 
+                    </dl>  
+                </form>
+            </div>
+
+            <div class="modal-body", ng-show="dispPort.split_type=='splited' && split_cfg_has_changed==true ">
+                <form id="portDescriptionForm" name="portDescriptionForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div  class="text-center">{{ 'Current port status is aggregate,are you sure to split port ?'  | translate }}</div>
+                        </dd> 
+                    </dl>  
+                </form>
+            </div>
+
+            <div class="modal-body", ng-show="dispPort.split_type=='not_split'">
+                <form id="portDescriptionForm" name="portDescriptionForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-3">{{ 'Split Port'  | translate }}</div>
+                        <div class="col-md-6" >
+                             <select class="form-control"  ng-model="split_type" ng-options="m for m in portSplitType">
+                                </select>   
+                        </div>
+                        </dd> 
+                    </dl>  
+                </form>
+            </div>
+
+            <div class="modal-body", ng-show="dispPort.split_type=='not_support'">
+                <form id="portDescriptionForm" name="portDescriptionForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div  class="text-center"> {{ dispPortName | switchPort }} Not support split, please select other port </div>
+
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click=" aggregatePort()" ng-show=" dispPort.split_type=='splited' && split_cfg_has_changed==false ">
+                    
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="clearAggregatePort()" ng-show=" dispPort.split_type=='splited' && split_cfg_has_changed==true ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="splitPort()"  ng-show="dispPort.split_type=='not_split' && split_cfg_has_changed==false ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="clearSplitPort()" ng-show=" dispPort.split_type=='not_split' && split_cfg_has_changed==true ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'Clear' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="closeSplitMoal()">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Description  -->
+<div class="modal fade" id="portDescriptionModal"  ng-init="portDescriptionForm.portDescription = ''">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName | switchPort }}</h4>
+            </div>
+
+
+            <div class="modal-body" ng-show="true">
+                <form id="portDescriptionForm" name="portDescriptionForm" class="form"  novalidate>  
+                    <dl >
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-3">{{ 'Enable'  | translate }}</div>
+                        <div class="col-md-6" >
+                            <btn-switch switch-state="portDescriptionEnable" switch-on-change="portDescriptionEnFun()" ></btn-switch>
+                        </div>
+                        </dd> 
+                    </dl>  
+
+                    <dl ng-show="portDescriptionEnable">
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-3">{{ 'Description'  | translate }}</div>
+                        <div class="col-md-6" ng-class="{true: 'has-success', false: 'has-error'}[portDescriptionForm.portDescription.$valid]">
+                            <input type="text" name="portDescription" class="form-control" placeholder="Port description" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,63}$/" ng-model="portDescription"  required />
+                        </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortDescription()" ng-disabled="portDescriptionForm.portDescription.$invalid && portDescriptionEnable == true  ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Speed -->
+<div class="modal fade" id="portSpeedModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portSpeedConfForm" name="portSpeedConfForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;" >
+                            <div class="col-md-3">{{ 'Speed'  | translate }}</div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="portSpeed" name="Speed" ng-options="mode for mode in portSpeedMode" >
+                                </select> 
+                            </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortSpeed(portSpeed)" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Duplex -->
+<div class="modal fade" id="portSvlanTpidModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portSvlanTpidConfForm" name="portSvlanTpidConfForm" class="form"  novalidate>
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;" >
+                            <div class="col-md-3">{{ 'SvlanTpid'  | translate }}</div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="portSvlanTpid" name="SvlanTpid" ng-options="mode for mode in portSvlanTpidMod" >
+                                </select>
+                            </div>
+                        </dd>
+                    </dl>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortSvlanTpid(portSvlanTpid)" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Duplex -->
+<div class="modal fade" id="portDuplexModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portDuplexConfForm" name="portDuplexConfForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;" >
+                            <div class="col-md-3">{{ 'Duplex'  | translate }}</div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="portDuplex" name="Duplex" ng-options="mode for mode in portDuplexMod" >
+                                </select> 
+                            </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortDuplex(portDuplex)" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Vlan Type -->
+<div class="modal fade" id="portVlanTypeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portVlanTypeForm" name="portVlanTypeForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;" >
+                            <div class="col-md-3">{{ 'Vlan Type'  | translate }}</div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="portVlanType" name="VlanType" ng-options="type for type in portVlanTypeMode" ng-disabled=" dispPort.mode!='switch' ">
+                                </select> 
+                            </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortVlanType(portVlanType)" ng-disabled=" dispPort.mode!='switch' ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Modal Port Procotol Mode -->
+<div class="modal fade" id="portProtlModeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portProtlModeForm" name="portProtlModeForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;" >
+                            <div class="col-md-3">{{ 'Mode'  | translate }}</div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="portProtlMode" name="VlanType" ng-options="type for type in portProtlModeType" >
+                                </select> 
+                            </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortProcotolMode(portProtlMode)" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Port Jumboframe -->
+<div class="modal fade" id="portJumboframeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> {{ dispPortName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="portJumboFrameForm" name="portJumboFrameForm" class="form"  novalidate>  
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;" >
+                            <div class="col-md-3">{{ 'Jumboframe'  | translate }}</div>
+                            <div class="col-md-6">
+                                <select class="form-control" ng-model="jumboframe_en" name="jumboframe_en" ng-options="type for type in portEnableType" >
+                                </select> 
+                            </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updatePortJumbo(jumboframe_en)" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

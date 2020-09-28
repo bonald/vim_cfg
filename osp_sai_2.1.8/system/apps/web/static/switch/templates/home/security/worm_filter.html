@@ -1,0 +1,132 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Options' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <!-- buttons -->
+        <div class="form-inline">
+        
+		<div class="col-md-12">
+			<!-- add -->
+            <button type="button" class="btn btn-default" ng-click="addWormFilterFlag = true" ng-hide="addWormFilterFlag" ng-disabled="initLoading">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+            </button>
+            <button type="button" class="btn btn-default" ng-click="addWormFilterFlag = false" ng-show="addWormFilterFlag">
+                <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Cancel' | translate }}
+            </button>
+			
+			<!-- flush -->
+            <button type="button" class="btn btn-default" ng-click="load()">{{ 'Update' | translate }}</button>
+            
+            <!-- bt -->
+            <button type="button" class="btn btn-default" ng-click="btClick()">{{ 'BT Port' | translate }}</button>
+            <button type="button" class="btn btn-default" ng-click="thunderClick()">{{ 'Thunder Port' | translate }}</button>
+            <button type="button" class="btn btn-default" ng-click="eMuleClick()">{{ 'eMule Port' | translate }}</button>
+            
+            <button type="button" class="btn btn-default" ng-click="NachiClick()">{{ 'NachiBlasterD' | translate }}</button>
+            <button type="button" class="btn btn-default" ng-click="SQLSlammerClick()">{{ 'SQLSlammer' | translate }}</button>
+            <button type="button" class="btn btn-default" ng-click="SasserClick()">{{ 'Sasser' | translate }}</button>
+            
+         
+        </div>
+            
+            
+
+            <!--
+            <div class="col-md-3">{{ 'Gratuitous ARP Learning'  | translate }}</div>
+                <div class="col-md-3">
+                    <btn-switch switch-state="gratuitousArpLearnState" switch-on-change="changeEnableState()" ></btn-switch>
+                </div>
+            -->
+
+            <!-- delete 
+            <button type="button" class="btn btn-default" ng-click="multiDelete()" ng-show="isDeleteEnable()">{{ 'Delete' | translate }}</button>
+			-->
+			
+        </div>
+
+        <!-- add form -->
+        <br/> <br/>
+        <form class="form-inline" style="margin-buttom: 15px;" name="addFilterForm" ng-show="addWormFilterFlag" novalidate>
+            <!-- worm filter name -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFilterForm.filtername.$valid]">
+                <label>{{ 'Worm Filter Name' | translate }}</label>
+                <input type="text" class="form-control" name="filtername" ng-model="newFilter.filtername" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,19}$/" required />
+            </div>
+            <!--
+            <div>
+                <input type="radio" name="protocol" value="tcp" ng-click="newFilter.protocol = 'tcp'" />TCP
+                <input type="radio" name="protocol" value="udp" ng-click="newFilter.protocol = 'udp'" />UDP 
+            </div>
+            -->
+            
+            <div class="btn-group" data-toggle="buttons" >
+                <label class="btn btn-default" ng-click="newFilter.protocol = 'tcp'" ng-class="{'active': newFilter.protocol == 'tcp'}">
+                    <input type="radio" name="options" id="option1" autocomplete="off">TCP
+                </label>
+                <label class="btn btn-default" ng-click="newFilter.protocol = 'udp'" ng-class="{'active': newFilter.protocol == 'udp'}">
+                    <input type="radio" name="options" id="option2" autocomplete="off">UDP
+                </label>
+
+            </div>
+            
+            <!-- worm filter dstport -->
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFilterForm.dstport.$valid]">
+                <label>{{ 'Worm Filter destport' | translate }}</label>
+                <input name="dstport" type="number" class="form-control" placeholder="0~65535" ng-model="newFilter.dstport" ng-min="0" ng-max="65535" required />
+            </div>
+            
+            <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addFilterForm.isrange.$valid]">
+                <label>{{ 'Worm Filter range destport' | translate }}</label>
+                <input name="isrange" type="number" class="form-control" placeholder="1~65535" ng-model="newFilter.isrange" ng-min="1" ng-max="65535"  />
+            </div>
+
+            <!-- submit -->
+            <button class="btn btn-primary" ng-disabled="addFilterForm.$invalid || loading" ng-click="addNewFilter()">OK</button>
+        </form>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Worm Filter Information' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <div ng-hide="initLoading">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ 'Filter Name' | translate }}</th>
+                        <th class="text-center">{{ 'Protocol' | translate }}</th>
+                        <th class="text-center">{{ 'Dest Port' | translate }}</th>
+                        <th class="text-center">{{ 'Filter bytes' | translate }}</th>
+                        <th class="text-center">{{ 'Filter packets' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <tr ng-repeat="x in filterTable | limitTo:pgItemNumEachPage:(pgCurrent - 1) * pgItemNumEachPage">
+                        <td class="text-center">{{ x.filtername }}</td>
+                        <td class="text-center">{{ x.protocol }}</td>
+                        <td class="text-center">{{ x.dstport }}</td>
+                        <td class="text-center">{{ x.bytes }}</td>
+                        <td class="text-center">{{ x.packets }}</td>
+                        <!--<td class="text-center"><button class="btn" ng-hide="x.protocol != 'Internet'" ng-click="tab_delete(x)">delete</button></td>-->
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-disabled="delload" ng-click="deleteFilter(x.filtername)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <pagination pg-current="pgCurrent" pg-item-cnt="pgItemCnt" pg-item-num-each-page="pgItemNumEachPage" pg-on-change="onPageChange()"></pagination>
+            <p class="text-center"><b ng-show="arpTable.length == 0">N/A</b></p>
+        </div>
+        <div ng-show="initLoading" style="margin: 0px auto; width: 80px; height: 80px;">
+            <img src="./images/loading.gif" alt="" style="height: 100%; width: 100%;" />
+        </div>
+    </div>
+</div>

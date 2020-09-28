@@ -1,0 +1,2 @@
+tbl_aclqos_if_stats_t*
+tbl_aclqos_if_stats_get_aclqos_if_stats_by_name(const char* ifname);

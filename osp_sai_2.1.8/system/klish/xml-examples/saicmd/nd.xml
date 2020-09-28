@@ -1,0 +1,971 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+ND
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="clear ipv6" help="Internet Protocol version 6 (IPv6)"/>
+
+	<COMMAND name="clear ipv6 neighbors" help="IPv6 neighbors">
+		<PARAM name="ipv6_addr" help="Clear IPv6 neighbor cache by address" ptype="IPV6_ADDR" optional="true">
+			<PARAM name="if_id" help="Interface name" ptype="IF_NAME_EAV" optional="true"/>        
+		</PARAM>
+		<ACTION>
+            if [ -n "${ipv6_addr}" ]; then
+                if [ -n "${if_id}" ]; then
+                    cdbctl update/cdb/l3/clear_nd/${ipv6_addr}/${if_id}
+                else
+                    cdbctl update/cdb/l3/clear_nd/${ipv6_addr}
+                fi
+            else
+                cdbctl update/cdb/l3/clear_nd
+            fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to clear the dynamic neighbor entries.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear the dynamic neighbor entries.
+User can clear dynamic ipv6 address by interface or address. If the specified address is link-local, the interface is required.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear the neighbor entries:
+    Switch# clear ipv6 neighbors
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="clear ipv6 neighbors interface" help="Clear neighbor cache on the interface">
+		<PARAM name="if_id" help="Interface name" ptype="IF_NAME_EAV"/>
+		<ACTION>
+            cdbctl update/cdb/l3/clear_nd/interface/${if_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to clear the dynamic neighbor entries.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to clear the dynamic neighbor entries.
+User can clear dynamic ipv6 address by interface or address. If the specified address is link-local, the interface is required.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear the neighbor entries:
+    Switch# clear ipv6 neighbors
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ipv6 prefix" help="List prefixes announced in router advertisements"/>
+
+	<COMMAND name="show ipv6 prefix interface" help="IPv6 interface status and configuration">
+		<PARAM name="if_id" help="Interface name" ptype="IF_NAME_EAV"/>
+		<ACTION>
+            cdbctl show/cdb/l3/show_nd/prefix/interface/${if_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the prefix for route advertise (RA) on the specified interface. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows the result of this command:
+    Switch # show ipv6 prefix interface eth-0-1
+    IPv6 Prefix Advertisements eth-0-1
+    Codes: A - Address, P - Prefix-Advertisement
+       D - Default, N - Not advertised
+       L - On link, A - Auto-config
+     default [LA] Valid lifetime 2592000, preferred lifetime 604800
+     P    2001::/64 [LA] Valid lifetime 3000, preferred lifetime 3000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ipv6 neighbors" help="IPv6 neighbors">
+		<PARAM name="ipv6_addr" help="Show IPv6 neighbor cache of his IPv6 address" ptype="IPV6_ADDR" optional="true"/>
+		<ACTION>
+            if [ -n "${ipv6_addr}" ]; then
+                 cdbctl show/cdb/l3/show_nd/${ipv6_addr}
+            else
+                 cdbctl show/cdb/l3/show_nd
+            fi
+            	</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show all ipv6 neighbor entries.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Neighbor entries should be able to show globally, by interface, or by prefix. Dynamic and static entries can be displayed separately.		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows the result of this command:
+	Switch # show ipv6 neighbors 3000::3
+	IPv6 address                            Age      Link-Layer Addr State Interface
+	3000::3                                 -        0000.0000.0001  REACH eth-0-9
+		</CTCEXAMPLE>
+		<CTCRCMD>
+             ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show ipv6 neighbors interface" help="Show IPv6 neighbor cache on the interface">
+		<PARAM name="if_id" help="Interface name" ptype="IF_NAME_EAV"/>
+		<ACTION>
+            cdbctl show/cdb/l3/show_nd/interface/${if_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show ipv6 neighbor entries.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Neighbor entries should be able to show by interface.		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows the result of this command:
+	Switch # show ipv6 neighbors interface
+	IPv6 address                            Age      Link-Layer Addr State Interface
+	3000::3                                 -        0000.0000.0001  REACH eth-0-9
+		</CTCEXAMPLE>
+		<CTCRCMD>
+             ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ipv6 neighbors dynamic" help="Show dynamic IPv6 neighbor entries">
+		<ACTION>
+            cdbctl show/cdb/l3/show_nd/dynamic
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show ipv6 neighbor entries.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Dynamic neighbor entries can be displayed separately.		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows the result of this command:
+	Switch # show ipv6 neighbors dynamic
+	IPv6 address                          Age      Link-Layer Addr State Interface
+	3000::3                                 1       0000.0000.0001  REACH eth-0-9
+		</CTCEXAMPLE>
+		<CTCRCMD>
+             ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ipv6 neighbors static" help="Show static IPv6 neighbor entries">
+		<ACTION>
+            cdbctl show/cdb/l3/show_nd/static
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show ipv6 neighbor entries.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Static neighbor entries can be displayed separately.		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows the result of this command:
+	Switch # show ipv6 neighbors static
+	IPv6 address                          Age      Link-Layer Addr State Interface
+	3000::3                                 -       0000.0000.0001  REACH eth-0-9
+		</CTCEXAMPLE>
+		<CTCRCMD>
+             ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="show ipv6 neighbors statistics" help="Show IPv6 neighbor cache statistics">
+		<ACTION>
+            cdbctl show/cdb/l3/show_nd/statistics
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show ipv6 neighbor entry statistics.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show ipv6 neighbor entry statistics.		
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+	This example shows the result of this command:
+	Switch # show ipv6 neighbors statistics
+       Total IPv6 neighbors: 3
+       Static    1    Dynamic    2
+       Entry States
+         INVLD   0  INCMP   0  REACH   1  STALE   2  DELAY   0  PROBE   0
+		</CTCEXAMPLE>
+		<CTCRCMD>
+             ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="Configure">
+       
+	<COMMAND name="ipv6 neighbor" help="IPv6 neighbor">
+		<PARAM name="ipv6_addr" help="Neighbor IPv6 address" ptype="IPV6_ADDR"/>
+		<PARAM name="mac" help="MAC(Hardware) address" ptype="MAC_ADDR"/>
+		<PARAM name="if_id" help="Interface name" optional="true" ptype="IF_NAME_EAV"/>
+		<ACTION>
+	        cdbctl create/cdb/l3/nd_fib/${ipv6_addr}/${mac}/${if_id}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to configure a static neighbor entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to configure a static neighbor entry. If the IPv6 address is link-local, the interface name must be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to add a static neighbor entry:  
+    Switch# configure terminal
+    Switch(config)# ipv6 neighbor 2001::1 0000.0000.0001
+    Switch(config)# ipv6 neighbor fe80::1 0000.0000.0002 eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+	   no ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+       
+	<COMMAND name="no ipv6 neighbor" help="IPv6 neighbor">
+		<PARAM name="ipv6_addr" help="Neighbor IPv6 address" ptype="IPV6_ADDR"/>
+		<PARAM name="if_id" help="Interface name" optional="true" ptype="IF_NAME_EAV"/>
+		<ACTION>
+		if [ -n "${if_id}" ]; then
+	           cdbctl delete/cdb/l3/nd_fib/${ipv6_addr}/${if_id}
+	       else
+                  cdbctl delete/cdb/l3/nd_fib/${ipv6_addr}
+              fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to delete a static neighbor entry.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to delete a static neighbor entry. If the IPv6 address is link-local, the interface name must be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to delete a static neighbor entry:  
+    Switch# configure terminal
+    Switch(config)# no ipv6 neighbor 2001::1 0000.0000.0001
+    Switch(config)# no ipv6 neighbor fe80::1 0000.0000.0002 eth-0-1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+	   ipv6 neighbor
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ipv6 hop-limit" help="Set IPv6 hop limit">
+		<PARAM name="hop_limit" help="Set IPv6 hop limit, default is 64" ptype="ND_HOP_LIMIT"/>
+		<ACTION>
+	        cdbctl update/cdb/l3/route_global/nd_hop_limit/${hop_limit}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the ipv6 hop limit of the packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The hop limit setting should affect all IPv6 packets send from this device, unless the hop-limit is overwritten by up layer application, for example, OSPF, etc.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 64.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the hop limit:
+    Switch# configure terminal
+    Switch(config)# ipv6 hop-limit 255
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ipv6 hop-limit" help="Set IPv6 hop limit">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_global/nd_hop_limit/64
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the ipv6 hop limit of the packets to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The hop limit setting should affect all IPv6 packets send from this device, unless the hop-limit is overwritten by up layer application, for example, OSPF, etc.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 64.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the hop limit:
+    Switch# configure terminal
+    Switch(config)# no ipv6 hop-limit
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+       <COMMAND name="ipv6 nd" help="IPv6 interface Neighbor Discovery subcommands"/>
+       <COMMAND name="no ipv6 nd" help="IPv6 interface Neighbor Discovery subcommands"/>
+
+       <COMMAND name="ipv6 nd ra" help="Router advertisement related sub-commands"/>
+       <COMMAND name="no ipv6 nd ra" help="Router advertisement related sub-commands"/>
+
+ 	<COMMAND name="ipv6 nd ra hop-limit" help="Set current hop limit">
+		<PARAM name="hop_limit" help="Set IPv6 hop limit, default is 0" ptype="ND_RA_HOP_LIMIT"/>
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_currrent_hop_limit/${hop_limit}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the "Current hop limit" in RA packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the "Current hop limit" in RA packets.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the "Current hop limit" in RA packets:
+    Switch(config-if-eth-0-1)# ipv6 nd ra hop-limit 255
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd ra hop-limit" help="Set current hop limit">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_currrent_hop_limit/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the "Current hop limit" in RA packets to 0.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set the "Current hop limit" in RA packets to 0.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 0.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the "Current hop limit" in RA packets:
+    Switch(config-if-eth-0-1)# no ipv6 nd ra hop-limit
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd ra suppress" help="Suppress IPv6 router advertisements">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_advertise/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable the RA suppress function.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When RA suppress function is enabled, no RA/RS packet should be sent from this interface even a RS packet is received.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+RA suppress is enabled. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable the RA suppress function:
+    Switch(config-if-eth-0-1)# ipv6 nd ra suppress
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+        
+ 	<COMMAND name="no ipv6 nd ra suppress" help="Suppress IPv6 router advertisements">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_advertise/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable the RA suppress function.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When RA suppress function is disabled, RA/RS packet should be sent from this interface when a RS packet is received.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+RA suppress is enabled. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable the RA suppress function:
+    Switch(config-if-eth-0-1)# no ipv6 nd ra suppress
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd ra mtu" help="MTU options sent by the router"/>
+ 	<COMMAND name="no ipv6 nd ra mtu" help="MTU options sent by the router"/>
+
+ 	<COMMAND name="ipv6 nd ra mtu suppress" help="Suppress IPv6 RA MTU Option">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_advertise_mtu/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to enable the RA MTU suppress function.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When RA MTU suppress function is enabled, no MTU option should be sent in the RA packets from this interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, RA MTU suppress is disabled.  
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable the RA MTU suppress function:
+    Switch(config-if-eth-0-1)# ipv6 nd ra mtu suppress
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd ra mtu suppress" help="Suppress IPv6 RA MTU Option">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_advertise_mtu/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to disable the RA MTU suppress function.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When RA MTU suppress function is disabled, MTU option should be sent in the RA packets from this interface.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, RA MTU suppress is disabled.  
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to disable the RA MTU suppress function:
+    Switch(config-if-eth-0-1)# no ipv6 nd ra mtu suppress
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd ra interval" help="Set IPv6 router advertisement interval">
+		<PARAM name="max_interval" help="RA max interval (sec), default is 600" ptype="ND_RA_LMAX"/>
+		<PARAM name="min_interval" help="RA min interval (sec), default is 200" ptype="ND_RA_LMIN" optional="true"/>
+		<ACTION>
+            if [ -n "${min_interval}" ]; then
+                cdbctl update/cdb/l3/route_if/${iface}/nd_ra_interval_max/${max_interval}/${min_interval}
+            else
+                cdbctl update/cdb/l3/route_if/${iface}/nd_ra_interval_max/${max_interval}
+            fi   
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the interval of the RA packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The valid range should be between 4 and 1800 seconds for the max value. The valid range should be between 3 and 0.75 * MAX for the minimum value.
+If the minimum value is not specified, it should be 0.33*MAX when MAX is greater than 9, and it should be equal to the MAX when MAX is less than 9.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, MAX interval should be 600 seconds; MIN interval should be 0.33*MAX. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the RA interval:
+    Switch(config-if-eth-0-1)# ipv6 nd ra interval 300
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd ra interval" help="Set IPv6 router advertisement interval">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_ra_interval_max/600/198
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the interval of the RA packets to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The valid range should be between 4 and 1800 seconds for the max value. The valid range should be between 3 and 0.75 * MAX for the minimum value.
+If the minimum value is not specified, it should be 0.33*MAX when MAX is greater than 9, and it should be equal to the MAX when MAX is less than 9.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, MAX interval should be 600 seconds; MIN interval should be 0.33*MAX. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the RA interval to default value:
+    Switch(config-if-eth-0-1)# no ipv6 nd ra interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd ra lifetime" help="Set IPv6 router advertisement lifetime">
+		<PARAM name="lifetime" help="RA lifetime (seconds)" ptype="ND_RA_LIFETIME"/>
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_router_lifetime/${lifetime}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the life time of the RA packets.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, RA life time is 3* MAX RA interval.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the ra life time:
+    Switch(config-if-eth-0-1)# ipv6 nd ra lifetime 1000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd ra lifetime" help="Set IPv6 router advertisement lifetime">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_router_lifetime/default
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the life time of the RA packets to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, RA life time is 3* MAX RA interval.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the ra life time to default value:
+    Switch(config-if-eth-0-1)# no ipv6 nd ra lifetime
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ipv6 nd dad" help="Duplicate address detection"/>
+	<COMMAND name="no ipv6 nd dad" help="Duplicate address detection"/>
+
+ 	<COMMAND name="ipv6 nd dad attempts" help="Set attempts number">
+ 		<PARAM name="attempts" help="Attempts number, default is 1" ptype="ND_ATTEMPTS"/>
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_dad_attempts/${attempts}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the attempt times of DAD (Duplicate Address Detect). "0" means DAD feature is disabled
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 1.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the dad attempt:
+    Switch(config-if-eth-0-1)# ipv6 nd dad attempts 3
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd dad attempts" help="Unset attempts number">
+ 		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_dad_attempts/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the attempt times of DAD (Duplicate Address Detect) to default value 0.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 1.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the dad attempt:
+    Switch(config-if-eth-0-1)# no ipv6 nd dad attempts
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd ns-interval" help="Set IPv6 neighbor solicitation interval">
+ 		<PARAM name="interval" help="NS interval (milliseconds), default is 1000" ptype="ND_NS_INTERVAL"/>
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_retransmit_timer/${interval}
+		</ACTION>
+		<CTCDESCRIPTION>
+This configuration should affect the interval of NS packet during the DAD period or neighbor discovery period.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 1000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the ns interval:
+    Switch(config-if-eth-0-1)# ipv6 nd ns-interval 2000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd ns-interval" help="Set IPv6 neighbor solicitation interval">
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_retransmit_timer/1000
+		</ACTION>
+		<CTCDESCRIPTION>
+This configuration should affect the interval of NS packet during the DAD period or neighbor discovery period.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 1000
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the ns interval to default value:
+    Switch(config-if-eth-0-1)# no ipv6 nd ns-interval
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd reachable-time" help="Set advertised reachability time">
+ 		<PARAM name="time" help="Reachablity time in milliseconds, default is 30000" ptype="ND_REACHABLE_TIME"/>
+		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_reachable_time/${time}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set reachable time of the neighbor entries. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+A reachable time 0 means to restore the default value 30000. 
+After the reachable time expired, the neighbor entries which state is "REACH" should change to "STALE".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 30000 ms
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the reachable time:
+    Switch(config-if-eth-0-1)# ipv6 nd reachable-time 3600000
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd reachable-time" help="Set advertised reachability time">
+ 		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_reachable_time/30000
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set reachable time of the neighbor entries to default value. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+A reachable time 0 means to restore the default value 30000. 
+After the reachable time expired, the neighbor entries which state is "REACH" should change to "STALE".
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the value is 30000 ms
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the reachable time:
+    Switch(config-if-eth-0-1)# no ipv6 nd reachable-time
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd managed-config-flag" help="Hosts should use DHCP for address config">
+ 		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_managed_config/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set "Managed address configuration" flag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the "Managed address configuration" is not set. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the "Managed address configuration" flag:
+    Switch(config-if-eth-0-1)# ipv6 nd managed-config-flag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd managed-config-flag" help="Hosts should use DHCP for address config">
+ 		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_managed_config/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset "Managed address configuration" flag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the "Managed address configuration" is not set. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the "Managed address configuration" flag:
+    Switch(config-if-eth-0-1)# no ipv6 nd managed-config-flag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="ipv6 nd other-config-flag" help="Hosts should use DHCP for non-address config">
+ 		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_other_config/1
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set the "Other configuration" flag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the "Other configuration" flag is not set. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the "Other configuration" flag:
+    Switch(config-if-eth-0-1)# ipv6 nd other-config-flag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+ 	<COMMAND name="no ipv6 nd other-config-flag" help="Hosts should use DHCP for non-address config">
+ 		<ACTION>
+	        cdbctl update/cdb/l3/route_if/${iface}/nd_other_config/0
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset the "Other configuration" flag.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, the "Other configuration" flag is not set.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to unset the "Other configuration" flag:
+    Switch(config-if-eth-0-1)# no ipv6 nd other-config-flag
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ipv6 nd prefix" help="Configure IPv6 routing prefix advertisement">
+		<PARAM name="prefix" help="IPv6 prefix" ptype="IPV6_ADDR_MASK">
+			<PARAM name="vlifetime" help="Command" ptype="SUBCOMMAND" mode="switch" optional="true">
+				<PARAM name="lifetime" help="Valid lifetime (secs), default is 2592000" optional="true" ptype="ND_LIFE_TIME" default="2592000">
+					<PARAM name="vpreferredtime" help="Command" ptype="SUBCOMMAND" mode="switch" >
+						<PARAM name="preferredtime" help="Preferred lifetime (secs), default is 604800" ptype="ND_PREFERRED_TIME" default="2592000">
+							<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+							<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+						</PARAM>
+                				<PARAM name="infinite" help="Infinite Preferred lifetime" ptype="SUBCOMMAND" mode="subcommand">
+							<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+							<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>               			
+						</PARAM>
+                			</PARAM>
+              		</PARAM>
+                		<PARAM name="infinite" help="Infinite Valid lifetime" optional="true" ptype="SUBCOMMAND"  mode="subcommand">
+                			<PARAM name="vpreferredtime" help="Command" ptype="SUBCOMMAND" mode="switch">
+						<PARAM name="preferredtime" help="Preferred lifetime (secs), default is 604800" ptype="ND_PREFERRED_TIME" default="2592000">
+							<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+							<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+						</PARAM>
+                				<PARAM name="infinite" help="Infinite Preferred lifetime" ptype="SUBCOMMAND" mode="subcommand">
+							<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+							<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+                				</PARAM>
+                			</PARAM>
+              		</PARAM>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+	        if [ -n "${vlifetime}" ]; then
+                 if [ "lifetime" == ${vlifetime} ]; then
+        	         cmdstr="cdbctl create/cdb/l3/route_if/${iface}/nd_prefix/${prefix}/vlifetime/${lifetime}"
+                 else
+        	         cmdstr="cdbctl create/cdb/l3/route_if/${iface}/nd_prefix/${prefix}/vlifetime/infinite" 
+                 fi     
+        
+                 if [ "preferredtime" == ${vpreferredtime} ]; then
+        	         cmdstr=$cmdstr"/vpreferredtime/${preferredtime}"
+                 else
+        	         cmdstr=$cmdstr"/vpreferredtime/${infinite}"
+                 fi
+
+                 if [ -n "${no-autoconfig}" ]; then
+                     cmdstr=$cmdstr"/noautoconfig"
+                 fi 
+
+                 if [ -n "${off-link}" ]; then
+                     cmdstr=$cmdstr"/offlink"
+                 fi 
+
+                 $cmdstr
+             else
+                 cdbctl create/cdb/l3/route_if/${iface}/nd_prefix/${prefix}
+             fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set default prefix for route advertise (RA).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The valid range of valid life time should be between 0 and 4294967295 seconds. User can also use the keyword \"infinite\" to indicate the value 4294967295\(0xFFFFFFFF\). The default value should be 2592000 seconds \(30 days\). The valid range of preferred life time should be between 0 and 4294967295 seconds. User can also use the keyword \"infinite\" to indicate the value 4294967295\(0xFFFFFFFF\). The default value should be 604800 seconds \(7 days\).
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the prefix:
+    Switch(config-if-eth-0-1)# ipv6 nd prefix 2001::1/24
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no ipv6 nd prefix" help="Prefix information">
+		<PARAM name="prefix" help="IPv6 prefix" ptype="IPV6_ADDR_MASK"/>
+		<ACTION>
+            cdbctl delete/cdb/l3/route_if/${iface}/nd_prefix/${prefix}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset prefix for route advertise (RA).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the prefix:
+    Switch(config-if-eth-0-1)# no ipv6 nd prefix 2001::1/24
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+	</COMMAND>
+	
+	<COMMAND name="ipv6 nd prefix default" help="Specify prefix default parameters">		
+		<PARAM name="vlifetime" help="Command" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="lifetime" help="Valid lifetime (secs), default is 2592000" optional="true" ptype="ND_LIFE_TIME" default="2592000">
+				<PARAM name="vpreferredtime" help="Command" ptype="SUBCOMMAND" mode="switch" >
+					<PARAM name="preferredtime" help="Preferred lifetime (secs), default is 604800" ptype="ND_PREFERRED_TIME" default="2592000">
+						<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+						<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+					</PARAM>
+                			<PARAM name="infinite" help="Infinite Preferred lifetime" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+						<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>               			
+					</PARAM>
+                		</PARAM>
+              	</PARAM>
+                	<PARAM name="infinite" help="Infinite Valid lifetime" optional="true" ptype="SUBCOMMAND"  mode="subcommand">
+                		<PARAM name="vpreferredtime" help="Command" ptype="SUBCOMMAND" mode="switch">
+					<PARAM name="preferredtime" help="Preferred lifetime (secs), default is 604800" ptype="ND_PREFERRED_TIME" default="2592000">
+						<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+						<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+					</PARAM>
+                			<PARAM name="infinite" help="Infinite Preferred lifetime" ptype="SUBCOMMAND" mode="subcommand">
+						<PARAM name="no-autoconfig" help="Do not use prefix for autoconfiguration" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+						<PARAM name="off-link" help="Do not use prefix for onlink determination" ptype="SUBCOMMAND" optional="true" mode="subcommand"/>
+                			</PARAM>
+                		</PARAM>
+              	</PARAM>
+              </PARAM>
+		
+		<ACTION>
+             if [ -n "${vlifetime}" ]; then
+                 if [ "lifetime" == ${vlifetime} ]; then
+        	         cmdstr="cdbctl update/cdb/l3/route_if/${iface}/nd_prefix/default/vlifetime/${lifetime}"
+                 else
+        	         cmdstr="cdbctl update/cdb/l3/route_if/${iface}/nd_prefix/default/vlifetime/infinite" 
+                 fi     
+        
+                 if [ "preferredtime" == ${vpreferredtime} ]; then
+        	         cmdstr=$cmdstr"/vpreferredtime/${preferredtime}"
+                 else
+        	         cmdstr=$cmdstr"/vpreferredtime/${infinite}"
+                 fi
+
+                 if [ -n "${no-autoconfig}" ]; then
+                     cmdstr=$cmdstr"/noautoconfig"
+                 fi 
+
+                 if [ -n "${off-link}" ]; then
+                     cmdstr=$cmdstr"/offlink"
+                 fi 
+
+                 $cmdstr
+             else
+                 cdbctl update/cdb/l3/route_if/${iface}/nd_prefix/default
+             fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set default prefix for route advertise (RA).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+The valid range of valid life time should be between 0 and 4294967295 seconds. User can also use the keyword \"infinite\" to indicate the value 4294967295\(0xFFFFFFFF\). The default value should be 2592000 seconds \(30 days\). The valid range of preferred life time should be between 0 and 4294967295 seconds. User can also use the keyword \"infinite\" to indicate the value 4294967295\(0xFFFFFFFF\). The default value should be 604800 seconds \(7 days\).
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the prefix:
+    Switch (config-if-eth-0-1)# ipv6 nd prefix default
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ipv6 nd prefix default" help="Specify prefix default parameters">	
+		<ACTION>
+             cdbctl update/cdb/l3/route_if/${iface}/nd_prefix/default
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to unset default prefix for route advertise (RA).
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to set the prefix:
+    Switch(config-if-eth-0-1)# no ipv6 nd prefix default
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+ 	</COMMAND>
+ 	
+</VIEW>
+
+</CLISH_MODULE>

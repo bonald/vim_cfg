@@ -1,0 +1,279 @@
+
+    
+-- Sub Module: LSWDEVMMIB
+
+-- ==================================================================
+
+lswdevMMibObject OBJECT-IDENTITY
+        STATUS current
+        DESCRIPTION
+            "Description."
+        ::= { lswdevMMib 1 }
+
+
+devMFanMibObject OBJECT IDENTIFIER    ::= {  lswdevMMibObject 2  }
+
+devMFanStatusTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DevMFanStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION "Fan status description table"
+    ::= { devMFanMibObject  1 }
+    
+    
+devMFanStatusEntry         OBJECT-TYPE
+    SYNTAX          DevMFanStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Fan status description table entry"
+    INDEX     {devMFanIndex }
+    ::= { devMFanStatusTable 1 }
+    
+    
+DevMFanStatusEntry    ::=
+    SEQUENCE 
+    {
+	devMFanIndex
+	    INTEGER,
+    devMFanPosition
+        INTEGER,
+    devMFanModuleId
+        INTEGER,
+    devMFanStatus 
+        INTEGER,
+    devMFanSpeed
+        INTEGER,
+    devMFanSetSpeed
+        OCTET STRING
+    }
+    
+devMFanPosition  OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        default (1),
+        left    (2),
+        right   (3)
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "Fan position type: 1-default, 2-left, 3-right. "
+    ::= { devMFanStatusEntry 2 }
+
+devMFanModuleId  OBJECT-TYPE
+    SYNTAX          INTEGER
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "Fan Module id."
+    ::= { devMFanStatusEntry 3 }    
+        
+
+devMFanStatus       OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        active     (1),
+        deactive   (2),
+        notInstall  (3),
+        unsupport    (4)
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        
+        "FanStatus : active (1), deactive (2) not installed (3) and unsupported (4)."
+    ::= { devMFanStatusEntry 4 }
+    
+devMFanSpeed  OBJECT-TYPE
+    SYNTAX          INTEGER
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "Fan speed(RPM)"
+    ::= { devMFanStatusEntry 5 }
+    
+
+devMFanMode  OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION 
+        "Fan mode."
+    ::= { devMFanStatusEntry 6 }      
+    
+
+devMPowerStatusTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DevMPowerStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION 
+        "Power status description table."
+    ::= { lswdevMMibObject  3 }
+    
+    
+devMPowerStatusEntry OBJECT-TYPE
+    SYNTAX          DevMPowerStatusEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION 
+        "Power status description table entry."
+    INDEX   { devMPowerIndex }
+    ::= { devMPowerStatusTable 1 }
+    
+DevMPowerStatusEntry    ::=
+    SEQUENCE 
+    {
+        devMPowerIndex          
+           INTEGER,
+        devMPowerStatus
+           INTEGER,
+        devMPowerWorkStatus
+           INTEGER,
+        devMPowerType
+           INTEGER,
+        devMPowerAlert
+           INTEGER
+    }
+    
+    
+devMPowerIndex          OBJECT-TYPE
+    SYNTAX          INTEGER (0..65535)
+    MAX-ACCESS        not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Power number."
+    ::= { devMPowerStatusEntry 1 }
+  
+  devMPowerStatus    OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        present      (1),
+        absent       (2),
+        unsupport    (3)
+        
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION " Power whole device status: present (1), absent (2), unsupport (3)."
+    ::= { devMPowerStatusEntry 2 }
+    
+  devMPowerWorkStatus   OBJECT-TYPE
+      SYNTAX          INTEGER
+    {
+        active     (1),
+        deactive   (2),
+        notInstall (3),
+        unsupport    (4)
+        
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION "Power status: active (1), deactive (2) not installed (3) and unsupported (4). "
+    ::= { devMPowerStatusEntry 3 }
+   
+   devMPowerType     OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        ac (1),
+        dc (2),
+        notInstall   (3),
+        unsupport    (4) 
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION " Power status: AC (1), DC (2), notInstall (3) and unsupported (4)."
+    ::= { devMPowerStatusEntry 4 }
+    
+   devMPowerFanStatus  OBJECT-TYPE
+   SYNTAX          INTEGER
+    {
+	    no-alett   (1)
+        alert      (2),
+        
+    }
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION " Power alert: no alert (1), alert (2). "
+    ::= { devMPowerStatusEntry 5 }
+
+devMFanTemperatureTable         OBJECT-TYPE
+    SYNTAX          SEQUENCE OF DevMFanTemperatureEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+            DESCRIPTION "Fan temperature description table"
+    ::= { devMFanMibObject  4 }
+    
+    
+devMFanTemperatureEntry         OBJECT-TYPE
+    SYNTAX          DevMFanTemperatureEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        "Fan temperature description entry"
+    INDEX     {devMFanTemperatureIndex}
+    ::= { devMFanTemperatureTable 1 }
+    
+    
+DevMFanTemperatureEntry    ::=
+    SEQUENCE 
+    {
+        devMFanTemperatureIndex              Integer32,
+        devMFanTemperatureValue              Integer32,
+        devMFanTemperatureLow                Integer32,
+        devMFanTemperatureHigh               INTEGER,
+		devMFanTemperatureCritical           INTEGER,
+        devMFanTemperatureLocation           INTEGER
+    }    
+   
+devMFanTemperatureIndex         OBJECT-TYPE
+    SYNTAX          Integer32   (1..16)
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor number"
+    ::= { devMFanTemperatureEntry 1 }
+    
+devMFanTemperatureValue         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature"
+    ::= { devMFanTemperatureEntry 2 }
+   
+devMFanTemperatureLow         OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature low"
+    ::= { devMFanTemperatureEntry 3 }
+    
+devMFanTemperatureHigh          OBJECT-TYPE
+    SYNTAX          INTEGER 
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature high"
+    ::= { devMFanTemperatureEntry 4 }
+
+	devMFanTemperatureCritical        OBJECT-TYPE
+    SYNTAX          INTEGER 
+    MAX-ACCESS      read-only
+    STATUS          current
+    DESCRIPTION        "Fan sensor temperature Critical"
+    ::= { devMFanTemperatureEntry 5 }
+	
+devMFanTemperatureLocation          OBJECT-TYPE
+    SYNTAX          INTEGER
+    {
+        CPU(1),
+        Before Chip(2),
+		Behind Chip(3),
+		FAN(4),
+		PSU(5),
+		CHIP0(6),
+		CHIP1(7)
+        
+    }
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION        
+        "Fan sensor position type: 1-CPU, 2-Before Chip, 3-Befind Chip, 4-FAN, 5-PSU, 6-CHIP0, 7-CHIP1"
+    ::= { devMFanTemperatureEntry 6 }
+END

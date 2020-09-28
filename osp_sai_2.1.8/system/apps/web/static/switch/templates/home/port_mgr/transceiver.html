@@ -1,0 +1,37 @@
+<!-- info -->
+<div ng-class="{true: 'col-md-8', false: 'col-md-12'}[setif==true]">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Transceiver' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+
+                      <th>{{'Port' | translate}}</th>
+                      <th>{{'Type' | translate}}</th>
+                      <th>{{'Vendor' | translate}}</th>
+                      <th>{{'PN' | translate}}</th>
+               		    <th>{{'S/N' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in ifp">
+
+                      <td>{{x.full_name | switchPort }}</td>
+                      <td>{{x.fiber_type_name }}</td>
+                      <td>{{x.name}}</td>
+                      <td>{{x.pn}}</td>
+                      <td>{{x.sn}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+

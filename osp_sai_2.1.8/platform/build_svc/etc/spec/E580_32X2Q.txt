@@ -1,0 +1,21 @@
+#ASIC Specification for SAI Based System
+
+#0. ASIC  
+ASIC GodenGate
+
+#1. datapath init
+datapath /switch/etc/datapath_profile/E580_32X2Q.txt
+
+#2. portmapping init, only needed for phy_with_mdio board
+
+#3. serdes_ffe param
+
+#4. serdes_usrdef_coeff
+
+#5. chip global configuraton
+gchip_0 0
+local_chip_num 1 
+port_mapping_en 0 
+stacking_en 0 
+disable_ptp
+disable_synce

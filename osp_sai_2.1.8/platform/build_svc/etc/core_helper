@@ -1,0 +1,16 @@
+#!/bin/sh
+
+TIME_NOW=`date +%Y_%m%d_%H%M`;
+
+if [ -f /mnt/flash/sys-diag ]; then
+    mv -f /mnt/flash/sys-diag /mnt/flash/sys-diag.$TIME_NOW.back
+fi
+
+mkdir /mnt/flash/sys-diag/
+num=`ls /mnt/flash/sys-diag/$1.core.*.gz | awk '{} END {print NR}'`
+if [ $num -lt 5 ]; then 
+    exec gzip > /mnt/flash/sys-diag/$1.core.$TIME_NOW.gz
+fi
+if [ $num -gt 4 ]; then 
+    exec gzip > /mnt/flash/sys-diag/$1.core.gz
+fi

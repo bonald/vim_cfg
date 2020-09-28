@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-1">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!-- waring -->
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4>警告!</h4>
+                        <p>您使用的浏览器不支持HTML5 FileAPI,可能会严重影响用户体验,请换最新版的Firefox/Chrome/Opera之类的浏览器</p>
+                    </div>
+                    <!-- waring end -->
+                    
+                    <!-- image upload -->
+                    <form class="form" action="{{ formAction }}" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>{{ 'Select image file' | translate }}</label>
+                            <input type="file" name="file" />
+                        </div>
+                        <input type="text" ng-show="false" name="token" ng-model="token" />
+                        <input type="text" ng-show="false" name="username" ng-model="username" />
+                        <input type="submit" class="btn btn-submit" value="{{ 'Upload' | translate }}" />
+                    </form>
+                    <!-- image upload end -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ 'Current Information' | translate }}</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table" style="margin-bottom: 0;">
+                        <tr>
+                            <th>{{ 'Image Name' | translate }}</th>
+                            <td>{{ bootImage.image }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ 'Software Version' | translate }}</th>
+                            <td>{{ version.version }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

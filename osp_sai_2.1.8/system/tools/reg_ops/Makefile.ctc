@@ -1,0 +1,10 @@
+include $(MK_DIR)/sys.mk
+
+PROG = reg_ops
+
+SRCS = reg_ops.c
+
+CPPFLAGS += -I$(TOP_DIR)/include
+CPPFLAGS += -I$(TOP_DIR)/sal/include
+
+include $(MK_DIR)/prog.mk

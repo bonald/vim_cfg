@@ -1,0 +1,72 @@
+HAL-MSG-L2-VLAN-CLASSIFIER DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgDefL2MacAddr
+    FROM HAL-MSG-L2TYPES  
+    HalMsgIpv6addr,
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES  
+    ;
+
+HalMsgL2VlanClassifierEntryMacReq ::= SEQUENCE
+{
+    group           INTEGER,
+    mac             HalMsgDefL2MacAddr,
+    vid             INTEGER
+}
+
+HalMsgL2VlanClassifierEntryIpv4Req ::= SEQUENCE
+{
+    ip              INTEGER,
+    maskLen         INTEGER,
+    group           INTEGER,
+    vid             INTEGER    
+}
+
+HalMsgL2VlanClassifierEntryIpv6Req ::= SEQUENCE 
+{
+    ipv6            HalMsgIpv6addr,
+    maskLen         INTEGER,
+    group           INTEGER,
+    vid             INTEGER 
+}
+
+HalMsgL2VlanClassifierEntryProtoReq ::= SEQUENCE 
+{
+    type            INTEGER,
+    tocpu           INTEGER,
+    discard         INTEGER,
+    replaceTag      INTEGER,  
+    group           INTEGER,
+    vid             INTEGER 
+}
+
+HalMsgL2VlanClassifierEnReq ::= SEQUENCE
+{
+    port            INTEGER,
+    group           INTEGER,
+    activeType      INTEGER,
+    portType        INTEGER
+}
+
+HalMsgL2VlanClassifierEntryReq ::= SEQUENCE
+{
+    entry CHOICE
+    {
+      mac              HalMsgL2VlanClassifierEntryMacReq,
+      ipv4             HalMsgL2VlanClassifierEntryIpv4Req,
+      ipv6             HalMsgL2VlanClassifierEntryIpv6Req,
+      proto            HalMsgL2VlanClassifierEntryProtoReq
+    }
+}
+
+HalMsgL2VlanClassifierEntryListReq ::= SEQUENCE
+{
+    listEntry          SEQUENCE OF HalMsgL2VlanClassifierEntryReq
+}
+
+HalMsgL2VlanClassifierEnListReq ::= SEQUENCE
+{
+    listEn          SEQUENCE OF HalMsgL2VlanClassifierEnReq
+}
+END

@@ -1,0 +1,33 @@
+#
+# The test cases are described using YAML syntax
+#
+# For more information about YAML syntax, refer to this link:
+# http://pyyaml.org/wiki/PyYAMLDocumentation#YAMLsyntax
+#
+
+---
+
+- case: 'test command api'
+  url: '/api/cmd_api/'
+  method: 'POST'
+  body:
+    params:
+      format: 'json'
+      version: 1
+      cmds: ['configure termination', 'vlan 15', 'end', 'show interface eth-0-1']
+  expect:
+    status: 200
+    error: False
+
+- case: 'Create a new vlan in bridge_normal'
+  url: '/api/vlan/'
+  method: 'GET'
+  body:
+    params:
+      format: 'json'
+      version: 1
+  expect:
+    status: 200
+
+
+

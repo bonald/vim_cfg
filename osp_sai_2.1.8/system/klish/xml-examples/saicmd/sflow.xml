@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+	<COMMAND name="show sflow" help="Sampled flow">
+		<ACTION>
+		cdbctl show/cdb/l2/show_sflow
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to show the running information of sflow. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to show the running information of sflow.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show the sflow running information:
+    Switch# show sflow
+    sFlow Global Information:
+     Agent IP address               : 0.0.0.0
+     Counter Sampling Interval     	: 20 seconds
+     Collector IP                  	: Not configured
+    
+    sFlow Port Information:
+                                      Flow-Sample   Flow-Sample
+     Port        Counter     Flow     Direction     Rate
+     --------------------------------------------------------
+     eth-0-1     Disable     Enable   Input         32768          
+		</CTCEXAMPLE>
+		<CTCRCMD>
+sflow enable
+sflow collector
+		</CTCRCMD>
+	</COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="sflow" help="Sampled flow"/>
+
+	<COMMAND name="sflow enable" help="Enable sFlow services">
+		<ACTION>
+		cdbctl update/cdb/l2/sflow_global/enable/1
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to enable sFlow globally. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before any other sFlow command can be configured, sFlow services must be enabled 
+globally. Use the no parameter with this command to remove all sFlow configurations
+and disable sFlow globally.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to enable sFlow services globally:
+    Switch# configure terminal
+    Switch(config)# sflow enable    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no sflow enable" help="Disable sFlow services">
+		<ACTION>
+	    cdbctl update/cdb/l2/sflow_global/enable/0
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to disable sFlow globally.  
+		</CTCDESCRIPTION>		
+		<CTCUSAGE>
+Before any other sFlow command can be configured, sFlow services must be enabled 
+globally. Use the no parameter with this command to remove all sFlow configurations
+and disable sFlow globally.
+		</CTCUSAGE>		
+		<CTCDEFAULT>
+Disabled 
+		</CTCDEFAULT>		
+		<CTCEXAMPLE>
+        This example shows how to enable sFlow services globally:
+        Switch# configure terminal
+        Switch(config)# no sflow enable     
+		</CTCEXAMPLE>		
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="sflow version" help="Version" hidden="true">
+		<PARAM name="version_id" help="Sflow Version4 or Version5" ptype="SFLOW_VERSION_ID"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/sflow_global/version/${version_id}
+		</ACTION>
+	</COMMAND>
+	
+  	<COMMAND name="sflow agent" help="Set sFlow agent">
+		<PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="ip" help="Agent IPv4 address" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="ipaddress" help="IPv4 address" ptype="IP_ADDR"/>
+			</PARAM>
+			<PARAM name="ipv6" help="Agent IPv6 address" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="ipv6address" help="IPv6 address" ptype="IPV6_ADDR"/>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+               if [ ${host} == "ip" ]; then
+                   cdbctl update/cdb/l2/sflow_global/agent/${ipaddress}
+               elif [ ${host} == "ipv6" ]; then
+                   cdbctl update/cdb/l2/sflow_global/agent_ipv6/${ipv6address}
+               fi
+		</ACTION>
+					
+		<CTCDESCRIPTION>
+Use this command to configure sFlow agent.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to configure IP address for sflow agent. If not configured, sflow agent
+IP address will be 0.0.0.0.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.0.0.0 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to configure agent with IP address 10.0.0.254.
+        Switch# configure terminal
+        Switch(config)# sflow agent ip 10.0.0.254    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no sflow" help="Sampled flow"/>
+
+	<COMMAND name="no sflow agent" help="Set sFlow agent IP address">
+		<PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="ip" help="Agent IPv4 address" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="ipv6" help="Agent IPv6 address" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+               if [ ${host} == "ip" ]; then
+                   cdbctl update/cdb/l2/sflow_global/agent
+               elif [ ${host} == "ipv6" ]; then
+                   cdbctl update/cdb/l2/sflow_global/agent_ipv6
+               fi
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure sFlow agent ip to 0.0.0.0.   
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to configure IP address for sflow agent.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+0.0.0.0 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to configure agent with IP address 0.0.0.0.
+        Switch# configure terminal
+        Switch(config)# no sflow agent ip
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="sflow counter" help="Set sFlow interface counter"/>
+	
+	<COMMAND name="sflow counter interval" help="Set interface counter interval">
+		<PARAM name="couterinterval" help="Interval value in second.Default interval is 20" ptype="SFLOW_COUNTER_INTERVAL"/>
+		
+		<ACTION>
+		cdbctl update/cdb/l2/sflow_global/counter_interval/${couterinterval}
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure sFlow polling-interval for counter sample.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set sFlow polling-interval for counter sample. Use the no 
+parameter with this command to restore to the default value. Default interval value 
+is 20 seconds.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+20 seconds 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to set sFlow polling-interval to 10 second:
+        Switch# configure terminal
+        Switch(config)# sflow counter interval 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no sflow counter" help="Unset sFlow interface counter"/>
+	
+	<COMMAND name="no sflow counter interval" help="Set interface counter interval">		
+		<ACTION>
+		cdbctl update/cdb/l2/sflow_global/counter_interval/20
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure sFlow polling-interval for counter sample. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to restore to the default value. 
+		</CTCUSAGE>
+		<CTCDEFAULT>
+20 seconds 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to set sFlow polling-interval to default value:
+        Switch# configure terminal
+        Switch(config)# no sflow counter interval   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="sflow collector" help="Set sFlow collector">
+		<PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+		<PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="ipaddress" help="Collector IPv4 address" ptype="IP_ADDR">
+				<PARAM name="udpport" help="Collector UDP port number, default is 6343" ptype="SFLOW_UDP_PORT" optional="true" default = "6343"/>
+				<PARAM name="source-ip" help="Bind source ip" ptype="SUBCOMMAND" mode="subcommand" optional="true" test='-z "${mgmt-if}"'>
+					<PARAM name="bind_addr" help="Bind ip address" default="''" ptype="IP_ADDR"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="ipv6address" help="Collector IPV6 address" ptype="IPV6_ADDR" >
+				<PARAM name="udpport" help="Collector UDP port number, default is 6343" ptype="SFLOW_UDP_PORT" optional="true" default = "6343"/>
+			</PARAM>
+		</PARAM>
+	
+		<ACTION>
+
+        if [ ${host} == "ipaddress" ]; then
+            if [ -n "${mgmt-if}" ]; then
+                NS_BAND=outband
+                cdbctl update/cdb/l3/check_mgmt_if_ip/${ipaddress}
+
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            else
+                NS_BAND=inband
+            fi
+
+            if [ -n "${source-ip}" ]; then
+                cdbctl create/cdb/sys/inband_snat/1#${udpport}#${ipaddress}/type/9/ip/${bind_addr}/
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            fi
+
+            cdbctl create/cdb/sys/ns_route/1#${udpport}#${ipaddress}/9/$NS_BAND/
+            if [ $? -eq 0 ]; then
+                cdbctl create/cdb/l2/sflow_collector/key/${ipaddress}/${udpport}
+                if [ $? -ne 0 ]; then
+                    cdbctl delete/cdb/sys/ns_route/1#${udpport}#${ipaddress}/$NS_BAND/
+                    if [ -n "${source-ip}" ]; then
+                        cdbctl delete/cdb/sys/inband_snat/1#${udpport}#${ipaddress}
+                    fi
+                fi
+            else
+                if [ -n "${source-ip}" ]; then
+                    cdbctl delete/cdb/sys/inband_snat/1#${udpport}#${ipaddress}
+                fi
+            fi
+        elif [ ${host} == "ipv6address" ]; then
+        
+             if [ -n "${mgmt-if}" ]; then
+                NS_BAND=outband
+                cdbctl update/cdb/l3/check_mgmt_if_ip/${ipv6address}
+
+                if [ $? -ne 0 ]; then
+                    exit 1
+                fi
+            else
+                NS_BAND=inband
+            fi
+
+            cdbctl create/cdb/sys/ns_route/1#${udpport}#${ipv6address}/9/$NS_BAND/
+            if [ $? -eq 0 ]; then
+                cdbctl create/cdb/l2/sflow_collector/key/${ipv6address}/${udpport}
+                if [ $? -ne 0 ]; then
+                    cdbctl delete/cdb/sys/ns_route/1#${udpport}#${ipv6address}/$NS_BAND/
+                fi
+            fi           
+        fi
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure sFlow collector.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to add a collector by specifying the combination of IP address and 
+UDP port and source IP address. Only up to two unique combinations can be allowed to add.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default source ip is the ip address of interface which is connected with sflow collector
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to add a collector:
+        Switch# configure terminal
+        Switch(config)# sflow collector 10.0.0.254 3000  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no sflow collector" help="Set sFlow collector">
+		<PARAM name="mgmt-if" help="Use management namespace" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+		<PARAM name="host" help="Unicast server configuration" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="ipaddress" help="Collector IPv4 address" ptype="IP_ADDR">
+				<PARAM name="udpport" help="Collector UDP port number, default is 6343" ptype="SFLOW_UDP_PORT" optional="true" default = "6343"/>
+			</PARAM>
+			<PARAM name="ipv6address" help="Collector IPV6 address" ptype="IPV6_ADDR" >
+				<PARAM name="udpport" help="Collector UDP port number, default is 6343" ptype="SFLOW_UDP_PORT" optional="true" default = "6343"/>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+               if [ -n "${mgmt-if}" ]; then 
+                   NS_BAND=outband
+               else
+                   NS_BAND=inband
+               fi
+                   
+               if [ ${host} == "ipaddress" ]; then
+                   cdbctl delete/cdb/l2/sflow_collector/key/${ipaddress}/${udpport}/$NS_BAND/
+                   if [ $? -eq 0 ]; then
+                       cdbctl delete/cdb/sys/ns_route/1#${udpport}#${ipaddress}/$NS_BAND/
+                       cdbctl delete/cdb/sys/inband_snat/1#${udpport}#${ipaddress}
+                   fi
+               elif [ ${host} == "ipv6address" ]; then
+                   cdbctl delete/cdb/l2/sflow_collector/key/${ipv6address}/${udpport}/$NS_BAND/
+                   if [ $? -eq 0 ]; then
+                       cdbctl delete/cdb/sys/ns_route/1#${udpport}#${ipv6address}/$NS_BAND/
+                   fi
+		fi
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure sFlow collector.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove a collector by specifying the combination of IP address 
+and UDP port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to remove a collector:
+        Switch# configure terminal
+        Switch(config)# no sflow collector 10.0.0.254 3000  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+    <COMMAND name="sflow counter-sampling" help="The sFlow interface counter"/>
+
+    <COMMAND name="sflow counter-sampling enable" help="Enable service">
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/sflow_counter_en/1
+ 		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to enable counter sampling on specified port.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to enable counter sampling on specified port. This command can 
+only be configured on a port which is not a link-agg group member. The port can be 
+either a physical port or a link-agg port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to enable sFlow counter sampling on interface eth-0-1
+        Switch# configure terminal
+        Switch(config)# interface eth-0-1
+        Switch(config-if)# sflow counter-sampling enable   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no sflow counter-sampling" help="The sFlow interface counter"/>
+	
+	<COMMAND name="no sflow counter-sampling enable" help="Enable service">
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/sflow_counter_en/0
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to disable counter sampling on specified port.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable counter sampling on specified port. This command can 
+only be configured on a port which is not a link-agg group member. The port can be 
+either a physical port or a link-agg port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to disable sFlow counter sampling on interface eth-0-1
+        Switch# configure terminal
+        Switch(config)# interface eth-0-1
+        Switch(config-if)# no sflow counter-sampling enable    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="sflow flow-sampling" help="Set sFlow packet sample"/>
+    
+    <COMMAND name="sflow flow-sampling rate" help="Set packet sample rate">
+        <PARAM name="ratevalue" help="Sample rate value, must be a power of 2,and the default sample rate value is 8192" ptype="RATE_VALUE"/>
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/sflow_rate/${ratevalue}
+ 		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure flow sampling rate.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set sFlow packet sampling rate. The rate value is packet number,
+When the value is 32768, one packet will be sampled when 32768 packets are passed.
+sFlow uses CPU resources to collect samples and send samples to the collector. 
+If a low sampling rate is set, CPU utilization can become high. To protect CPU from
+overwhelming, exceeded flow samples would be dropped. If a sampling rate less than 
+default value is configured, a prompt will be given to info the potential of involving 
+a high CPU utilization. This command can only be configured on a port which is not 
+a link-agg group member. The port can be either a physical port or a link-agg port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+8192
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to set the sFlow sampling rate to 2048 on eth-0-1:
+        Switch# configure terminal
+        Switch(config)# interface eth-0-1
+        Switch(config-if)# sflow flow-sampling rate 2048
+        % Warning: sFlow sampling requires high CPU usage, especially with a low rate.
+          Suggested rate not less than 32768.  
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no sflow flow-sampling" help="Set sFlow packet sample"/>
+	
+	<COMMAND name="no sflow flow-sampling rate" help="Set packet sample rate">
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/sflow_rate/0
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure flow sampling rate.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set sFlow packet sampling rate. The rate value is packet number,
+When the value is 32768, one packet will be sampled when 32768 packets are passed.
+sFlow uses CPU resources to collect samples and send samples to the collector. 
+If a low sampling rate is set, CPU utilization can become high. To protect CPU from
+overwhelming, exceeded flow samples would be dropped. If a sampling rate less than 
+default value is configured, a prompt will be given to info the potential of involving 
+a high CPU utilization. This command can only be configured on a port which is not 
+a link-agg group member. The port can be either a physical port or a link-agg port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+32768 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to disable sFlow counter sampling on interface eth-0-1
+        Switch# configure terminal
+        Switch(config)# interface eth-0-1
+        Switch(config-if)# no sflow flow-sampling rate    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+
+    <COMMAND name="sflow flow-sampling enable" help="Enale service">
+        <PARAM name="sflowside" help="both rx tx " ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="both" help="Both input and output packet sample" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="input" help="Input packet sample" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="output" help="Output packet sample" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/sflow_flow_en/1/${sflowside}
+ 		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to enable packet sampling on individual port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to enable packet sampling on individual port.This command can only 
+be configured on a port which is not a link-agg group member. The port can be either
+a physical port or a link-agg port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to enable input packet sampling on route port eth-0-1:
+        Switch# configure terminal
+        Switch(config)# interface eth-0-1
+        Switch(config-if)# sflow flow-sampling enable input
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="no sflow flow-sampling enable" help="Enale service">
+	    <PARAM name="sflowside" help="both rx tx " ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="both" help="Both input and output packet sample" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="input" help="Input packet sample" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="output" help="Output packet sample" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		cdbctl update/cdb/interface/${iface}/sflow_flow_en/0/${sflowside}
+        </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to disable packet sampling on individual port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable packet sampling on individual port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disabled
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+        This example shows how to enable input packet sampling on route port eth-0-1:
+        Switch# configure terminal
+        Switch(config)# interface eth-0-1
+        Switch(config-if)# no sflow flow-sampling enable input   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show sflow
+		</CTCRCMD>
+	</COMMAND>
+	
+</VIEW>
+
+</CLISH_MODULE>

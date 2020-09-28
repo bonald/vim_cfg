@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+HTTP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	<COMMAND name="show services rpc-api" help="RPC API service">
+		<ACTION>
+		cdbctl show/cdb/sys/sys_global/services_rpcapi
+		</ACTION>
+	</COMMAND>		
+
+    <COMMAND name="clear services" help="System service"/>
+    <COMMAND name="clear services rpc-api" help="RPC API service"/>
+    <COMMAND name="clear services rpc-api counter" help="Clear RPC API counter">
+        <ACTION>
+        cdbctl update/cdb/sys/clear_rpcapi_counter
+        </ACTION>
+    </COMMAND>
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="service http" help="Http service">
+        <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="disable" help="Disable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="restart" help="Restart this service" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="timeout" help="Set expire time" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="interval" help="Timeout interval(minute), the default value is 10 minutes" ptype="WEB_TIME_OUT" default="80"/>
+			</PARAM>
+			<PARAM name="port" help="Set Http service L4 port number" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="portnum" help="Http port number, default is 80" ptype="SERVICE_PORT" default="80"/>
+			</PARAM>
+        </PARAM>
+
+        <ACTION>
+            if [ ${opt} = "enable" ]; then
+			    cdbctl update/cdb/sys/sys_global/http_disable/0
+            elif [ ${opt} = "disable" ]; then
+                cdbctl update/cdb/sys/sys_global/http_disable/1
+            elif [ ${opt} = "port" ]; then
+                cdbctl update/cdb/sys/sys_global/http_port/${portnum}
+            elif [ ${opt} = "timeout" ]; then
+                cdbctl update/cdb/sys/sys_global/http_timeout/${interval}
+            else
+                cdbctl update/cdb/sys/sys_global/http_disable/1		
+                if [ "$?" == "0" ]; then
+                    cdbctl update/cdb/sys/sys_global/http_disable/0
+				fi
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To configure HTTP service . 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To configure HTTP service enable, disable, restart and HTTP port.  
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+HTTP service is enabled by default, the HTTP port is 80 by default. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample to disable http:  
+    Switch# configure terminal 
+    Enter configuration commands, one per line. End with CNTL/Z.
+    Switch(config)# service http disable 
+    Switch(config)# 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+        
+    </COMMAND>
+
+	<COMMAND name="no service http" help="HTTP service"/>
+	<COMMAND name="no service http port" help="Http service L4 port number, default is 80">
+        <ACTION>
+            cdbctl update/cdb/sys/sys_global/http_port/80
+        </ACTION>
+    </COMMAND>
+    <COMMAND name="no service http timeout" help="Http timeout, default is 10 minutes">
+        <ACTION>
+            cdbctl update/cdb/sys/sys_global/http_timeout/10
+        </ACTION>
+    </COMMAND>
+
+
+	<COMMAND name="service https" help="Https service">
+        <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="disable" help="Disable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="restart" help="Restart this service" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="port" help="Set Https service L4 port number" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="portnum" help="Https port number, default is 443" ptype="SERVICE_PORT" default="443"/>
+			</PARAM>
+        </PARAM>
+
+        <ACTION>
+            if [ ${opt} = "enable" ]; then
+                cdbctl update/cdb/sys/sys_global/https_disable/0
+            elif [ ${opt} = "disable" ]; then
+                cdbctl update/cdb/sys/sys_global/https_disable/1
+                cdbctl read/cdb/app/login|grep "protocol=web" | sed 's/=/ /g' | sed 's/\// /g' | awk '{ print "cdbctl delete/cdb/app/login/"$2}' | sh
+            elif [ ${opt} = "port" ]; then
+                cdbctl update/cdb/sys/sys_global/https_port/${portnum}
+            else
+                cdbctl update/cdb/sys/sys_global/https_disable/1
+                if [ "$?" == "0" ]; then
+                     cdbctl read/cdb/app/login|grep "protocol=web" | sed 's/=/ /g' | sed 's/\// /g' | awk '{ print "cdbctl delete/cdb/app/login/"$2}' | sh
+                     cdbctl update/cdb/sys/sys_global/https_disable/0
+                fi
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To configure HTTPS service. 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To configure HTTPS service enable, disable, restart and HTTPS port.  
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+HTTP service is enabled by default, the HTTP port is 443 by default. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample to enable https:  
+    Switch# configure terminal 
+    Enter configuration commands, one per line. End with CNTL/Z.
+    Switch(config)# service https enable 
+    Switch(config)# 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+        
+    </COMMAND>
+
+	<COMMAND name="no service https" help="HTTPS service"/>
+	<COMMAND name="no service https port" help="Https service L4 port number, default is 443">
+        <ACTION>
+            cdbctl update/cdb/sys/sys_global/https_port/443
+        </ACTION>
+    </COMMAND>
+
+
+	<COMMAND name="service rpc-api" help="RPC API service">
+        <PARAM name="opt" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable this service" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="port" help="Set L4 port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+					<PARAM name="portnum" help="RPC-API port number, default is 80" ptype="SERVICE_PORT" default="80"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="disable" help="Disable this service" ptype="SUBCOMMAND" mode="subcommand"/>
+            <PARAM name="restart" help="Restart this service" ptype="SUBCOMMAND" mode="subcommand"/>
+        </PARAM>
+		<PARAM name="ssl" help="Enable SSL" ptype="SUBCOMMAND" mode="subcommand" optional="true" default="none" test='"${opt}"="enable"'>
+				<PARAM name="ssl-port" help="Set SSL L4 port" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+					<PARAM name="ssl-portnum" help="SSL port number, default is 443" ptype="SERVICE_PORT" default="443"/>
+				</PARAM>
+		</PARAM>
+        <ACTION>
+            if [ ${opt} = "enable" ]; then
+				if [ ${ssl} = "ssl" ]; then
+					cdbctl update/cdb/sys/sys_global/rpcapi_disable/0/rpcapi_port/${portnum}/ssl/${ssl-portnum}
+				else
+					cdbctl update/cdb/sys/sys_global/rpcapi_disable/0/rpcapi_port/${portnum}
+				fi
+            elif [ ${opt} = "disable" ]; then
+                cdbctl update/cdb/sys/sys_global/rpcapi_disable/1/rpcapi_port/0
+            else
+                cdbctl update/cdb/sys/sys_global/rpcapi_disable/1/rpcapi_port/0
+                if [ "$?" == "0" ]; then
+                     cdbctl update/cdb/sys/sys_global/rpcapi_disable/0/rpcapi_port/0
+                fi
+            fi
+        </ACTION>
+
+		<CTCDESCRIPTION>
+To configure RPC-API service . 
+		</CTCDESCRIPTION>
+       <CTCUSAGE>
+To configure RPC-API service enable, disable, restart and RPC-API port.  
+       </CTCUSAGE>
+	   <CTCDEFAULT>
+HTTP service is enabled by default, the RPC-API port is 80 by default. 
+	   </CTCDEFAULT>
+	   <CTCEXAMPLE>
+    The following is sample to disable RPC-API  
+    Switch# configure terminal 
+    Enter configuration commands, one per line. End with CNTL/Z.
+    Switch(config)# service rpc-api disable 
+    Switch(config)# 
+	   </CTCEXAMPLE>
+	   <CTCRCMD>
+	   </CTCRCMD>
+        
+    </COMMAND>
+
+	<COMMAND name="service rpc-api auth-mode" help="Authentication mode">
+        <PARAM name="basic" help="Basic authentication" ptype="SUBCOMMAND" mode="subcommand"/>
+        <ACTION>
+			cdbctl update/cdb/sys/sys_global/rpcapi_auth_mode/1
+        </ACTION>
+    </COMMAND>
+
+	<COMMAND name="no service rpc-api" help="RPC API service"/>
+
+	<COMMAND name="no service rpc-api auth-mode" help="Authentication mode">
+        <ACTION>
+			cdbctl update/cdb/sys/sys_global/rpcapi_auth_mode/0
+        </ACTION>
+    </COMMAND>
+
+</VIEW>
+
+
+</CLISH_MODULE>

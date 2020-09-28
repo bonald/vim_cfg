@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+					 http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<VIEW name="Exec">
+
+	<COMMAND name="show ecmp" help="Equal cost multi-path routing"/>
+	<COMMAND name="show ecmp information" optional="false" help="ECMP information">
+
+		<ACTION>
+			cdbctl show/cdb/sys/show_ecmp
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to show the running information of ecmp settings.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to show the running information of ecmp settings.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to show the running information:  
+    Switch# show ecmp information 
+    ECMP load balance enable mode: Static
+    ECMP hash-field-select:
+        ipsa ipda
+		</CTCEXAMPLE>
+		<CTCRCMD>
+ecmp hash-field-select
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show group" hidden="true" help="Show group configuration">
+    	<PARAM name="select" help="Show select group configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+    	<PARAM name="hash" help="Show hash configuration" ptype="SUBCOMMAND" mode="subcommand"/>
+        <ACTION>
+            cdbctl show/cdb/sys/show_ecmp
+        </ACTION>
+    </COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure">
+
+	<COMMAND name="group select" help="Config select group" hidden="true">
+        <PARAM name="hash" help="Hash algorithm" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="key" help="Set hash keys" ptype="SUBCOMMAND" mode="subcommand"/>
+        <PARAM name="hash_type" help="Hash type" ptype="SUBCOMMAND" mode="switch">
+            <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" mode="subcommand">      
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM> 
+            <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" mode="subcommand" >
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+			<PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+                <PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ether-type" help="Take ether-type into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+        </PARAM>
+	    <ACTION>
+	methods=""
+	idx=0
+	for opt in ${__line}
+	do
+	    idx="`expr $idx + 1`"
+	    if [ $idx -gt 4 ]; then
+	        if [ "$methods" == "" ]; then
+	            methods="$opt"
+	        else
+	            methods=$methods",$opt"
+	        fi
+	    fi
+	done
+	cdbctl update/cdb/sys/ecmp_global/hash_key/$methods
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="no group select" help="Config select group" hidden="true">
+        <PARAM name="hash" help="Hash algorithm" ptype="SUBCOMMAND"  mode="subcommand"/>
+        <PARAM name="key" help="Set hash keys" ptype="SUBCOMMAND"  mode="subcommand"/>
+        <ACTION>
+        cdbctl update/cdb/sys/ecmp_global/hash_key/ipsa,ipda,ip-protocol,src-port,dst-port
+        </ACTION>
+    </COMMAND>
+
+	<COMMAND name="ecmp" help="Equal cost multi-path routing"/>
+	<COMMAND name="no ecmp" help="Equal cost multi-path routing"/>
+
+	<COMMAND name="ecmp load-balance" help="Load balancing algorithm"/>
+	<COMMAND name="ecmp load-balance hash-arithmetic" help="Ecmp hash arithmetic">
+		<PARAM name="algorithm" help="Set hash algorithm" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="xor" help="XOR hash algorithm(default)" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="crc" help="CRC hash algorithm" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/sys/ecmp_global/hash_algorithm/${algorithm}
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set ecmp hash arithmetic.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set ecmp hash arithmetic.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Xor
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set ecmp hash arithmetic:
+    Switch(config)# ecmp load-balance hash-arithmetic crc 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ecmp load-balance" help="Load balancing algorithm">
+		<PARAM name="hash-arithmetic" help="Unset ecmp hash arithmetic" ptype="SUBCOMMAND" mode="subcommand">
+		</PARAM>
+
+		<ACTION>
+			cdbctl update/cdb/sys/ecmp_global/hash_algorithm/xor
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset ecmp load-balance hash-arithmetic.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset ecmp load-balance hash-arithmetic.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Xor
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset ecmp load-balance hash-arithmetic:
+    Switch(config)# no ecmp load-balance hash-arithmetic
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ecmp load-balance-mode" help="Load balancing mode algorithm">
+		<PARAM name="lb_mode" help="Set load balance mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Enable ECMP with static mode" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="static_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="static">
+					<PARAM name="self-healing" help="Self-healing" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="round-robin" help="Round robin load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="ip" help="IP destination prefix (e.g. 10.0.0.0/8)" ptype="IP_ADDR_MASK"/>
+			</PARAM>
+			<!--<PARAM name="dynamic" help="Enable ECMP by dynamic load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="dlb_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="normal">
+					<PARAM name="efd-only" help="Configure dlb work on elephant flow" ptype="SUBCOMMAND" mode="subcommand"/>
+					<PARAM name="tcp-only" help="Configure dlb work on tcp flow" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>-->
+		</PARAM>
+
+		<ACTION>
+			if [ "static" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/${static_mode}/dlb_mode_type/normal
+			elif [ "dynamic" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/${lb_mode}/dlb_mode_type/todo
+			else
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/${lb_mode}/rr_prefix/${ip}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set ecmp load-balance-mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set ecmp load-balance-mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Static
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set ecmp load-balance-mode:
+    Switch(config)# ecmp load-balance-mode static self-healing
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ecmp load-balance-mode" help="Load balancing mode algorithm">
+		<PARAM name="lb_mode" help="Set load balance mode" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="static" help="Enable ECMP with static mode" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="static_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch">
+					<PARAM name="self-healing" help="Self-healing" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>
+			<PARAM name="round-robin" help="Round robin load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="ip" help="IP destination prefix (e.g. 10.0.0.0/8), vrf private route isn't support RR" ptype="IP_ADDR_MASK"/>
+			</PARAM>
+			<!--<PARAM name="dynamic" help="Enable ECMP by dynamic load balance" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="dynamic_mode" help="Set load balance mode" ptype="SUBCOMMAND" optional="true" mode="switch" default="dynamic">
+					<PARAM name="efd-only" help="Configure dlb work on elephant flow" ptype="SUBCOMMAND" mode="subcommand"/>
+					<PARAM name="tcp-only" help="Configure dlb work on tcp flow" ptype="SUBCOMMAND" mode="subcommand"/>
+				</PARAM>
+			</PARAM>-->
+		</PARAM>
+
+		<ACTION>
+			if [ "static" == ${lb_mode} ]; then
+				cdbctl update/cdb/sys/ecmp_global/load_balance_mode/static/dlb_mode_type/normal
+			else
+				cdbctl delete/cdb/sys/rr_prefix/rr_prefix/${ip}
+			fi
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset ecmp load-balance-mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset ecmp load-balance-mode.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Static
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset ecmp load-balance-mode
+    Switch(config)# no ecmp load-balance-mode static self-healing
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="ecmp hash-field-select" help="Hash field select for static and self-healing ECMP">
+        <PARAM name="hash_type" help="Hash type" ptype="SUBCOMMAND" mode="switch">
+        	<PARAM name="macsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" mode="subcommand" >
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" mode="subcommand" >
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+            <PARAM name="inner-dst-port" help="Take inner dst-port into hash keys" ptype="SUBCOMMAND"  mode="subcommand">
+            	<PARAM name="macsa" help="Take macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="macda" help="Take macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            	<PARAM name="ethertype" help="Take ethertype into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipsa" help="Take ipv4sa/ipv6sa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ipda" help="Take ipv4da/ipv6da into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="ip-protocol" help="Take ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="src-port" help="Take src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="dst-port" help="Take dst-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macsa" help="Take inner macsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-macda" help="Take inner macda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipsa" help="Take inner ipsa into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ipda" help="Take inner ipda into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-ip-protocol" help="Take inner ipv4/ipv6-protocol into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+                <PARAM name="inner-src-port" help="Take inner src-port into hash keys" ptype="SUBCOMMAND" optional="true" mode="subcommand" />
+            </PARAM>
+        </PARAM>
+
+		<ACTION>
+			methods=""
+			idx=0
+			for opt in ${__line}
+			do
+			    idx="`expr $idx + 1`"
+			    if [ $idx -gt 2 ]; then
+			        if [ "$methods" == "" ]; then
+			            methods="$opt"
+			        else
+			            methods=$methods",$opt"
+			        fi
+			    fi
+			done
+			cdbctl update/cdb/sys/ecmp_global/hash_key/$methods
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to set ecmp hash-field-select.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to set ecmp hash-field-select.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+ipsa,ipda,ip-protocol,src-port,dst-port
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to set ecmp hash-field-select:
+    Switch(config)# ecmp hash-field-select ip-protocol src-port dst-port
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no ecmp hash-field-select" help="Hash field select for static and self-healing ECMP">
+		<ACTION>
+			cdbctl update/cdb/sys/ecmp_global/hash_key/ipsa,ipda,ip-protocol,src-port,dst-port
+		</ACTION>
+		<CTCDESCRIPTION>
+Use this command to unset ecmp hash-field-select
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to unset ecmp hash-field-select
+		</CTCUSAGE>
+		<CTCDEFAULT>
+ipsa,ipda,ip-protocol,src-port,dst-port
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    The following example shows how to unset ecmp hash-field-select:
+    Switch(config)# no ecmp hash-field-select
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show ecmp information
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

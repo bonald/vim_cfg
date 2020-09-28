@@ -1,0 +1,3 @@
+::sysinit:/etc/rc.sysinit
+ttyS0::respawn:-/bin/sh
+::shutdown:/sbin/hwclock --systohc

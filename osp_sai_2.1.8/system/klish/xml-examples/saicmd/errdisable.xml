@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+ERRDISABLE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name = "show errdisable" help="Error disable"/>
+	<COMMAND name = "show errdisable detect" help="Errdisable detection">
+	
+		<ACTION>
+		cdbctl show/cdb/sys/errdisable_show/detect
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the information of errdisable detection.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command can get the detection status of errdisable reason, enabled or disabled.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show errdisable detection command:  
+	DUT1# show errdisable detect 
+	ErrDisable Reason        Detection status
+	------------------------+--------------------
+	arp-numberlimit          Enabled         
+	arp-ratelimit            Enabled         
+	bpduguard                Enabled         
+	bpduloop                 Enabled         
+	fdb-loop                 Enabled         
+	link-flap                Enabled         
+	port-security            Enabled
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable detect
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name = "show errdisable fdb-loop" help="Errdisable fdb loop">
+	
+		<ACTION>
+		cdbctl show/cdb/l2/show_fdb/fdb-loop
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the information of errdisable fdb-loop.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to get the bucket max size, bucket token rate, current token count of errdisable fdb-loop.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show errdisable fdb-loop command:  
+	DUT1# show errdisable fdb-loop 
+	Errdisable FDB loop information
+	Bucket Max Size:      20000
+	Bucket Token Rate:    100
+	Current Token Count:  20000 
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable fdb-loop
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name = "show errdisable flap" help="Errdisable link flap">
+
+		<ACTION>
+		cdbctl show/cdb/sys/errdisable_show/flap
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the information of errdisable flap.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to get the flap times in seconds.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show errdisable flap command:  
+	DUT1# show errdisable flap
+	ErrDisable Reason Flaps      Time (sec)
+	-----------------+----------+----------
+	link-flap         10         10      
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable flap
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name = "show errdisable recovery" help="Errdisable recovery">
+		<ACTION>
+		cdbctl show/cdb/sys/errdisable_show/recovery
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to display the information of errdisable recovery.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to get the recovery status of all errdisable reason. If errdisable is happened, it can get the recovery information.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example of output from the show errdisable recovery command:  
+	DUT1# show errdisable recovery
+	ErrDisable Reason        Timer status    
+	------------------------+--------------------
+	arp-numberlimit          Enabled         
+	arp-ratelimit            Enabled         
+	bpduguard                Enabled         
+	bpduloop                 Enabled         
+	fdb-loop                 Enabled         
+	link-flap                Enabled         
+	port-security            Enabled
+	
+	Timer interval: 100 seconds
+	
+	Interfaces that will be enabled at the next timeout:
+	Interface     Errdisable Reason Time Left(sec)
+	-------------+-----------------+--------------
+	eth-0-1       fdb-loop          98 
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable recovery reason
+errdisable recovery interval
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+	<COMMAND name="errdisable" help="Error disable"/>
+
+	<COMMAND name="errdisable detect" help="Detection setting">
+		<PARAM name="reason" help="Detection reason" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="detect_reason" help="Reason" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="fdb-loop" help="Enable detect FDB loop" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="link-flap" help="Enable detect Link flap error" ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+			cdbctl create/cdb/sys/errdisable/detect/${detect_reason}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable errdisable detection reasons.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+In the system, it can only set two errdisable detection reasons, fdb-loop and link-flap.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to enable detect reasons:  
+	DUT1(config)# errdisable detect reason fdb-loop 
+	DUT1(config)# errdisable detect reason link-flap 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no errdisable detect
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="errdisable fdb-loop" help="FDB loop setting">
+		<PARAM name="bucket_max_size" help="Token max size of FDB bucket, advise set to max FDB entry count, default is 60000" ptype="ERRDIS_FDBLOOP_MAXSIZE"/>
+		<PARAM name="bucket_add_rate" help="Token add rate of FDB bucket, default is 200" ptype="ERRDIS_FDBLOOP_RATE"/>
+		
+		<ACTION>
+			cdbctl create/cdb/sys/errdisable/fdb-loop/${bucket_max_size}/${bucket_add_rate}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set errdisable fdb loop detection parameters.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+There are two parameters in fdb loop errdisable, one is bucket_max_size,the other is bucket_add_rate, when the fdb in the bucket exhausted, one errdisable happens.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Token max size of FDB bucket is 60000
+Token add rate of FDB bucket is 200
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to set the errdiable link flap parameters:  
+	DUT1(config)# errdisable fdb-loop 20000 100
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no errdisable fdb-loop
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="errdisable flap" help="Flap setting">
+		<PARAM name="reason" help="Flap reason" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="link-flap" help="Link flap" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="flap_count" help="Max flap count, default is 10" ptype="ERRDIS_FLAP_COUNT"/>
+				<PARAM name="flap_time" help="Max flap time, default is 10" ptype="ERRDIS_FLAP_TIME" />
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>
+			cdbctl create/cdb/sys/errdisable/flap/${flap_count}/${flap_time}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set errdisable flap parameters.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+There are two parameters in errdisable flap, one is flap_count, the other is flap_time, when the count of flap reach the flap_count in the time of flap_time, one errdisable happens.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Max flap count is 10
+Max flap time is 10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to set errdiable link flap parameters:
+	DUT1(config)# errdisable flap reason link-flap 30 40
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no errdisable flap
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="errdisable recovery" help="Recovery setting"/>
+	
+	<COMMAND name="errdisable recovery interval" help="Recovery timer">
+		<PARAM name="timer_intval_param" help="Timer-inteval(sec), default is 300" ptype="ERRDIS_RECOVER_TIMER_PARAM"/>
+		
+		<ACTION>
+		    cdbctl create/cdb/sys/errdisable/recovery/interval/${timer_intval_param}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set errdisable recover interval time value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+The errdisable recover interval time value's range is 30-86400, default time is 300.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+300 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to set errdiable recover interval time value:
+	DUT1(config)# errdisable recovery interval 100
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no errdisable recovery interval
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="errdisable recovery reason" help="Recovery reason">
+		<PARAM name="recovery_reason" help="Reason" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Recover from all reasons" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="arp-numberlimit" help="Recover from arp number limit" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="arp-ratelimit" help="Recover from arp rate limit" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="bpduguard" help="Recover from BPDU guard" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="bpduloop" help="Recover from BPDU loop" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="fdb-loop" help="Recover from FDB loop" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="link-flap" help="Recover from link flap" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="port-security" help="Recover from port security" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl create/cdb/sys/errdisable/recovery/reason/${recovery_reason}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to enable errdisable recover reason.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to enable errdisable recover reason, include fdb-loop, link-flap, port-security, bpduguard, bpduloop, arp-numberlimit, arp-ratelimit and all of them.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to enable errdiable recover reason:  
+	DUT1(config)# errdisable recovery reason all 
+	DUT1(config)# errdisable recovery reason arp-numberlimit
+	DUT1(config)# errdisable recovery reason arp-ratelimit
+	DUT1(config)# errdisable recovery reason bpduguard
+	DUT1(config)# errdisable recovery reason bpduloop
+    DUT1(config)# errdisable recovery reason fdb-loop
+	DUT1(config)# errdisable recovery reason link-flap
+	DUT1(config)# errdisable recovery reason port-security
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no errdisable recovery reason
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no errdisable" help="Error disable"/>
+
+	<COMMAND name="no errdisable detect" help="Detection setting">
+		<PARAM name="reason" help="Detection reason" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="detect_reason" help="Reason" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="fdb-loop" help="Enable detect FDB loop" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="link-flap" help="Enable detect Link flap error" ptype="SUBCOMMAND" mode="subcommand"/>
+			</PARAM>
+		</PARAM>
+		<ACTION>
+			cdbctl delete/cdb/sys/errdisable/detect/${detect_reason}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable errdisable detection reasons.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable errdisable detection reasons.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Enable 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to disable detect reasons:  
+	DUT1(config)# no errdisable detect reason fdb-loop 
+	DUT1(config)# no errdisable detect reason link-flap 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable detect
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no errdisable fdb-loop" help="FDB loop setting">
+		<ACTION>
+			cdbctl delete/cdb/sys/errdisable/fdb-loop
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set errdisable FDB loop detection parameters to default value
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set errdisable FDB loop detection parameters to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Token max size of FDB bucket is 60000
+Token add rate of FDB bucket is 200 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to unset errdiable link flap reason:  
+	DUT1(config)# no errdisable fdb-loop 
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable fdb-loop
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no errdisable flap" help="Flap setting">
+		<PARAM name="reason" help="Flap reason" ptype="SUBCOMMAND" mode="subcommand">
+			<PARAM name="link-flap" help="Link flap" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl delete/cdb/sys/errdisable/flap
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set errdisable flap to default value.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set errdisable flap to default value.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Max flap count is 10
+Max flap time is 10
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to set errdiable link flap parameters to default value
+	DUT1(config)# no errdisable flap reason link-flap
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable flap
+		</CTCRCMD>
+
+	</COMMAND>
+
+	<COMMAND name="no errdisable recovery" help="Recovery setting"/>
+	
+	<COMMAND name="no errdisable recovery interval" help="Recovery timer">
+		<ACTION>
+			cdbctl delete/cdb/sys/errdisable/recovery/interval
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to set errdisable recover interval to default value 300 seconds.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set errdisable recover interval to default value 300 seconds.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+300 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to set errdiable recover default interval value:  
+	DUT1(config)# no errdisable recovery interval
+	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable recovery interval
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no errdisable recovery reason" help="Recovery reason">
+		<PARAM name="recovery_reason" help="Reason" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="all" help="Recover from all reasons" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="arp-numberlimit" help="Recover from arp number limit" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="arp-ratelimit" help="Recover from arp rate limit" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="bpduguard" help="Recover from BPDU guard" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="bpduloop" help="Recover from BPDU loop" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="fdb-loop" help="Recover from FDB loop" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="link-flap" help="Recover from link flap" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="port-security" help="Recover from port security" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			cdbctl delete/cdb/sys/errdisable/recovery/reason/${recovery_reason}
+		</ACTION>
+
+		<CTCDESCRIPTION>
+Use this command to disable errdisable recover reason.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to disable errdisable recover reason.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Disable
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This is an example to disable errdiable recover reason:  
+	DUT1(config)# no errdisable recovery reason all 
+	DUT1(config)# no errdisable recovery reason arp-numberlimit 
+	DUT1(config)# no errdisable recovery reason arp-ratelimit 
+	DUT1(config)# no errdisable recovery reason bpduguard
+	DUT1(config)# no errdisable recovery reason bpduloop 
+    DUT1(config)# no errdisable recovery reason fdb-loop
+	DUT1(config)# no errdisable recovery reason link-flap
+	DUT1(config)# no errdisable recovery reason port-security 
+		</CTCEXAMPLE>
+		<CTCRCMD>
+errdisable recovery reason
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+</CLISH_MODULE>

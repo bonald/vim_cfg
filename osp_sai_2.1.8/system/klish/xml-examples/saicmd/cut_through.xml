@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+cut-through-forwarding
+</CTCMODULENAME>
+
+<VIEW name="Configure">
+
+<!-- cut-through-forwarding  -->
+    <COMMAND name="cut-through-forwarding" help="Cut through forwarding mode"/>
+    <COMMAND name="no cut-through-forwarding" help="Cut through forwarding mode"/>
+  
+    <COMMAND name="cut-through-forwarding enable" help="Enable cut through forwarding mode">
+        <ACTION>
+            cdbctl update/cdb/sys/sys_global/cut_through_enable/1
+        </ACTION>
+    </COMMAND>
+
+    <COMMAND name="no cut-through-forwarding enable" help="Enable cut through forwarding mode">
+        <ACTION>cdbctl update/cdb/sys/sys_global/cut_through_enable/0</ACTION>
+    </COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

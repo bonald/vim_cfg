@@ -1,0 +1,29 @@
+HAL-MSG-SFLOW DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+--IMPORTS 
+--    HalMsgFlowRule
+--    FROM HAL-MSG-FLOW
+--   ;
+
+-- MESSAGE definitions for SFLOW (BEGIN) {
+
+--HalMsgSflowSetEnableReq ::= SEQUENCE
+--{
+--    gportList   SEQUENCE OF INTEGER,
+--    dir         INTEGER,
+--    enable      INTEGER
+--}
+
+HalMsgSflowSetSampleReq ::= SEQUENCE
+{
+    gportList   SEQUENCE OF INTEGER,
+    dir         INTEGER,
+    enable      INTEGER,
+    weight      INTEGER
+}
+
+-- } MESSAGE definitions for SFLOW (END)
+
+
+END
+

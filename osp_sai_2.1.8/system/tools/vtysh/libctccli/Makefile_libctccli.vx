@@ -1,0 +1,19 @@
+BLD_DIR=$(SDK_DIR)/build.$(CPU).$(VER)
+OBJ_DIR=$(BLD_DIR)/obj.$(BOARD)/zebra_ctccli
+LIB_DIR=$(BLD_DIR)/lib.$(BOARD)
+BIN_DIR=$(BLD_DIR)/bin.$(BOARD) 
+
+LIB = zebra_ctccli
+OBJS = $(wildcard $(OBJ_DIR)/src/*.o)
+DEPS = $(wildcard $(OBJ_DIR)/src/*.d)
+
+$(LIB_DIR)/lib$(LIB).a: $(OBJS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/lib$(LIB).a

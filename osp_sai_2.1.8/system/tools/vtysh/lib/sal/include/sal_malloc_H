@@ -1,0 +1,19 @@
+/****************************************************************************
+ * ctcsal_malloc.h :        malloc module header
+ *
+ * Copyright (C) 2005 Centec Networks Inc.  All rights reserved.
+ *
+ * Modify History :
+ * Revision       :         R0.01
+ * Author         :         Jack Yang
+ * Date           :         2005-7-28
+ * Reason         :         First Create
+ ****************************************************************************/
+#ifndef _CTCSAL_MALLOC_H_
+#define _CTCSAL_MALLOC_H_
+
+void *ctcsal_malloc(uint32 size);
+void ctcsal_free(void *addr);
+
+
+#endif  /* _CTCSAL_MALLOC_H_ */

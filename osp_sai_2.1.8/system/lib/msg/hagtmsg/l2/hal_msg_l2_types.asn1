@@ -1,0 +1,19 @@
+HAL-MSG-L2TYPES DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+HalMsgL2VlanPortType ::= ENUMERATED
+{
+    accessPort,
+    --hybridPort,
+    trunkPort,
+    providerCEPort,
+    providerCNPort,
+    providerPNPort,
+    qinQPort
+}
+
+HalMsgDefL2BrgName   ::= PrintableString
+HalMsgDefL2MacAddr   ::= PrintableString
+HalMsgDefL2mcPortMemberBitmap   ::= PrintableString
+HalMsgDefL2mcLocalMemberArray  ::= PrintableString
+
+END

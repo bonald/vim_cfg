@@ -1,0 +1,31 @@
+ENABLE_OSPFD=yes
+
+#ifeq ($(CHIPNAME),goldengate)
+#CPPFLAGS += -DMULTIPATH_NUM=64
+#endif
+#ifeq ($(CHIPNAME),greatbelt)
+#CPPFLAGS += -DMULTIPATH_NUM=8
+#endif
+
+ifeq ($(ARCH), um)
+    CPPFLAGS += -DSYSCONFDIR=\"/centec_switch/etc/\"
+
+endif
+CPPFLAGS += -I$(CTC_LIB_DIR)
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/lib
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/vtysh
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/zebra
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/ospfd
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/babeld
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/bgpd
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/fpm
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/isisd
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/ospf6d
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/ospfclient
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/pimd
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/pkgsrc
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/ripd
+CPPFLAGS += -I$(QUAGGA_TOP_DIR)/ripngd
+
+LIBJSON      = $(LIB_DIR)/libjson.a

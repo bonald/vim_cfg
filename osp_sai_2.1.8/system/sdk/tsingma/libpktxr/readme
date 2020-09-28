@@ -1,0 +1,72 @@
+$name$:  filed value
+@name@:  control value
+#name :  absolute value
+[]    :  sperator
+
+1.for detail of "header_flag.txt" and "header_format.txt", please see "ctp_common.h".
+
+2.in "header_flag.txt" and "header_format.txt", strings only begin with "$" is valid.
+
+3.in "header_format.txt", we need to define this filed:
+  1> different header type, must begin with keyword "$TYPE", like "$TYPES ETHERNET".
+  2> different header filed, must begin with keyword "$FIELD", and followed with filed id,
+     bitlen of this filed, default value.
+  3> for different header field, there are some flags to descript their action, these flags are:
+     "exist", "jump", "default", "nextp", "length", "udt".
+  4> for detail of these flags, please see "ctp_field_info_t" in "ctp_common.h".
+  5> others:
+
+
+4.in "header_flag.txt", we need to define this field:
+  1> filed which useing flags in "header_format.txt", must define their expression.
+     exp: "$FIELD   MAX_VNUM             0   0 default repeat" in "header_format.txt"
+          "$REPEAT  MAX_VNUM$            0   1  $ETH_UDT$   [$MAX_VNUM$]" in "header_flags.txt".
+
+  2> different header type, must begin with keyword "$TYPE", like "$TYPES ETHERNET".
+  3> one line should include this information: keyword, belongs, next, flag, union, expression.
+     keyword:  flag in "header_format.txt".
+     belongs:  belong to which field
+     next   :  0 == nothing followed this line
+               1 == still something follwed this line
+               exp: "$NEXTP   L2_TYPE$       1     1      $IPV4$              [$LEN_TYPE$] == [#0800]"
+                                            "0     1      $IPV6$              [$LEN_TYPE$] == [#86DD]"
+     flag   :  define OP_FLAG_STAND_ONLY       (1 << 0) :only for this condition, every entry MUST have this flag
+               define OP_FLAG_AND_NEXT         (1 << 1) :condition1 && condition2
+               define OP_FLAG_OR_NEXT          (1 << 2) :condition1 || condition2
+               define OP_FLAG_DEC_CNT          (1 << 3) :repeat count need decrecing
+    
+    union   :  field id or protocol
+
+    express :  the condition when to do this action
+
+ 4> for detail, please see "ctp_flags_exist" in "ctp_common.h".
+ 5> others:
+     
+5.file architecture:
+  1> the main code:
+     ctp_decoder.c:
+     ctp_encoder.c:
+     ctp_filter.c :
+     ctp_header_format.c
+     ctp_header_format.h
+     ctp_xr_command.c: ==> packetxr::encode_command_set ...
+  
+  2> the utility code:
+     ctp_common.h :
+     ctp_queue.h  :
+     ctp_util.c   : ==> use "calculate_result()" to get the expression value from "ctp_header_format.c"
+     ctp_api.h    :
+
+  3> not used:
+     cts_xr_tcl_cmds.c
+     cts_xr_tcl_cmds.h
+     cts_xr_types.h
+     cts_xr_debug.h
+     cts_xr_config.h
+
+  4> attach files:
+     header_flags.txt
+     header_format.txt
+     ctp_gen_header.c ==> build to "ctp_gen" ==> ctp_header_format.c, ctp_header_format.h
+     
+  5> all these files build to "libpacketxr.so" in platform.

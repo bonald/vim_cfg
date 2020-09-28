@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+	
+<CTCMODULENAME>
+GLOBAL COMMANDS
+</CTCMODULENAME>
+	
+    <COMMAND name="help"
+             help="Display an overview of the CLI syntax" access="1">
+        <ACTION builtin="clish_overview"/>
+    </COMMAND>
+    <!--=======================================================-->
+    <COMMAND name="end"
+        help="End current mode and change to EXEC mode"
+        view="Exec"
+        lock="false">
+    </COMMAND>
+    <!--=======================================================-->  
+    <COMMAND name="show"
+        help="Show running system information"/>
+    <!--=======================================================-->
+    <COMMAND name="show history"
+             help="Display the current session's command line history">
+        <ACTION builtin="clish_history">${limit}</ACTION>
+		
+		<CTCDESCRIPTION>
+To display the history command lines, use the show history command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display history commands information of device. 
+    Switch# show history
+    1  show history
+    2  show running-config
+    3  show history
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show diff" help="Difference between current running configuration and startup configuration" hidden="true" access="2">
+        <ACTION>
+            cdbctl buildcfg/running/config-running_config_for_diff/cdb
+            diff /tmp/config-running_config_for_diff startup-config.conf
+        </ACTION>
+    </COMMAND>
+    
+    <!--=======================================================-->
+    <COMMAND name="show running-config"
+        help="Current operating configuration" access="4">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current operating configuration, use the show running-config command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current operating configuration of device. 
+    Switch# show running-config 
+    Building configuration...
+    enable password centec
+    hostname Switch
+    aaa new-model
+    !
+    aaa authentication login aaa radius
+    aaa authentication login default none
+    !
+    username admin privilege 4 password admin
+    username test password test
+    !
+    split interface eth-0-1 10giga
+    switch interface eth-0-1 sfp
+    split interface eth-0-2 10giga
+    !
+    !
+    ip ssh server version v1
+    !
+    logging merge disable
+    !
+    tacacs-server host 10.10.35.251
+    !
+    management ip address 10.10.39.104/23
+    management route gateway 10.10.39.254
+    !
+    vlan 100
+    !
+    !
+    radius-server host 1.1.1.1
+    !
+    radius-server host 10.10.35.251
+    !
+    interface eth-0-1/1
+      speed 1000
+      switchport mode trunk
+      switchport trunk allowed vlan add 100
+    !
+    interface eth-0-1/2
+      speed 1000
+      switchport mode trunk
+      switchport trunk allowed vlan add 100
+    !
+    interface eth-0-1/3
+      speed 1000
+    !
+    interface eth-0-1/4
+      speed 1000
+    !
+    interface eth-0-2/1
+      speed 1000
+      shutdown
+    !
+    interface eth-0-2/2
+      speed 1000
+    !
+    interface eth-0-2/3
+    !
+    interface eth-0-2/4
+    !
+    interface eth-0-3
+      shutdown
+    !
+    interface eth-0-4
+      shutdown
+    !
+    interface eth-0-5
+      shutdown
+    !
+    interface eth-0-6
+      shutdown
+    !
+    interface eth-0-7
+      shutdown
+    !
+    interface eth-0-8
+      shutdown
+    !
+    interface eth-0-9
+      shutdown
+    !
+    interface eth-0-10
+      shutdown
+    !
+    interface eth-0-11
+      no switchport
+      shutdown
+    !
+    interface eth-0-12
+      shutdown
+    !
+    interface eth-0-13
+      shutdown
+    !
+    interface eth-0-14
+      shutdown
+    !
+    interface eth-0-15
+      shutdown
+    !
+    interface eth-0-16
+      shutdown
+    !
+    interface eth-0-17
+      shutdown
+    !
+    interface eth-0-18
+      shutdown
+    !
+    interface eth-0-19
+      shutdown
+    !
+    interface eth-0-20
+      shutdown
+    !
+    interface eth-0-21
+      shutdown
+    !
+    interface eth-0-22
+      shutdown
+    !
+    interface eth-0-23
+      shutdown
+    !
+    interface eth-0-24
+      shutdown
+    !
+    line console 0
+     no line-password
+    line vty 0 6
+     exec-timeout 35791 0
+     privilege level 4
+     no line-password
+    line vty 7
+     exec-timeout 35791 0
+     privilege level 4
+     line-password centec
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+    <!--=======================================================-->
+    <COMMAND name="show running-config interface"
+        help="Interface configuration" access="4">
+        <PARAM name="iface_name"
+            optional="true"
+            help="Ethernet interface name"
+            ptype="IF_NAME_ALL"/>
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/interface/${iface_name}
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current interface configuration, use the show running-config interface command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current interface configuration of device. 
+    Switch# show running-config interface 
+    Building configuration...
+    interface eth-0-1/1
+      speed 1000
+      switchport mode trunk
+      switchport trunk allowed vlan add 100
+    !
+    interface eth-0-1/2
+      speed 1000
+      switchport mode trunk
+      switchport trunk allowed vlan add 100
+    !
+    interface eth-0-1/3
+      speed 1000
+    !
+    interface eth-0-1/4
+      speed 1000
+    !
+    interface eth-0-2/1
+      speed 1000
+      shutdown
+    !
+    interface eth-0-2/2
+      speed 1000
+    !
+    interface eth-0-2/3
+    !
+    interface eth-0-2/4
+    !
+    interface eth-0-3
+      shutdown
+    !
+    interface eth-0-4
+      shutdown
+    !
+    interface eth-0-5
+      shutdown
+    !
+    interface eth-0-6
+      shutdown
+    !
+    interface eth-0-7
+      shutdown
+    !
+    interface eth-0-8
+      shutdown
+    !
+    interface eth-0-9
+      shutdown
+    !
+    interface eth-0-10
+      shutdown
+    !
+    interface eth-0-11
+      no switchport
+      shutdown
+    !
+    interface eth-0-12
+      shutdown
+    !
+    interface eth-0-13
+      shutdown
+    !
+    interface eth-0-14
+      shutdown
+    !
+    interface eth-0-15
+      shutdown
+    !
+    interface eth-0-16
+      shutdown
+    !
+    interface eth-0-17
+      shutdown
+    !
+    interface eth-0-18
+      shutdown
+    !
+    interface eth-0-19
+      shutdown
+    !
+    interface eth-0-20
+      shutdown
+    !
+    interface eth-0-21
+      shutdown
+    !
+    interface eth-0-22
+      shutdown
+    !
+    interface eth-0-23
+      shutdown
+    !
+    interface eth-0-24
+      shutdown
+    !
+    Swtich#   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+
+<COMMAND name="show running-config qos"
+        help="Qos configuration" access="4">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/qos/
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current qos related configuration, use the show running-config qos command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current qos related configuration of device. 
+    Switch# show running-config qos
+    Building configuration...
+     qos global
+	 qos enable
+	!
+     qos domain 2
+	 tc 1 color yellow to exp 3
+	   exit
+	!
+
+     qos policer-profile p2
+	 mode rfc2697 color-blind cir 100000000 cbs 128000 ebs 128000 
+	  exit
+	!
+     qos scheduler-profile p1
+	 mode sp
+	 weight 1
+	 pir 100000000
+	  exit
+	!
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+
+    
+    <!--=======================================================-->
+    <COMMAND name="show running-config access-list" help="Access-list" access="4">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/l2/acl_config
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current access-list configuration, use the show running-config access-list command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current access-list configuration of device.   
+    Switch# show running-config access-list   
+    Building configuration...  
+    ip access-list test  
+     10 deny src-mac any dest-ip host 1.1.1.10  
+    !	
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show running-config mlag"
+        help="Multi-Chassis Link Aggregation" access="4">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/l2/mlag
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current MLAG configuration, use the show running-config mlag command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current mlag configuration of device. 
+    Switch# show running-config mlag
+    Building configuration...
+    mlag configuration
+      peer-link eth-0-9
+      peer-address 10.10.10.2
+    !
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+    <!--=======================================================-->
+
+    <COMMAND name="show running-config router"
+        help="Router configuration" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="ospf" help="Open Shortest Path First (OSPF)" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="vrrp" help="Virtual Router Redundancy Protocol (VRRP)" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/build_config/${type}
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current OSPF configuration, use the show running-config router ospf command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current router ospf configuration of device. 
+    Switch# show running-config router ospf    
+    Building configuration...    
+    router ospf    
+     router-id 12.12.1.1    
+     area 10 authentication message-digest    
+    !    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show running-config switch"
+        help="Switch configuration" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="dot1x" help="IEEE 802.1X Port-Based Access Control configuration" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="stp" help="Spanning-tree configuration" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="vlan" help="VLAN configuration" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="radius-server" help="Radius server configuration" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="tacacs-server" help="Tacacs server configuration" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/build_config/${type}
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current switch dot1x or stp or vlan or radius-server configuration, use the show running-config switch command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current switch vlan configuration of device. 
+    Switch# show running-config switch vlan    
+    Building configuration...   
+    vlan 3   
+     name v3   
+    !   
+    vlan range 4-9,11   
+    !   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show running-config ip"
+        help="Internet Protocol (IP) configuration" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="route" help="Static IP route configuration" ptype="SUBCOMMAND" mode="subcommand" />
+			<PARAM name="igmp-snooping" help="IGMP snooping configuration" ptype="SUBCOMMAND" mode="subcommand" />
+<!--Add by zhush for bug 52970, 2019-07-26-->
+			<PARAM name="nat" help="Network Address Translation" ptype="SUBCOMMAND" mode="subcommand" />
+<!--end zhush-->
+		</PARAM>
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/build_config/${type}
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current IP route or igmp-snooping configuration, use the show running-config ip command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current ip route configuration of device.    
+    Switch# show running-config ip route   
+    Building configuration...   
+    ip route 1.1.0.0/23 11.1.1.1    
+    !   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show running-config ipv6"
+        help="Internet Protocol version 6 (IPv6) configuration" access="4">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="route" help="Static IPv6 route configuration" ptype="SUBCOMMAND" mode="subcommand" />
+		</PARAM>
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/build_config/routev6
+            rm -rf /tmp/$configfile
+        </ACTION>
+		
+		<CTCDESCRIPTION>
+To display the current IPv6 route configuration, use the show running-config ipv6 route command in EXEC mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+none
+		</CTCUSAGE>
+		<CTCDEFAULT>
+none
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display current ipv6 route configuration of device.    
+    Switch# show running-config ipv6 route   
+    Building configuration...   
+    ipv6 route 1000::/48 2000::2    
+    !   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="rpcapi_user" help="RPC-API user" hidden="true">
+        <PARAM name="userinfo" help="Username and address" ptype="STRING" />
+        <ACTION builtin="clish_rpcapi_user">${userinfo}</ACTION>
+    </COMMAND>
+	
+	<!--zhw-->
+    <COMMAND name="show running-config pim_sm" help="pim_sm" access="2">
+        <ACTION>
+            configfile=config-$(date +%N)
+            cdbctl buildcfg/running/$configfile/cdb/l3/pim_sm
+            rm -rf /tmp/$configfile
+        </ACTION>
+        <CTCDESCRIPTION>
+            ZHW TEST
+        </CTCDESCRIPTION>
+        <CTCUSAGE>
+            none
+        </CTCUSAGE>
+        <CTCDEFAULT>
+            none
+        </CTCDEFAULT>
+        <CTCEXAMPLE>
+            zhw test
+        </CTCEXAMPLE>
+        <CTCRCMD>
+        </CTCRCMD>
+    </COMMAND>
+
+    <VAR name="rsa-key-password" value="" dynamic="true"/>
+    <VAR name="rsa-key-encpassword" value="" dynamic="true"/>
+    <VAR name="rsa-key-string" value="" dynamic="true"/>
+    <VAR name="rsa-key-type" value="public" dynamic="true"/>
+    <VAR name="rsa-key-format" value="der" dynamic="true"/>
+</CLISH_MODULE>

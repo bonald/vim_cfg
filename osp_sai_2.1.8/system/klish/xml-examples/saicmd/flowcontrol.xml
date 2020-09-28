@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+<CTCMODULENAME>
+FLOW CONTROL
+</CTCMODULENAME>
+
+    <!-- show related CLIs -->
+    <VIEW name="Exec">
+
+       <COMMAND name="show flowcontrol"
+		help="Flow control">
+		<PARAM name="iface_name" optional="true" help="Ethernet interface name" ptype="IF_NAME_E"/>
+		
+            <ACTION>
+            cdbctl update/cdb/sys/update_if_stats/${iface_name}
+            usleep 100000
+            cdbctl show/cdb/interface/flowcontrol/${iface_name}
+            </ACTION>
+					
+		<CTCDESCRIPTION>
+Use this command to display flow control information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use the command to display flowcontrol ability and the pause frame information of each port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display flowcontrol information:  
+    Switch# show flowcontrol eth-0-1
+		
+    Port         Receive FlowControl  Send FlowControl   RxPause      TxPause       
+                 admin    oper        admin    oper      
+    ------------+--------+-----------+--------+---------+------------+-----------  
+    eth-0-1      on       off         on       off       0            0           
+   
+	Switch# show flowcontrol 
+	Port         Receive FlowControl  Send FlowControl   RxPause      TxPause       
+                 admin    oper        admin    oper      
+    ------------+--------+-----------+--------+---------+------------+-----------  
+    eth-0-1      on       off         on       off       0            0           
+    eth-0-2      off      off         off      off       0            0           
+    eth-0-3      off      off         off      off       0            0           
+    eth-0-4      off      off         off      off       0            0           
+    eth-0-5      off      off         off      off       0            0           
+    eth-0-6      off      off         off      off       0            0           
+    eth-0-7      off      off         off      off       0            0           
+    eth-0-8      off      off         off      off       0            0           
+    eth-0-9      off      off         off      off       0            0           
+    eth-0-10     off      off         off      off       0            0           
+    eth-0-11     off      off         off      off       0            0           
+    eth-0-12     off      off         off      off       0            0           
+    eth-0-13     off      off         off      off       0            0           
+    eth-0-14     off      off         off      off       0            0           
+    eth-0-15     off      off         off      off       0            0           
+    eth-0-16     off      off         off      off       0            0           
+    eth-0-17     off      off         off      off       0            0           
+    eth-0-18     off      off         off      off       0            0           
+    eth-0-19     off      off         off      off       0            0           
+    eth-0-20     off      off         off      off       0            0           
+    eth-0-21     off      off         off      off       0            0           
+    eth-0-22     off      off         off      off       0            0           
+    eth-0-23     off      off         off      off       0            0           
+    eth-0-24     off      off         off      off       0            0       
+		</CTCEXAMPLE>
+		<CTCRCMD>
+None
+		</CTCRCMD>
+	</COMMAND>
+
+    </VIEW>
+
+    <!-- configuration related CLIs -->
+    <VIEW name="Configure">
+    </VIEW>
+    <VIEW name="configure-if-view">
+	
+       <COMMAND name="flowcontrol"
+            help="Set flowcontrol">
+            <PARAM name="direction" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="send" help="Send direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="receive" help="Receive direction" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+            <PARAM name="enable" help="Direction" ptype="SUBCOMMAND" mode="switch">
+                <PARAM name="on" help="Set flowcontrol enable" ptype="SUBCOMMAND" mode="subcommand" /> 
+                <PARAM name="off" help="Set flowcontrol disable" ptype="SUBCOMMAND" mode="subcommand" /> 
+            </PARAM>
+			
+            <ACTION>
+                if test "${enable}" != "on"; then
+                cdbctl update/cdb/interface/${iface}/flowcontrol_${direction}/0
+                else
+                cdbctl update/cdb/interface/${iface}/flowcontrol_${direction}/1
+                fi
+            </ACTION>
+					
+		    <CTCDESCRIPTION>
+Use this command to enable or disable flow control send or receive function.
+		    </CTCDESCRIPTION>
+		    <CTCUSAGE>
+Use the flowcontrol Interface Configuration command to set the interface’s ability to send or receive pause frames to on or off.  
+		    </CTCUSAGE>
+		    <CTCDEFAULT>
+off
+		    </CTCDEFAULT>
+		    <CTCEXAMPLE>
+    This example shows how to enable flow control on interface:  
+    Switch(config-if-eth-0-1)# flowcontrol send on  
+	    
+	This example shows how to enable flow control on interface:  
+    Switch(config-if-eth-0-1)# flowcontrol receive on  
+		    </CTCEXAMPLE>
+		    <CTCRCMD>
+show flowcontrol
+		    </CTCRCMD>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>
+

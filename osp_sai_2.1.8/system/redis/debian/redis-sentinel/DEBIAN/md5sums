@@ -1,0 +1,4 @@
+94db993a88757c3b1ec97aa8f159d8f1  lib/systemd/system/redis-sentinel.service
+ec276a22560c69c6e8d8c9b8d34c156f  usr/lib/tmpfiles.d/redis-sentinel.conf
+8bda3859ed81d068714a34eb393ec3c2  usr/share/doc/redis-sentinel/changelog.Debian.gz
+6884a8609766598c538c11d3af2d044e  usr/share/doc/redis-sentinel/copyright

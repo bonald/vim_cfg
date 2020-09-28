@@ -1,0 +1,73 @@
+all_targets += lkm_ctc_boards lkm_ctc_gpio lkm_ctc_reset lkm_ctc_power lkm_ctc_phy lkm_ctc_hw lkm_ctc_restart lkm_ctc_watchdog
+
+ifeq ($(ARCH), arm)
+all_targets += lkm_ctc_gpio_spi
+all_targets += lkm_ctc_dpll
+endif
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+lkm_ctc_boards: FORCE
+	make -C ctc_boards
+
+clean_lkm_ctc_boards: FORCE
+	make -C ctc_boards clean
+
+lkm_ctc_gpio: FORCE lkm_ctc_boards
+	make -C ctc_gpio
+
+clean_lkm_ctc_gpio: FORCE
+	make -C ctc_gpio clean
+
+lkm_ctc_reset: FORCE lkm_ctc_boards
+	make -C ctc_reset
+
+clean_lkm_ctc_reset: FORCE
+	make -C ctc_reset clean
+	
+lkm_ctc_power: FORCE lkm_ctc_boards
+	make -C ctc_power
+
+clean_lkm_ctc_power: FORCE
+	make -C ctc_power clean
+
+lkm_ctc_phy: FORCE lkm_ctc_boards
+	make -C ctc_phy
+
+clean_lkm_ctc_phy: FORCE
+	make -C ctc_phy clean
+
+lkm_ctc_hw: FORCE lkm_ctc_boards
+	make -C ctc_hw
+
+clean_lkm_ctc_hw: FORCE
+	make -C ctc_hw clean
+	
+lkm_ctc_restart: FORCE lkm_ctc_boards
+	make -C ctc_restart
+
+clean_lkm_ctc_restart: FORCE
+	make -C ctc_restart clean
+
+lkm_ctc_watchdog: FORCE lkm_ctc_boards
+	make -C ctc_watchdog
+
+clean_lkm_ctc_watchdog: FORCE
+	make -C ctc_watchdog clean
+
+lkm_ctc_gpio_spi: FORCE lkm_ctc_boards
+	make -C ctc_gpio_spi
+	
+clean_lkm_ctc_gpio_spi: FORCE
+	make -C ctc_gpio_spi clean
+
+lkm_ctc_dpll: FORCE lkm_ctc_boards
+	make -C ctc_dpll
+	
+clean_lkm_ctc_dpll: FORCE
+	make -C ctc_dpll
+
+.PHONY: FORCE
+FORCE:

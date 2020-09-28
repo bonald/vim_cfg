@@ -1,0 +1,20 @@
+HAL-MSG-ECMP DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS
+    HalMsgIntList
+    FROM HAL-MSG-TYPES
+    ;
+    
+HalMsgECMPGroupAddReq ::= SEQUENCE
+{
+    nhCnt        INTEGER,
+    ecmpid       INTEGER,
+    nhidList     SEQUENCE OF INTEGER
+}
+
+HalMsgECMPGroupDelReq ::= SEQUENCE
+{
+    ecmpid       INTEGER
+}
+
+END

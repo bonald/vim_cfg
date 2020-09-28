@@ -1,0 +1,15 @@
+HAL-MSG-PHY-LPBK DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+HalMsgPhyLoopbackSetEnableReq ::= SEQUENCE
+{
+    srcGport      INTEGER,
+    srcSlotno     INTEGER,
+    srcPortno     INTEGER,
+    type          INTEGER,       -- glb_phy_loopback_type_t
+    interPort  INTEGER,
+    swapMacEn     INTEGER, 
+    dstGport      INTEGER,
+    enable        INTEGER
+}
+
+END

@@ -1,0 +1,414 @@
+<!-- global swith -->
+<div class="row">
+<div class="col-md-6">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+        <dl>
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 'dot1x system-auth-ctrl'  | translate }}</div>
+                <div class="col-md-2 pull-right">
+                    <btn-switch switch-state="auth_ctl_state" switch-on-change="changeAuthCtlState()"   ></btn-switch>
+                </div>
+            </dd>     
+            
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 're-activate all radius-server'  | translate }}</div>
+                <div class="col-md-2 pull-right">
+                    <button type="submit" class="btn btn-submit" ng-click="reActiveRadiusServer()" ng-disabled="addSmlpktForm.smlpktLen.$invalid">{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>
+            
+            <dd class="row" style="margin-top: 10px;">
+                <div class="col-md-4">{{ 're-activate all tacacs-server'  | translate }}</div>
+                <div class="col-md-2 pull-right">
+                    <button type="submit" class="btn btn-submit" ng-click="reActiveTacacsServer()" ng-disabled="addSmlpktForm.smlpktLen.$invalid">{{ 'Submit' | translate }}</button>
+                </div>
+            </dd>    
+            
+            <form name="radiusServerDeadtimeForm" novalidate>                
+              <dd class="row" style="margin-top: 10px;">
+                  <div class="col-md-4">{{ 'radius-server deadtime'  | translate }}</div>
+                  <div class="col-md-3">
+                      <input name="deadtime" type="number" class="form-control" placeholder="1 ~ 20(minutes)" min="1" max="20" ng-model="radius.deadtime" required />
+                  </div>
+                  <div class="col-md-2 pull-right">
+                      <button type="submit" class="btn btn-submit" ng-click="dot1xRadiusDeadtime()" ng-disabled="radiusServerDeadtimeForm.$valid==false">{{ 'Submit' | translate }}</button>
+                  </div>
+              </dd>    
+            </form>  
+            
+            <form name="radiusServerRetransmitForm" novalidate>                   
+              <dd class="row" style="margin-top: 10px;">
+                  <div class="col-md-4">{{ 'radius-server retransmit'  | translate }}</div>
+                  <div class="col-md-3">
+                      <input name="retransmit" type="number" class="form-control" placeholder="1 ~ 100"  min="1" max="100" ng-model="radius.retransmit" required />
+                  </div>
+                  <div class="col-md-2 pull-right">
+                      <button type="submit" class="btn btn-submit" ng-click="dot1xRadiusRetransmit()" ng-disabled="radiusServerRetransmitForm.$valid==false">{{ 'Submit' | translate }}</button>
+                  </div>
+              </dd>  
+            </form>        
+            
+            <form name="radiusServerTimeoutForm" novalidate>            
+              <dd class="row" style="margin-top: 10px;">
+                  <div class="col-md-4">{{ 'radius-server timeout'  | translate }}</div>
+                  <div class="col-md-3">
+                      <input name="timeout" type="number" class="form-control" placeholder="1 ~ 1000(secs)" min="1" max="1000" ng-model="radius.timeout" required />
+                  </div>
+                  <div class="col-md-2 pull-right">
+                      <button type="submit" class="btn btn-submit" ng-click="dot1xRadiusTimeout()" ng-disabled="radiusServerTimeoutForm.$valid==false">{{ 'Submit' | translate }}</button>
+                  </div>
+              </dd>  
+          </form>    
+            <form name="radiusServerKeyForm" novalidate>
+              <dd class="row" style="margin-top: 10px;">
+                  <div class="col-md-4">{{ 'radius-server key'  | translate }}</div>
+                  <div class="col-md-3">
+                      <input name="key" type="text" class="form-control" placeholder="RADIUS server key-string" ng-model="radius.key" ng-maxlength="64" required />
+                  </div>
+                  <div class="col-md-2 pull-right">
+                      <button type="submit" class="btn btn-submit" ng-click="dot1xRadiusKey()" ng-disabled="radiusServerKeyForm.$valid==false">{{ 'Submit' | translate }}</button>
+                  </div>
+              </dd>   
+          </form>        
+            <form name="portControlForm" novalidate>
+              <dd class="row" style="margin-top: 10px;">
+                  <div class="col-md-4">{{ 'port-control'  | translate }}</div>
+                  <div class="col-md-3">
+                      <select  class="form-control" ng-options="if.key |switchPort for if in interface" ng-model="port_control.iface"></select>
+                  </div>
+                  <div class="col-md-3">
+                      <select  class="form-control" ng-options="x for x in enable" ng-model="port_control.enable">{{ x }}</select>
+                  </div>
+                  <div class="col-md-2 pull-right">
+                    <button type="submit" class="btn btn-submit" ng-click="globalPortControlSet()" ng-disabled="port_control.iface=='' || port_control.enable==''">{{ 'Submit' | translate }}</button>
+                  </div>
+                  
+              </dd>   
+          </form>              
+        </dl>
+    </div>
+</div>
+</div>
+
+<div class="col-md-6">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ 'Global Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+      <table class="table table-hover">
+        <thead>
+
+        </thead>
+        <tbody>
+
+          <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplayInitPort" ng-change="chooseAutoSave()"/></th>
+            <th>{{'dot1x initialize interface' | translate}}</th>     
+          </tr>    
+    
+          <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplayReAuthPort" ng-change="chooseRemoteId()"/></th>
+            <th>{{'dot1x re-authenticate interface' | translate}}</th>
+          </tr> 
+         <tr>
+            <th><input class="checkbox" type="checkbox" ng-model="DisplayClearPort" ng-change="chooseSnoopVlan()"/></th>
+            <th>{{'dot1x clear interface' | translate}}</th>
+          </tr>                 
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="panel panel-default"  ng-show="DisplayInitPort" ng-init="MultiSelIf=[]">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Port Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+    
+        <!-- dot1x init port -->
+        <form id="dot1xInitPortForm" name="dot1xInitPortForm" class="form" novalidate>
+            <div class="form-group row" >
+                <label>{{ 'dot1x initialize interface' | translate }}</label>;
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="if in interface">
+                    <input type="CHECKBOX" ng-model="MultiSelIf[interface.indexOf(if)]" ng-disabled="allAggIf.indexOf(if.key) != -1 && ignoreDisableIf.indexOf(if.key) == -1"/>
+                    <label>{{ if.key | switchPort }}</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" ng-click="initPort()" ng-disabled="MultiSelIf.indexOf(true) == -1">{{ 'Submit' | translate }}</button>
+        </form>
+        <!-- dot1x init port end -->
+        
+    </div>
+</div>
+
+
+<div class="panel panel-default"  ng-show="DisplayReAuthPort" ng-init="multiSelIf_auth=[]">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Port Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+    
+        <!-- dot1x re-auth port -->
+        <form id="ReAuthPortForm" name="ReAuthPortForm" class="form" novalidate>
+            <div class="form-group row" >
+                <label>{{ 'dot1x re-authenticate interface' | translate }}</label>;
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="if in interface">
+                    <input type="CHECKBOX" ng-model="multiSelIf_auth[interface.indexOf(if)]" ng-disabled="allAggIf.indexOf(if.key) != -1 && ignoreDisableIf.indexOf(if.key) == -1"/>
+                    <label>{{ if.key | switchPort }}</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" ng-click="reAuthPort()" ng-disabled="multiSelIf_auth.indexOf(true) == -1">{{ 'Submit' | translate }}</button>
+        </form>
+        <!-- dot1x re-auth port -->    
+        
+    </div>
+</div>
+
+<div class="panel panel-default"  ng-show="DisplayClearPort" ng-init="multiSelIf_clear=[]">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'Port Configuration' | translate }}</h3>
+    </div>
+    <div class="panel-body">
+    
+        <!-- dot1x clear port -->
+        <form id="ClearPortForm" name="ClearPortForm" class="form" novalidate>
+            <div class="form-group row" >
+                <label>{{ 'dot1x clear interface' | translate }}</label>;
+            </div>
+            <div class="form-group row">
+                <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="if in interface">
+                    <input type="CHECKBOX" ng-model="multiSelIf_clear[interface.indexOf(if)]" ng-disabled="allAggIf.indexOf(if.key) != -1 && ignoreDisableIf.indexOf(if.key) == -1"/>
+                    <label>{{ if.key | switchPort }}</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" ng-click="clearPort()" ng-disabled="multiSelIf_clear.indexOf(true) == -1">{{ 'Submit' | translate }}</button>
+        </form>
+        <!-- dot1x clear port --> 
+        
+    </div>
+</div>    
+
+
+
+<!----------------------------------------------------------------- PART 2 --------------------------------------------------------------------------------------->
+
+<!-- info -->
+
+<div class="row">
+<div ng-class="{true: 'col-md-8', false: 'col-md-12'}[setif==true]">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Port' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th><input class="checkbox" type="checkbox" ng-model="chk" ng-change="chooseAll()"/></th>
+                        <th>{{'Port' | translate}}</th>
+                        <th>{{'port-control' | translate}}</th>
+                        <th>{{'direction' | translate}}</th>                        
+                        <th>{{'max-req' | translate}}</th>
+                        <th>{{'version' | translate}}</th>
+                        <th>{{'reauthentication' | translate}}</th>
+                        <th>{{'tx-period' | translate}}</th>
+                        <th>{{'quiet-period' | translate}}</th>
+                        <th>{{'re-authperiod'| translate}}</th>
+                        <th>{{'supp-timeout' | translate}}</th>
+
+                        <th>{{'server-timeout' | translate}}</th>
+                        <th>{{'guest-vlan' | translate}}</th>
+                        <th>{{'port-mode' | translate}}</th>
+                        <th>{{'mac-auth-bypass' | translate}}</th>
+                        <th>{{'max-user' | translate}}</th>
+                  
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr ng-repeat="port in dot1x_port">
+                            <td><input class="checkbox" type="checkbox" ng-model="port.box" ng-change="choose()"/></td>
+                            <td>{{ port.name |switchPort}}</td>
+                            <td>{{ (port.authControlledPortControl==1)?'force-unauthorized':(port.authControlledPortControl==2)?'force-authorized':'auto'}}</td>
+                            <td>{{ (port.auth_ctrl_dir_adminControlledDirections==1)?'in':'both' }}</td>
+                            <td>{{ port.auth_pae_reAuthMax }}</td>
+                            <td>{{ port.protocol_version }}</td>
+                            <td>{{ (port.reAuthEnabled==1)?"Enable":"Disable" }}</td>    
+                            <td>{{ port.auth_pae_txPeriod }}</td>
+                            <td>{{ port.auth_pae_quietPeriod }}</td>
+                            <td>{{ port.reAuthPeriod }}</td>
+                            <td>{{ port.auth_be_suppTimeout }}</td>
+                          
+                            <td>{{ port.auth_be_serverTimeout }}</td>      
+                            <td>{{ port.guest_vlan }}</td>
+                            <td>{{ (port.auth_mode==1)?"mac":"port" }}</td>
+                            <td>{{ (port.mac_auth_bypass==1)?"Enable":"Disable" }}</td>
+                            <td>{{ port.max_user }}</td>      
+                          
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<div ng-class="{true: 'col-md-4', false: 'col-md-1'}[setif]" ng-if="setif==true" ng-init="newIf.state = '1'; newIf.mode = 'switch'; newIf.vlan_type = 'access';newIf.jumboframe_en = '0';newIf.speed='10G'">
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ 'Modify' | translate }}</h3>
+        </div>
+        <div class="panel-body">
+
+
+            <div class="form-group">
+                <label>{{'port-control' | translate}}: </label>
+
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.auto"    ng-checked="new_dot1x_port.state == '1'" ng-click="auto()"> auto </label>
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.unauth"  ng-checked="new_dot1x_port.state == '2'" ng-click="unauth()"> unauth </label>
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.auth"    ng-checked="new_dot1x_port.state == '3'" ng-click="auth()"> auth </label>
+
+                <button type="submit" class="btn btn-default pull-right" ng-click="portControlAll()" ng-disabled="new_dot1x_port.state!=1&&new_dot1x_port.state!=2&&new_dot1x_port.state!=3">{{'Submit'|translate}}</button>
+            </div>
+
+            <div class="form-group">
+                <label>{{'port-control direction' | translate}}: </label>
+
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.in"      ng-checked="new_dot1x_port.direction == '1'" ng-click="in()"> in </label>
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.both"    ng-checked="new_dot1x_port.direction == '0'" ng-click="both()"> both </label>
+                <button type="submit" class="btn btn-default pull-right" ng-click="portDirectionAll()" ng-disabled="new_dot1x_port.direction!=1&&new_dot1x_port.direction!=0">{{'Submit'|translate}}</button>
+            </div>
+            
+            <div class="form-group">
+                <label>{{'version' | translate}}: </label>
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.version1"  ng-checked="new_dot1x_port.version == '1'" ng-click="version1()"> version 1 </label>
+                <label><input type="checkbox" name="selectedIf.key" ng-model="new_dot1x_port.version2"  ng-checked="new_dot1x_port.version == '2'" ng-click="version2()"> version 2 </label>
+                <button type="submit" class="btn btn-default pull-right" ng-click="versionAll()" ng-disabled="new_dot1x_port.version!=1&&new_dot1x_port.version!=2">{{'Submit'|translate}}</button>
+
+            </div>
+
+            <div class="form-group">
+                <label>{{'reauthentication' | translate}}: </label>
+                <label><input type="checkbox" ng-model="new_dot1x_port.reAuth_en" ng-checked="new_dot1x_port.reAuth_on == '1'" ng-click="reAuth_on()"> enable </label>
+                <label><input type="checkbox" ng-model="new_dot1x_port.reAuth_di" ng-checked="new_dot1x_port.reAuth_on == '0'" ng-click="reAuth_off()"> disable </label>
+                <button type="submit" class="btn btn-default pull-right" ng-click="reAuthenticationAll()" ng-disabled="new_dot1x_port.reAuth_on!=1&&new_dot1x_port.reAuth_on!=0">{{'Submit'|translate}}</button>
+            </div>
+
+            <div class="form-group">
+                <label>{{'mac-auth-bypass' | translate}}: </label>
+                <label><input type="checkbox" ng-model="new_dot1x_port.bypass_enable" ng-checked="new_dot1x_port.bypass_en == '1'" ng-click="bypass_en()"> enable </label>
+                <label><input type="checkbox" ng-model="new_dot1x_port.bypass_diable" ng-checked="new_dot1x_port.bypass_en == '0'" ng-click="bypass_off()"> disable </label>
+                <button type="submit" class="btn btn-default pull-right" ng-click="macAuthBypassAll()" ng-disabled="new_dot1x_port.bypass_en!=1&&new_dot1x_port.bypass_en!=0">{{'Submit'|translate}}</button>
+            </div>
+
+            <div class="form-group">
+                <label>{{'port-mode' | translate}}: </label>
+                <label><input type="checkbox" ng-model="new_dot1x_port.port_mode_mac_en" ng-checked="new_dot1x_port.port_mode == '1'" ng-click="port_mode_mac()"> mac </label>
+                <label><input type="checkbox" ng-model="new_dot1x_port.port_mode_port_en" ng-checked="new_dot1x_port.port_mode == '2'" ng-click="port_mode_port()"> port </label>
+                <button type="submit" class="btn btn-default pull-right" ng-click="portModeAll()" ng-disabled="new_dot1x_port.port_mode!=1&&new_dot1x_port.port_mode!=2">{{'Submit'|translate}}</button>
+            </div>            
+            
+            <div class="form-group">
+                <form name="maxReqForm" novalidate>              
+                    <label>{{'max-req' | translate}}: </label>
+                    <input type="number" name="maxReq" ng-model="new_dot1x_port.req" placeholder="1~10" ng-min="1" ng-max="10" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="maxReqAll()" ng-disabled="maxReqForm.$invalid">{{'Submit'|translate}}</button>
+                </form>                 
+            </div>
+            
+            <div class="form-group">
+                <form name="periodForm" novalidate>  
+                    <label>{{'tx-period' | translate}}: </label>
+                    <input type="number" name="period" ng-model="new_dot1x_port.period" placeholder="1~65535" ng-min="1" ng-max="65535" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="txPeriodAll()" ng-disabled="periodForm.$invalid">{{'Submit'|translate}}</button>
+                </form> 
+            </div>
+
+            <div class="form-group">
+                <form name="quietPeriodForm" novalidate>  
+                    <label>{{'quiet-period' | translate}}: </label>
+                    <input type="number" name="period" ng-model="new_dot1x_port.quiet_period" placeholder="1~65535" ng-min="1" ng-max="65535" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="quietPeriodAll()" ng-disabled="quietPeriodForm.$invalid">{{'Submit'|translate}}</button>
+                </form> 
+            </div>
+            
+            <div class="form-group">
+                <form name="reAuthperiodForm" novalidate>  
+                    <label>{{'re-authperiod' | translate}}: </label>
+                    <input type="number" name="reAuthperiod" ng-model="new_dot1x_port.re_authperiod" placeholder="60~65535" ng-min="60" ng-max="65535" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="reAuthperiodAll()" ng-disabled="reAuthperiodForm.$invalid">{{'Submit'|translate}}</button>
+                </form> 
+            </div>
+
+            <div class="form-group">
+                <form name="suppTimeoutForm" novalidate>              
+                    <label>{{'supp-timeout' | translate}}: </label>
+                    <input type="number" name="suppTimeout" ng-model="new_dot1x_port.supp_timeout" placeholder="1~65535" ng-min="1" ng-max="65535" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="suppTimeoutAll()" ng-disabled="suppTimeoutForm.$invalid">{{'Submit'|translate}}</button>
+                </form> 
+            </div>
+
+            <div class="form-group">
+                <form name="serverTimeoutForm" novalidate>               
+                    <label>{{'server-timeout' | translate}}: </label>
+                    <input type="number" name="serverTimeout" ng-model="new_dot1x_port.server_timeout" placeholder="1~65535" ng-min="1" ng-max="65535" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="serverTimeoutAll()" ng-disabled="serverTimeoutForm.$invalid">{{'Submit'|translate}}</button>
+                </form>                 
+            </div>   
+
+            <div class="form-group">
+                <form name="guestVlanForm" novalidate>              
+                    <label>{{'guest-vlan' | translate}}: </label>
+                    <input type="number" name="guestVlan" ng-model="new_dot1x_port.guest_vlan" placeholder="2~4094" ng-min="2" ng-max="4094" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="guestVlanAll()"ng-disabled="guestVlanForm.$invalid" >{{'Submit'|translate}}</button>
+                </form>                  
+            </div>
+<!--
+            <div class="form-group">
+                <form name="portModeForm" novalidate>                
+                    <label>{{'port-mode' | translate}}: </label>
+                    <input type="number" name="portMode" ng-model="new_dot1x_port.port_mode" placeholder="1~2" ng-min="1" ng-max="2" required>
+                    <button type="submit" class="btn btn-default pull-right" ng-click="portModeAll()"ng-disabled="portModeForm.$invalid">{{'Submit'|translate}}</button>
+                </form>                    
+            </div>
+
+            <div class="form-group">
+                <label>{{'mac-auth-bypass' | translate}}: </label>
+                <input type="number" name="selectedIf.key" ng-model="new_dot1x_port.req" placeholder="1~10" min="1" max="10">
+                <button type="submit" class="btn btn-default pull-right" ng-click="macAuthBypassAll()">{{'Submit'|translate}}</button>
+            </div>
+-->
+            <div class="form-group">
+                <form name="maxUserForm" novalidate>               
+                  <label>{{'max-user' | translate}}: </label>
+                  <input type="number" name="maxUser" ng-model="new_dot1x_port.max_user" placeholder="1~255" ng-min="1" ng-max="255" required>
+                  <button type="submit" class="btn btn-default pull-right" ng-click="maxUserAll()" ng-disabled="maxUserForm.$invalid">{{'Submit'|translate}}</button>
+                </form>                  
+            </div>                 
+		</div>
+	</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+    

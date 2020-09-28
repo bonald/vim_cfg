@@ -1,0 +1,32 @@
+all_targets += libcpui2c libcpuspi libcpupci libasicmdio
+
+all: $(all_targets) FORCE
+
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+libcpui2c: FORCE
+	make -C cpu/i2c -f Makefile.ctc
+
+clean_libcpui2c: FORCE
+	make -C cpu/i2c -f Makefile.ctc clean
+
+libcpuspi: FORCE
+	make -C cpu/spi -f Makefile.ctc
+
+clean_libcpuspi: FORCE
+	make -C cpu/spi -f Makefile.ctc clean
+
+libcpupci: FORCE
+	make -C cpu/pci -f Makefile.ctc
+
+clean_libcpupci: FORCE
+	make -C cpu/pci -f Makefile.ctc clean
+
+libasicmdio: FORCE
+	make -C asic/mdio -f Makefile.ctc
+
+clean_libasicmdio: FORCE
+	make -C asic/mdio -f Makefile.ctc clean
+
+.PHONY: FORCE
+FORCE:

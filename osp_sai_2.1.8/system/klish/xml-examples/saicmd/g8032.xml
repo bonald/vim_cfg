@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+
+<CTCMODULENAME>
+G8032
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+	
+    <COMMAND name="show g8032" help="Show G8032 configurations">
+    		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+				<PARAM name="ring-id" help="Unique ID to identify an Ethernet Protection" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="id" help="Ring protection Group ID" ptype="G8032_RING_ID"/>
+				</PARAM>
+				<PARAM name="interface" help="G8032 ring port" ptype="SUBCOMMAND" mode="subcommand">
+					<PARAM name="ifname" help="Ethernet interface name" ptype="IF_NAME_E"/>
+				</PARAM>
+			</PARAM>
+		<ACTION>
+		if [ "${sub1}" == "" ];then
+			cdbctl show/cdb/l2/show_g8032
+		else
+			if [ "${sub1}" == "ring-id" ];then
+				cdbctl show/cdb/l2/show_g8032/${id}
+			fi
+			if [ "${sub1}" == "interface" ];then
+				cdbctl show/cdb/l2/show_g8032/interface/${ifname}
+			fi
+		fi	
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show the configuration of G.8032.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+      </COMMAND>
+	<COMMAND name="g8032" help="G8032 configuration commands"/>
+	<COMMAND name="g8032 force" help="Force port in G8032 ring enter into forced switch state">	
+		<PARAM name="ring-id" help="Unique ID to identify an Ethernet Protection" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="id" help="Ring protection Group ID" ptype="G8032_RING_ID"/>
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="east-interface" help="East interface" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="west-interface" help="West interface" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		if [ "${sub1}" == "east-interface" ];then
+			cdbctl update/cdb/l2/g8032_ring/${id}/fs_port/east-interface
+		else
+			cdbctl update/cdb/l2/g8032_ring/${id}/fs_port/west-interface
+		fi
+		</ACTION>
+	</COMMAND>ptype="SUBCOMMAND" mode="subcommand"
+	
+	<COMMAND name="g8032 manual" help="Force port in G8032 ring enter into manual switch state">	
+		<PARAM name="ring-id" help="Unique ID to identify an Ethernet Protection" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="id" help="Ring protection Group ID" ptype="G8032_RING_ID"/>
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="east-interface" help="East interface" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="west-interface" help="West interface" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+		if [ "${sub1}" == "east-interface" ];then
+			cdbctl update/cdb/l2/g8032_ring/${id}/ms_port/east-interface
+		else
+			cdbctl update/cdb/l2/g8032_ring/${id}/ms_port/west-interface
+		fi
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="g8032 clear" help="Clear forced switch state or manual switch state of port in G8032 ring">	
+		<PARAM name="ring-id" help="Unique ID to identify an Ethernet Protection" ptype="SUBCOMMAND" mode="subcommand"/>
+		<PARAM name="id" help="Ring protection Group ID" ptype="G8032_RING_ID"/>
+		<ACTION>
+			cdbctl update/cdb/l2/g8032_ring/${id}/clear_port
+		</ACTION>
+	</COMMAND>
+	
+</VIEW>
+
+
+<VIEW name="Configure">
+	<COMMAND name="g8032" help="G8032 configuration commands"/>
+	<COMMAND name="g8032 ring-id" help="Unique ID to identify an Ethernet Ring Protection"  access="2" view="configure-g8032-view" viewid="ring_id=${id}">
+		<PARAM name="id" help="Ring Protection Group ID" ptype="G8032_RING_ID"/>
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch" optional="true">
+			<PARAM name="east-interface" help="East interface" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="east_ifname" help="Ethernet interface name" ptype="IF_NAME_E"/>
+				<PARAM name="west-interface" help="West interface" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="west_ifname" help="Ethernet interface name" ptype="IF_NAME_E"/>
+				<PARAM name="is-sub-ring" help="Specify the ring as sub-ring" ptype="SUBCOMMAND" mode="subcommand" optional="true"/>
+			</PARAM>
+			<PARAM name="interface" help="Interface" ptype="SUBCOMMAND" mode="subcommand" optional="true">
+				<PARAM name="ifname" help="Ethernet interface name" ptype="IF_NAME_E"/>
+				<PARAM name="major-ring-id" help="Unique ID to identify an Ethernet Major-ring Protection" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="major-id" help="Major ring protection Group ID" ptype="G8032_RING_ID"/>
+			</PARAM>	
+		</PARAM>
+		<ACTION>
+		if [ "${sub1}" == "" ];then
+			cdbctl create/cdb/l2/g8032_ring/${id}
+		else
+			if [ "${sub1}" == "east-interface" ];then
+				if [ "${is-sub-ring}" == "" ];then
+					cdbctl create/cdb/l2/g8032_ring/${id}/east-interface/${east_ifname}/west-interface/${west_ifname}
+				else
+					cdbctl create/cdb/l2/g8032_ring/${id}/east-interface/${east_ifname}/west-interface/${west_ifname}/is_sub_ring
+				fi
+			else
+				cdbctl create/cdb/l2/g8032_ring/sub-ring-id/${id}/interface/${ifname}/major-ring-id/${major-id}
+			fi
+		fi	
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>	
+
+<COMMAND name="no g8032" help="Configure G8032 ring ID">
+	<PARAM name="ring-id" help="Unique ID to identify an Ethernet Sub-ring Protection" ptype="SUBCOMMAND" mode="subcommand"/>
+	<PARAM name="id" help="Ring protection Group ID" ptype="G8032_RING_ID"/>
+	<ACTION>
+		cdbctl delete/cdb/l2/g8032_ring/${id}
+	</ACTION>
+</COMMAND>
+</VIEW>	
+				
+<VIEW name="configure-g8032-view"
+	prompt="${SYSTEM_NAME}(g8032-ring-${ring_id})# "
+	depth="1">
+	
+	<NAMESPACE ref="Exec" 
+		prefix="do"
+		help="true"
+		completion="true"/>
+
+	<COMMAND name="do"
+		help="To run exec commands in config mode">
+    </COMMAND>
+
+	<NAMESPACE ref="Configure"
+		help="false"
+		completion="false"/>
+
+	<COMMAND name="exit"
+		help="Exit from IGMP snooping mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="quit"
+		help="Exit from IGMP snooping mode"
+		lock="false">
+		<ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+	<COMMAND name="no"
+		help="Negate a command or set its defaults">
+    </COMMAND>
+	
+	
+	
+	<COMMAND name="virtual-channel" help="Configure RAPS packets transmission on subrings">
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable virtual-channel" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="disable" help="Disable virtual-channel" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			if [ "${sub1}" == "enable" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/virtual-channel/1
+			else
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/virtual-channel/0	
+			fi
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+    </COMMAND>
+	
+
+	
+	<COMMAND name="mode" help="Configure revertive mode in G8032 rings">
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="revertive" help="Enable revertive mode" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="non-revertive" help="Disable revertive mode" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM >	
+		<ACTION>
+			if [ "${sub1}" == "revertive" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/revertive-mode/1
+			else
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/revertive-mode/0	
+			fi
+
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+    </COMMAND>
+	
+	<COMMAND name="rpl" help="Configure rpl in g8032 rings"/>
+	<COMMAND name="rpl owner" help="Configure rpl owner in g8032 rings">
+		    <PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+				<PARAM name="east-interface" help="East interface of rpl owner node" ptype="SUBCOMMAND" mode="subcommand"/>
+				<PARAM name="west-interface" help="West interface of rpl owner node" ptype="SUBCOMMAND" mode="subcommand"/>
+		    </PARAM>
+		<ACTION>
+			if [ "${sub1}" == "east-interface" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/east-interface/rpl_owner
+			else
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/west-interface/rpl_owner
+			fi
+		</ACTION>
+	    <CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+    </COMMAND>
+
+    <COMMAND name="rpl neighbor" help="Configure rpl neighbor in g8032 rings">
+		<PARAM name="sub" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="east-interface" help="East interface of rpl owner node" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="west-interface" help="West interface of rpl owner node" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+		<ACTION>
+			if [ "${sub}" == "east-interface" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/east-interface/rpl_neighbor
+			else
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/west-interface/rpl_neighbor
+			fi
+		</ACTION>
+	    <CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+    </COMMAND>
+
+    <COMMAND name="no rpl" help="Configure rpl role in g8032 rings"/>
+    <COMMAND name="no rpl owner" help="Configure rpl owner in g8032 rings">
+		<ACTION>
+		cdbctl delete/cdb/l2/g8032_ring/${ring_id}/rpl_owner
+		</ACTION>
+	    <CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+    </COMMAND>	
+
+     <COMMAND name="no rpl neighbor" help="Configure rpl neighbor in g8032 rings">
+		<ACTION>
+		cdbctl delete/cdb/l2/g8032_ring/${ring_id}/rpl_neighbor
+		</ACTION>
+	    <CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>		
+    </COMMAND>	
+
+	
+	<COMMAND name="instance" help="Unique ID to identify a MSTP instance">
+		<PARAM name="instance-id" help="Instance ID" ptype="INSTANCE_ID"/>
+		<ACTION>
+		cdbctl update/cdb/l2/g8032_ring/${ring_id}/instance_id/${instance-id}
+		</ACTION>
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="no instance" help="Unique ID to identify a MSTP instance">
+		<PARAM name="instance-id" help="Instance ID" ptype="INSTANCE_ID"/>
+		<ACTION>
+			cdbctl delete/cdb/l2/g8032_ring/${ring_id}/instance_id/${instance-id}
+		</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="control-vlan" help="Configure ring R-APS channel VLAN">
+		<PARAM name="vlan-id" help="Ring R-APS channel VLAN ID" ptype="G8032_VLAN"/>
+		<ACTION>
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/control-vlan/${vlan-id}
+		</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no control-vlan" help="Configure control-vlan in the g8032 ring">
+	<ACTION>
+	cdbctl delete/cdb/l2/g8032_ring/${ring_id}/control-vlan
+	</ACTION>
+	</COMMAND>
+	
+	
+	<COMMAND name="timer" help="Protection timer setting">
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="wait-to-restore" help="Wait-to-restore timer" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="wait-to-restore-interval" help="Time interval, unit is minute" ptype="G8032_WAIT_TIMER_INTERVAL"/>
+			</PARAM>
+			<PARAM name="hold-off" help="Hold-off timer" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="hold-off-interval" help="Time interval, unit is milliseconds, value in multiples of 100" ptype="G8032_HOLD_TIMER_INTERVAL"/>
+			</PARAM>
+			<PARAM name="guard-time" help="Guard timer" ptype="SUBCOMMAND" mode="subcommand">
+				<PARAM name="guard-time-interval" help="Time interval, unit is milliseconds, value in multiples of 100" ptype="G8032_GUARD_TIMER_INTERVAL"/>
+			</PARAM>
+		</PARAM>
+	<ACTION>
+			if [ "${sub1}" == "wait-to-restore" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/wait_to_restore/${wait-to-restore-interval}
+			fi
+			if [ "${sub1}" == "hold-off" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/hold_off/${hold-off-interval}
+			fi
+			if [ "${sub1}" == "guard-time" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/guard_time/${guard-time-interval}
+			fi
+
+
+	</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="no timer" help="Configure timer in the g8032 ring">
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="wait-to-restore" help="Wait-to-restore timer" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="hold-off" help="Hold-off timer" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="guard-time" help="Guard timer" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	<ACTION>
+			if [ "${sub1}" == "wait-to-restore" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/wait_to_restore/5
+			fi
+			if [ "${sub1}" == "hold-off" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/hold_off/0
+			fi
+			if [ "${sub1}" == "guard-time" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/guard_time/500
+			fi
+	</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="ring" help="Configure the g8032 ring">
+		<PARAM name="sub1" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="enable" help="Enable the g8032 ring" ptype="SUBCOMMAND" mode="subcommand"/>
+			<PARAM name="disable" help="Disable the g8032 ring" ptype="SUBCOMMAND" mode="subcommand"/>
+		</PARAM>
+	<ACTION>
+		if [ "${sub1}" == "enable" ];then
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/protection_en/1
+			else
+				cdbctl update/cdb/l2/g8032_ring/${ring_id}/protection_en/0	
+			fi
+	</ACTION>
+	</COMMAND>
+	
+	<COMMAND name="ring-level" help="Configure the R-APS packets">
+		<PARAM name="level-id" help="Maintenance domain level" ptype="G8032_LEVEL_ID"/>
+	<ACTION>
+		cdbctl update/cdb/l2/g8032_ring/${ring_id}/level_id/${level-id}
+	</ACTION>
+	</COMMAND>
+
+	<COMMAND name="no ring-level" help="Configure the R-APS packets">
+	<ACTION>
+		cdbctl update/cdb/l2/g8032_ring/${ring_id}/level_id/7
+	</ACTION>
+	</COMMAND>
+
+	<COMMAND name="domain" help="Maintenance-domain">
+		<PARAM name="domain_name" help="Enter domain name, the first character should be a-z or A-Z, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_DOMAIN_STRING"/>
+		<PARAM name="service" help="Configure maintenance association" ptype="SUBCOMMAND" mode="subcommand"/>
+        	<PARAM name="ma_name" help="Enter service name, the first character should be a-z or A-Z, character only can be 0-9A-Za-z.-_ and the max len is 43" ptype="CFM_SERVICE_STRING"/>
+		<ACTION>
+		cdbctl update/cdb/l2/g8032_ring/${ring_id}/cfm_md_name/${domain_name}/cfm_ma_name/${ma_name}			
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+    </COMMAND>
+
+    	<COMMAND name="no domain" help="Maintenance-domain">
+		<ACTION>
+		cdbctl update/cdb/l2/g8032_ring/${ring_id}/cfm_md_name
+		</ACTION>
+		
+		<CTCDESCRIPTION>
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>	
+    </COMMAND>
+    
+</VIEW>	
+
+</CLISH_MODULE>

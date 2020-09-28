@@ -1,0 +1,409 @@
+HAL-MSG-QOS DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgFlowRule
+    FROM HAL-MSG-FLOW
+    ;
+
+
+-------------------------------------
+--  Type definitions for QoS (BEGIN) {
+-------------------------------------
+HalMsgQosLabelOp ::= ENUMERATED
+{
+    apply,
+    unapply
+}
+
+HalMsgQosFlowPolicerOp ::= ENUMERATED
+{
+    create,
+    remove,
+    update
+}
+
+HalMsgQosPriColorMap ::= SEQUENCE
+{
+    domain          INTEGER,
+    value           INTEGER,
+    pri             INTEGER,
+    color           INTEGER
+}
+
+
+HalMsgQosPolicer ::= SEQUENCE
+{
+    cir             INTEGER,
+    cbs             INTEGER,
+    pir             INTEGER,
+    pbs             INTEGER,
+    useL3Length     INTEGER,
+    isSrTcm         INTEGER,
+    isColorBlind    INTEGER,
+    dropColor       INTEGER,
+    mode            INTEGER,
+    isStatsEn       INTEGER
+}
+
+
+HalMsgQosFlowAction ::= SEQUENCE
+{
+    flag            INTEGER,    -- GLB_QOS_FLOW_ACTION_FLAG_XXX
+    policerId       INTEGER,
+    agpId           INTEGER,
+    trust           INTEGER,
+    priority        INTEGER,
+    color           INTEGER,
+    fwdGport        INTEGER,
+    logId           INTEGER,
+    logWeight       INTEGER,
+    domain          INTEGER,
+    dscp            INTEGER,
+    cos             INTEGER,
+    statsId         INTEGER,
+    delStats        INTEGER,
+	nexthopId		INTEGER,
+    vlanid          INTEGER
+}
+
+
+HalMsgQosFlowEntry ::= SEQUENCE
+{
+    ruleId          INTEGER,
+    action          HalMsgQosFlowAction,
+    rule            HalMsgFlowRule,
+    rulePriorityLOW INTEGER,
+    rulePriorityHig INTEGER
+}
+
+
+HalMsgQosFlowEntryId ::= SEQUENCE
+{
+    ruleType        INTEGER,    -- GLB_FLOW_RULE_TYPE_XXX
+    ruleId          INTEGER,
+    mergeIpv6       INTEGER,
+    mergeMpls       INTEGER, 
+    mergeIpv4       INTEGER, 
+    discard         INTEGER,
+    statsId         INTEGER,
+    delStats        INTEGER
+}
+
+
+HalMsgQosQueueDrop ::= SEQUENCE
+{
+    mode            INTEGER,    -- GLB_QOS_QUEUE_DROP_MODE_XXX
+    weight          INTEGER,
+    minThresh0      INTEGER,
+    minThresh1      INTEGER,
+    minThresh2      INTEGER,
+    minThresh3      INTEGER,
+    maxThresh0      INTEGER,
+    maxThresh1      INTEGER,
+    maxThresh2      INTEGER,
+    maxThresh3      INTEGER,
+    dropProb0       INTEGER,
+    dropProb1       INTEGER,
+    dropProb2       INTEGER,
+    dropProb3       INTEGER
+}
+
+
+HalMsgQosQueueShape ::= SEQUENCE
+{
+    cir             INTEGER,
+    cbs             INTEGER,
+    pir             INTEGER,
+    pbs             INTEGER
+}
+
+
+HalMsgQosPortShape ::= SEQUENCE
+{
+    pir             INTEGER,
+    pbs             INTEGER
+}
+
+
+HalMsgQosPendFlowEntry ::= SEQUENCE
+{
+    label           INTEGER,
+    ruleId          INTEGER,
+    pendType        INTEGER
+}
+
+HalMsgQosQueueDepthEntry ::=SEQUENCE
+{
+    avgDepth        INTEGER,
+    instDepth       INTEGER
+}
+
+-------------------------------------
+--  } Type definitions for QoS (END)
+-------------------------------------
+
+-------------------------------------
+--  Message definitions for QoS (BEGIN) {
+-------------------------------------
+
+
+HalMsgQosSetGlobalEnableFlagsReq ::= SEQUENCE
+{
+    flags           INTEGER,    -- GLB_QOS_GLOBAL_FLAGS_XXX
+    enable          INTEGER
+}
+
+
+HalMsgQosSetPriColorMapTableReq ::= SEQUENCE
+{
+    type            INTEGER,    -- GLB_QOS_PRI_COLOR_MAP_TYPE_XXX
+    dir             INTEGER,    -- GLB_INGRESS or GLB_EGRESS
+    priColorList    SEQUENCE OF HalMsgQosPriColorMap
+}
+
+
+HalMsgQosSetCfiEnableReq ::= SEQUENCE
+{
+    domain          INTEGER,
+    enable          INTEGER
+}
+
+
+HalMsgQosSetPortAttributeReq ::= SEQUENCE
+{
+    port            INTEGER,
+    type            INTEGER,    -- GLB_QOS_PORT_ATTR_TYPE_XXX
+    value           INTEGER
+}
+
+HalMsgQosSetPortPolicerReq ::= SEQUENCE
+{
+    port            INTEGER,
+    dir             INTEGER,
+    policer         HalMsgQosPolicer
+}
+
+HalMsgQosUnsetPortPolicerReq ::= SEQUENCE
+{
+    port            INTEGER,
+    dir             INTEGER
+}
+
+HalMsgQosFlowPolicerOpReq ::= SEQUENCE
+{
+    opCode          HalMsgQosFlowPolicerOp,
+    policerId       INTEGER,
+    policer         HalMsgQosPolicer
+}
+
+HalMsgQosLabelOpReq ::= SEQUENCE
+{
+    opCode          HalMsgQosLabelOp,
+    isVlan          INTEGER,
+    gportOrVlanId   INTEGER,
+    dir             INTEGER,
+    label           INTEGER,
+    gchip           INTEGER,
+    isFirstMember   INTEGER,
+    isLastMember    INTEGER
+}
+
+HalMsgQosSetFlowProcFlagReq ::= SEQUENCE
+{
+    flag            INTEGER
+}
+
+HalMsgQosAddFlowEntryReq ::= SEQUENCE
+{
+    label           INTEGER,
+    entryList       SEQUENCE OF HalMsgQosFlowEntry
+}
+
+HalMsgQosDelFlowEntryReq ::= SEQUENCE
+{
+    label           INTEGER,
+    entryIdList     SEQUENCE OF HalMsgQosFlowEntryId
+}
+
+HalMsgQosInvalidFlowEntryReq ::= SEQUENCE
+{
+    label           INTEGER,
+    entryId         HalMsgQosFlowEntryId,
+    invalid         INTEGER,
+    rule            HalMsgFlowRule
+}
+
+HalMsgQosDelAllFlowEntryReq ::= SEQUENCE
+{
+    label           INTEGER
+}
+
+HalMsgQosDelAllFlowStatsReq ::= SEQUENCE
+{
+    label           INTEGER,
+    statsId         INTEGER
+}
+
+HalMsgQosPendFlowEntryResp ::= SEQUENCE
+{
+    qosPendList     SEQUENCE OF HalMsgQosPendFlowEntry
+}
+
+
+HalMsgQosSetQosEnableReq ::= SEQUENCE
+{
+	isVlan          INTEGER,
+    gportOrVlanId   INTEGER,
+    dir             INTEGER,
+    enable          BOOLEAN
+}
+
+HalMsgQosUpdateFlowActionReq ::= SEQUENCE
+{
+    label               INTEGER,
+    updateEntryIdList   SEQUENCE OF HalMsgQosFlowEntryId,
+    opAction            INTEGER,
+    action              HalMsgQosFlowAction
+}
+
+HalMsgQosSetPortQueueClassReq ::= SEQUENCE
+{
+    port            INTEGER,
+    qid             INTEGER,
+    class           INTEGER,
+    force           INTEGER
+}
+
+HalMsgQosSetPortQueueShapeReq ::= SEQUENCE
+{
+    port            INTEGER,
+    qid             INTEGER,
+    shape           HalMsgQosQueueShape
+}
+
+HalMsgQosUnsetPortQueueShapeReq ::= SEQUENCE
+{
+    port            INTEGER,
+    qid             INTEGER
+}
+
+HalMsgQosSetPortShapeReq ::= SEQUENCE
+{
+    port            INTEGER,
+    shape           HalMsgQosPortShape
+}
+
+HalMsgQosUnsetPortShapeReq ::= SEQUENCE
+{
+    port            INTEGER
+}
+
+HalMsgQosGetPortQueueDepthReq ::= SEQUENCE
+{
+    port            INTEGER
+}
+
+HalMsgQosGetPortQueueDepthResp ::= SEQUENCE
+{
+    port            INTEGER,
+    depthInfo       SEQUENCE OF HalMsgQosQueueDepthEntry,
+    success         INTEGER
+}
+
+HalMsgQosSetPortQueueDropReq ::= SEQUENCE
+{
+    port            INTEGER,
+    qid             INTEGER,
+    drop            HalMsgQosQueueDrop
+}
+
+HalMsgQosSetPortQueueStatsReq ::= SEQUENCE
+{
+    port            INTEGER,
+    qid             INTEGER,
+    enable          INTEGER
+}
+
+HalMsgQosSetPortQueueWdrrWeightReq ::= SEQUENCE
+{
+    port            INTEGER,
+    weightList      SEQUENCE OF INTEGER
+}
+
+HalMsgQosSetPortQueueWdrrWeightMtuReq ::= SEQUENCE
+{
+    mtu             INTEGER
+}
+
+HalMsgQosInitPortCfgReq ::= SEQUENCE
+{
+    port            INTEGER,
+    domain          INTEGER,
+    trust           INTEGER,
+    cos             INTEGER,
+    replaceDscp     INTEGER,
+    replaceCos      INTEGER,
+    wdrrWeight      INTEGER,
+    drop            HalMsgQosQueueDrop
+}
+HalMsgQosSetPortQueueClassResp ::= SEQUENCE
+{
+    port            INTEGER,
+    qid             INTEGER,
+    class           INTEGER,
+    success         INTEGER
+}
+HalMsgQosAclUpdateRulePriorityReq ::= SEQUENCE
+{
+    label           INTEGER,
+    ruleId          INTEGER,
+    rulePriorityLow INTEGER,
+    rulePriorityHig INTEGER,
+    mergeIpv6       INTEGER,
+    mergeMpls       INTEGER,
+    mergeIpv4       INTEGER
+}
+
+HalMsgQosDeinitPortCfgReq ::= SEQUENCE
+{
+    port            INTEGER,
+    flag            INTEGER,
+    domain          INTEGER,
+    trust           INTEGER,
+    cos             INTEGER,
+    wdrrWeight      INTEGER,
+    wdrrWeightBmp   INTEGER,
+    queueClassBmp   INTEGER,
+    queueClassId    INTEGER,
+    portShape       HalMsgQosPortShape,
+    queueDrop       HalMsgQosQueueDrop,
+    queueDropBmp    INTEGER,
+    queueShapeBmp   INTEGER
+}
+
+HalMsgQosSyncPortCfgReq ::= SEQUENCE
+{
+    port              INTEGER,
+    qosenable         INTEGER,    
+    queuenum          INTEGER,
+    domain            INTEGER,
+    trust             INTEGER,
+    cos               INTEGER,
+    replaceDscp       INTEGER,
+    replaceCos        INTEGER,
+    replaceCtagCos    INTEGER, 
+    stats             INTEGER, 
+    inputportpolicer  HalMsgQosPolicer,
+    outputportpolicer HalMsgQosPolicer,
+    portshape         HalMsgQosPortShape,
+    queuewdrrWeight   SEQUENCE OF INTEGER,
+    queueclass        SEQUENCE OF INTEGER,
+    drop              SEQUENCE OF HalMsgQosQueueDrop,
+    queueshape        SEQUENCE OF HalMsgQosQueueShape   
+}
+
+-------------------------------------
+--  } Message definitions for QoS (END)
+-------------------------------------
+END
+

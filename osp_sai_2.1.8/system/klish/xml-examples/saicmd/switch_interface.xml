@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+	<!--=======================================================-->
+<CTCMODULENAME>
+SWITCH INTERFACE
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+	<COMMAND name="show interface switchport"
+		help="Switchport">
+		<ACTION>cdbctl show/cdb/interface/switchport</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to show the vlan configurations on all bridge ports.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display all VLAN's L2 configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the vlan configurations on all bridge ports:  
+    Switch# show interface switchport
+    Interface name          : eth-0-1
+    Switchport mode         : trunk
+    Ingress filter          : Enable
+    Acceptable frame types  : all
+    Default Vlan            : 1
+    Configured Vlans        : 1,100
+	
+	Interface name          : eth-0-2
+    Switchport mode         : trunk
+    Ingress filter          : Enable
+    Acceptable frame types  : all
+    Default Vlan            : 1
+    Configured Vlans        : 1,100
+
+	Interface name          : eth-0-3
+    Switchport mode         : trunk
+    Ingress filter          : Enable
+    Acceptable frame types  : all
+    Default Vlan            : 1
+    Configured Vlans        : 1,100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport mode access
+switchport mode trunk
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show interface switchport interface"
+		help="Switchport of one interface">
+		<PARAM name="iface_name" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+		
+		<ACTION>cdbctl show/cdb/interface/${iface_name}/switchport</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to show the vlan configurations one bridge port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command is used to display one VLAN’s L2 configurations.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display the vlan configurations on one bridge port:  
+    Switch# show interface switchport interface eth-0-1  
+    Interface name          : eth-0-1
+    Switchport mode         : trunk
+    Ingress filter          : Enable
+    Acceptable frame types  : all
+    Default Vlan            : 1
+    Configured Vlans        : 1,100
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport mode access
+switchport mode trunk
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show interface summary"
+		help="Summary information">
+		<PARAM name="iface_name" optional="true" help="Ethernet interface name" ptype="IF_NAME_EA"/>
+		
+		<ACTION>
+			cdbctl update/cdb/sys/update_if_stats/${iface_name}
+			usleep 100000
+			cdbctl show/cdb/interface/${iface_name}/summary
+		</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to display the summary on all interfaces or an interface. 
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command will display the summary on all interfaces or an interface in the form of list.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+This example shows how to display the summary on the interface eth-0-1.
+
+    Switch# show interface summary eth-0-1   
+    RXBS: rx rate (bytes/sec)        RXPS: rx rate (pkts/sec)  
+    TXBS: tx rate (bytes/sec)        TXPS: tx rate (pkts/sec)  
+    
+    Interface  Link   RXBS           RXPS           TXBS           TXPS          
+    ----------+------+--------------+--------------+--------------+--------------
+    eth-0-1    UP     0              0              0              0       
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show interface
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="show interface trunk"
+		help="Trunk port">
+		<ACTION>cdbctl show/cdb/interface/trunk</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to show the trunk port configurations.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+This example shows how to display the trunk information on the interface.
+    DUT1# show interface trunk   
+         
+    Port       Encapsulation  Status     Native VLAN  
+    ----------+--------------+----------+-----------    
+    eth-0-1    802.1q         trunking   1             
+           
+    Port       Allowed VLANs on Trunk  
+    ----------+--------------------------------------------------------   
+    eth-0-1    1,2    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport mode trunk
+		</CTCRCMD>
+	</COMMAND>
+
+</VIEW>
+
+<VIEW name="Configure">
+
+</VIEW>
+
+<VIEW name="configure-if-view">
+
+	<COMMAND name="switchport"
+		help="Set to switch port">
+                <ACTION>
+                cdbctl update/cdb/l3/route_if/${iface}/mode_set_before/switch
+                    if [ "$?" != "0" ]; then 
+                        exit 1
+                    fi
+                    usleep 100000
+                    cdbctl update/cdb/interface/${iface}/mode/switch
+                    if [ "$?" != "0" ]; then 
+	                    usleep 100000
+                        exit 1
+                    else
+                    usleep 100000                    
+                    fi
+                </ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure a port to a bridge (layer 2) mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When using this command to change the mode of a port, all bridge or routing configurations of this port will be cleared and not restored. By default, the port is a switchport.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+switchport
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure a port to bridge mode:  
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1f)# switchport    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport"
+		help="Set to routed port">
+                <ACTION>
+                    cdbctl update/cdb/interface/${iface}/mode/routed
+                    if [ "$?" != "0" ]; then
+                        exit 1
+                    else
+                        cdbctl update/cdb/l3/check_l3if_exist/${iface}/wait/500
+                        cdbctl update/cdb/l3/route_if/${iface}/mode_set_before/routed
+                    fi
+                </ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to configure a port to a routing (layer 3) mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When using this command to change the mode of a port, all bridge or routing configurations of this port will be cleared and not restored. By default, the port is a switchport.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+switchport
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure a port to a port to routing mode:  
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1f)# no switchport    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport mode"
+		help="Set vlan mode">
+		<PARAM name="type" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="access" help="Set to access" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="trunk" help="Set to trunk" ptype="SUBCOMMAND" mode="subcommand" />   
+			<PARAM name="dot1q-tunnel" help="Set to dot1q-tunnel" ptype="SUBCOMMAND" mode="subcommand" />   
+		</PARAM>
+		
+		<ACTION>
+		      cdbctl update/cdb/interface/${iface}/vlan_type/${type}/
+		 </ACTION>
+		 		
+		<CTCDESCRIPTION>
+Use this command to configure the port work in access mode,trunk mode or in QinQ mode.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When port mode changed, all the dynamic FDB will be cleared.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Access port
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the port to access mode.    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1f)# switchport mode access    
+         
+    This example shows how to configure the port to trunk mode.    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1f)# switchport mode trunk    
+
+    This example shows how to configure the port to QinQ mode.    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1f)# switchport mode dot1q-tunnel    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	
+	<COMMAND name="no switchport mode"
+		help="Unset vlan mode">
+		<ACTION>cdbctl update/cdb/interface/${iface}/vlan_type/access</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the port work in default mode, default mode is access port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+When port mode changed, all the dynamic FDB will be cleared.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Access port
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the port to default mode.    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1f)# no switchport mode     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport access"
+		help="Set access port">
+	</COMMAND>
+	
+	<COMMAND name="no switchport access"
+		help="Unset access port">
+	</COMMAND>
+
+	<COMMAND name="switchport access vlan"
+		help="Set access vlan">
+		<PARAM name="vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+		
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/pvid/${vlan_id}/access</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to set the default VLAN for access port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to access port. By default, VLAN should be 1.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the access port to add to default vlan 10:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1f)# switchport mode access
+    Switch(config-if-eth-0-1f)# switchport access vlan 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport access vlan"
+		help="Unset access vlan">
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/pvid/1/access</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to set the default VLAN for access port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to access port. By default, VLAN should be 1.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the access port to restore to default vlan 1:
+    Switch(config-if-eth-0-1f)# no switchport access vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport access allowed"
+		help="Set access port allowed vlan">
+	</COMMAND>
+
+	<COMMAND name="switchport access allowed vlan"
+		help="Allowed vlans">
+		<PARAM name="action" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="add" help="Add" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>
+			<PARAM name="remove" help="Remove" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/allowed_vlan/access/${action}/${vlan_list}</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure whether the specified VLAN flow can pass this trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the specified VLANs flow pass through the port:    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1)# switchport access allowed vlan add 10,11    
+    This example shows how to remove the specified VLANs:    
+    Switch(config-if-eth-0-1)# switchport access allowed vlan remove 10,11     
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport trunk"
+		help="Set trunk port">
+
+	</COMMAND>
+	
+	<COMMAND name="no switchport trunk"
+		help="Unset trunk port">
+				
+	</COMMAND>
+
+	<COMMAND name="switchport trunk native"
+		help="Set trunk port native vlan">
+
+	</COMMAND>
+  
+	<COMMAND name="no switchport trunk native"
+		help="Unset trunk port native vlan">
+
+	</COMMAND>
+	
+	<COMMAND name="switchport trunk native vlan"
+		help="Native vlan">
+		<PARAM name="vlan_id" help="VLAN id" ptype="VLAN_ID"/>
+		
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/pvid/${vlan_id}/trunk</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the default VLAN for this trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure default vlan 10 for trunk port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk native vlan 10
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport trunk allowed
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="no switchport trunk native vlan"
+		help="Unset access vlan">
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/pvid/1/trunk</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure the default VLAN for this trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Before this command is used, port must be set to trunk port.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure default vlan 1 for trunk port:
+    Switch(config)# interface eth-0-1
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# no switchport trunk native vlan
+		</CTCEXAMPLE>
+		<CTCRCMD>
+switchport trunk allowed
+		</CTCRCMD>
+	</COMMAND>
+
+	<COMMAND name="switchport trunk untagged" help="Set trunk port untagged vlan"/>
+  
+  <COMMAND name="switchport trunk untagged vlan" help="Untagged vlan">
+		<PARAM name="action" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="add" help="Add" ptype="SUBCOMMAND" mode="subcommand"/> 
+			<PARAM name="remove" help="Remove" ptype="SUBCOMMAND" mode="subcommand"/> 
+		</PARAM>
+		<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+				
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/untagged_vlan/trunk/${action}/${vlan_list}</ACTION>
+		
+		<CTCDESCRIPTION>
+Use this command to configure whether the specified VLAN flow can pass this trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the specified VLAN flow pass through the port:    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1)# switchport mode trunk
+    Switch(config-if-eth-0-1)# switchport trunk untagged vlan add 5    
+    This example shows how to configure the all VLAN flow pass through the port:    
+    Switch(config-if-eth-0-1)# switchport trunk untagged vlan remove 5    
+    This example shows how to configure the all VLAN flow can not pass through the port:    
+    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+	
+	<COMMAND name="switchport trunk allowed"
+		help="Set trunk port allowed vlan">
+	</COMMAND>
+
+	<COMMAND name="switchport trunk allowed vlan"
+		help="Allowed vlans">
+		<PARAM name="action" help="Type" ptype="SUBCOMMAND" mode="switch">
+			<PARAM name="add" help="Add" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>
+			<PARAM name="remove" help="Remove" ptype="SUBCOMMAND" mode="subcommand"> 
+				<PARAM name="vlan_list" help="VLAN ID list, example: 2-5,7,9-11" ptype="VLAN_LIST"/>
+			</PARAM>
+			<PARAM name="all" help="All" ptype="SUBCOMMAND" mode="subcommand" /> 
+			<PARAM name="none" help="None" ptype="SUBCOMMAND" mode="subcommand" /> 
+		</PARAM>
+		
+		<ACTION>cdbctl update/cdb/interface/${iface}/brgif/allowed_vlan/trunk/${action}/${vlan_list}</ACTION>
+				
+		<CTCDESCRIPTION>
+Use this command to configure whether the specified VLAN flow can pass this trunk port.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+vlan 1
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure the specified VLAN flow pass through the port:    
+    Switch(config)# interface eth-0-1    
+    Switch(config-if-eth-0-1)# switchport trunk allowed vlan add 10    
+    This example shows how to configure the all VLAN flow pass through the port:    
+    Switch(config-if-eth-0-1)# switchport trunk allowed vlan all    
+    This example shows how to configure the all VLAN flow can not pass through the port:    
+    Switch(config-if-eth-0-1)# switchport trunk allowed vlan none    
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+	</COMMAND>
+
+
+	
+</VIEW>
+
+
+</CLISH_MODULE>

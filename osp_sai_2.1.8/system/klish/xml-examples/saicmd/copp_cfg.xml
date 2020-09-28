@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+    http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+
+<CTCMODULENAME>
+COPP
+</CTCMODULENAME>
+
+<VIEW name="Exec">
+
+    <COMMAND name="show control-plane"
+		help="Show control-plane">
+	</COMMAND>
+
+    <COMMAND name="show control-plane statistics" help="Show control-plane input policy statistics">
+            <ACTION>
+                cdbctl update/cdb/l2/fea_acl/
+                cdbctl update/cdb/l2/fea_acl_policy_action/flags_class_get_policer_stats/
+                usleep 100000
+                cdbctl show/cdb/l2/show_acl_policy_counters/cpu/input/ace-based//
+            </ACTION>
+            
+        <CTCDESCRIPTION>
+Use this command to show the statistics of control-plane policy-map.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+This command shows the statistics of policy-map matched packets.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+There is no policy map configured on control-plane by default.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to display control-plane input policy statistics. 
+    Switch# show control-plane statistics 
+	Interface: cpu
+    Ingress service policy: a
+     Class name: a
+      access-group: a
+       1 permit any (1 match 409 bytes)
+     total (1 match 409 bytes)
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear control-plane statistics
+		</CTCRCMD>
+		
+    </COMMAND>
+	
+	<COMMAND name="show control-plane class" help="Show control-plane class information">
+        <ACTION>
+            cdbctl show/cdb/qos/cpu_traffic_group/
+        </ACTION>
+					
+ 		<CTCDESCRIPTION>
+Use this command to show control-plane class.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show control-plane class information.       
+    Switch# show control-plane class  
+    control-plane class        rate (pps)  
+    --------------------------+------------
+    class 0                    1024         
+    class 1                    2048        
+    class 2                    2048        
+    class 3                    2048        
+    class 4                    2048        
+    --------------------------+------------
+    total rate                 2048        
+    
+    control-plane class infor:
+        class 4 is used for all managing packet!
+        class 3 is used for all protocol packet except ARP packet!
+           now the system supported protocol are LACP, STP, LLDP,
+           EAPOL, OSPF, DHCP, IGMP, ERPS, VRRP, PTP!
+        class 2 is used for packet-in!
+        class 1 is used for ARP packet!
+        class 0 is used for other packet!
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+	
+	<COMMAND name="show control-plane reason" help="Show control-plane reason information">
+        <ACTION>
+            cdbctl read/cdb/sys/show_copp_reason
+        </ACTION>
+					
+ 		<CTCDESCRIPTION>
+Use this command to show control-plane reason information.
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+None
+		</CTCUSAGE>
+		<CTCDEFAULT>
+None
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show control-plane reason.       
+    Switch# show control-plane reason    
+    Rate unit (kbps)
+    Reason               Class      Rate       Default Rate
+    --------------------+----------+----------+------------
+    arp                  1          160        160         
+    packet-in            2          320        320         
+    bpdu                 3          64         64          
+    slow-protocol        3          64         64          
+    eapol                3          64         64          
+    lldp                 3          64         64          
+    igmp                 3          256        256         
+    erps                 3          64         64          
+    dhcp                 3          320        320         
+    ospf                 3          64         64          
+    vrrp                 3          256        256         
+    ptp                  3          512        512         
+    management-traffic   4          8096       8096     
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear control-plane" help="Control-plane entry"/>
+    <COMMAND name="clear control-plane statistics" help="Clear control-plane entry statistics">
+ 
+            <ACTION>
+                cdbctl update/cdb/l2/clear_acl_policy/cpu/input/
+            </ACTION>
+                        
+        <CTCDESCRIPTION>
+Use this command to clear the statistics of control-plane input policy.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can clear control-plane input policy statistics with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear control-plane input policy statistics. 
+    Switch#clear control-plane statistics
+	Switch# show control-plane statistics    
+	Interface: cpu
+    Ingress service policy: a
+     Class name: a
+      access-group: a
+       1 permit any (0 match 0 bytes)
+     total (0 match 0 bytes)
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show control-plane reason statistics
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show control-plane reason statistics" help="Show control-plane input reason statistics">
+        <ACTION>
+                cdbctl update/cdb/sys/fea_copp_trap_group/
+                usleep 100000
+                cdbctl show/cdb/sys/show_fea_copp_trap_group_counter/
+        </ACTION>
+		
+        <CTCDESCRIPTION>
+Use this command to show the statistics of control-plane reason.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can show control-plane reason statistics with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show control-plane reason statistics. 
+	Switch# show control-plane reason statistics  
+    Reason              Transmit-Pkts  Transmit-Bytes Drop-Pkts      Drop-Bytes
+    -------------------+--------------+--------------+--------------+--------------
+    bpdu                0              0              0              0              
+    slow-protocol       0              0              0              0              
+    eapol               0              0              0              0              
+    lldp                0              0              0              0              
+    igmp                0              0              0              0              
+    erps                0              0              0              0              
+    arp                 0              0              0              0              
+    dhcp                0              0              0              0              
+    ospf                0              0              0              0              
+    vrrp                0              0              0              0              
+    management-traffic  0              0              0              0              
+    ptp                 0              0              0              0              
+    packet-in           0              0              0              0              	
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear control-plane statistics
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear control-plane reason" help="Clear control-plane reason information"/>
+    <COMMAND name="clear control-plane reason statistics" help="Clear control-plane input reason statistics">
+        <ACTION>
+                cdbctl update/cdb/sys/clear_fea_copp_trap_group_counter/
+        </ACTION>
+		
+        <CTCDESCRIPTION>
+Use this command to clear the statistics of control-plane reason.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can clear control-plane reason statistics with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear control-plane reason statistics. 
+    Switch# clear control-plane reason statistics 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show control-plane reason statistics
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="show control-plane class statistics" help="Show control-plane input class statistics">
+        <ACTION>
+                cdbctl show/cdb/sys/show_copp_class_counter/
+        </ACTION>
+		
+        <CTCDESCRIPTION>
+Use this command to show the statistics of control-plane reason.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can show control-plane reason statistics with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to show control-plane class statistics. 
+	Switch# show control-plane class statistics  
+    Class               Transmit-Pkts  Transmit-Bytes Drop-Pkts      Drop-Bytes
+    -------------------+--------------+--------------+--------------+--------------
+    class 0             0              0              0              0              
+    class 1             0              0              0              0              
+    class 2             0              0              0              0              
+    class 3             0              0              0              0              
+    class 4             0              0              0              0              
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+clear control-plane class statistics
+		</CTCRCMD>
+    </COMMAND>
+
+    <COMMAND name="clear control-plane class" help="Clear control-plane class information"/>
+    <COMMAND name="clear control-plane class statistics" help="Clear control-plane input class statistics">
+        <ACTION>
+                cdbctl update/cdb/sys/clear_copp_class_counter/
+        </ACTION>
+		
+        <CTCDESCRIPTION>
+Use this command to clear the statistics of control-plane class.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+User can clear control-plane class statistics with this command.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to clear control-plane class statistics. 
+    Switch# clear control-plane class statistics 
+
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show control-plane class statistics
+		</CTCRCMD>
+    </COMMAND>
+    
+</VIEW>
+
+
+
+<VIEW name="Configure">
+
+    <COMMAND name="control-plane" help="Configure Control plane" 
+        view="Configure-control-plane-view" >
+	</COMMAND>
+
+</VIEW>
+
+
+<VIEW name="Configure-control-plane-view"
+	prompt="${SYSTEM_NAME}(config-control-plane)# "
+	depth="1">
+
+	<NAMESPACE ref="Configure" help="false" completion="false"/>
+	
+	<COMMAND name="exit" help="Exit from control plane configuration mode" lock="false"> 
+        <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+
+    <COMMAND name="quit" help="Exit from control plane configuration mode" lock="false">
+        <ACTION builtin="clish_nested_up"/>
+	</COMMAND>
+        
+	<COMMAND name="no" help="Negate a command or set its defaults"/>
+	
+	<COMMAND name="policy" help="Policy map"/>
+    <COMMAND name="policy input" help="Ingress policy map">
+	    <PARAM name="policy_map_name" help="Specify a policy map name, up to 20 characters" ptype="NAME_STRING"/>
+
+		<ACTION>
+		    cdbctl update/cdb/sys/copp_cfg/copp_pname/add/${policy_map_name}
+			<!--cdbctl update/cdb/interface/cpu/igs_policy_map/${policy_map_name} -->
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to apply policy map on control-plane.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to apply policy map to control-plane, the policy map should be created first.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, there is no policy map on control-plane.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to apply policy to control-plane.   
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# policy input pmap1
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no policy input
+		</CTCRCMD>
+	</COMMAND>
+
+
+	<COMMAND name="no policy" help="Policy map"/>
+	<COMMAND name="no policy input" help="Ingress policy map">
+	
+		<ACTION>
+			cdbctl update/cdb/sys/copp_cfg/copp_pname/del/
+		</ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to remove policy map from control-plane.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to remove policy map from control-plane, policy map need not to be specified.
+		</CTCUSAGE>
+		<CTCDEFAULT>
+By default, there is no policy map on control-plane.	
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to remove policy map from control-plane.  
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# no policy input       
+		</CTCEXAMPLE>
+		<CTCRCMD>
+policy input
+		</CTCRCMD>
+
+	</COMMAND>
+	
+	<COMMAND name="class" help="Set class for control-plane">
+	    <PARAM name="class_value" help="Specify a class id" ptype="COPP_CLASS_ID"/>
+		<PARAM name="rate" help="Set class rate, default value is 2048(pps) for class 1-5, 1024(pps) for class 0" ptype="SUBCOMMAND" mode="subcommand"/>
+		    <PARAM name="rate_value" help="Specify value of the class rate(pps)" ptype="PKT2CPU_RATE"/>
+			
+			<ACTION>
+			cdbctl update/cdb/qos/cpu_traffic_group/class/${class_value}/rate/${rate_value}/
+			</ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to set class rate on control-plane, the unit of rate is pps.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set control-plane class rate, the class range is 0 to 4, the rate value is 0 to 1000000.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Class 1,2,3,4 default rate is 2048 pps, class 0 default rate is 256 pps.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure class 2 rate 12800 pps of control-plane.   
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# class 2 rate 12800   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show control-plane class
+		</CTCRCMD>			
+			
+	</COMMAND>
+	
+	<COMMAND name="no class" help="Set class for control-plane">
+	    <PARAM name="class_value" help="Specify a class id" ptype="COPP_CLASS_ID"/>
+		<PARAM name="rate" help="Set class rate for control-plane to default value, 2048(pps) for class 1-5, 1024(pps) for class 0" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+			<ACTION>
+			if test ${class_value} -eq 0; then
+			    cdbctl update/cdb/qos/cpu_traffic_group/class/${class_value}/rate/1024/
+			else
+			    cdbctl update/cdb/qos/cpu_traffic_group/class/${class_value}/rate/2048/
+			fi
+			</ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to set class rate on control-plane to default value, the unit of rate is pps.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set control-plane class rate to default value, the class range is 0 to 4.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Class 1,2,3,4 default rate is 2048 pps, class 0 default rate is 256 pps.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure class 2 rate to default value of control-plane.   
+    Switch(config)# control-plane     
+    Switch(config-control-plane)# no class 2 rate       
+		</CTCEXAMPLE>
+		<CTCRCMD>
+show control-plane class
+		</CTCRCMD>			
+	</COMMAND>
+	
+	<COMMAND name="total" help="Set total"/>
+	<COMMAND name="total rate" help="Set total rate for packet forward to cpu, default value is 2048(pps)">
+		<PARAM name="rate_value" help="Specify value of the class rate(pps)" ptype="PKT2CPU_RATE"/>
+		
+			<ACTION>
+			cdbctl update/cdb/sys/copp_cfg/copp_total_rate/${rate_value}/
+			</ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to set send to cpu packets total rate on control-plane, the unit of rate is pps.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set control-plane total rate, rate value is 0 to 1000000.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default total rate is 2048 pps.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure total rate 128000 pps of control-plane.   
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# total rate 128000   
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no total rate
+		</CTCRCMD>	
+		
+	</COMMAND>
+	
+	<COMMAND name="no total" help="Set default total"/>
+	<COMMAND name="no total rate" help="Set total rate to default value 2048 for packet forward to cpu(pps)">
+	
+			<ACTION>
+			cdbctl update/cdb/sys/copp_cfg/copp_total_rate/2048/
+			</ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to set send to cpu packets total rate to default value on control-plane, the unit of rate is pps.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set control-plane total rate to default value 2048.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default total rate is 2048 pps.
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure total rate to default value of control-plane.   
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# no total rate    
+		</CTCEXAMPLE>
+		<CTCRCMD>
+total rate
+		</CTCRCMD>	
+	</COMMAND>
+	
+	<COMMAND name="reason" help="Set cpu control-plane reason">
+            <PARAM name="type0" help="Type0" mode="switch" optional="false" ptype="SUBCOMMAND">
+            	<PARAM name="arp" help="Set copp arp rate, default value is 160 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="bpdu" help="Set copp bpdu rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="dhcp" help="Set copp dhcp rate, default value is 320 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="eapol" help="Set copp eapol rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="erps" help="Set copp erps rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="icmpv6" help="Set copp icmpv6(include nd) rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="igmp" help="Set copp igmp rate, default value is 128 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="l2pro-group-mac" help="Set copp l2pro-group-mac rate, default value is 256 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="l2pro-protocol-mac" help="Set copp l2pro-protocol-mac rate, default value is 256 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="lldp" help="Set copp lldp rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>               
+                <PARAM name="management-traffic" help="Set copp management-traffic rate, default value is 1600 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="mlag" help="Set copp mlag rate, default value is 256 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="mtu-fail" help="Set copp mtu check rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="ospf" help="Set copp ospf rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="packet-in" help="Set copp packet-in rate, default value is 160 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+                <PARAM name="ptp" help="Set copp ptp rate, default value is 128 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="slow-protocol" help="Set copp slow-protocol rate, default value is 64 kbps, include LACP and ESMC protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+				<PARAM name="ssh" help="Set copp ssh rate, default value is 512 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+			    <PARAM name="telnet" help="Set copp telnet rate, default value is 512 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+			    <PARAM name="ttl-expired" help="Set copp ttl check rate, default value is 64 kbps" mode="subcommand" ptype="SUBCOMMAND"/>
+			    <PARAM name="vrrp" help="Set copp vrrp rate, default value is 256 kbps" mode="subcommand" ptype="SUBCOMMAND"/>		    
+            </PARAM>
+            <PARAM name="type1" help="Type2" mode="switch" ptype="SUBCOMMAND">
+                <PARAM name="rate" help="Set individual rate of packet-to-cpu reason, measuring unit is (kbps)" mode="subcommand" ptype="SUBCOMMAND">
+                    <PARAM name="rate_value" help="Value of reason rate, kbps" ptype="PKT2CPU_RATE"/>
+                </PARAM>
+            </PARAM>
+			
+            <ACTION>
+                    cdbctl update/cdb/qos/cpu_traffic/reason/${type0}/rate/${rate_value}/
+            </ACTION>
+			
+        <CTCDESCRIPTION>
+Use this command to set send to cpu packets reason rate on control-plane, the unit of rate is kbps.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set reason rate, rate value range is from 0 to 1000000.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default reason bpdu rate is 64 kbps.Default reason slow-protocol rate is 64 kbps. Default reason eapol rate is 64 kbps. Default reason lldp rate is 64 kbps. Default reason erps rate is 64 kbps. Default reason igmp rate is 256 kbps. Default reason arp rate is 160 kbps. Default reason dhcp rate is 320 kbps. Default reason ospf rate is 64 kbps. Default reason management-traffic rate is 8096 kbps. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure reason bpdu rate 128 kbps of control-plane.   
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# reason bpdu rate 128      
+		</CTCEXAMPLE>
+		<CTCRCMD>
+no reason
+		</CTCRCMD>	
+			
+	</COMMAND>
+	
+	<COMMAND name="no reason" help="Set cpu control-plane reason rate to default value">
+        <PARAM name="type0" help="Type0" mode="switch" optional="false" ptype="SUBCOMMAND">
+        	<PARAM name="arp" help="Set copp arp to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="bpdu" help="Set copp bpdu to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="dhcp" help="Set copp dhcp to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="eapol" help="Set copp eapol to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="erps" help="Set copp erps to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+	      <PARAM name="icmpv6" help="Set copp icmpv6(include nd) to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="igmp" help="Set copp igmp to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="l2pro-group-mac" help="Set copp l2pro-group-mac to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+	      <PARAM name="l2pro-protocol-mac" help="Set copp l2pro-protocol-mac to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="lldp" help="Set copp lldp to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+             <PARAM name="management-traffic" help="Set copp management-traffic to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+	      <PARAM name="mlag" help="Set copp mlag to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+	      <PARAM name="mtu-fail" help="Set copp mtu check to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+	      <PARAM name="ospf" help="Set copp ospf to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="packet-in" help="Set copp packet-in to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="ptp" help="Set copp ptp to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="slow-protocol" help="Set copp slow-protocol to default rate(kbps), include LACP and ESMC protocol" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="ssh" help="Set copp ssh to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="telnet" help="Set copp telnet to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="ttl-expired" help="Set copp ttl check to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+		<PARAM name="vrrp" help="Set copp vrrp to default rate(kbps)" mode="subcommand" ptype="SUBCOMMAND"/>
+			
+			
+        </PARAM>
+		<PARAM name="rate" help="rate" ptype="SUBCOMMAND" mode="subcommand"/>
+		
+        <ACTION>
+            cdbctl update/cdb/qos/cpu_traffic/reason/${type0}/rate/
+        </ACTION>
+
+        <CTCDESCRIPTION>
+Use this command to set send to cpu packets reason rate to default value on control-plane, the unit of rate is kbps.  
+		</CTCDESCRIPTION>
+		<CTCUSAGE>
+Use this command to set reason rate to default value.  
+		</CTCUSAGE>
+		<CTCDEFAULT>
+Default reason bpdu rate is 64 kbps.Default reason slow-protocol rate is 64 kbps. Default reason eapol rate is 64 kbps. Default reason lldp rate is 64 kbps. Default reason erps rate is 64 kbps. Default reason igmp rate is 256 kbps. Default reason arp rate is 160 kbps. Default reason dhcp rate is 320 kbps. Default reason ospf rate is 64 kbps. Default reason management-traffic rate is 8096 kbps. 
+		</CTCDEFAULT>
+		<CTCEXAMPLE>
+    This example shows how to configure reason bpdu rate to default value of control-plane.   
+    Switch(config)# control-plane   
+    Switch(config-control-plane)# no reason bpdu rate       
+		</CTCEXAMPLE>
+		<CTCRCMD>
+reason
+		</CTCRCMD>			
+    </COMMAND>
+
+</VIEW>
+
+</CLISH_MODULE>

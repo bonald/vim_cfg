@@ -1,0 +1,37 @@
+HAL-MSG-OPENFLOW-PARSER DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+    
+------------------------------------
+-- DATA STRUCTURE definitions for OpenFlow parser (BEGIN) {
+------------------------------------
+HalMsgOpenFlowParserHashKey ::= SEQUENCE
+{
+    hashKey         INTEGER
+}
+
+HalMsgOpenFlowParserHashUse ::= SEQUENCE
+{
+    hashUse         INTEGER
+}
+
+------------------------------------
+--  Message definitions for OpenFlow (BEGIN) {
+------------------------------------
+HalMsgOpenFlowSetEcmpHashKeyReq ::= SEQUENCE
+{
+    hashKey         HalMsgOpenFlowParserHashKey
+}
+
+HalMsgOpenFlowSetLinkAggHashKeyReq ::= SEQUENCE
+{
+    hashKey         HalMsgOpenFlowParserHashKey,
+    linkAggHashKey  HalMsgOpenFlowParserHashUse
+}
+
+HalMsgOpenFlowSetMplsParserReq ::= SEQUENCE
+{
+    enable         INTEGER
+}
+------------------------------------
+--  } Message definitions for OpenFlow parser (END)
+------------------------------------
+END

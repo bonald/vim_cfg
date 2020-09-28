@@ -1,0 +1,20 @@
+include ../../../Makefile.env.inc
+
+include $(MK_DIR)/sys.mk
+include $(APP_TOP_DIR)/snmp/mk/mib_module_list_c.mk
+
+LIB = netsnmpmibs
+
+# mib_module_list_c defined in mib_module_list_c.mk
+SRCS=$(addprefix mibgroup/,$(mib_module_list_c))
+SRCS += \
+    mib_modules.c \
+    auto_nlist.c
+
+CPPFLAGS += -I$(TOP_DIR)/include
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/agent
+CPPFLAGS+= -I$(APP_TOP_DIR)/snmp/include -I$(APP_TOP_DIR)/snmp/agent/mibgroup
+CPPFLAGS+= -DNETSNMP_ENABLE_IPV6 -Ulinux -Dlinux=linux
+CPPFLAGS += -I$(ZEBOS_TOP_DIR)/lib
+
+include $(MK_DIR)/lib.mk

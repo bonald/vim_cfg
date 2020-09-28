@@ -1,0 +1,622 @@
+
+<!-- Tap Group Statistic -->
+<div ng-class="{true: 'col-md-8', false: 'col-md-12'}[hasSel()]" >
+    <div class="panel panel-default">
+        <div class="panel-heading ">
+                <div class="panel-title">{{ 'Tap Statistics' | translate }}
+                
+                <button ng-show="System_product != 'Tap-350'" style="float:right" type="button" class="btn btn-default"  data-toggle="modal" data-target="#timeStampDetailModal" >
+                    <span class="glyphicon glyphicon-cog"></span>&nbsp;{{ 'Timestamp' | translate }}
+                </button>   
+                
+                <button ng-show="System_product != 'Tap-350'" style="float:right" type="button" class="btn btn-default"  data-toggle="modal" data-target="#truncationDetailModal" >
+                    <span class="glyphicon glyphicon-cog"></span>&nbsp;{{ 'Truncation' | translate }}
+                </button>   
+                
+                <button style="float:right " type="button" class="btn btn-default"  data-toggle="modal" data-target="#addTapGroupDetailModal" >
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add Tap Group' | translate }}
+                </button>  
+                </div>           
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">{{ '#' | translate }}</th>
+                        <th class="text-center">{{ 'Tap Id' | translate }}</th>
+                        <th class="text-center">{{ 'Tap Group Name' | translate }}</th>
+                        <th class="text-center">{{ 'Tap Group Description' | translate }}</th>
+                        <th class="text-center" ng-show="System_product != 'Tap-350'" >{{ 'Tap Group truncation' | translate }}</th>
+                        <th class="text-center">{{ 'Options' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="group in group_arr">
+                        <th class="text-center">{{ $index + 1 }}</th>
+                        <td class="text-center">{{ (group.id) }}</td>
+                        <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewDetail(group.key)">{{ group.key }}</a></td>
+                        <td class="text-center text-nowrap"><a href="javascript:;" ng-click="viewDetailDescription(group)">{{ (group.desc.length!=0)?group.desc:"N/A" }}</a></td>
+
+                        <td class="text-center" ng-show="System_product != 'Tap-350'">{{ (group.truncation_use==1)?"YES":"NO" }}</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTapGroup(group)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </div>
+                        </td>                        
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- The TAp Group Detail  -->
+<div class="modal fade" id="tapGroupDetailModal">
+    <div class="modal-dialog" style="width:1100px" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ dispGroupName }}</h4>
+
+                <hr />
+
+                <button  class="btn btn-primary" ng-click="tapGroupShowDirection('ingress')"  > 
+                    <span class="glyphicon glyphicon-list"></span>&nbsp;{{ 'Ingress' | translate }}
+                </button>    
+                
+                <button  class="btn btn-primary" ng-click="tapGroupShowDirection('egress')"  > 
+                    <span class="glyphicon glyphicon-list"></span>&nbsp;{{ 'Egress' | translate }}
+                </button>
+
+                <button style="float:right" class="btn btn-primary" ng-click="addTapGroup()"  data-toggle="modal" data-target="#tapGroupAddNewEntry"> 
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;{{ 'Add' | translate }}
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-condensed table-bordered table-hover" ng-show="show_group_direction=='egress'">
+
+                    <thead>
+                        <tr>
+                            <th class="text-center">{{ '#' | translate }}</th>
+
+                            <th class="text-center">{{ 'Port' | translate }}</th>
+                            <th ng-show="System_product != 'Tap-350'" class="text-center">{{ 'Timestamp' | translate }}</th>
+                            <th class="text-center">{{ 'Options' | translate }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="entry in allEgressEntry | filter: TapIngressEntryFilter">
+                            <th class="text-center">{{ $index + 1 }}</th>
+
+                            <td class="text-center">{{ entry.sort_name | switchPort}}</td>
+                            <td ng-show="System_product != 'Tap-350'" class="text-center">{{ (entry.timestamp_en==1)?"YES":"NO" }}</td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-xs">
+                                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTapEgressEntry(entry)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </td>                        
+                        </tr>
+                    </tbody>
+
+                </table>
+
+                <table class="table table-condensed table-bordered table-hover" ng-show="show_group_direction=='ingress'">
+
+                    <thead>
+                        <tr>
+                            <th class="text-center">{{ '#' | translate }}</th>
+                            <th class="text-center">{{ 'Port' | translate }}</th>
+                            <th class="text-center">{{ 'Flow Match' | translate }}</th>
+                            <th class="text-center">{{ 'Untag' | translate }}</th>
+                            <th class="text-center">{{ 'Vlan mark' | translate }}</th>
+                            <th class="text-center" ng-show=" System_product != 'Tap-350'">{{ 'Truncation' | translate }}</th>
+                            
+                            <th class="text-center">{{ 'Edit-macda' | translate }}</th>
+                            <th class="text-center">{{ 'Edit-macsa' | translate }}</th>
+                            <th class="text-center">{{ 'Edit-ipda' | translate }}</th>
+                            <th class="text-center" ng-show=" System_product != 'Tap-350'">{{ 'Edit-ipsa' | translate }}</th>
+                            <th class="text-center">{{ 'Edit-vlan' | translate }}</th>
+                            <th class="text-center">{{ 'Options' | translate }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="entry in allIngressEntry | filter: TapIngressEntryFilter">
+                            <th class="text-center">{{ $index + 1 }}</th>
+                            <td class="text-center">{{ entry.sort_name | switchPort }}</td>
+                            <td class="text-center">{{ (entry.flow.length!=0)?entry.flow:"N/A" }}</td>
+                            <td class="text-center">{{ entry.untag_mode }}</td>
+                            <td class="text-center">{{ (entry.ing_mark_vlan_vid==0)?"N/A": entry.ing_mark_vlan_vid}}</td>
+                            <td class="text-center" ng-show=" System_product != 'Tap-350'">{{ (entry.ing_trunction_en==0)?"Disable":"Enable" }}</td>
+                            
+                            <td class="text-center">{{ (entry.ing_edit_dest_mac_en!=0)?entry.ing_edit_dest_mac:"N/A" }}</td>
+                            <td class="text-center">{{ (entry.ing_edit_src_mac_en!=0)?entry.ing_edit_src_mac:"N/A" }}</td>
+                            <td class="text-center">{{ (entry.ing_edit_ipda_en!=0)?entry.ing_edit_ipda:"N/A" }}</td>
+                            <td class="text-center" ng-show=" System_product != 'Tap-350'">{{ (entry.ing_edit_ipsa_en!=0)?entry.ing_edit_ipsa:"N/A" }}</td>
+                            <td class="text-center">{{ (entry.flow.length!=0)?"N/A":(entry.ing_edit_vlan_en!=0)?entry.ing_edit_vlan:"N/A" }}</td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-xs">
+                                    <button class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ 'Delete' | translate }}" ng-click="delTapIngressEntry(entry)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </td>                        
+                        </tr>
+                    </tbody>
+
+                </table> 
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Group Description  -->
+<div class="modal fade" id="tapGroupDescriptionModal"  ng-init=" ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ dispGroupName }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="tapDescForm" name="tapDescForm" class="form"  novalidate>  
+                    <dl >
+                         <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-4">{{ 'Enable'  | translate }}</div>
+                        <div class="col-md-6" >
+                            <btn-switch switch-state="tapGroupDescriptionEnable" switch-on-change="tapGroupDescriptionEnableFun()" ></btn-switch>
+                        </div>
+                        </dd> 
+                    </dl>                  
+                    <dl ng-show="tapGroupDescriptionEnable">
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-4">{{ 'Tap Group Description'  | translate }}</div>
+                        <div class="col-md-6" ng-class="{true: 'has-success', false: 'has-error'}[tapDescForm.tapGroupDescription.$valid]">
+                            <input type="text" name="tapGroupDescription" class="form-control" placeholder="Configure a TAP group name description" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,79}$/" ng-model="tapGroupDescription"  required />
+                        </div>
+                        </dd> 
+                    </dl>  
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addTapGroupDescription()" ng-disabled="tapDescForm.tapGroupDescription.$invalid && tapGroupDescriptionEnable == true">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Add Group New Entry  -->
+<div  class="container" >
+    <div class="modal fade" id="tapGroupAddNewEntry" >
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">{{dispGroupName}}</h4>
+                </div>
+
+                <div class="modal-body">
+                  <form id="addEntryForm" name="addEntryForm" class="form-inline padding-5px"  novalidate>
+                    <table class="table table-condensed table-bordered table-hover">
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'Direction' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="addEntry.entryDirection" ng-options="m for m in direction">
+                                </select>               
+                            </td>
+                        </tr>
+
+                        <tr >
+                            <th class="text-right col-md-6">{{ 'Port' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="addEntry.port" ng-options="m.sort_name | switchPort for m in allIf">
+                                </select>                
+                            </td>
+                        </tr>                     
+
+                        <tr ng-show="addEntry.entryDirection=='egress' && System_product != 'Tap-350'" >
+                            <th class="text-right col-md-6">{{ 'Timestamp' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="text-left col-md-6">
+                                    <btn-switch switch-state="addEntry.tstamp" switch-on-change="switchTstampEnFun()" ></btn-switch>
+                                </div>
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && System_product != 'Tap-350'" >
+                            <th class="text-right col-md-6">{{ 'Truncation' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="text-left col-md-6">
+                                    <btn-switch switch-state="addEntry.trunEn" switch-on-change="switchTruncationEnFun()" ></btn-switch>
+                                </div>
+                            </td>
+                        </tr>  
+                        
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.trunEn!=true && addEntry.markEn == false" >
+                            <th class="text-right col-md-6">{{ 'Untag' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="text-left col-md-6">
+                                    <select class="form-control"  ng-model="addEntry.removeVlanEn" ng-options="m for m in untag_mode">
+                                    </select>
+                                </div>
+
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.trunEn!=true && addEntry.removeVlanEn == 'Disable' ">
+                            <th class="text-right col-md-6">{{ 'Vlan mark' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="text-left col-md-6">
+                                    <btn-switch switch-state="addEntry.markEn" switch-on-change="switchMarkEnFun()" ></btn-switch>
+                                </div>
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.markEn==true && addEntry.trunEn!=true && addEntry.markEn == true">
+                            <th class="text-right col-md-6">{{ 'ID' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <form id="addEntryForm" name="addEntryForm" class="form-inline padding-5px"  novalidate>
+                                    <div  ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.VlanID.$valid]" >
+                                        <input name="VlanID" type="number" class="form-control" placeholder="Vlan ID 1~4094" ng-model="addEntry.vlanId" ng-min="1" ng-max="4094" required />
+                                    </div> 
+                                </form>
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.trunEn!=true && addEntry.editPacketEn == false">
+                            <th class="text-right col-md-6">{{ 'Flow Match' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="text-left col-md-6">
+                                    <btn-switch switch-state="addEntry.flowEn" switch-on-change="switchFlowEnFun()" ></btn-switch>
+                                </div>
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.trunEn!=true && addEntry.flowEn==true">
+                            <th class="text-right col-md-6">{{ 'Flow' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="addEntry.flow" ng-options="entry.key for entry in flow_arr">
+                                </select>   
+                            </td>
+                        </tr>  
+
+                                            
+                        <!-- edit-packet -->
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.trunEn!=true && addEntry.flowEn!=true " >
+                            <th class="text-right col-md-6">{{ 'Edit packet' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="col-md-6">
+                                    <btn-switch switch-state="addEntry.editPacketEn" switch-on-change="cfgEntryEditPacketEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>                        
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editPacketEn == true">
+                            <th class="text-right col-md-6">{{ 'Edit-macda' | translate }} </th>
+                            <td class="text-left col-md-6">
+                               <div class="col-md-6">
+                                    <btn-switch switch-state="addEntry.editMacDaEn" switch-on-change="cfgEntryEditMacDaEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editMacDaEn == true ">
+                            <th class="text-right col-md-6">{{ 'Dst-mac' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryEditMacDa.$valid]">
+                                    <input type="text" name="entryEditMacDa" class="form-control" placeholder="mac in HHHH.HHHH.HHHH format" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/" ng-model="addEntry.editMacDaValue"  required />
+                                </div>
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' &&  addEntry.editPacketEn == true">
+                            <th class="text-right col-md-6">{{ 'Edit-macsa' | translate }} </th>
+                            <td class="text-left col-md-6">
+                               <div class="col-md-6">
+                                    <btn-switch switch-state="addEntry.editMacSaEn" switch-on-change="cfgEntryEditMacSaEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' &&  addEntry.editMacSaEn == true ">
+                            <th class="text-right col-md-6">{{ 'Src-mac' | translate }} </th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryEditMacSa.$valid]">
+                                    <input type="text" name="entryEditMacSa" class="form-control" placeholder="mac in HHHH.HHHH.HHHH format" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/" ng-model="addEntry.editMacSaValue"  required />
+                                </div>
+                            </td>
+                        </tr>  
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' &&  addEntry.editPacketEn == true">
+                            <th class="text-right col-md-6">{{ 'Edit-ipda' | translate }} </th>
+                            <td class="text-left col-md-6">
+                               <div class="col-md-6">
+                                    <btn-switch switch-state="addEntry.editIPDaEn" switch-on-change="cfgEntryEditIPDaEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>  
+
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editIPDaEn == true "> 
+                            <th class="text-right col-md-6">{{ 'Dst-ip Type' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="addEntry.editdstIpType" ng-options="m for m in editdstIpType">
+                                </select>
+                            </td>
+						</tr>						
+
+                        <tr ng-show="addEntry.editIPDaEn == true && addEntry.editdstIpType =='ipv4' ">    
+                            <th class="text-right col-md-6">{{ 'Dst-ip' | translate }}</th>
+                            <td class="text-left col-md-6">
+								<div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryIPDa.$valid]" >
+                                    <input type="text" name="entryIPDa" class="form-control" placeholder="A.B.C.D"  ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" ng-model="addEntry.editIPDaValue" required />
+                                </div> 
+                            </td>
+                        </tr>  
+						
+                        <tr ng-show="addEntry.editIPDaEn == true && addEntry.editdstIpType =='ipv6' ">    
+                            <th class="text-right col-md-6">{{ 'Dst-ip' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryIPv6Da.$valid]" >
+                                    <input type="text" name="entryIPv6Da" class="form-control" placeholder="X:X::X:X"  ng-model="addEntry.editIPv6DaValue" ng-pattern="/((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/" required />
+                                </div> 
+                            </td>
+                        </tr>  
+						
+						
+                        <tr ng-show="addEntry.entryDirection=='ingress' &&  addEntry.editPacketEn == true && System_product != 'Tap-350'">
+                            <th class="text-right col-md-6">{{ 'Edit-ipsa' | translate }} </th>
+                            <td class="text-left col-md-6">
+                               <div class="col-md-6">
+                                    <btn-switch switch-state="addEntry.editIPSaEn" switch-on-change="cfgEntryEditIPSaEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>  
+
+						<tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editIPSaEn == true "> 
+                            <th class="text-right col-md-6">{{ 'Src-ip Type' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <select class="form-control"  ng-model="addEntry.editsrcIpType" ng-options="m for m in editsrcIpType">
+                                </select>
+                            </td>
+						</tr> 
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editIPSaEn == true && addEntry.editsrcIpType =='ipv4' ">    
+                            <th class="text-right col-md-6">{{ 'Src-ip' | translate }}</th>
+                            <td class="text-left col-md-6">
+								<div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryIPSa.$valid]" >
+                                    <input type="text" name="entryIPSa" class="form-control" placeholder="A.B.C.D"  ng-pattern="/^((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))$/" ng-model="addEntry.editIPSaValue" required />
+                                </div> 
+                            </td>
+                        </tr>  
+						
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editIPSaEn == true && addEntry.editsrcIpType =='ipv6' ">    
+                            <th class="text-right col-md-6">{{ 'Src-ip' | translate }}</th>
+                            <td class="text-left col-md-6">
+                                <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.entryIPv6Sa.$valid]" >
+                                    <input type="text" name="entryIPv6Sa" class="form-control" placeholder="X:X::X:X"  ng-model="addEntry.editIPv6SaValue" ng-pattern="/((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/"   required />
+                                </div> 
+                            </td>
+                        </tr> 
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' &&  addEntry.editPacketEn == true ">
+                            <th class="text-right col-md-6">{{ 'Edit-vlan' | translate }} </th>
+                            <td class="text-left col-md-6">
+                               <div class="col-md-6">
+                                    <btn-switch switch-state="addEntry.editVlanEn" switch-on-change="cfgEntryEditVlanEnFun()" ></btn-switch>
+                                </div>
+
+                            </td>   
+                        </tr>  
+
+
+                        <tr ng-show="addEntry.entryDirection=='ingress' && addEntry.editVlanEn == true "> 
+                                <th class="text-right col-md-6">{{ 'ID' | translate }}</th>
+                                <td class="text-left col-md-6">
+                                    <div class="form-group" ng-class="{true: 'has-success', false: 'has-error'}[addEntryForm.editVlan.$valid]" > 
+                                        <input name="editVlan" type="number" class="form-control" placeholder="1~4094" ng-model="addEntry.editVlanValue"  ng-min="1" ng-max="4094" required />
+                                    </div>     
+                                </td>
+                        </tr> 
+
+                    </table>
+                  </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addTapGroupEntry()" ng-disabled="addNewTapEntryCheck() ==  false ">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                    </button>
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<!--Global Configuration | Timestamp  -->
+<div class="modal fade" id="timeStampDetailModal">
+    <div class="modal-dialog" style="width:700px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Timestamp Over Ethernet' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="tapGlobalConfForm" name="tapGlobalConfForm" class="form"  novalidate>
+                    <dl>
+                        <dd class="row" > 
+                          <div class="col-md-4">{{ 'Timestamp Enable'  | translate }}</div>
+                          <div class="col-md-6">
+                              <btn-switch switch-state="timestamp.timeStampEn" switch-on-change="timeStampEn()" ></btn-switch>
+                          </div>
+                        </dd> 
+                    </dl>  
+
+                    <dl ng-show="timestamp.timeStampEn">
+                        <dd class="row" style="margin-left: 10px">
+
+                            <div class="form-inline" >
+                                <div class="input-group col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[tapGlobalConfForm.macDa.$valid]" >
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon " aria-hidden="true"></span>&nbsp;{{ 'Dst-mac' | translate }}
+                                    </span>  
+                                    <input type="text" name="macDa" class="form-control " ng-model="timestamp.macDa" placeholder="xxx.xxx.xxx" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/"  required />
+                                </div>
+                                
+                                <div class="input-group col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[tapGlobalConfForm.macSa.$valid]">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon " aria-hidden="true"></span>&nbsp;{{ 'Src-mac' | translate }}
+                                    </span>
+                                    <input type="text" name="macSa" class="form-control input-sm" id="file-filter" ng-model="timestamp.macSa" placeholder="xxx.xxx.xxx" ng-pattern="/^([\da-f]{1,4}\.){2}[\da-f]{1,4}$/"  required />
+                                </div>
+                                
+                                <div class="input-group col-md-3" ng-class="{true: 'has-success', false: 'has-error'}[tapGlobalConfForm.tsType.$valid]">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon " aria-hidden="true"></span>&nbsp;{{ 'Type' | translate }}
+                                    </span>
+                                    <input type="text" name="tsType" class="form-control input-sm" ng-model="timestamp.etherType" placeholder="0x0-0xffff" ng-pattern="/^(0[xX])?([0-9a-fA-F]{1,4})$/"  required />
+                                </div>
+                            </div> 
+
+                        </dd>                 
+                    </dl>            
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setTapTimeStamp()" ng-disabled=" timestamp.timeStampEn && (tapGlobalConfForm.macDa.$invalid || tapGlobalConfForm.macSa.$invalid || tapGlobalConfForm.tsType.$invalid )"  ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Global Configuration | Truncation   -->
+<div class="modal fade" id="truncationDetailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Truncation Length ' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="tapTruncationConfForm" name="tapTruncationConfForm" class="form"  novalidate>
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                          <div class="col-md-3">{{ 'Truncation Enable'  | translate }}</div>
+                          <div class="col-md-6">
+                              <btn-switch switch-state="tapTruncation.truncationEn" switch-on-change="tapTruncationEn()" ></btn-switch>
+                          </div>
+                        </dd> 
+                    </dl>  
+
+                    <dl ng-show="tapTruncation.truncationEn">
+                        <dd class="row" style="margin-top: 10px;">
+                            <div class="form-inline" style="margin-left: 20px">
+                                <div class="col-md-3" ng-class="{true: 'has-success', false: 'has-error'}[tapTruncationConfForm.truncationLength.$valid]"> 
+                                      <input name="truncationLength" type="number" class="form-control" ng-model="tapTruncation.length" placeholder="64 ~ 144" ng-min="64" ng-max="144"  required />
+                                </div> 
+                            </div> 
+                        </dd>                 
+                    </dl>            
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setTruncationLength()" ng-disabled=" tapTruncationConfForm.truncationLength.$invalid && tapTruncation.truncationEn==true ">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--Global Configuration | Add Tap Group   -->
+<div class="modal fade" id="addTapGroupDetailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ 'Tap Group Name ' | translate }}</h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="tapGroupConfForm" name="tapGroupConfForm" class="form"  novalidate>
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-4">{{ 'Tap Group Name'  | translate }}</div>
+                        <div class="col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[tapGroupConfForm.tapGroup.$valid]">
+                            <input type="text" name="tapGroup" class="form-control" placeholder="Configure group name" ng-pattern="/^[a-zA-Z][a-zA-Z\.\-\_0-9]{0,19}$/" ng-model="tapGroupName"  required />
+                        </div>       
+                        </dd> 
+                    </dl>
+                    <dl>
+                        <dd class="row" style="margin-top: 10px;">
+                        <div class="col-md-4">{{ 'Tap Group ID'  | translate }}</div>
+                        <div class="col-md-4" ng-class="{true: 'has-success', false: 'has-error'}[tapGroupConfForm.tapID.$valid]">
+                            <input type="number" name="tapID" class="form-control" placeholder="group ID [0,512]" ng-min="0" ng-max="512" ng-model="tapGroupID"  required />
+                        </div>       
+                        </dd> 
+                    </dl>                                
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addTapGroup()" ng-disabled=" tapGroupConfForm.tapGroup.$invalid " >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;{{ 'OK' | translate }}
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{ 'Close' | translate }}
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

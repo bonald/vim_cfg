@@ -1,0 +1,278 @@
+#!/bin/sh
+
+COMM_VRF=65
+MANG_VRF=64
+ZERO_VRF=0
+
+mount -t proc none /proc
+mount -t sysfs none /sys
+
+busybox --install -s
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+mknod /dev/ctc_allctrl c 99 0
+mknod /dev/ctc_hw c 100 0
+mknod /dev/ctc_asic_normal c 101 0
+mknod /dev/ctc_asic_fatal c 103 0
+
+mkdir /dev/pts
+mount -t devpts none /dev/pts
+#mount -t jffs2 /dev/mtdblock0 /mnt/flash
+### If we have depmod, run it to create module dependencies
+##if [ -e /sbin/depmod ]
+#then
+##    echo Updating module dependencies
+##    depmod -a
+##fi
+##
+### Load IPv6 if it exists so telnetd will be happy
+##modinfo ipv6 > /dev/null 2>&1
+##if [ $? -eq 0 ]
+##then
+touch /var/run/utmp
+
+if [ ! -d /mnt/flash/log ]; then
+    mkdir /mnt/flash/log
+fi
+
+if [ ! -f /mnt/flash/log/lastlog ]; then
+    touch /mnt/flash/log/lastlog
+fi
+
+if [ ! -f /mnt/flash/log/wtmp ]; then
+    touch /mnt/flash/log/wtmp
+fi
+
+if [ ! -d /mnt/flash/boot ]; then
+    mkdir /mnt/flash/boot
+fi
+
+if [ ! -d /mnt/flash/conf ]; then
+    mkdir /mnt/flash/conf
+fi
+
+if [ ! -h /mnt/flash/conf/.profile ]; then
+    ln -s /etc/memory_profile /mnt/flash/conf/.profile
+fi
+
+
+insmod /lib/ctc_hw.ko
+insmod /lib/ctc_asic_io.ko
+insmod /lib/peth_km.ko
+ifconfig eth1 up mtu 9500
+
+
+# Configure loopback interface
+ifconfig lo 127.0.0.1
+
+
+# Configure VM
+sysctl -w vm.overcommit_memory=2 2>&1 > /dev/null
+sysctl -w vm.overcommit_ratio=95 2>&1 > /dev/null
+
+# Configure coredump
+sysctl -w kernel.core_pattern='|/usr/bin/core_helper %e' 2>&1 > /dev/null
+
+# Configure socket
+sysctl -w net.core.rmem_max=8000000 2>&1 > /dev/null
+sysctl -w net.core.rmem_default=1000000 2>&1 > /dev/null
+sysctl -w net.core.wmem_max=8000000 2>&1 > /dev/null
+sysctl -w net.core.wmem_default=1000000 2>&1 > /dev/null
+
+#Configure default IGMP version=2
+sysctl -w net.ipv4.conf.default.force_igmp_version=2 2>&1 > /dev/null
+
+#Configure socket max memberships
+sysctl -w net.ipv4.igmp_max_memberships=200 2>&1 > /dev/null
+
+# Configure TCP/IP stack
+sysctl -w net.ipv4.conf.all.accept_source_route=1 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.autoconf=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.autoconf=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.dad_transmits=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.dad_transmits=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.router_solicitations=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.router_solicitations=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.default.router_solicitation_delay=0 2>&1 > /dev/null
+sysctl -w net.ipv6.conf.all.router_solicitation_delay=0 2>&1 > /dev/null
+sysctl -w net.ipv4.route.max_size=65536 2>&1 > /dev/null
+sysctl -w net.ipv4.route.gc_thresh=4096 2>&1 > /dev/null
+sysctl -w net.ipv6.route.max_size=65536 2>&1 > /dev/null
+sysctl -w net.ipv6.route.gc_thresh=4096 2>&1 > /dev/null
+
+# For nsm/uarp
+sysctl -w net.ipv4.neigh.default.ucast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.mcast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.app_solicit=1 2>&1 > /dev/null
+sysctl -w net.ipv4.neigh.default.retrans_time_ms=3000 2>&1 > /dev/null
+
+#for icmp redirect, for bug 13190
+sysctl -w net.ipv4.conf.all.send_redirects=0 2>&1 > /dev/null
+# For nsm/ndp
+sysctl -w net.ipv6.neigh.default.ucast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.mcast_solicit=0 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.app_solicit=1 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.retrans_time_ms=3000 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh1=256 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh2=1024 2>&1 > /dev/null
+sysctl -w net.ipv6.neigh.default.gc_thresh3=2048 2>&1 > /dev/null
+
+# enlarge kernel neigh number
+echo 512 > /proc/sys/net/ipv4/neigh/default/gc_thresh1
+echo 2048 > /proc/sys/net/ipv4/neigh/default/gc_thresh2
+echo 4096 > /proc/sys/net/ipv4/neigh/default/gc_thresh3
+
+# Enable TCP Syncookies
+echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+
+# MPLS Forwarder
+insmod /lib/mpls.ko
+
+# remove running status file
+rm -fr /tmp/nsm_done
+rm -fr /tmp/imi_done
+rm -fr /tmp/glb_hsrv_done
+rm -fr /tmp/startup_cfg_done
+rm -fr /tmp/active_done
+rm -fr /tmp/standby_done
+
+hostname Switch
+#echo "Starting SYSLOGD..."
+rm -fr /etc/syslog-ng.conf
+init-syslog-ng.sh
+angel syslog-ng -Ff /etc/syslog-ng.conf >/dev/null
+
+#echo "Starting CROND..."
+crond -c /etc/crontabs -L /dev/null &
+#echo Starting syslogd
+#syslogd
+
+ip vrf add $MANG_VRF MANG_VRF
+ip link set eth0 vrf $MANG_VRF
+chvrf $MANG_VRF ifconfig eth0 up
+if [ ! -d /conf/ssh ]; then
+    mkdir /conf/ssh
+fi
+#echo "Starting hal server..."
+hsrvd -d
+
+#sleep 1s, then start chsm, else may result to chsm socket connect error, see bug 9181
+sleep 1
+ 
+#echo "Starting CHSM/NSM..."
+chsm -n /usr/sbin/nsm &
+
+
+
+while true; do
+    if [ -f /tmp/oem_info ] ; then
+        break;
+    fi
+    sleep 1;
+done
+
+#echo "Starting SSHD..."
+/usr/sbin/sshd
+#dropbear -r /conf/ssh/rsa_host_key -d /conf/ssh/dss_host_key &
+
+#echo "Starting OAMD..."
+onmd -d &
+
+#echo "Starting MSTPD..."
+mstpd -d &
+
+#echo "Starting LACPD..."
+lacpd -d &
+
+#echo "Starting RIPD..."
+ripd -d &
+
+#echo "Starting RIPNGD..."
+#ripngd -d &
+
+#echo "Starting LDPD..."
+ldpd -d &
+
+#echo "Starting OSPFD..."
+ospfd -d &
+
+#echo "Starting OSPF6D..."
+#ospf6d -d &
+
+#echo "Starting BGPD..."
+bgpd -d &
+
+#echo "Starting AUTHD"
+authd -d &
+
+#echo "Starting PIMD..."
+pimd -d &
+
+#echo "Starting PTPD..."
+ptpd -d &
+
+echo "Starting SSMD..."
+ssmd -d &
+
+#echo "Starting DHCRELAY..."
+dhcrelay -d -4 -q &
+
+#echo "Starting SNMP..."
+#remove by zhuj for kernel crash on octeon CPU
+#snmpd -c /etc/snmpd.conf
+
+#echo "Starting RMON..."
+rmond -d &
+
+#echo "Starting BHM..."
+bhm -d &  
+
+# sleep 4s wait chsm detect have done
+sleep 4
+
+#echo "Starting IMI..."
+echo -n "Waiting the system initialize..."
+imi &
+
+# waiting imi done
+while true; do
+    if [ -f /tmp/imi_done ] ; then
+        break;
+    fi
+    echo -n "."
+    sleep 1;
+done
+
+echo "Done!"
+
+# dispatch configuration
+echo -n "Loading startup configuration file."
+if [ ! -f /mnt/flash/startup-config.conf ] ; then
+    touch /mnt/flash/startup-config.conf
+fi
+
+touch /tmp/startup.log
+imish -s -f /mnt/flash/startup-config.conf >/tmp/startup.log 2>&1 &
+while true; do
+    echo -n "."
+    if [ -f /tmp/startup_cfg_done ] ; then
+        break;
+    elif [ -f /tmp/standby_startup_cfg_done ] ; then
+        break;
+    fi
+    sleep 3;
+done
+echo " Done!"
+
+chvrf 64 sysctl -w net.ipv4.neigh.eth0.app_solicit=0 2>&1 >/dev/null
+chvrf 64 sysctl -w net.ipv4.neigh.eth0.ucast_solicit=3 2>&1 >/dev/null
+chvrf 64 sysctl -w net.ipv4.neigh.eth0.mcast_solicit=3 2>&1 >/dev/null
+
+cat /tmp/startup.log
+rm -fr /tmp/startup.log
+echo Starting telnetd
+chvrf $MANG_VRF telnetd -l /usr/bin/imish
+telnetd -l /usr/bin/imish
+
+
+

@@ -1,0 +1,374 @@
+#!/usr/bin/python
+#
+# SNMP trap agent
+#
+# Copyright (c) 2015 Centec Networks (suzhou) Co., Ltd
+#
+#  usage example:
+#
+#
+
+import sys, os, signal, time, re
+import optparse
+import pprint
+from daemon3x import daemon as Daemon
+import Queue
+from SocketServer import UnixStreamServer, StreamRequestHandler
+import socket, select, struct
+
+# Make sure we use the local copy, not a system-wide one
+sys.path.insert(0, os.path.dirname(os.getcwd()))
+
+prgname = sys.argv[0]
+
+# Process command line arguments
+usage = "usage: %prog [options] [stop]"  
+parser = optparse.OptionParser(usage=usage)
+parser.add_option(
+    "-m",
+    "--mastersocket",
+    dest="mastersocket",
+    help="Sets the transport specification for the master agent's AgentX socket",
+    default="/var/run/agentx-master"
+)
+parser.add_option(
+    "-i",
+    "--pid-file",
+    dest="pidfile",
+    help="Sets the pid file",
+    default="/var/run/trap_agent.pid"
+)
+parser.add_option(
+    "-v",
+    "--verbose",
+    dest="verbose",
+    action="store_true",
+    help="Verbose mode",
+)
+parser.add_option(
+    "-d",
+    "--daemon",
+    dest="bg",
+    action="store_true",
+    help="Daemon mode",
+)
+(options, args) = parser.parse_args()
+
+myaction=""
+if len(args) == 1:
+    if args[0] != "stop":
+        parser.print_help()
+        sys.exit(1)
+    myaction="stop"
+elif len(args) != 0:
+    parser.print_help()
+    sys.exit(1)
+
+
+# Get terminal width for usage with pprint
+columns = 80
+
+if myaction == "stop":
+    class MyDaemon(Daemon):
+        def run(self): pass
+    do_daemon = MyDaemon(options.pidfile)
+    do_daemon.stop()
+    sys.exit(0)
+
+# daemonize
+if options.bg:
+    class MyDaemon(Daemon):
+        def run(self): pass
+    do_daemon = MyDaemon(options.pidfile)
+    do_daemon.start()
+else: pass
+
+# Install a signal handler that terminates our simple agent when
+# CTRL-C is pressed or a KILL signal is received
+def TermHandler(signum, frame):
+    global loop
+    loop = False
+signal.signal(signal.SIGINT, TermHandler)
+signal.signal(signal.SIGTERM, TermHandler)
+
+# First, create an instance of the netsnmpAgent class. We specify the
+# fully-qualified path to SIMPLE-MIB.txt ourselves here, so that you
+# don't have to copy the MIB to /usr/share/snmp/mibs.
+from netsnmpapi import *
+from netsnmpagent import *
+
+try:
+    agent = netsnmpAgent(
+        AgentName      = "SnmpTrapAgent",
+        MasterSocket   = options.mastersocket,
+    )
+except netsnmpAgentException as e:
+    print "{0}: {1}".format(prgname, e)
+    sys.exit(1)
+
+# start server thread for accept trap requests from client
+# trap message queue after parse the message from client
+SavedMsg = ""
+RcvHalfFlag = False
+SaveHalfFlag = False
+trapq = Queue.Queue(256)
+mainpid = os.getpid()
+def SnmpTrapServerThread():
+    global mainpid
+    global RcvHalfFlag
+    global SaveHalfFlag
+    global SavedMsg
+    ADDR = ('/var/run/trap-master')
+
+    try:
+        os.unlink(ADDR)
+    except: pass
+
+    try:
+        srvsock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        srvsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        srvsock.bind(ADDR)
+        srvsock.listen(5)
+        srvsock.setblocking(0);
+        
+        readlist = [srvsock]
+    except Exception as err:
+        print "Create socket server failed: " + str(err)
+        sys.exit(1)
+
+    while True:
+        (sread, swrite, sexec) = select.select(readlist, [], [])
+        for sock in sread:
+            if  sock == srvsock:
+                try:
+                    (newsock, address) = srvsock.accept()
+                    newsock.setblocking(0)
+                    readlist.append(newsock)
+                except: pass
+            else:
+                try:
+                    recv_msg = sock.recv(512)
+                    if '' == recv_msg:
+                        sock.close()
+                        readlist.remove(sock)
+                    else:
+                        # XXX: we may recv multi line
+                        #print recv_msg
+                        # /* modified by huwx for snmp multi trap process bug 41448; */
+                        #decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(recv_msg)).read().strip("\r\n")
+                        RcvHalfFlag = not recv_msg.endswith("\r\n")
+                        #print RcvHalfFlag, SaveHalfFlag
+                        #if SavedMsg != "":
+                            #print SavedMsg
+                        mesgs = recv_msg.split("\r\n")
+                        num = recv_msg.count("\r\n")
+                        if not RcvHalfFlag :
+                            if SaveHalfFlag:
+                                i = 0
+                                for line in mesgs:
+                                    if line == "":
+                                        continue
+                                    i += 1
+                                    if i == 1 :
+                                        decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(SavedMsg + line)).read().strip("\r\n")
+                                        #print SavedMsg + line
+                                        SaveHalfFlag = False
+                                        SavedMsg = ""
+                                    else :
+                                        decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(line)).read().strip("\r\n")
+                                        #print line
+                                    
+                                    if decmsg.find('%') != -1 or '' == decmsg:                                                    
+                                        if '' != decmsg:                                                                          
+                                            print "Invalid message: " + decmsg                                                    
+                                    else:                                                                                         
+                                        trapq.put(decmsg)                                                                         
+                                        agent.awake_main_loop()
+                            else :
+                                for line in mesgs:
+                                    if line == "":
+                                        continue
+                                    decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(line)).read().strip("\r\n")
+                                    #print line
+                                    if decmsg.find('%') != -1 or '' == decmsg:                              
+                                        if '' != decmsg:                                                    
+                                            print "Invalid message: " + decmsg                              
+                                    else:                                                                   
+                                        trapq.put(decmsg)                                                   
+                                        agent.awake_main_loop()
+
+                        else:
+                            if SaveHalfFlag:
+                                i = 0
+                                for line in mesgs:
+                                    if line == "":
+                                        continue
+                                    i += 1
+                                    if i == 1 :
+                                        decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(SavedMsg + line)).read().strip("\r\n")
+                                        #print SavedMsg + line
+                                        SaveHalfFlag = False
+                                        SavedMsg = ""
+                                        if decmsg.find('%') != -1 or '' == decmsg:                                                    
+                                            if '' != decmsg:                                                                          
+                                                print "Invalid message: " + decmsg                                                    
+                                        else:                                                                                         
+                                            trapq.put(decmsg)                                                                         
+                                            agent.awake_main_loop()
+                                    elif i <= num :
+                                        decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(line)).read().strip("\r\n")
+                                        #print line
+                                        if decmsg.find('%') != -1 or '' == decmsg:                                                    
+                                            if '' != decmsg:                                                                          
+                                                print "Invalid message: " + decmsg                                                    
+                                        else:                                                                                         
+                                            trapq.put(decmsg)                                                                         
+                                            agent.awake_main_loop()
+                                    else:
+                                        SaveHalfFlag = True
+                                        SavedMsg = line
+                                        #print line
+                            else :
+                                i = 0
+                                for line in mesgs:
+                                    if line == "":
+                                        continue
+                                    i += 1                                
+                                    if i<= num:                                
+                                        decmsg = os.popen('fnconvert -c decoding -m "{0}"'.format(line)).read().strip("\r\n")
+                                        #print line
+                                        if decmsg.find('%') != -1 or '' == decmsg:                              
+                                            if '' != decmsg:                                                    
+                                                print "Invalid message: " + decmsg                              
+                                        else:                                                                   
+                                            trapq.put(decmsg)                                                   
+                                            agent.awake_main_loop()
+                                    else:
+                                        SaveHalfFlag = True
+                                        SavedMsg = line
+                                        #print SavedMsg
+
+                except socket.error as err:
+                    print err
+                    sock.close()
+                    readlist.remove(sock)
+
+import threading
+server_thread = threading.Thread(target = SnmpTrapServerThread, name = "SnmpTrapServer")
+server_thread.daemon = True
+server_thread.start()
+
+# Finally, we tell the agent to "start". This actually connects the
+# agent to the master agent.
+while True:
+    try:
+        agent.start()
+        break
+    except netsnmpAgentException as e:
+        print "{0}: {1}".format(prgname, e)
+
+print "{0}: AgentX connection to snmpd established.".format(prgname)
+
+agent.set_ping_interval(3);
+
+loop = True
+while (loop):
+    # Block and process SNMP requests, if available
+    agent.check_and_process()
+
+    while True:
+        try:
+            line = trapq.get_nowait()
+            if line == None:
+                    break
+            reqarr = line.split('/')
+            if (len(reqarr) < 5) or ((len(reqarr) % 3) != 2):
+                    print "{0}: Invalid trap request line: {1}.".format(prgname, str(reqarr)) 
+                    continue
+
+            #print "request: " + str(reqarr)
+            trapoid = reqarr[2]
+            uptime = int(reqarr[4])
+            vararr = []
+            if (len(reqarr) > 5):
+                    vararr = reqarr[5:]
+            #print "var: " + str(vararr)
+            #print "oid: " + str(trapoid)
+            #print "uptime: " + str(uptime)
+
+            agent.Trapv2(trapoid, uptime, vararr)
+        except Queue.Empty:
+            break
+        except Exception as err:
+            print "{0}: process trap request failed: {1}.".format(prgname, str(err)) 
+            break
+
+print "{0}: Terminating.".format(prgname)
+
+"""
+# command for= start up snmptrapd:
+# ./snmptrapd  -c public -f -F "from %A %v\n" -On -Lo -c ./snmptrapd.conf
+#
+#  snmptrapd.conf:
+#    authCommunity log,execute,net public
+#     disableAuthorization yes
+#
+
+# C example code:
+
+# connect to snmp trap agent:
+ipc_connect_snmp_trap();
+
+# get SNMP enterprise OID:
+oid_t eoid = (oid_t)oem_info_get_single_snmp_enterprise_oid();
+
+# send snmp trap v2 via API
+{
+    oid_t trap_oid[] = {1, 2, 3, 4, 5, 6};
+    oid_t spec_trap_val = 0;
+    int myint = 8;
+    unsigned int myip = (unsigned int)inet_addr("127.0.0.2");
+    char mystr[] = "Hello Python! Hello World";
+    char objid[] = "1.1.8.2.7.3.8.8";
+    trap_val_t tv[4];
+
+    tv[0].namelen = 4;
+    tv[0].name[0] = 1;
+    tv[0].name[1] = 2;
+    tv[0].name[2] = 3;
+    tv[0].name[3] = 4;
+    tv[0].val_type = ASN_INTEGER;
+    tv[0].val_len = 4;
+    tv[0].val = &myint;
+
+    tv[1].namelen = 4;
+    tv[1].name[0] = 1;
+    tv[1].name[1] = 3;
+    tv[1].name[2] = 4;
+    tv[1].name[3] = 5;
+    tv[1].val_type = ASN_OCTET_STR;
+    tv[1].val_len = strlen(mystr);
+    tv[1].val = mystr;
+
+    tv[2].namelen = 4;
+    tv[2].name[0] = 1;
+    tv[2].name[1] = 8;
+    tv[2].name[2] = 7;
+    tv[2].name[3] = 6;
+    tv[2].val_type = ASN_IPADDRESS;
+    tv[2].val_len = 4;
+    tv[2].val = &myip;
+
+    tv[3].namelen = 4;
+    tv[3].name[0] = 1;
+    tv[3].name[1] = 8;
+    tv[3].name[2] = 7;
+    tv[3].name[3] = 6;
+    tv[3].val_type = ASN_OBJECT_ID;
+    tv[3].val_len = strlen(objid);
+    tv[3].val = objid;
+
+    ipc_snmp_trapv2(trap_oid, 6, spec_trap_val, trap_oid, 6,
+            tv, 4);
+}
+"""

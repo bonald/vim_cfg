@@ -1,0 +1,51 @@
+HAL-MSG-IVI DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+IMPORTS 
+    HalMsgIpv6addr,
+    HalMsgIpv4addr
+    FROM HAL-MSG-L3TYPES    
+    ;
+
+HalMsgIVIEnableReq ::= SEQUENCE
+{
+    l3ifid          INTEGER,
+    enable          INTEGER
+}
+
+HalMsgIVIRouteAddReq ::= SEQUENCE
+{
+    vrfid           INTEGER,
+    ipv4Addr        INTEGER,
+    ipv4masklen     INTEGER,
+    ipv4nhid        INTEGER,
+    ipv6Addr        PrintableString,
+    ipv6masklen     INTEGER,
+    ipv6nhid        INTEGER
+}
+
+HalMsgIVIRouteDelReq ::= SEQUENCE
+{
+    vrfid           INTEGER,
+    ipv4Addr        INTEGER,
+    ipv4masklen     INTEGER,
+    ipv4nhid        INTEGER,
+    ipv6Addr        PrintableString,
+    ipv6masklen     INTEGER,
+    ipv6nhid        INTEGER
+}
+
+HalMsgIVINexthopAddReq ::= SEQUENCE
+{
+    opcode          INTEGER,
+    nhid            INTEGER,
+    offset          INTEGER,
+    ipv6Addr        PrintableString,
+    ipv6masklen     INTEGER
+}
+
+HalMsgIVINexthopDelReq ::= SEQUENCE
+{
+    nhid            INTEGER
+}
+
+END

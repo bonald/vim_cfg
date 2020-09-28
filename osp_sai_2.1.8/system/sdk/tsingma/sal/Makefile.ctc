@@ -1,0 +1,41 @@
+ifeq ($(targetbase),linux)
+include $(MK_DIR)/sys.mk
+
+LIB = sdksal
+SRCS = $(shell find src/{linux_um,common} -name "*.c")
+
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/driver/$(CHIPNAME)/include
+
+include $(MK_DIR)/lib.mk
+
+##CFLAGS += -Werror -Wall
+CFLAGS += -Wall
+endif
+
+ifeq ($(targetbase),vxworks)
+BLD_DIR=$(SDK_DIR)/build.$(CPU).$(VER)
+OBJ_DIR=$(BLD_DIR)/obj.$(BOARD)/sal
+LIB_DIR=$(BLD_DIR)/lib.$(BOARD)
+BIN_DIR=$(BLD_DIR)/bin.$(BOARD)
+
+all_targets = src libsdksal
+
+all: $(all_targets) FORCE
+clean: $(addprefix clean_,$(all_targets)) FORCE
+
+src: FORCE
+	make -C $(SDK_DIR)/sal/src -f Makefile.vx
+
+clean_src: FORCE
+	make -C $(SDK_DIR)/sal/src -f Makefile.vx clean
+
+libsdksal: FORCE
+	make -f Makefile_libsal.vx
+
+clean_libsdksal: FORCE
+	make -f Makefile_libsal.vx clean
+
+.PHONY: FORCE
+FORCE:
+endif

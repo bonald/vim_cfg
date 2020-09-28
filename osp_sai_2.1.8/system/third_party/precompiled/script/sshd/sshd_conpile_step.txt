@@ -1,0 +1,53 @@
+sshd编译流程如下：
+1. 从40_OSP_System\16_precompiled\code\openssh-7.1p2.tar.gz中拷贝并解压；
+
+2. 编p1010时(25.29上编译)，编译脚本是：
+ export CC=powerpc-fsl_networking-linux-gnuspe-gcc && \
+    ./configure \
+    --host=ppc-linux \
+    --prefix=/usr \
+    --sysconfdir=/etc/ssh \
+    --with-ssh1 \
+    --without-shadow \
+    --disable-selinux \
+    --disable-lastlog \
+    --disable-utmp \
+    --disable-utmpx \
+    --disable-wtmp \
+    --disable-wtmpx \
+    --disable-pututline \
+    --with-pam \
+    --disable-pututxline
+
+    编译完成后make一下，最后将相应文件copy到~osp_sai/system/third_party/precompiled/p1010中的相应文档中，比如：
+
+    ssh-add，ssh-agent，ssh-keygen, ssh-keyscan文件copy到~osp_sai/system/third_party/precompiled/p1010/bin中;
+    sshd_config文档copy到~osp_sai/system/third_party/precompiled/p1010/etc中
+    libssh.a libopenbsd-compat.a 文档copy到~osp_sai/system/third_party/precompiled/p1010/lib中
+    sshd文档copy到~osp_sai/system/third_party/precompiled/p1010/sbin中
+
+    最后需要将sshd_config文档中UsePAM 置为yes。
+
+
+3. 编uml时(25.30上编译), 编译脚本是：
+  export CC=gcc && \
+   ./configure \
+   --prefix=/ \
+   --sysconfdir=/etc/ssh \
+   --with-ssh1 \
+   --without-shadow \
+   --disable-selinux \
+   --disable-lastlog \
+   --disable-utmp \
+   --disable-utmpx \
+   --disable-wtmp \
+   --disable-wtmpx \
+   --disable-pututline \
+   --with-pam \
+   --disable-pututxline
+
+  完成后make一下，最后也将相应文件copy到~osp_sai/system/third_party/precompiled/uml中，见2中说明。
+
+4. x86需要在25.31上编译
+
+5. ARM ？？？

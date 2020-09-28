@@ -1,0 +1,49 @@
+[EpeHdrEditDiscardTypeStats.0]  EPE Header Adjust destIdDiscard
+[EpeHdrEditDiscardTypeStats.1]  EPE Header Adjust pktErr discard
+[EpeHdrEditDiscardTypeStats.2]  EPE Header Adjust byte remove error discard
+[EpeHdrEditDiscardTypeStats.3]  DsDestPhyPort.destIdDiscard
+[EpeHdrEditDiscardTypeStats.4]  Port isolate discard
+[EpeHdrEditDiscardTypeStats.5]  DsVlan.transmitEn=1'b0 discard
+[EpeHdrEditDiscardTypeStats.6]  Bridge to same port discard
+[EpeHdrEditDiscardTypeStats.7]  VPLS horizon  split discard
+[EpeHdrEditDiscardTypeStats.8]  Egress VLAN filter discard
+[EpeHdrEditDiscardTypeStats.9]  Egress STP discard
+[EpeHdrEditDiscardTypeStats.10] Egress parser length error
+[EpeHdrEditDiscardTypeStats.11] Egress PBB check discard
+[EpeHdrEditDiscardTypeStats.12] Unicast/multicast flooding discard
+[EpeHdrEditDiscardTypeStats.13] 802.3 OAM discard
+[EpeHdrEditDiscardTypeStats.14] Egress TTL failed
+[EpeHdrEditDiscardTypeStats.15] Remote mirror escape discard
+[EpeHdrEditDiscardTypeStats.16] Tunnel MTU check discard
+[EpeHdrEditDiscardTypeStats.17] Interface MTU check discard
+[EpeHdrEditDiscardTypeStats.18] Logic port check discard
+[EpeHdrEditDiscardTypeStats.19] Egress ACL discard
+[EpeHdrEditDiscardTypeStats.20] Egress QoS discard
+[EpeHdrEditDiscardTypeStats.21] Egress policing discard
+[EpeHdrEditDiscardTypeStats.22] Egress CRC error
+[EpeHdrEditDiscardTypeStats.23] Route Payload operation discard
+[EpeHdrEditDiscardTypeStats.24] BRIDGE* payload operation discard
+[EpeHdrEditDiscardTypeStats.25] PT layer4Offset too large
+[EpeHdrEditDiscardTypeStats.26] BFD discard
+[EpeHdrEditDiscardTypeStats.27] Port reflective check discard
+[EpeHdrEditDiscardTypeStats.28] IP/MPLS TTL check error discard
+[EpeHdrEditDiscardTypeStats.29] OAM edge port discard
+[EpeHdrEditDiscardTypeStats.30] NAT/PT ICMP error discard
+[EpeHdrEditDiscardTypeStats.31] Reserved
+[EpeHdrEditDiscardTypeStats.32] local OAM discard
+[EpeHdrEditDiscardTypeStats.33] OAM filtering discard
+[EpeHdrEditDiscardTypeStats.34] OAM hash confilict discard
+[EpeHdrEditDiscardTypeStats.35] IPDA == IPSA discard
+[EpeHdrEditDiscardTypeStats.36] Reserved
+[EpeHdrEditDiscardTypeStats.37] TRILL payload operation discard
+[EpeHdrEditDiscardTypeStats.38] PBB check fail discard
+[EpeHdrEditDiscardTypeStats.39] DsNextHop data violate
+[EpeHdrEditDiscardTypeStats.40] destVlanPtr discard
+[EpeHdrEditDiscardTypeStats.41] DsL3Edit data violate 1
+[EpeHdrEditDiscardTypeStats.42] DsL3Edit data violate 2
+[EpeHdrEditDiscardTypeStats.43] DsL3EditNat data violate
+[EpeHdrEditDiscardTypeStats.44] DsL2Edit data violate 1
+[EpeHdrEditDiscardTypeStats.45] DsL2Edit data violate 2
+[EpeHdrEditDiscardTypeStats.46] PacketHeader C2C TTL zero
+[EpeHdrEditDiscardTypeStats.47] PT UDP checksum is zero
+[EpeHdrEditDiscardTypeStats.48] OAM to local discard

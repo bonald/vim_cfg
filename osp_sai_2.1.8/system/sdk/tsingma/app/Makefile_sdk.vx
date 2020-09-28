@@ -1,0 +1,92 @@
+
+include $(MK_DIR)/sys_vx.mk
+
+OBJ_DIR=$(OBJ_BASE_DIR)/app
+
+__LIB_DIR := $(LIB_DIR)
+
+ifeq ($(findstring humber, $(CHIPNAME)),humber)
+CPPFLAGS += -DHUMBER
+endif
+
+ifeq ($(findstring greatbelt, $(CHIPNAME)),greatbelt)
+CPPFLAGS += -DGREATBELT
+endif
+
+ifeq ($(findstring goldengate, $(CHIPNAME)),goldengate)
+CPPFLAGS += -DGOLDENGATE
+endif
+CPPFLAGS += -I$(SDK_DIR)/sal/include
+CPPFLAGS += -I$(SDK_DIR)/core/api/include
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include)
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include/ctc)
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/core/$(n)/include/sys)
+CPPFLAGS += -I$(SDK_DIR)/dal/include
+CPPFLAGS += $(foreach n, $(CHIPNAME), -I$(SDK_DIR)/mem_model/$(n)/include)
+CPPFLAGS += -I$(SDK_DIR)/ctccli/sdkcli
+CPPFLAGS += -I$(SDK_DIR)/core/common/include
+
+ifeq ($(SPLIT_CORE),NO)
+LIBSDK   = $(LIB_DIR)/libsdkcore.a
+LDSDK	 = -lsdkcore
+else
+LIBSDK   = $(LIB_DIR)/libsdkcoreapi.a $(LIB_DIR)/libsdkcoresys.a $(LIB_DIR)/libsdkcoresys1.a
+LDSDK	 = -lsdkcoreapi,-lsdkcoresys,-lsdkcoresys1
+endif
+LIBSAL   = $(LIB_DIR)/libsal.a
+LIBDAL   = $(LIB_DIR)/libdal.a
+LIBDRV   = $(LIB_DIR)/libdrv.a
+LIBCTCCLI = $(LIB_DIR)/libctccli.a
+LIBLIBCTCCLI = $(LIB_DIR)/liblibctccli.a
+LIBMEMMODEL = $(LIB_DIR)/libmemmodel.a
+LIBCHIPAGENT = $(LIB_DIR)/libchipagent.a
+LIBDEBUG = $(LIB_DIR)/libdkit.a
+#LIBSAMPLE = $(LIB_DIR)/libapp.a     no need to include sample
+
+#LD_FLAGS += -m32
+
+ifeq ($(BOARD),vxworks-sim)
+DEP_LIBS = $(LIBCTCCLI) $(LIBLIBCTCCLI) $(LIBSDK) $(LIBDRV) $(LIBDAL) $(LIBSAL) $(LIBDEBUG)
+LD_LIBS = -L$(__LIB_DIR) -L$(LIB_DIR) -lctccli -ldkit -Wl,--start-group,-lsal,$(LDSDK),-llibctccli,--end-group -ldrv -ldal
+ifneq ($(USW), yes)
+DEP_LIBS += $(LIBMEMMODEL)
+LD_LIBS += -lmemmodel
+endif
+else
+DEP_LIBS = $(LIBCTCCLI) $(LIBLIBCTCCLI) $(LIBSDK) $(LIBDRV) $(LIBDAL) $(LIBSAL) $(LIBDEBUG)
+LD_LIBS = -L$(__LIB_DIR) -L$(LIB_DIR) -lctccli -ldkit -Wl,--start-group,-lsal,$(LDSDK),-llibctccli,--end-group -ldrv -ldal 
+endif
+
+ifeq ($(ChipAgent),TRUE)
+DEP_LIBS += $(LIBCHIPAGENT)
+LD_LIBS += -lchipagent
+endif
+
+ifeq ($(LINK),YES)
+PROG = ctcsdk
+OBJS = $(wildcard $(OBJ_DIR)/*.o) $(wildcard $(OBJ_DIR)/usr/*.o) $(wildcard $(OBJ_DIR)/config/*.o) $(wildcard $(OBJ_DIR)/sample/*.o)
+DEPS = $(wildcard $(OBJ_DIR)/*.d) $(wildcard $(OBJ_DIR)/usr/*.d) $(wildcard $(OBJ_DIR)/config/*.d) $(wildcard $(OBJ_DIR)/sample/*.d)
+
+$(BIN_DIR)/$(PROG): $(OBJS) $(DEP_LIBS)
+	$(shell mkdir -p $(dir $@))
+	@echo "LD  => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	$(CC) $(LD_FLAGS) -o $@ $(OBJS) $(LD_LIBS)
+
+.PHONY: clean
+clean:
+	rm -rf $(BIN_DIR)/$(PROG)
+else
+$(LIB_DIR)/libctcsdk.a: $(DEP_LIBS)
+	$(shell mkdir -p $(dir $@))
+	echo "LIB => $(subst $(BLD_DIR),build.$(CPU).$(VER),$@)" && \
+	rm -rf $@ && \
+	$(AR) cru $@ $^ && \
+	$(RANLIB) $@
+
+.PHONY: clean
+clean:
+	rm -rf $(LIB_DIR)/libctcsdk.a
+endif
+
+
+

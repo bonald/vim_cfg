@@ -1,0 +1,14 @@
+include $(MK_DIR)/sys.mk
+LIB = power
+SRCS  = power_api.c
+SRCS  += power_drv.c
+
+include $(DRV_TOP_DIR)/Makefile.include
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/power
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/log
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/gpio
+CPPFLAGS += -I$(DRV_TOP_DIR)/device/epld
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/i2c/include
+CPPFLAGS += -I$(DRV_TOP_DIR)/bus/cpu/spi/include
+
+include $(MK_DIR)/lib.mk
