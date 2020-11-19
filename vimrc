@@ -40,7 +40,7 @@ set ignorecase
 set t_Co=256      "在windows中用xshell连接打开vim可以显示色彩
 
 "解决vim中文显示乱码问题
-set fileencoding=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+"set fileencoding=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
 set encoding=utf-8
 
